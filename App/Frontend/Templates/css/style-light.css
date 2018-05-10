@@ -1,0 +1,105 @@
+
+body{
+	
+	background-color:#E3E3E3;
+}
+
+.interTitle{
+	
+	color : #303030;
+	
+}
+
+.interruptor{
+	
+	color: #e91e63 !important;
+	
+}
+
+.primaryColor{
+	background-color: #3f51b5 !important;
+	
+}
+.primaryTextColor{
+	color: #3f51b5 !important;	
+}
+
+.primaryDarkColor{
+	background-color: #002984 !important;
+	
+}
+.primaryTextDarkColor{
+	color: #002984 !important;
+	
+}
+
+.primaryLightColor{
+	background-color: #757de8 !important;
+	
+}
+.primaryTextLightColor{
+	color: #757de8 !important;
+	
+}
+
+.secondaryColor{
+	
+	background-color: #ff4081 !important;
+}
+.secondaryTextColor{
+	
+	color: #ff4081 !important;
+}
+
+.secondaryDarkColor{
+	
+	background-color: #c60055 !important;
+}
+.secondaryTextDarkColor{
+	
+	color: #c60055 !important;
+}
+
+.secondaryLightColor{
+	
+	background-color: #ff79b0 !important;
+}
+.secondaryTextLightColor{
+	
+	color: #ff79b0 !important;
+}
+
+.textOnPrimaryColor{
+	color: #fafafa !important;
+	
+}
+
+.textOnSecondaryColor{
+	
+	color: #030303 !important;
+}
+
+
+.textOnBodyColor{
+	
+	color: #030303 !important;
+}
+
+
+
+
+
+#slide-out a{
+	
+	color: #303030 !important;
+}
+
+.switch label input[type=checkbox]:checked + .lever {
+  background-color: #ff6090;
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+  background-color: #e91e63;
+  left: 24px;
+}
+
