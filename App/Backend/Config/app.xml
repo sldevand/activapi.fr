@@ -5,5 +5,5 @@
   <define var="cache" value="/var/www/activapi.fr/tmp/cache/" />
   <define var="cacheExpiration" value="3600 seconds" />
   <define var="pdoWinAddress" value="sqlite:C:\wamp64\www\database\releves.db" />
-  <define var="pdoLinAddress" value="sqlite:/media/usb/releves.db" />
+  <define var="pdoLinAddress" value="sqlite:/var/www/html/database/releves.db" />
 </definitions>
