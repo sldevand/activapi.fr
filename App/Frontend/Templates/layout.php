@@ -17,7 +17,7 @@
     <script src="js/utils/jquery-3.2.1.min.js"></script>
     <script src="js/utils/materialize.min.js"></script>
     <script src="js/utils/moment.js"></script>
-    <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script src="node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js"></script>
     <script src="js/utils/requirejs/require.js"></script>
 
 
