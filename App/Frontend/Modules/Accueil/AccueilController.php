@@ -26,7 +26,7 @@ class AccueilController extends BackController
       $cardContent =  '<div class="row"> 
                           <div class="col s6 valign-wrapper">
                             <i class="valign material-icons left">build</i>      
-                            <div class="valign ">Accueil en construction...</div>   
+                            <div class="valign ">Bienvenue sur ActivAPI, ici, vous pouvez administrer votre solution ActivHome</div>   
                           </div>       
                       </div>';    
       return WidgetFactory::makeCard($domId,$domId,$cardContent);
