@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 const SITE = '/activapi.fr/Web/';
 const CSS = SITE . 'css';
 const JS = SITE . 'js';
-const NODE_MODULES = SITE . '/node_modules';
+const NODE_MODULES = SITE . 'node_modules';
 const JS_UTILS = JS . '/utils';
 const DEFAULT_APP = 'Frontend';
 
