@@ -7,23 +7,17 @@
 
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php
-    $site = '/activapi.fr/Web/';
-    $css = $site . 'css';
-    $jsUtils = $site . 'js/utils';
-    $nodeModules = $site . 'node_modules';
-    ?>
 
-    <link rel="stylesheet" href="<?= "$css/materialize.min.css" ?>" type="text/css"/>
-    <link rel="stylesheet" href="<?= "$css/style-parent.css" ?>" type="text/css"/>
-    <link rel="stylesheet" href="<?= "$css/icon-fonts.css" ?>" type="text/css"/>
-    <link rel="stylesheet" href="<?= "$css/materialdesignicons.css" ?>" type="text/css">
-    <link rel="stylesheet" href="<?= "$css/style-light.css" ?>" type="text/css"/>
-    <script src="<?= "$jsUtils/jquery-3.2.1.min.js" ?>"></script>
-    <script src="<?= "$jsUtils/materialize.min.js" ?>"></script>
-    <script src="<?= "$jsUtils/moment.js" ?>"></script>
-    <script src="<?= "$nodeModules/socket.io-client/dist/socket.io.js" ?>"></script>
-    <script src="<?= "$jsUtils/requirejs/require.js" ?>"></script>
+    <link rel="stylesheet" href="<?= CSS . '/materialize.min.css' ?>" type="text/css"/>
+    <link rel="stylesheet" href="<?= CSS . '/style-parent.css' ?>" type="text/css"/>
+    <link rel="stylesheet" href="<?= CSS . '/icon-fonts.css' ?>" type="text/css"/>
+    <link rel="stylesheet" href="<?= CSS . '/materialdesignicons.css' ?>" type="text/css">
+    <link rel="stylesheet" href="<?= CSS . '/style-light.css' ?>" type="text/css"/>
+    <script src="<?= JS_UTILS . '/jquery-3.2.1.min.js' ?>"></script>
+    <script src="<?= JS_UTILS . '/materialize.min.js' ?>"></script>
+    <script src="<?= JS_UTILS . '/moment.js' ?>"></script>
+    <script src="<?= NODE_MODULES . '/socket.io-client/dist/socket.io.js' ?>"></script>
+    <script src="<?= JS_UTILS . '/requirejs/require.js' ?>"></script>
 </head>
 
 <body>

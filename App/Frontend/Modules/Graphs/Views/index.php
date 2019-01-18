@@ -7,9 +7,9 @@
     </div>
 </div>
 
-<script src="js/utils/palette.js"></script>
-<script src="js/graphsManage/TempGraph.js"></script>
-<script src="js/graphsManage/graphsManage.js"></script>
+<script src="<?= JS_UTILS . '/palette.js' ?>"></script>
+<script src="<?= JS . '/graphsManage/TempGraph.js' ?>"></script>
+<script src="<?= JS . '/graphsManage/graphsManage.js' ?>"></script>
 <?php echo $jst->toVars(); ?>
 
 <script>
