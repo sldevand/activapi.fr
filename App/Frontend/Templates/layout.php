@@ -11,7 +11,7 @@
     $site = '/activapi.fr/Web/';
     $css = $site . 'css';
     $jsUtils = $site . 'js/utils';
-    $nodeModules = $site . 'nodeModules';
+    $nodeModules = $site . 'node_modules';
     ?>
 
     <link rel="stylesheet" href="<?= "$css/materialize.min.css" ?>" type="text/css"/>
