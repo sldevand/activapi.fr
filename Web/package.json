@@ -1,0 +1,16 @@
+{
+  "name": "global",
+  "version": "1.0.0",
+  "description": "global is a folder to be placed aside activapi.fr, this folder provides stylesheets and charts included in my home made home automation solution ActivHome",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sldevand/global.git"
+  },
+  "author": "Sébastien Lorrain",
+  "license": "MIT",
+  "homepage": "https://github.com/sldevand/global#readme",
+  "dependencies": {
+    "socket.io": "^2.1.1"
+  }
+}

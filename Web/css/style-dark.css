@@ -1,0 +1,110 @@
+
+body{
+	
+	background-color:#3F3F3F;
+}
+
+.interTitle{
+	
+	color : #303030;
+	
+}
+
+.interruptor{
+	
+	color: #e91e63 !important;
+	
+}
+
+.primaryColor{
+	background-color: #00796b !important;
+	
+}
+.primaryTextColor{
+	color: #00796b !important;	
+}
+
+.primaryDarkColor{
+	background-color: #004c40 !important;
+	
+}
+.primaryTextDarkColor{
+	color: #004c40 !important;
+	
+}
+
+.primaryLightColor{
+	background-color: #48a999 !important;
+	
+}
+.primaryTextLightColor{
+	color: #48a999 !important;
+	
+}
+
+.secondaryColor{
+	
+	background-color: #ff4081 !important;
+}
+.secondaryTextColor{
+	
+	color: #ff4081 !important;
+}
+
+.secondaryDarkColor{
+	
+	background-color: #c60055 !important;
+}
+.secondaryTextDarkColor{
+	
+	color: #c60055 !important;
+}
+
+.secondaryLightColor{
+	
+	background-color: #ff79b0 !important;
+}
+.secondaryTextLightColor{
+	
+	color: #ff79b0 !important;
+}
+
+.textOnPrimaryColor{
+	color: #fafafa !important;
+	
+}
+
+.textOnSecondaryColor{
+	
+	color: #030303 !important;
+}
+
+.textOnBodyColor{
+	
+	color: #fafafa !important;
+}
+
+.card{
+	
+	background-color:#8F8F8F;
+}
+
+.card-panel{
+	
+	background-color:#8F8F8F;
+}
+
+#slide-out a{
+	
+	color: #303030 !important;
+}
+
+.switch label input[type=checkbox]:checked + .lever {
+  background-color: #ff6090;
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+  background-color: #e91e63;
+  left: 24px;
+}
+

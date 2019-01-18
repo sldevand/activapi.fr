@@ -1,14 +1,7 @@
+*{
+	margin:0;
+	padding:0;
 
-.banner{
-
-	float:left;
-	border-style:none;
-	background:url('../images/Titre-white.png') no-repeat center top;
-	background-size:contain;
-	
-	padding:20px 20px 40px 20px;
-	width:18em;
-	
 }
 
 #fab{
@@ -17,18 +10,14 @@
 }
 
 
-#lampswidget{
-	display:inline-block;
-}
-
 body{
-	
+
 	background-color:#FFFFFF;
 	overflow: visible;
 }
 
 nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
-	
+
 	font-size: 42px;
 }
 
@@ -42,12 +31,14 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
   margin-left: -0.2rem;
   margin-right: -0.2rem;
   margin-bottom:7px;
- 
+
 }
 
-
-
-
+.mdi{
+	padding:0px;
+	margin: 0px;
+	font-size:24px;
+}
 
 .chip .fakeclose {
   cursor: pointer;
@@ -59,7 +50,7 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 
 
 @media screen and (max-width: 600px){
-	
+
 .chip {
 	  display: inline-block;
 	  height: 16px;
@@ -73,8 +64,8 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 	  margin-bottom: 0px;
 	  margin-right: 0px;
 	  top:8;
-	
-	}	
+
+	}
 	.chip .fakeclose {
 	  cursor: pointer;
 	  float: right;
@@ -85,13 +76,13 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 	.butlp{
 		width:50px;
 		height:auto;
-	}	
+	}
 	.thermo{
 		width:63px;
 		height:auto;
 		margin:0;
 		padding:0;
-	}	
+	}
 
 	#clock_js{
 		width:120px;
@@ -100,26 +91,10 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 		padding:0;
 	}
 
-
-	
-	
-	nav,.nav-wrapper ,.banner, .material-icons, a.button-collapse{
-		height:32px;
-		
-	}
-	
 	nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
-	
-	font-size: 24px;
-}
-	
-	nav a.button-collapse i{
-		
-		line-height:32px;
-		height:32px;
+		font-size: 24px;
 	}
 
-	
 	.banner{
 		width:9em;
 	}
@@ -127,20 +102,22 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 		height:50px;
 		width:50px;
 	}
-	
+
 	.btn-floating.btn-large i{
 		line-height: 50px;
 	}
 	.card-panel{
 		padding:10px;
 	}
-	
-	
-	
+
+
+
 }
 
+
+
 @media screen and (max-height: 300px) and (max-width:600px){
-	
+
 	.chip {
 	  display: inline-block;
 	  height: 16px;
@@ -153,8 +130,8 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 	  background-color: #e4e4e4;
 	  margin-bottom: 0px;
 	  margin-right: 0px;
-	
-	}	
+
+	}
 	.chip .fakeclose {
 	  cursor: pointer;
 	  float: right;
@@ -162,12 +139,12 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 	  line-height: 15px;
 	  padding-left: 8px;
 	}
-	
-	
+
+
 	.butlp{
 		width:50px;
 		height:auto;
-	}	
+	}
 	.thermo{
 		width:60px;
 		height:auto;
@@ -184,30 +161,30 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 
 	}
 
-	
-	
-	nav,.nav-wrapper ,.banner,.material-icons,a.button-collapse{
+
+
+	.material-icons,a.button-collapse{
 		height:32px;
-		
-		
+
+
 	}
 	nav a.button-collapse i{
-		
+
 		line-height:32px;
 	}
-	
+
 	.banner{
 		width:9em;
 	}
-	
+
 	.btn-floating{
 		height:25px;
 		width:25px;
 		margin:0px;
                 padding:0px;
 		line-height: 25px;
-	
-	}	
+
+	}
 
 	ul .btn-floating{
 		position:relative;
@@ -223,45 +200,45 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 		line-height: 25px;
 	}
 
-		
+
 	#fab,#fabBut{
 		width:30px;
 		height:30px;
-		bottom:5px; 
+		bottom:5px;
 		right: 5px;
 		margin:0;
 		padding:0;
 		line-height: 0px;
 
-	}	
+	}
 	#fabIcon{
 		width:30px;
 		height:30px;
-		bottom: 0px; 
+		bottom: 0px;
 		right: 0px;
 		margin:0;
 		padding:0;
 
 		line-height: 30px;
 
-	}	
-	
+	}
 
-	
+
+
 
 }
 
 @media screen and (max-height: 300px) and (min-width:601px){
-	
+
 	nav,.nav-wrapper ,.banner{
 		height:64px;
-		
+
 	}
 
 	.butlp{
 		width:60px;
 		height:auto;
-	}	
+	}
 
 	#clock_js{
 		width:80px;
@@ -272,8 +249,8 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 
 	}
 
-	
-	
+
+
 
 
 }
@@ -281,9 +258,9 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 	.butlp{
 		width:80px;
 		height:auto;
-	}	
+	}
 
-	
+
 	#clock_js{
 		width:170px;
 		height:auto;
@@ -309,7 +286,7 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 	.butlp{
 		width:100px;
 		height:auto;
-	}	
+	}
 	#clock_js{
 		width:180px;
 		height:auto;
@@ -331,9 +308,9 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons{
 }
 
 nav{
-	float : left;	
+	float : left;
 	width:100%;
-	text-align:center;	
+	text-align:center;
 	 background-color: transparent;
 }
 
@@ -344,48 +321,48 @@ footer.page-footer{
   bottom: 0;
   left: 0;
   z-index:99;
-	
+
 }
 
 .graph{
-	
+
 	width:100%;
 	height:auto;
-	
-	
+
+
 }
 
 .side-nav li{
 	width:100%;
 	font-family:"Roboto";
 
-	
+
 }
 .title-side-nav{
 	width:100%;
 	height:auto;
 
-	
+
 }
 
-.waves-effect.waves-pink .waves-ripple {   
-	 background-color:rgba(236, 64, 122, 0.2);	
+.waves-effect.waves-pink .waves-ripple {
+	 background-color:rgba(236, 64, 122, 0.2);
 }
 
 
 .interTitle{
-	
+
 	color : #FFFFFF;
-	
+
 }
 
 .spinner-pink,
 .spinner-pink-only {
   border-color: #e91e63;
-}	
+}
 
 .graphcont{
-	
+
 	position:relative;
 	height:100%;
 	margin:auto;
@@ -400,36 +377,52 @@ footer.page-footer{
 }
 
 .axisgraph{
-	
+
 	z-index:0;
 	position:absolute;
 }
 
 .title, #titleNav{
-	
+
 	color : #FFFFFF;
-	
+
 }
 
 #titleNav{
-	
+
 	margin-left:10px;
 }
 
 h4 .typeTitle{
-	
+
 
 	margin-bottom:16px;
 	margin-top:16px;
-	
+
+}
+
+.card-title{
+
+	margin:0px;
+	padding:10px;
+}
+.card-title h4{
+
+	margin:0.25rem 0 0.125rem 0;
 }
 
 
-#editContainer #cards .row .card{
-	
-	margin-bottom:5px;
+.card-panel{
+	margin:10px;
+	padding:0px;
+}
+
+.card-content{
+	padding:10px;
 
 }
+
+
 
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -442,66 +435,21 @@ h4 .typeTitle{
 }
 
 textarea.materialize-textarea{
-	
+
 	padding:0px;
-	
+
 }
 .btn-flat i {
 	font-size: 1.8rem;
-	
-}
-
-
-#hightemp{
-	color:red;
-	padding:0;
-}
-
-#temp{
-
-	font-size:2em;
-	padding:0;
-}
-
-#city,#desc, #HighLow{
-	
-    font-size:1.2em;
-  
-	padding:0;
-}
-
-#Day1, #Day2, #Day3, #Day4,#Day1HiLo, #Day2HiLo, #Day3HiLo, #Day4HiLo {
-	
-	font-size: 1.2em;
-
-	padding:0px;
-	margin:0px;
-	
-}
-#Day1Icon, #Day2Icon, #Day3Icon, #Day4Icon {
-	min-width:50px;
-	max-width:70px;
-	padding:0px;
-	margin:0px;	
 
 }
 
- 
-
-#weathericon{
-	
-		
-	padding:0px;
-	margin:0px;
-	
-}
-
-#forecast{
-	
-	padding:0px;
-	margin:0px;
-}
 
 #maincontent{
 	margin-bottom:100px;
+}
+
+#console-display{
+	overflow: auto;
+	height:400px;
 }

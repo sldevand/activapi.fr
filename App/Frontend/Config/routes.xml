@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <routes>
-	<route url="\/activapi.fr\/" module="Accueil" action="index" />
+    <route url="\/activapi.fr\/" module="Accueil" action="index"/>
 
-	<route url="\/activapi.fr\/actionneurs" module="Actionneurs" action="index" />
-	<route url="\/activapi.fr\/actionneurs-add" module="Actionneurs" action="edit" />
-	<route url="\/activapi.fr\/actionneurs-edit-([0-9]+)" module="Actionneurs" action="edit" vars="id" />
-	<route url="\/activapi.fr\/actionneurs-delete-([0-9]+)" module="Actionneurs" action="delete" vars="id" />
+    <route url="\/activapi.fr\/actionneurs" module="Actionneurs" action="index"/>
+    <route url="\/activapi.fr\/actionneurs-add" module="Actionneurs" action="edit"/>
+    <route url="\/activapi.fr\/actionneurs-edit-([0-9]+)" module="Actionneurs" action="edit" vars="id"/>
+    <route url="\/activapi.fr\/actionneurs-delete-([0-9]+)" module="Actionneurs" action="delete" vars="id"/>
 
-	<route url="\/activapi.fr\/sensors" module="Sensors" action="index" />
-	<route url="\/activapi.fr\/sensors-add" module="Sensors" action="edit" />
-	<route url="\/activapi.fr\/sensors-edit-([0-9]+)" module="Sensors" action="edit" vars="id" />
-	<route url="\/activapi.fr\/sensors-delete-([0-9]+)" module="Sensors" action="delete" vars="id" />
+    <route url="\/activapi.fr\/sensors" module="Sensors" action="index"/>
+    <route url="\/activapi.fr\/sensors-add" module="Sensors" action="edit"/>
+    <route url="\/activapi.fr\/sensors-edit-([0-9]+)" module="Sensors" action="edit" vars="id"/>
+    <route url="\/activapi.fr\/sensors-delete-([0-9]+)" module="Sensors" action="delete" vars="id"/>
 
-	<route url="\/activapi.fr\/mesures-?([0-9]+)?" module="Mesures" action="index" vars="nbMesures" />
+    <route url="\/activapi.fr\/mesures-?([0-9]+)?" module="Mesures" action="index" vars="nbMesures"/>
 
-	<route url="\/activapi.fr\/graphs" module="Graphs" action="index" />
-	<route url="\/activapi.fr\/graphs-(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])(?:-([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{4}-[0-9]{2}-[0-9]{2}))?" module="Graphs" action="index" vars="id_sensor,dateMin,dateMax" />
+    <route url="\/activapi.fr\/graphs" module="Graphs" action="index"/>
+    <route url="\/activapi.fr\/graphs-(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])(?:-([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{4}-[0-9]{2}-[0-9]{2}))?"
+           module="Graphs" action="index" vars="id_sensor,dateMin,dateMax"/>
 
-	<route url="\/activapi.fr\/thermostat" module="Thermostat" action="index" />
-	<route url="\/activapi.fr\/thermostat-log-?([0-9]+)?" module="Thermostat" action="log" vars="nbLogs" />
+    <route url="\/activapi.fr\/thermostat" module="Thermostat" action="index"/>
+    <route url="\/activapi.fr\/thermostat-log-?([0-9]+)?" module="Thermostat" action="log" vars="nbLogs"/>
 
-	<route url="\/activapi.fr\/thermostat-planif" module="ThermostatPlanif" action="index" />
-	<route url="\/activapi.fr\/thermostat-planif-add" module="ThermostatPlanif" action="add" />
-	<route url="\/activapi.fr\/thermostat-planif-edit-([0-9]+)" module="ThermostatPlanif" action="edit" vars="id"/>
-	<route url="\/activapi.fr\/thermostat-planif-delete-([0-9]+)" module="ThermostatPlanif" action="delete" vars="id"/>
+    <route url="\/activapi.fr\/thermostat-planif" module="ThermostatPlanif" action="index"/>
+    <route url="\/activapi.fr\/thermostat-planif-add" module="ThermostatPlanif" action="add"/>
+    <route url="\/activapi.fr\/thermostat-planif-edit-([0-9]+)" module="ThermostatPlanif" action="edit" vars="id"/>
+    <route url="\/activapi.fr\/thermostat-planif-delete-([0-9]+)" module="ThermostatPlanif" action="delete" vars="id"/>
 
-	<route url="\/activapi.fr\/thermostat-modes" module="ThermostatModes" action="index" />
-	<route url="\/activapi.fr\/thermostat-modes-add" module="ThermostatModes" action="edit"/>
-	<route url="\/activapi.fr\/thermostat-modes-delete-([0-9]+)" module="ThermostatModes" action="delete" vars="id"/>
-	<route url="\/activapi.fr\/thermostat-modes-edit-([0-9]+)" module="ThermostatModes" action="edit" vars="id"/>
+    <route url="\/activapi.fr\/thermostat-modes" module="ThermostatModes" action="index"/>
+    <route url="\/activapi.fr\/thermostat-modes-add" module="ThermostatModes" action="edit"/>
+    <route url="\/activapi.fr\/thermostat-modes-delete-([0-9]+)" module="ThermostatModes" action="delete" vars="id"/>
+    <route url="\/activapi.fr\/thermostat-modes-edit-([0-9]+)" module="ThermostatModes" action="edit" vars="id"/>
 
-	<route url="\/activapi.fr\/console" module="Console" action="index"/>	
+    <route url="\/activapi.fr\/console" module="Console" action="index"/>
 </routes>

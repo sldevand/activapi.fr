@@ -1,11 +1,8 @@
-<?php 
-
-	foreach($cards as $card) { ?>	
-		<div class="row">	
-			<div class="col s12">
-				<?php echo $card->getHtml(); ?>
-			</div>
-		</div>
-<?php }
-
-      echo $addSensorsFab->getHtml();
+<?php foreach ($cards as $card): ?>
+    <div class="row">
+        <div class="col s12">
+            <?php echo $card->getHtml(); ?>
+        </div>
+    </div>
+<?php endforeach; ?>
+<?= $addSensorsFab->getHtml(); ?>

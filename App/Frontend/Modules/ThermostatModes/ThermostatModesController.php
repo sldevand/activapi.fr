@@ -1,155 +1,158 @@
 <?php
+
 namespace App\Frontend\Modules\ThermostatModes;
 
-use \OCFram\BackController;
-use \OCFram\HTTPRequest;
-use \OCFram\DateFactory;
-use \OCFram\FormBuilder;
-use \OCFram\FormHandler;
-use \Entity\ThermostatMode;
-use \Materialize\WidgetFactory;
-use \Materialize\Link;
-use \Materialize\FloatingActionButton;
-use \FormBuilder\ThermostatModesFormBuilder;
+use Entity\ThermostatMode;
+use FormBuilder\ThermostatModesFormBuilder;
+use Materialize\FloatingActionButton;
+use Materialize\Link;
+use Materialize\WidgetFactory;
+use OCFram\BackController;
+use OCFram\FormHandler;
+use OCFram\HTTPRequest;
 
-use \Debug\Log;
-
+/**
+ * Class ThermostatModesController
+ * @package App\Frontend\Modules\ThermostatModes
+ */
 class ThermostatModesController extends BackController
-{ 
-  public function executeIndex(HTTPRequest $request){
+{
+    /**
+     * @param HTTPRequest $request
+     */
+    public function executeIndex(HTTPRequest $request)
+    {
+        $this->page->addVar('title', 'Gestion des Modes');
+        $manager = $this->managers->getManagerOf('ThermostatModes');
 
-    $this->page->addVar('title', 'Gestion des Modes');
-    $manager = $this->managers->getManagerOf('ThermostatModes'); 
-  
-    $modes=json_decode(json_encode($manager->getList()),TRUE);
-    $modesData=[];
-    $domId="Modes";
-    $hideColumns=['id'];  
+        $modes = json_decode(json_encode($manager->getList()), TRUE);
+        $modesData = [];
+        $domId = "Modes";
+        $hideColumns = ['id'];
 
-    foreach($modes as $mode){
-        //DATA PREPARE FOR TABLE
-        $linkEdit=new Link('',"../activapi.fr/thermostat-modes-edit-".$mode["id"],'edit','primaryTextColor');
-        $linkDelete=new Link('',"../activapi.fr/thermostat-modes-delete-".$mode["id"],'delete','secondaryTextColor');
-        $mode["editer"]= $linkEdit->getHtmlForTable();        
-        $mode["supprimer"]= $linkDelete->getHtmlForTable();             
-        $modesData[]=$mode;          
-      }
+        foreach ($modes as $mode) {
+            //DATA PREPARE FOR TABLE
+            $linkEdit = new Link('', "../activapi.fr/thermostat-modes-edit-" . $mode["id"], 'edit', 'primaryTextColor');
+            $linkDelete = new Link('', "../activapi.fr/thermostat-modes-delete-" . $mode["id"], 'delete', 'secondaryTextColor');
+            $mode["editer"] = $linkEdit->getHtmlForTable();
+            $mode["supprimer"] = $linkDelete->getHtmlForTable();
+            $modesData[] = $mode;
+        }
 
-  
-      $table=WidgetFactory::makeTable($domId,$modesData,false,$hideColumns); 
+        $table = WidgetFactory::makeTable($domId, $modesData, false, $hideColumns);
 
-      $cardTitle=$domId; 
-      $cardContent=$table->getHtml();    
-      $addModeFab = new FloatingActionButton([
-       'id'=>"addModeFab",
-       'fixed'=>true,
-       'icon'=>"add",
-       'href'=>"../activapi.fr/thermostat-modes-add"
-      ]);
+        $cardTitle = $domId;
+        $cardContent = $table->getHtml();
+        $addModeFab = new FloatingActionButton([
+            'id' => "addModeFab",
+            'fixed' => true,
+            'icon' => "add",
+            'href' => "../activapi.fr/thermostat-modes-add"
+        ]);
 
-      $cardContent.= $addModeFab->getHtml();
-      $card=WidgetFactory::makeCard($domId,$cardTitle,$cardContent);
-      $cards[]=$card;
+        $cardContent .= $addModeFab->getHtml();
+        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $cards[] = $card;
 
-      $this->page->addVar('cards',$cards);
-  
-  }
-
-   public function executeDelete(HTTPRequest $request){
-
-    $manager = $this->managers->getManagerOf('ThermostatModes'); 
-    
-    $domId='Suppression';  
-   if ($request->method() == 'POST'){
-
-      if ($request->getExists('id')){
-        $id=$request->getData('id');
-        $manager->delete($id);
-        $this->app->httpResponse()->redirect('../activapi.fr/thermostat-modes');
-      }
+        $this->page->addVar('cards', $cards);
     }
 
-    $cardContent='<p class="flow-text">Voulez-vous vraiment supprimer ce mode?</p>';
-    $cardContent.='<form action="" method="post">';
-    $cardContent.='<input class="btn-flat" type="submit" value="Supprimer" />';   
-    $cardContent.='</form>';
+    /**
+     * @param HTTPRequest $request
+     */
+    public function executeDelete(HTTPRequest $request)
+    {
+        $manager = $this->managers->getManagerOf('ThermostatModes');
 
-      
-    $link=new Link($domId,
-                    "../activapi.fr/thermostat-modes",
-                    "arrow_back",
-                    "white-text",
-                    "white-text");
+        $domId = 'Suppression';
+        if ($request->method() == 'POST') {
 
-    $cardTitle=$link->getHtml();
+            if ($request->getExists('id')) {
+                $id = $request->getData('id');
+                $manager->delete($id);
+                $this->app->httpResponse()->redirect('../activapi.fr/thermostat-modes');
+            }
+        }
 
-    $card=WidgetFactory::makeCard($domId,$cardTitle,$cardContent);
+        $cardContent = '<p class="flow-text">Voulez-vous vraiment supprimer ce mode?</p>';
+        $cardContent .= '<form action="" method="post">';
+        $cardContent .= '<input class="btn-flat" type="submit" value="Supprimer" />';
+        $cardContent .= '</form>';
 
-    $this->page->addVar('title', 'Suppression du Mode');
-    $this->page->addVar('card', $card); 
+        $link = new Link($domId,
+            "../activapi.fr/thermostat-modes",
+            "arrow_back",
+            "white-text",
+            "white-text");
 
-   }
-   
-  public function executeEdit(HTTPRequest $request){
+        $cardTitle = $link->getHtml();
 
-    $manager = $this->managers->getManagerOf('ThermostatModes'); 
-    $modes=$manager->getList();
-    $domId='Edition';  
-    if ($request->method() == 'POST'){
-      
-      $item = new ThermostatMode([
-        'nom' => $request->postData('nom'),
-        'consigne' => $request->postData('consigne'),
-        'delta' => $request->postData('delta')        
-      ]);    
+        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
 
-     if ($request->getExists('id')){
-        $id=$request->getData('id');
-        $item->setId($id);
-      }
-
-    }else{  
-      if ($request->getExists('id'))
-      {
-        $id=$request->getData("id");       
-        $item = $manager->getUnique($id);
-      }else{
-        $domId='Ajout';  
-        $item = new ThermostatMode();
-
-      }
+        $this->page->addVar('title', 'Suppression du Mode');
+        $this->page->addVar('card', $card);
     }
-  
-    $cards=[];   
 
-    $tmfb = new ThermostatModesFormBuilder($item);
-    $tmfb->build();
-    $form = $tmfb->form();  
+    /**
+     * @param HTTPRequest $request
+     */
+    public function executeEdit(HTTPRequest $request)
+    {
+        $manager = $this->managers->getManagerOf('ThermostatModes');
+        $modes = $manager->getList();
+        $domId = 'Edition';
+        if ($request->method() == 'POST') {
 
-    $cardContent='<form action="" method="post">';
-    $cardContent.=$form->createView();
-    $cardContent.='<input class="btn-flat" type="submit" value="Valider" />';
-    $cardContent.='</form>';
-    $fh = new FormHandler($form ,$manager,$request);
+            $item = new ThermostatMode([
+                'nom' => $request->postData('nom'),
+                'consigne' => $request->postData('consigne'),
+                'delta' => $request->postData('delta')
+            ]);
 
-    if ($fh->process()){    
-      $this->app->httpResponse()->redirect('../activapi.fr/thermostat-modes');
+            if ($request->getExists('id')) {
+                $id = $request->getData('id');
+                $item->setId($id);
+            }
+
+        } else {
+            if ($request->getExists('id')) {
+                $id = $request->getData("id");
+                $item = $manager->getUnique($id);
+            } else {
+                $domId = 'Ajout';
+                $item = new ThermostatMode();
+
+            }
+        }
+
+        $cards = [];
+
+        $tmfb = new ThermostatModesFormBuilder($item);
+        $tmfb->build();
+        $form = $tmfb->form();
+
+        $cardContent = '<form action="" method="post">';
+        $cardContent .= $form->createView();
+        $cardContent .= '<input class="btn-flat" type="submit" value="Valider" />';
+        $cardContent .= '</form>';
+        $fh = new FormHandler($form, $manager, $request);
+
+        if ($fh->process()) {
+            $this->app->httpResponse()->redirect('../activapi.fr/thermostat-modes');
+        }
+
+        $link = new Link($domId,
+            "../activapi.fr/thermostat-modes",
+            "arrow_back",
+            "white-text",
+            "white-text");
+
+        $cardTitle = $link->getHtml();
+
+        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $cards[] = $card;
+
+        $this->page->addVar('title', 'Edition du Mode');
+        $this->page->addVar('cards', $cards);
     }
-    
-    $link=new Link($domId,
-                    "../activapi.fr/thermostat-modes",
-                    "arrow_back",
-                    "white-text",
-                    "white-text");
-
-    $cardTitle=$link->getHtml();
-
-    $card=WidgetFactory::makeCard($domId,$cardTitle,$cardContent);
-    $cards[]=$card;        
-       
-    $this->page->addVar('title', 'Edition du Mode');
-    $this->page->addVar('cards', $cards);   
-
-  } 
-
 }

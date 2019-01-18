@@ -1,0 +1,47 @@
+
+body{
+	
+	background-color:#F3F3F3;
+}
+
+.interTitle{
+	
+	color : #303030;
+	
+}
+
+.interruptor{
+	
+	color: #e91e63 !important;
+	
+}
+
+.primaryColor{
+	background-color: #80deea !important;
+	
+}
+
+.primaryDarkColor{
+	 background-color: #4aacb8 !important;
+	
+}
+
+.accentColor{
+	
+	background-color: #f48fb1 !important;
+}
+
+.accentTxtColor{
+	
+	color: #e91e63 !important;
+}
+
+#slide-out a{
+	
+	 color: #303030 !important;
+	
+	
+}
+
+
+
