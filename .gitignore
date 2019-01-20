@@ -1,3 +1,5 @@
 /Web/node_modules/
 .idea
 /node_modules/
+
+/vendor/

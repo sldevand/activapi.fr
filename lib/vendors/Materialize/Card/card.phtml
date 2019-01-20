@@ -1,0 +1,11 @@
+<div id="<?= $this->id() ?>" class="card  <?= $this->shade() ?>">
+    <div class="card-title <?= $this->textColor ?> <?= $this->bgColor ?>"><?= $this->title ?></div>
+    <div class="card-content">
+        <?php foreach ($this->contents as $content): ?>
+            <?= $content ?>
+        <?php endforeach ?>
+    </div>
+    <?php foreach ($this->links as $link): ?>
+        <?= $link->getHtml2() ?>
+    <?php endforeach ?>
+</div>

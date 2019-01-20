@@ -8,11 +8,29 @@ namespace OCFram;
  */
 abstract class BackController extends ApplicationComponent
 {
+    /**
+     * @var string
+     */
     protected $action = '';
+    /**
+     * @var string
+     */
     protected $module = '';
+    /**
+     * @var null|Page
+     */
     protected $page = null;
+    /**
+     * @var string
+     */
     protected $view = '';
+    /**
+     * @var null|Managers
+     */
     protected $managers = null;
+    /**
+     * @var null|Cache
+     */
     protected $cache = null;
 
     /**
@@ -72,6 +90,9 @@ abstract class BackController extends ApplicationComponent
         $this->page->setContentFile(__DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php');
     }
 
+    /**
+     *
+     */
     public function execute()
     {
         $method = 'execute' . ucfirst($this->action);
@@ -83,6 +104,9 @@ abstract class BackController extends ApplicationComponent
         $this->$method($this->app->httpRequest());
     }
 
+    /**
+     *
+     */
     public function deleteCache()
     {
         $folderRoot = $this->app()->config()->get('cache');
@@ -109,7 +133,7 @@ abstract class BackController extends ApplicationComponent
                     }
 
                 } else {
-                    echo 'Le dossier ' . $folderRoot . $dataFolder . ' n\'existe pas! <br>';
+                    echo 'Le dossier ' . $folderRoot . $folderData . ' n\'existe pas! <br>';
                 }
             }
         } else {
@@ -117,16 +141,25 @@ abstract class BackController extends ApplicationComponent
         }
     }
 
+    /**
+     * @return null|Cache
+     */
     public function cache()
     {
         return $this->cache;
     }
 
+    /**
+     * @return null|Page
+     */
     public function page()
     {
         return $this->page;
     }
 
+    /**
+     * @return string
+     */
     public function module()
     {
         return $this->module;
@@ -135,21 +168,33 @@ abstract class BackController extends ApplicationComponent
 
     //SETTERS
 
+    /**
+     * @return string
+     */
     public function action()
     {
         return $this->action;
     }
 
+    /**
+     * @return string
+     */
     public function view()
     {
         return $this->view;
     }
 
+    /**
+     * @return mixed
+     */
     public function viewId()
     {
         return $this->viewId;
     }
 
+    /**
+     * @param Cache $cache
+     */
     public function setCache(Cache $cache)
     {
         if (empty($cache)) {
@@ -159,8 +204,24 @@ abstract class BackController extends ApplicationComponent
         $this->cache = $cache;
     }
 
+    /**
+     * @param $viewId
+     */
     public function setViewId($viewId)
     {
         $this->viewId = $viewId;
+    }
+
+    /**
+     * @param $blockName
+     * @param mixed ...$args
+     * @return false|string
+     */
+    public function getBlock($fileName, ...$args)
+    {
+        ob_start();
+        include $fileName;
+
+        return ob_get_clean();
     }
 }

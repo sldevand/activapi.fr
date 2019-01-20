@@ -2,7 +2,8 @@
 <div class="row">
     <div class="col s12">
         <?php
-        echo $graphCard;
+        $graphCard->setContent($buttons);
+        echo $graphCard->getHtml();
         ?>
     </div>
 </div>

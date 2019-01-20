@@ -1,49 +1,64 @@
 <?php
 
 namespace Materialize;
-use \Debug\Log;
 
-class WidgetFactory{
+use Materialize\Card\Card;
 
-	public static function makeCard($domId,$cardTitle,$cardContent){
+/**
+ * Class WidgetFactory
+ * @package Materialize
+ */
+class WidgetFactory
+{
+    /**
+     * @param $domId
+     * @param $cardTitle
+     * @param array $cardContents
+     * @return Card
+     */
+    public static function makeCard($domId, $cardTitle)
+    {
 
-	    $cardOpt=[
-	        'id'=>$domId,
-	        'bgColor'=>'primaryLightColor',
-	        'textColor'=>'textOnPrimaryColor',
-	        'title'=>$cardTitle];
+        $cardOpt = [
+            'id' => $domId,
+            'bgColor' => 'primaryLightColor',
+            'textColor' => 'textOnPrimaryColor',
+            'title' => $cardTitle];
 
-	    $card=new Card($cardOpt);  
-	    $card->setContent($cardContent);
+        return new Card($cardOpt);
+    }
 
-	    return $card;
-  	}
+    /**
+     * @param $domId
+     * @param $rawDatas
+     * @param bool $jsonencode
+     * @param array $hideColumns
+     * @return Table
+     */
+    public static function makeTable($domId, $rawDatas, $jsonencode = true, $hideColumns = [])
+    {
+        if ($jsonencode) {
+            $datas = json_decode(json_encode($rawDatas), TRUE);
+        } else {
+            $datas = (array)$rawDatas;
+        }
 
-  	public static function makeTable($domId,$rawDatas,$jsonencode=true,$hideColumns=[]){
+        $tableDatas = [];
+        $headers = [];
 
-	   	if($jsonencode){ 
-	   		$datas=json_decode(json_encode($rawDatas),TRUE);
-	   	}else{
-	   		$datas=(array) $rawDatas;
-	   	} 
+        foreach ($datas[0] as $key => $data) {
+            $headers[] = $key;
+        }
 
-	    $tableDatas=[];
-	    $headers=[];
-	
-	    foreach ($datas[0] as $key => $data) {
-	      $headers[]=$key;   
+        foreach ($datas as $key => $data) {
+            $tableDatas[] = $data;
+        }
 
-	    } 
-
-	    foreach ($datas as $key => $data){   	     
-	      $tableDatas[]=$data;
-	    }  
-
-	    return new Table([
-	      'id'=>'table'.$domId,
-	      'datas'=> $tableDatas,
-	      'headers'=>$headers,
-	      'hideColumns'=>$hideColumns
-	    ]);	  
-	}	
+        return new Table([
+            'id' => 'table' . $domId,
+            'datas' => $tableDatas,
+            'headers' => $headers,
+            'hideColumns' => $hideColumns
+        ]);
+    }
 }

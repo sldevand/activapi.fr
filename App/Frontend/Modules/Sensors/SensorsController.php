@@ -134,6 +134,7 @@ class SensorsController extends BackController
         $cardContent .= $form->createView();
         $cardContent .= '<input class="btn-flat" type="submit" value="Valider" />';
         $cardContent .= '</form>';
+
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
@@ -158,7 +159,7 @@ class SensorsController extends BackController
 
     /**
      * @param $sensors
-     * @return \Materialize\Card
+     * @return \Materialize\Card\Card
      */
     public function makeSensorsWidget($sensors)
     {
@@ -176,8 +177,9 @@ class SensorsController extends BackController
             $sensorsData[] = $sensor;
         }
         $table = WidgetFactory::makeTable($domId, $sensorsData);
+        $card = WidgetFactory::makeCard($domId, $domId);
+        $card->addContent($table->getHtml());
 
-        return WidgetFactory::makeCard($domId, $domId, $table->getHtml());
+        return $card;
     }
 }
-
