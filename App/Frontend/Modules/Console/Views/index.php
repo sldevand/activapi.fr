@@ -30,4 +30,4 @@
         </div>
     </div>
 </div>
-<script src="/activapi.fr/Web/js/utils/socketioManage.js"></script>
+<script src="<?= DIST . '/socketio.js' ?>"></script>

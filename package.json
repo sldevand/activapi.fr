@@ -1,0 +1,43 @@
+{
+    "name": "activapi.fr",
+    "version": "1.0.0",
+    "description": "activapi ====== **activapi** is a home automation administration WebApp/API  included in my home made home automation solution ActivHome. <br>",
+    "main": "index.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "scripts": {
+        "dev": "npm run sync | npm run babelify | npm run sassify",
+        "babelify": "./node_modules/.bin/watchify  ./src/index.js -t [babelify] -o ./Web/dist/index.js",
+        "babelifyGraph": "./node_modules/.bin/watchify  ./src/graphs.js -t [babelify] -o ./Web/dist/graphs.js",
+        "babelifySocketio": "./node_modules/.bin/watchify  ./src/socketio.js -t [babelify] -o ./Web/dist/socketio.js",
+        "sassify": "./node_modules/.bin/node-sass --watch ./src/index.scss ./Web/dist/index.css",
+        "sync": "./node_modules/.bin/browser-sync start --server --files \"./Web/dist/index.*\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sldevand/activapi.fr.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/sldevand/activapi.fr/issues"
+    },
+    "homepage": "https://github.com/sldevand/activapi.fr#readme",
+    "dependencies": {
+        "jquery": "^3.3.1",
+        "hammerjs": "^2.0.8",
+        "moment": "^2.23.0",
+        "chart.js": "^2.7.3",
+        "socket.io": "^2.1.1",
+        "socket.io-client": "latest"
+    },
+    "devDependencies": {
+        "@babel/core": "latest",
+        "@babel/preset-env": "^7.2.3",
+        "babelify": "latest",
+        "browser-sync": "latest",
+        "node-sass": "latest",
+        "watchify": "latest"
+    }
+}

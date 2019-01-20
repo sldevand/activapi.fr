@@ -1476,3 +1476,6 @@ palette.SchemeType;
 if(typeof module === "object" && module.exports) {
   module.exports = palette
 }
+
+export default palette;
+

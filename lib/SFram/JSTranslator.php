@@ -1,67 +1,80 @@
-<?php 
+<?php
+
 namespace SFram;
 
-class JSTranslator{
+/**
+ * Class JSTranslator
+ * @package SFram
+ */
+class JSTranslator
+{
+    /**
+     * @var
+     */
+    protected $phpVars;
 
-	protected $phpVars;
+    /**
+     * JSTranslator constructor.
+     * @param $phpVars
+     * @throws \Exception
+     */
+    public function __construct($phpVars)
+    {
+        $this->setPhpVars($phpVars);
+    }
 
-	public function __construct($phpVars){
-		$this->setPhpVars($phpVars);
-	}	
+    /**
+     * @param $key
+     * @param $phpVar
+     */
+    public function addVar($key, $phpVar)
+    {
+        $this->phpVars[$key] = $phpVar;
+    }
 
-	public function addVar($key,$phpVar){	
-		$this->phpVars[$key]=$phpVar;
-	}
+    /**
+     * @param $phpVars
+     * @throws \Exception
+     */
+    public function setPhpVars($phpVars)
+    {
+        if (!is_array($phpVars)) {
+            throw new \Exception('phpVars is not an array');
+        }
 
-	public function setPhpVars($phpVars){
-		if(is_array($phpVars)){
-			foreach ($phpVars as $key=>$value) {
-				$this->addVar($key,$value);
-			}
-		}else{
- 			throw new \Exception('phpVars is not an array');
-		}
-	}
+        foreach ($phpVars as $key => $value) {
+            $this->addVar($key, $value);
+        }
+    }
 
-	public function toVars(){
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function toVars()
+    {
+        $jsReturn = '<script>';
+        if (empty($this->phpVars)) {
+            throw new \Exception('$this->phpVars is null!');
+        }
 
-		$jsReturn='<script>';
-		
-		
-		if(!is_null($this->phpVars)){
-			foreach ($this->phpVars as $key => $phpVar) {
+        foreach ($this->phpVars as $key => $phpVar) {
+            $jsReturn .= 'var ' . $key . ' = ';
+            if (!empty($phpVar) && !is_null($phpVar)) {
+                if (is_string($phpVar) || is_numeric($phpVar)) {
+                    $jsReturn .= '"' . $phpVar . '";';
+                } elseif (is_array($phpVar)) {
+                    $jsReturn .= "[];";
+                    foreach ($phpVar as $value) {
+                        $jsReturn .= $key . '.push("' . $value . '");';
+                    }
+                }
+            } else {
+                $jsReturn .= '"' . '";';
+            }
+        }
+        $jsReturn .= '</script>';
 
-			$jsReturn.='var '.$key. ' = ';
-
-			if(!empty($phpVar) && !is_null($phpVar)){				
-
-				if(is_string($phpVar) || is_numeric($phpVar)){
-
-					$jsReturn.='"'.$phpVar.'";';
-
-				}elseif(is_array($phpVar)){
-
-						$jsReturn.="[];";
-						foreach ($phpVar as $value) {
-							$jsReturn.=$key.'.push("'.$value.'");';			
-						}
-				}
-
-			}else{				
-				$jsReturn.='"'.'";';
-			}
-			}
-		}else{
-			throw new \Exception('$this->phpVars is null!');
-		}
-		$jsReturn.='</script>';
-
-		
-		return $jsReturn;
-
-	}
-
-
-
-
+        return $jsReturn;
+    }
 }

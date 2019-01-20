@@ -1,4 +1,8 @@
-function GraphsManage(id) {
+import palette from '../utils/palette';
+import moment from 'moment/moment';
+import {TempGraph} from './TempGraph';
+
+export function GraphsManage(id) {
 
     var graphsManage = {
         m_id: id,
@@ -102,17 +106,13 @@ function GraphsManage(id) {
 
                 graphsManage.m_pending_gets--;
                 if (graphsManage.m_pending_gets == 0) {
-
                     graphsManage.drawEverything();
-
                 }
             });
         },
 
         drawEverything: function () {
-            require(['Web/js/utils/Chart-2.7.1.min'], function (Chart) {
-                graphsManage.m_tempGraph = new TempGraph(graphsManage.m_id, graphsManage.m_datasets, graphsManage.minY, graphsManage.maxY, graphsManage.m_labels);
-            });
+            graphsManage.m_tempGraph = new TempGraph(graphsManage.m_id, graphsManage.m_datasets, graphsManage.minY, graphsManage.maxY, graphsManage.m_labels);
         },
 
         setParams: function (url, sensorid, datemin, datemax, minY = 0, maxY = 30, borderColor = 'rgba(255, 99, 132, 1)', backgroundColor = 'rgba(255, 99, 132, 0.4)') {

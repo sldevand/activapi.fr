@@ -6,12 +6,7 @@
         ?>
     </div>
 </div>
-
-<script src="<?= JS_UTILS . '/palette.js' ?>"></script>
-<script src="<?= JS . '/graphsManage/TempGraph.js' ?>"></script>
-<script src="<?= JS . '/graphsManage/graphsManage.js' ?>"></script>
-<?php echo $jst->toVars(); ?>
-
+<script src="<?= DIST.'/graphs.js' ?>"></script>
 <script>
     var graphs = new GraphsManage(graphId);
 

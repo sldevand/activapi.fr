@@ -80,15 +80,18 @@ class GraphsController extends BackController
         $graphId = "tempGraph";
         $graphCard = $this->makeGraphCard($cardTitle, $cardContent, $graphId);
 
-        $jst = new JSTranslator(['apiURL' => $apiURL,
-
-            'sensorid' => $sensorid,
-            'sensorids' => $sensorids,
-            'dateMin' => $dateMin,
-            'dateMax' => $dateMax,
-            'tempMin' => $tempMin,
-            'tempMax' => $tempMax,
-            'graphId' => $graphId]);
+        $jst = new JSTranslator(
+            [
+                'apiURL' => $apiURL,
+                'sensorid' => $sensorid,
+                'sensorids' => $sensorids,
+                'dateMin' => $dateMin,
+                'dateMax' => $dateMax,
+                'tempMin' => $tempMin,
+                'tempMax' => $tempMax,
+                'graphId' => $graphId
+            ]
+        );
 
         $this->page->addVar('jst', $jst);
         $this->page->addVar('graphId', $graphId);
