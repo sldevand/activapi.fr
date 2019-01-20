@@ -51,7 +51,9 @@ class ThermostatModesController extends BackController
         ]);
 
         $cardContent .= $addModeFab->getHtml();
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($cardContent);
+
         $cards[] = $card;
 
         $this->page->addVar('cards', $cards);
@@ -74,20 +76,18 @@ class ThermostatModesController extends BackController
             }
         }
 
-        $cardContent = '<p class="flow-text">Voulez-vous vraiment supprimer ce mode?</p>';
-        $cardContent .= '<form action="" method="post">';
-        $cardContent .= '<input class="btn-flat" type="submit" value="Supprimer" />';
-        $cardContent .= '</form>';
-
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/thermostat-modes",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->deleteFormView());
 
         $this->page->addVar('title', 'Suppression du Mode');
         $this->page->addVar('card', $card);
@@ -131,10 +131,6 @@ class ThermostatModesController extends BackController
         $tmfb->build();
         $form = $tmfb->form();
 
-        $cardContent = '<form action="" method="post">';
-        $cardContent .= $form->createView();
-        $cardContent .= '<input class="btn-flat" type="submit" value="Valider" />';
-        $cardContent .= '</form>';
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
@@ -149,10 +145,29 @@ class ThermostatModesController extends BackController
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->editFormView($form));
         $cards[] = $card;
 
         $this->page->addVar('title', 'Edition du Mode');
         $this->page->addVar('cards', $cards);
+    }
+
+
+    /**
+     * @return false|string
+     */
+    public function deleteFormView()
+    {
+        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
+    }
+
+    /**
+     * @param $form
+     * @return false|string
+     */
+    public function editFormView($form)
+    {
+        return $this->getBlock(BLOCK . '/editFormView.phtml', $form);
     }
 }

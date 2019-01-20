@@ -2,14 +2,13 @@
 
 namespace App\Frontend\Modules\Graphs;
 
-use Materialize\Card;
-use Materialize\FlatButton;
-use Materialize\RaisedButton;
+use Materialize\Button\RaisedButton;
+use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
 use SFram\JSTranslator;
-use SFram\OSDetectorFactory;
+
 
 /**
  * Class GraphsController
@@ -23,12 +22,8 @@ class GraphsController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $this->page->addVar('title', 'Gestion des Graphs');
 
-        $key = OSDetectorFactory::getApiAddressKey();
-
-        $apiBaseAddress = $this->app()->config()->get($key);
-
+        $graphId = "tempGraph";
         $sensorid = $request->getData("id_sensor");
         $dateMin = $request->getData("dateMin");
         $dateMax = $request->getData("dateMax");
@@ -54,40 +49,17 @@ class GraphsController extends BackController
             $sensorids[] = $thermostat->radioid();
         }
 
-        $apiURL = $apiBaseAddress . "api/mesures/";
-
         $tempMin = 10;
         $tempMax = 25;
 
-        if ($sensorid == "sensor24ctn10id3") {
+        if ($sensorid === "sensor24ctn10id3") {
             $tempMin = -5;
             $tempMax = 20;
         }
 
-        //GRAPH CARD CREATION
-        $cardTitle = 'Températures';
-        $cardContent = '';
-
-        $selectedPeriod = $this->getSelectedPeriod($dateMin, $dateMax, $today);
-        $cardContent .= "<div>$selectedPeriod</div>";
-
-        //BUTTONS CREATION
-        $buttonsData = $this->provideButtonDatas();
-        $buttons = $this->makeButtons($buttonsData);
-
-        $cardContent .= '<div class="row">';
-        foreach ($buttons as $button) {
-            $btnHtml = $button->getHtml();
-            $cardContent .= "<div class=\"col s6 m3\">$btnHtml</div>";
-        }
-        $cardContent .= '</div>';
-
-        $graphId = "tempGraph";
-        $graphCard = $this->makeGraphCard($cardTitle, $cardContent, $graphId);
-
         $jst = new JSTranslator(
             [
-                'apiURL' => $apiURL,
+                'apiURL' => $this->getApiUrl(),
                 'sensorid' => $sensorid,
                 'sensorids' => $sensorids,
                 'dateMin' => $dateMin,
@@ -98,30 +70,17 @@ class GraphsController extends BackController
             ]
         );
 
+        $buttons = $this->makeButtons($this->provideButtonDatas());
+        $period = $this->getSelectedPeriod($dateMin, $dateMax, $today);
+        $graphCard = WidgetFactory::makeCard("temperatures", 'Températures');
+        $graphCard->addContent($this->periodView($period));
+        $graphCard->addContent($this->buttonsView($buttons));
+        $graphCard->addContent($this->graphView($graphId));
+
+        $this->page->addVar('title', 'Gestion des Graphs');
         $this->page->addVar('jst', $jst);
         $this->page->addVar('graphId', $graphId);
-        $this->page->addVar('graphCard', $graphCard->getHtml());
-    }
-
-    /**
-     * @param $cardTitle
-     * @param $cardContent
-     * @param $graphId
-     * @return Card
-     */
-    public function makeGraphCard($cardTitle, $cardContent, $graphId)
-    {
-        $cardOpt = [
-            'id' => 'graphCard',
-            'bgColor' => 'primaryLightColor',
-            'textColor' => 'textOnPrimaryColor',
-            'title' => $cardTitle
-        ];
-        $card = new Card($cardOpt);
-        $cardContent .= '<canvas id="' . $graphId . '" width=500 height=500></canvas>';
-        $card->setContent($cardContent);
-
-        return $card;
+        $this->page->addVar('graphCard', $graphCard);
     }
 
     /**
@@ -144,24 +103,27 @@ class GraphsController extends BackController
             [
                 'id' => 'yesterday',
                 'title' => "Hier",
-                'href' => ROOT
-            ],
-            [
-                'id' => 'week',
-                'title' => "Semaine",
-                'href' => ROOT
-            ],
-            [
-                'id' => 'month',
-                'title' => "Mois",
-                'href' => ROOT
+                'href' => ROOT,
+                'extend' => 'col s12'
             ],
             [
                 'id' => 'today',
                 'title' => "Aujourd'hui",
-                'href' => ROOT
+                'href' => ROOT,
+                'extend' => 'col s12'
+            ],
+            [
+                'id' => 'week',
+                'title' => "Semaine",
+                'href' => ROOT,
+                'extend' => 'col s12'
+            ],
+            [
+                'id' => 'month',
+                'title' => "Mois",
+                'href' => ROOT,
+                'extend' => 'col s12'
             ]
-
         ];
     }
 
@@ -185,5 +147,32 @@ class GraphsController extends BackController
         }
 
         return "$dateMinFr";
+    }
+
+    /**
+     * @param array $buttons
+     * @return false|string
+     */
+    public function buttonsView($buttons)
+    {
+        return $this->getBlock(MODULES . '/Graphs/Block/buttonsView.phtml', $buttons);
+    }
+
+    /**
+     * @param string $graphId
+     * @return false|string
+     */
+    public function graphView($graphId)
+    {
+        return $this->getBlock(MODULES . '/Graphs/Block/graphView.phtml', $graphId);
+    }
+
+    /**
+     * @param string $period
+     * @return false|string
+     */
+    public function periodView($period)
+    {
+        return $this->getBlock(MODULES . '/Graphs/Block/periodView.phtml', $period);
     }
 }

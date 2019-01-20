@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Modules\Mesures;
 
+use Materialize\Table;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
@@ -17,47 +18,55 @@ class MesuresController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-
-        $this->page->addVar('title', 'Gestion des mesures');
-
         $managerMesures = $this->managers->getManagerOf('Mesures');
-
         $nDernieresMesures = 10;
 
-        if ($request->getData("nbMesures")) {
-            if ($request->getData("nbMesures") > 100) {
+        if ($request->getExists("nbMesures")) {
+            $nDernieresMesures = $request->getData("nbMesures");
+
+            if ($nDernieresMesures > 100) {
                 $nDernieresMesures = 100;
-            } else {
-                $nDernieresMesures = $request->getData("nbMesures");
             }
         }
 
         $cards = [];
-        //Mesures
         $listeMesures = $managerMesures->getList(0, $nDernieresMesures);
         $nombreMesures = $managerMesures->count();
         $cards[] = $this->makeMesuresWidget($listeMesures, $nombreMesures, $nDernieresMesures);
 
-
+        $this->page->addVar('title', 'Gestion des mesures');
         $this->page->addVar('cards', $cards);
-
     }
 
     /**
      * @param $listeMesures
      * @param $nbMesures
      * @param $nDernieresMesures
-     * @return \Materialize\Card
+     * @return \Materialize\Card\Card
      */
     public function makeMesuresWidget($listeMesures, $nbMesures, $nDernieresMesures)
     {
         $domId = 'Mesures';
-
         $table = WidgetFactory::makeTable($domId, $listeMesures);
-        $cardContent = '<hr><span>Nombre de mesures : ' . $nbMesures . '</br>';
-        $cardContent .= 'Voici la liste des ' . $nDernieresMesures . ' dernières Mesures</span><hr>';
-        $cardContent .= $table->getHtml();
+        $card = WidgetFactory::makeCard($domId, $domId);
+        $card->addContent($this->measuresView($nbMesures,$nDernieresMesures,$table));
 
-        return WidgetFactory::makeCard($domId, $domId, $cardContent);
+        return $card;
+    }
+
+    /**
+     * @param int $nbMesures
+     * @param int $nDernieresMesures
+     * @param Table $table
+     * @return false|string
+     */
+    public function measuresView($nbMesures, $nDernieresMesures, $table)
+    {
+        return $this->getBlock(
+            MODULES . '/Mesures/Block/measuresView.phtml',
+            $nbMesures,
+            $nDernieresMesures,
+            $table
+        );
     }
 }

@@ -1,0 +1,25 @@
+{
+  "name": "sebastien/activapi.fr",
+  "authors": [
+    {
+      "name": "Sébastien Lorrain",
+      "email": "sldeveloperand@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "App\\": "App/",
+      "OCFram\\": "lib/OCFram",
+      "SFram\\": "lib/SFram",
+      "Debug\\": "lib/vendors/Debug",
+      "Entity\\": "lib/vendors/Entity",
+      "FormBuilder\\": "lib/vendors/FormBuilder",
+      "Materialize\\": "lib/vendors/Materialize",
+      "Model\\": "lib/vendors/Model",
+      "OSDetector\\": "lib/vendors/OSDetector"
+
+    }
+  },
+  "require": {
+  }
+}

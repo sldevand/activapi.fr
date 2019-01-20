@@ -25,18 +25,19 @@ class AccueilController extends BackController
     }
 
     /**
-     * @return \Materialize\Card
+     * @return \Materialize\Card\Card
      */
     public function makeAccueilWidget()
     {
         $domId = 'Accueil';
+        $card = WidgetFactory::makeCard($domId, $domId);
+        $card->addContent($this->getHomeView());
 
-        $cardContent = '<div class="row"> 
-                          <div class="col s6 valign-wrapper">
-                            <i class="valign material-icons left">build</i>      
-                            <div class="valign ">Bienvenue sur ActivAPI, ici, vous pouvez administrer votre solution ActivHome</div>   
-                          </div>       
-                      </div>';
-        return WidgetFactory::makeCard($domId, $domId, $cardContent);
+        return $card;
+    }
+
+    public function getHomeView()
+    {
+        return $this->getBlock(__DIR__ . '/Block/homeView.phtml');
     }
 }

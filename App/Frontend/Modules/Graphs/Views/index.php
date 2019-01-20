@@ -1,9 +1,7 @@
 <?php echo $jst->toVars(); ?>
 <div class="row">
     <div class="col s12">
-        <?php
-        echo $graphCard;
-        ?>
+        <?= $graphCard->getHtml() ?>
     </div>
 </div>
 <script src="<?= DIST.'/graphs.js' ?>"></script>

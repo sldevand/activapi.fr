@@ -58,4 +58,17 @@ abstract class Widget
      * @return string
      */
     abstract public function getHtml();
+
+    /**
+     * @param $fileName
+     * @param mixed ...$args
+     * @return false|string
+     */
+    public function getBlock($fileName, ...$args)
+    {
+        ob_start();
+        include $fileName;
+
+        return ob_get_clean();
+    }
 }

@@ -45,7 +45,7 @@ class ActionneursController extends BackController
 
     /**
      * @param $actionneurs
-     * @return \Materialize\Card
+     * @return \Materialize\Card\Card
      */
     public function makeActionneursWidget($actionneurs)
     {
@@ -63,10 +63,11 @@ class ActionneursController extends BackController
             $actionneursData[] = $actionneur;
         }
 
-
         $table = WidgetFactory::makeTable($domId, $actionneursData);
-        return WidgetFactory::makeCard($domId, $domId, $table->getHtml());
+        $card = WidgetFactory::makeCard($domId, $domId);
+        $card->addContent($table->getHtml());
 
+        return $card;
     }
 
     /**
@@ -86,21 +87,18 @@ class ActionneursController extends BackController
             }
         }
 
-        $cardContent = '<p class="flow-text">Voulez-vous vraiment supprimer cet actionneur?</p>';
-        $cardContent .= '<form action="" method="post">';
-        $cardContent .= '<input class="btn-flat" type="submit" value="Supprimer" />';
-        $cardContent .= '</form>';
-
-
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/actionneurs",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->deleteFormView());
 
         $this->page->addVar('title', "Suppression de l'Actionneur");
         $this->page->addVar('card', $card);
@@ -151,10 +149,6 @@ class ActionneursController extends BackController
         $tmfb->build();
         $form = $tmfb->form();
 
-        $cardContent = '<form action="" method="post">';
-        $cardContent .= $form->createView();
-        $cardContent .= '<input class="btn-flat" type="submit" value="Valider" />';
-        $cardContent .= '</form>';
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
@@ -169,10 +163,28 @@ class ActionneursController extends BackController
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->editFormView($form));
         $cards[] = $card;
 
         $this->page->addVar('title', "Edition de l'actionneur");
         $this->page->addVar('cards', $cards);
+    }
+
+    /**
+     * @return false|string
+     */
+    public function deleteFormView()
+    {
+        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
+    }
+
+    /**
+     * @param $form
+     * @return false|string
+     */
+    public function editFormView($form)
+    {
+        return $this->getBlock(BLOCK. '/editFormView.phtml', $form);
     }
 }
