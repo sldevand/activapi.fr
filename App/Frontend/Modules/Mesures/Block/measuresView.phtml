@@ -1,0 +1,11 @@
+<?php
+$nbMesures = $args[0];
+$nDernieresMesures = $args[1];
+$table = $args[2];
+?>
+    <hr>
+    <span>Nombre de mesures : <?= $nbMesures ?> </br>
+        Voici la liste des <?= $nDernieresMesures ?> dernières Mesures</span>
+    <hr>
+
+<?= $table->getHtml() ?>

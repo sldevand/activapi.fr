@@ -57,7 +57,9 @@ class ThermostatPlanifController extends BackController
             $cardContent = $linkDelete->getHtml();
             $cardContent .= $table->getHtml();
 
-            $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+            $card = WidgetFactory::makeCard($domId, $cardTitle);
+            $card->addContent($cardContent);
+
             $cards[] = $card;
         }
 
@@ -80,7 +82,7 @@ class ThermostatPlanifController extends BackController
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
         $domId = 'Ajout';
         $cardTitle = 'Thermostat : Planning  ' . $domId;
-        $cardContent = '';
+        $message = '';
         $name = null;
 
         if ($request->method() == 'POST') {
@@ -91,12 +93,12 @@ class ThermostatPlanifController extends BackController
             if (!is_null($name)) {
                 $result = $manager->addPlanifTable($name);
                 if ($result > 0) {
-                    $cardContent = '<p class="flow-text">OK</p>';
+                    $message = '<p class="flow-text">OK</p>';
                 } else {
-                    $cardContent = "Ce nom existe déjà!";
+                    $message = "Ce nom existe déjà!";
                 }
             } else {
-                $cardContent = "Le nom est vide";
+                $message = "Le nom est vide";
             }
         }
 
@@ -105,16 +107,14 @@ class ThermostatPlanifController extends BackController
         $fb->build();
         $form = $fb->form();
 
-        $cardContent = '<form action="" method="post">';
-        $cardContent .= $form->createView();
-        $cardContent .= '<input class="btn-flat" type="submit" value="Valider" />';
-        $cardContent .= '</form>';
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
             $this->app->httpResponse()->redirect('../activapi.fr/thermostat-planif');
         }
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($message);
+        $card->addContent($this->editFormView($form));
 
         $this->page->addVar('card', $card);
     }
@@ -161,10 +161,6 @@ class ThermostatPlanifController extends BackController
         $tpfb->build();
         $form = $tpfb->form();
 
-        $cardContent = '<form action="" method="post">';
-        $cardContent .= $form->createView();
-        $cardContent .= '<input class="btn-flat" type="submit" value="Valider" />';
-        $cardContent .= '</form>';
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
@@ -179,7 +175,8 @@ class ThermostatPlanifController extends BackController
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->editFormView($form));
         $cards[] = $card;
 
         $this->page->addVar('title', 'Edition du Planning');
@@ -209,16 +206,6 @@ class ThermostatPlanifController extends BackController
             }
         }
 
-        $subButton = new FlatButton(['id' => 'Delete', 'title' => 'Supprimer', 'icon' => 'delete', 'type' => 'submit', 'color' => 'secondaryTextColor']);
-
-        $cardContent = '<p class="flow-text">Supprimer le planning ' . $nom->nom() . ' ?</p>
-                  <br>
-                  <p>
-                    <form action="" method="post">
-                    ' . $subButton->getSubmitHtml() . '
-                    </form>
-                  </p>';
-
         $link = new Link($domId,
             "../activapi.fr/thermostat-planif",
             "arrow_back",
@@ -227,9 +214,27 @@ class ThermostatPlanifController extends BackController
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->deleteFormView());
 
         $this->page->addVar('title', 'Suppression du Planning');
         $this->page->addVar('card', $card);
+    }
+
+    /**
+     * @return false|string
+     */
+    public function deleteFormView()
+    {
+        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
+    }
+
+    /**
+     * @param $form
+     * @return false|string
+     */
+    public function editFormView($form)
+    {
+        return $this->getBlock(BLOCK . '/editFormView.phtml', $form);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../setup.php';
-require_once __DIR__ . '/../registration.php';
+
 
 if (!isset($_GET['app']) || !file_exists(__DIR__ . '/../App/' . $_GET['app'])) $_GET['app'] = DEFAULT_APP;
 

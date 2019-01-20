@@ -51,19 +51,11 @@ class SensorsController extends BackController
         $manager = $this->managers->getManagerOf('Sensors');
 
         $domId = 'Suppression';
-        if ($request->method() == 'POST') {
-
-            if ($request->getExists('id')) {
-                $id = $request->getData('id');
-                $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/sensors');
-            }
+        if ($request->method() === 'POST' && $request->getExists('id')) {
+            $id = $request->getData('id');
+            $manager->delete($id);
+            $this->app->httpResponse()->redirect('../activapi.fr/sensors');
         }
-
-        $cardContent = '<p class="flow-text">Voulez-vous vraiment supprimer ce sensor?</p>';
-        $cardContent .= '<form action="" method="post">';
-        $cardContent .= '<input class="btn-flat" type="submit" value="Supprimer" />';
-        $cardContent .= '</form>';
 
         $link = new Link($domId,
             "../activapi.fr/sensors",
@@ -73,11 +65,11 @@ class SensorsController extends BackController
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->deleteFormView());
 
         $this->page->addVar('title', "Suppression du Sensor");
         $this->page->addVar('card', $card);
-
     }
 
     /**
@@ -86,10 +78,9 @@ class SensorsController extends BackController
     public function executeEdit(HTTPRequest $request)
     {
         $manager = $this->managers->getManagerOf('Sensors');
-        $sensors = $manager->getList();
         $domId = 'Edition';
 
-        if ($request->method() == 'POST') {
+        if ($request->method() === 'POST') {
 
             $item = new Sensor([
                 'radioid' => $request->postData('radioid'),
@@ -120,7 +111,6 @@ class SensorsController extends BackController
             } else {
                 $domId = 'Ajout';
                 $item = new Sensor();
-
             }
         }
 
@@ -130,10 +120,6 @@ class SensorsController extends BackController
         $tmfb->build();
         $form = $tmfb->form();
 
-        $cardContent = '<form action="" method="post">';
-        $cardContent .= $form->createView();
-        $cardContent .= '<input class="btn-flat" type="submit" value="Valider" />';
-        $cardContent .= '</form>';
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
@@ -148,17 +134,18 @@ class SensorsController extends BackController
 
         $cardTitle = $link->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle, $cardContent);
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->editFormView($form));
+
         $cards[] = $card;
 
         $this->page->addVar('title', 'Edition du Sensor');
         $this->page->addVar('cards', $cards);
-
     }
 
     /**
      * @param $sensors
-     * @return \Materialize\Card
+     * @return \Materialize\Card\Card
      */
     public function makeSensorsWidget($sensors)
     {
@@ -176,8 +163,26 @@ class SensorsController extends BackController
             $sensorsData[] = $sensor;
         }
         $table = WidgetFactory::makeTable($domId, $sensorsData);
+        $card = WidgetFactory::makeCard($domId, $domId);
+        $card->addContent($table->getHtml());
 
-        return WidgetFactory::makeCard($domId, $domId, $table->getHtml());
+        return $card;
+    }
+
+    /**
+     * @return false|string
+     */
+    public function deleteFormView()
+    {
+        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
+    }
+
+    /**
+     * @param $form
+     * @return false|string
+     */
+    public function editFormView($form)
+    {
+        return $this->getBlock(BLOCK . '/editFormView.phtml', $form);
     }
 }
-
