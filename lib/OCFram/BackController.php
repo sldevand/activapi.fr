@@ -215,7 +215,7 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     * @param $blockName
+     * @param $fileName
      * @param mixed ...$args
      * @return false|string
      */

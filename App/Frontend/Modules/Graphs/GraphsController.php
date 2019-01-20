@@ -2,14 +2,13 @@
 
 namespace App\Frontend\Modules\Graphs;
 
-use Materialize\Card\Card;
-use Materialize\RaisedButton;
+use Materialize\Button\RaisedButton;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
 use SFram\JSTranslator;
-use SFram\OSDetectorFactory;
+
 
 /**
  * Class GraphsController
@@ -156,7 +155,7 @@ class GraphsController extends BackController
      */
     public function buttonsView($buttons)
     {
-        return $this->getBlock(MODULES . '/Graphs/Block/buttonsView.phtml',$buttons);
+        return $this->getBlock(MODULES . '/Graphs/Block/buttonsView.phtml', $buttons);
     }
 
     /**
@@ -165,7 +164,7 @@ class GraphsController extends BackController
      */
     public function graphView($graphId)
     {
-        return $this->getBlock(MODULES . '/Graphs/Block/graphView.phtml',$graphId);
+        return $this->getBlock(MODULES . '/Graphs/Block/graphView.phtml', $graphId);
     }
 
     /**
@@ -174,6 +173,6 @@ class GraphsController extends BackController
      */
     public function periodView($period)
     {
-        return $this->getBlock(MODULES . '/Graphs/Block/periodView.phtml',$period);
+        return $this->getBlock(MODULES . '/Graphs/Block/periodView.phtml', $period);
     }
 }

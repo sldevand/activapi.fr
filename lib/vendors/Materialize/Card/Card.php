@@ -37,9 +37,12 @@ class Card extends Widget
      */
     protected $links = [];
 
+    /**
+     * @return false|string
+     */
     public function getHtml()
     {
-        include __DIR__ . '/card.phtml';
+        return $this->getBlock(LIB . '/vendors/Materialize/Card/card.phtml');
     }
 
     /**

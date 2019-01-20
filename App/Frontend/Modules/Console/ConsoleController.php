@@ -3,6 +3,7 @@
 namespace App\Frontend\Modules\Console;
 
 use Materialize\FlatButton;
+use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 
@@ -38,8 +39,42 @@ class ConsoleController extends BackController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $log = curl_exec($ch);
 
+        $card = WidgetFactory::makeCard('console-card', $this->titleView());
+        $card->addContent($this->commandView($sendButton));
+        $card->addContent($this->displayView($log));
 
+
+        $cards = [];
+        $cards[] = $card;
+
+        $this->page->addVar('cards', $cards);
         $this->page->addVar('sendButton', $sendButton);
         $this->page->addVar('log', $log);
+    }
+
+    /**
+     * @param $sendButton
+     * @return false|string
+     */
+    public function commandView($sendButton)
+    {
+        return $this->getBlock(MODULES . '/Console/Block/commandView.phtml', $sendButton);
+    }
+
+    /**
+     * @return false|string
+     */
+    public function titleView()
+    {
+        return $this->getBlock(MODULES . '/Console/Block/titleView.phtml');
+    }
+
+    /**
+     * @param $log
+     * @return false|string
+     */
+    public function displayView($log)
+    {
+        return $this->getBlock(MODULES . '/Console/Block/displayView.phtml', $log);
     }
 }
