@@ -3,6 +3,8 @@
 namespace App\Frontend\Modules\Graphs;
 
 use Materialize\Card;
+use Materialize\FlatButton;
+use Materialize\RaisedButton;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
@@ -17,6 +19,7 @@ class GraphsController extends BackController
 {
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
@@ -61,22 +64,24 @@ class GraphsController extends BackController
             $tempMax = 20;
         }
 
-        $dateMinFr = DateFactory::toFrDate($dateMin);
-        $dateMaxFr = DateFactory::toFrDate($dateMax);
-
         //GRAPH CARD CREATION
         $cardTitle = 'Températures';
         $cardContent = '';
-        if ($dateMin == $dateMax) {
 
-            if ($dateMin == $today) {
-                $cardContent .= "Aujourd'hui";
-            } else {
-                $cardContent .= "$dateMinFr";
-            }
-        } else {
-            $cardContent .= "Températures du $dateMinFr au $dateMaxFr";
+        $selectedPeriod = $this->getSelectedPeriod($dateMin, $dateMax, $today);
+        $cardContent .= "<div>$selectedPeriod</div>";
+
+        //BUTTONS CREATION
+        $buttonsData = $this->provideButtonDatas();
+        $buttons = $this->makeButtons($buttonsData);
+
+        $cardContent .= '<div class="row">';
+        foreach ($buttons as $button) {
+            $btnHtml = $button->getHtml();
+            $cardContent .= "<div class=\"col s6 m3\">$btnHtml</div>";
         }
+        $cardContent .= '</div>';
+
         $graphId = "tempGraph";
         $graphCard = $this->makeGraphCard($cardTitle, $cardContent, $graphId);
 
@@ -96,7 +101,6 @@ class GraphsController extends BackController
         $this->page->addVar('jst', $jst);
         $this->page->addVar('graphId', $graphId);
         $this->page->addVar('graphCard', $graphCard->getHtml());
-
     }
 
     /**
@@ -111,14 +115,75 @@ class GraphsController extends BackController
             'id' => 'graphCard',
             'bgColor' => 'primaryLightColor',
             'textColor' => 'textOnPrimaryColor',
-            'title' => $cardTitle];
-
+            'title' => $cardTitle
+        ];
         $card = new Card($cardOpt);
-
         $cardContent .= '<canvas id="' . $graphId . '" width=500 height=500></canvas>';
-
         $card->setContent($cardContent);
 
         return $card;
+    }
+
+    /**
+     * @param $buttonDatas
+     * @return array
+     */
+    public function makeButtons($buttonDatas)
+    {
+        $buttons = [];
+        foreach ($buttonDatas as $buttonData) {
+            $buttons[] = new RaisedButton($buttonData);
+        }
+
+        return $buttons;
+    }
+
+    public function provideButtonDatas()
+    {
+        return [
+            [
+                'id' => 'yesterday',
+                'title' => "Hier",
+                'href' => ROOT
+            ],
+            [
+                'id' => 'week',
+                'title' => "Semaine",
+                'href' => ROOT
+            ],
+            [
+                'id' => 'month',
+                'title' => "Mois",
+                'href' => ROOT
+            ],
+            [
+                'id' => 'today',
+                'title' => "Aujourd'hui",
+                'href' => ROOT
+            ]
+
+        ];
+    }
+
+    /**
+     * @param $dateMin
+     * @param $dateMax
+     * @param $today
+     * @return string
+     */
+    public function getSelectedPeriod($dateMin, $dateMax, $today)
+    {
+        $dateMinFr = DateFactory::toFrDate($dateMin);
+        $dateMaxFr = DateFactory::toFrDate($dateMax);
+
+        if ($dateMin !== $dateMax) {
+            return "Températures du $dateMinFr au $dateMaxFr";
+        }
+
+        if ($dateMin === $today) {
+            return "Aujourd'hui";
+        }
+
+        return "$dateMinFr";
     }
 }
