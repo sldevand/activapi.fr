@@ -13,7 +13,6 @@ class WidgetFactory
     /**
      * @param $domId
      * @param $cardTitle
-     * @param array $cardContents
      * @return Card
      */
     public static function makeCard($domId, $cardTitle)
@@ -37,11 +36,8 @@ class WidgetFactory
      */
     public static function makeTable($domId, $rawDatas, $jsonencode = true, $hideColumns = [])
     {
-        if ($jsonencode) {
-            $datas = json_decode(json_encode($rawDatas), TRUE);
-        } else {
-            $datas = (array)$rawDatas;
-        }
+
+        $datas = $jsonencode ? json_decode(json_encode($rawDatas), true) : (array)$rawDatas;
 
         $tableDatas = [];
         $headers = [];

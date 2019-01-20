@@ -1,0 +1,11 @@
+<?php
+$nbLogs = $args[0];
+$nDerniersLogs = $args[1];
+$table = $args[2];
+?>
+    <hr>
+    <span>Nombre de logs : <?= $nbLogs ?> </br>
+        Voici la liste des <?= $nDerniersLogs ?> derniers Logs</span>
+    <hr>
+
+<?= $table->getHtml() ?>

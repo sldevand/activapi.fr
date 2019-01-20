@@ -2,6 +2,8 @@
 
 namespace OCFram;
 
+use SFram\OSDetectorFactory;
+
 /**
  * Class BackController
  * @package OCFram
@@ -223,5 +225,14 @@ abstract class BackController extends ApplicationComponent
         include $fileName;
 
         return ob_get_clean();
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiUrl(){
+        $key = OSDetectorFactory::getApiAddressKey();
+        $apiBaseAddress = $this->app()->config()->get($key);
+        return $apiBaseAddress . "api/mesures/";
     }
 }
