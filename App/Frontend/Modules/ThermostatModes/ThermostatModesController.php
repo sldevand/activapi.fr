@@ -43,14 +43,17 @@ class ThermostatModesController extends BackController
 
         $cardTitle = $domId;
         $cardContent = $table->getHtml();
-        $addModeFab = new FloatingActionButton([
-            'id' => "addModeFab",
-            'fixed' => true,
-            'icon' => "add",
-            'href' => "../activapi.fr/thermostat-modes-add"
-        ]);
 
-        $cardContent .= $addModeFab->getHtml();
+        if (count($modes) < 4) {
+            $addModeFab = new FloatingActionButton([
+                'id' => "addModeFab",
+                'fixed' => true,
+                'icon' => "add",
+                'href' => "../activapi.fr/thermostat-modes-add"
+            ]);
+            $cardContent .= $addModeFab->getHtml();
+        }
+
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($cardContent);
 
