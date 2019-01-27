@@ -13231,6 +13231,11 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
 #slide-out {
   overflow: auto; }
 
+#ioconnection {
+  font-size: 24px;
+  height: 24px;
+  line-height: 1; }
+
 @media screen and (max-width: 600px) {
   .chip {
     display: inline-block;
@@ -13244,7 +13249,7 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
     background-color: #e4e4e4;
     margin-bottom: 0px;
     margin-right: 0px;
-    top: 8; }
+    top: 8px; }
   .chip .fakeclose {
     cursor: pointer;
     float: right;
@@ -13412,7 +13417,7 @@ footer.page-footer {
 
 .side-nav li {
   width: 100%;
-  font-family: "Roboto"; }
+  font-family: "Roboto", serif; }
 
 .title-side-nav {
   width: 100%;
@@ -13431,8 +13436,7 @@ footer.page-footer {
 .graphcont {
   position: relative;
   height: 100%;
-  margin: auto;
-  margin-bottom: 15px;
+  margin: auto auto 15px;
   padding: 0; }
 
 .graph {
@@ -13469,18 +13473,11 @@ h4 .typeTitle {
 
 .noselect {
   -webkit-touch-callout: none;
-  /* iOS Safari */
   -webkit-user-select: none;
-  /* Safari */
   -khtml-user-select: none;
-  /* Konqueror HTML */
   -moz-user-select: none;
-  /* Firefox */
   -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  /* Non-prefixed version, currently
-                                     supported by Chrome and Opera */ }
+  user-select: none; }
 
 textarea.materialize-textarea {
   padding: 0px; }

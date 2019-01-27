@@ -1,443 +1,410 @@
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 
 }
 
 #fab {
-    bottom: 25px;
-    right: 25px;
+  bottom: 25px;
+  right: 25px;
 }
 
 body {
-
-    background-color: #FFFFFF;
-    overflow: visible;
+  background-color: #FFFFFF;
+  overflow: visible;
 }
 
 nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
-
-    font-size: 42px;
+  font-size: 42px;
 }
 
 .container-light {
-    margin: 0 auto;
-    max-width: 1280px;
-    width: 90%;
+  margin: 0 auto;
+  max-width: 1280px;
+  width: 90%;
 }
 
 .container-light .row {
-    margin-left: -0.2rem;
-    margin-right: -0.2rem;
-    margin-bottom: 7px;
-
+  margin-left: -0.2rem;
+  margin-right: -0.2rem;
+  margin-bottom: 7px;
 }
 
 .mdi {
-    padding: 0px;
-    margin: 0px;
-    font-size: 24px;
+  padding: 0px;
+  margin: 0px;
+  font-size: 24px;
 }
 
 .chip .fakeclose {
-    cursor: pointer;
-    float: right;
-    font-size: 16px;
-    line-height: 32px;
-    padding-left: 8px;
+  cursor: pointer;
+  float: right;
+  font-size: 16px;
+  line-height: 32px;
+  padding-left: 8px;
 }
 
 #slide-out {
-	overflow: auto;
+  overflow: auto;
+}
+
+#ioconnection {
+  font-size: 24px;
+  height: 24px;
+  line-height: 1;
 }
 
 @media screen and (max-width: 600px) {
 
-    .chip {
-        display: inline-block;
-        height: 16px;
-        font-size: 10px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
-        line-height: 15px;
-        padding: 0 4px;
-        border-radius: 16px;
-        background-color: #e4e4e4;
-        margin-bottom: 0px;
-        margin-right: 0px;
-        top: 8;
+  .chip {
+    display: inline-block;
+    height: 16px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 15px;
+    padding: 0 4px;
+    border-radius: 16px;
+    background-color: #e4e4e4;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    top: 8px;
+  }
 
-    }
+  .chip .fakeclose {
+    cursor: pointer;
+    float: right;
+    font-size: 10px;
+    line-height: 15px;
+    padding-left: 8px;
+  }
 
-    .chip .fakeclose {
-        cursor: pointer;
-        float: right;
-        font-size: 10px;
-        line-height: 15px;
-        padding-left: 8px;
-    }
+  .butlp {
+    width: 50px;
+    height: auto;
+  }
 
-    .butlp {
-        width: 50px;
-        height: auto;
-    }
+  .thermo {
+    width: 63px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
-    .thermo {
-        width: 63px;
-        height: auto;
-        margin: 0;
-        padding: 0;
-    }
+  #clock_js {
+    width: 120px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
-    #clock_js {
-        width: 120px;
-        height: auto;
-        margin: 0;
-        padding: 0;
-    }
+  nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
+    font-size: 24px;
+  }
 
-    nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
-        font-size: 24px;
-    }
+  .banner {
+    width: 9em;
+  }
 
-    .banner {
-        width: 9em;
-    }
+  .btn-floating.btn-large {
+    height: 50px;
+    width: 50px;
+  }
 
-    .btn-floating.btn-large {
-        height: 50px;
-        width: 50px;
-    }
+  .btn-floating.btn-large i {
+    line-height: 50px;
+  }
 
-    .btn-floating.btn-large i {
-        line-height: 50px;
-    }
-
-    .card-panel {
-        padding: 10px;
-    }
-
+  .card-panel {
+    padding: 10px;
+  }
 }
 
 @media screen and (max-height: 300px) and (max-width: 600px) {
 
-    .chip {
-        display: inline-block;
-        height: 16px;
-        font-size: 10px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
-        line-height: 15px;
-        padding: 0 4px;
-        border-radius: 16px;
-        background-color: #e4e4e4;
-        margin-bottom: 0px;
-        margin-right: 0px;
+  .chip {
+    display: inline-block;
+    height: 16px;
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 15px;
+    padding: 0 4px;
+    border-radius: 16px;
+    background-color: #e4e4e4;
+    margin-bottom: 0px;
+    margin-right: 0px;
+  }
 
-    }
+  .chip .fakeclose {
+    cursor: pointer;
+    float: right;
+    font-size: 10px;
+    line-height: 15px;
+    padding-left: 8px;
+  }
 
-    .chip .fakeclose {
-        cursor: pointer;
-        float: right;
-        font-size: 10px;
-        line-height: 15px;
-        padding-left: 8px;
-    }
+  .butlp {
+    width: 50px;
+    height: auto;
+  }
 
-    .butlp {
-        width: 50px;
-        height: auto;
-    }
+  .thermo {
+    width: 60px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
-    .thermo {
-        width: 60px;
-        height: auto;
-        margin: 0;
-        padding: 0;
-    }
+  #clock_js {
+    width: 90px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
-    #clock_js {
-        width: 90px;
-        height: auto;
-        margin: 0;
-        padding: 0;
+  .material-icons, a.button-collapse {
+    height: 32px;
+  }
 
-    }
+  nav a.button-collapse i {
+    line-height: 32px;
+  }
 
-    .material-icons, a.button-collapse {
-        height: 32px;
+  .banner {
+    width: 9em;
+  }
 
-    }
+  .btn-floating {
+    height: 25px;
+    width: 25px;
+    margin: 0px;
+    padding: 0px;
+    line-height: 25px;
+  }
 
-    nav a.button-collapse i {
+  ul .btn-floating {
+    position: relative;
+    bottom: 15px;
+    right: -30px;
+  }
 
-        line-height: 32px;
-    }
+  .btn-floating i {
+    height: 25px;
+    width: 25px;
+    margin: 0px;
+    padding: 0px;
+    line-height: 25px;
+  }
 
-    .banner {
-        width: 9em;
-    }
+  #fab, #fabBut {
+    width: 30px;
+    height: 30px;
+    bottom: 5px;
+    right: 5px;
+    margin: 0;
+    padding: 0;
+    line-height: 0px;
 
-    .btn-floating {
-        height: 25px;
-        width: 25px;
-        margin: 0px;
-        padding: 0px;
-        line-height: 25px;
+  }
 
-    }
-
-    ul .btn-floating {
-        position: relative;
-        bottom: 15px;
-        right: -30px;
-    }
-
-    .btn-floating i {
-        height: 25px;
-        width: 25px;
-        margin: 0px;
-        padding: 0px;
-        line-height: 25px;
-    }
-
-    #fab, #fabBut {
-        width: 30px;
-        height: 30px;
-        bottom: 5px;
-        right: 5px;
-        margin: 0;
-        padding: 0;
-        line-height: 0px;
-
-    }
-
-    #fabIcon {
-        width: 30px;
-        height: 30px;
-        bottom: 0px;
-        right: 0px;
-        margin: 0;
-        padding: 0;
-
-        line-height: 30px;
-
-    }
-
+  #fabIcon {
+    width: 30px;
+    height: 30px;
+    bottom: 0px;
+    right: 0px;
+    margin: 0;
+    padding: 0;
+    line-height: 30px;
+  }
 }
 
 @media screen and (max-height: 300px) and (min-width: 601px) {
 
-    nav, .nav-wrapper, .banner {
-        height: 64px;
+  nav, .nav-wrapper, .banner {
+    height: 64px;
+  }
 
-    }
+  .butlp {
+    width: 60px;
+    height: auto;
+  }
 
-    .butlp {
-        width: 60px;
-        height: auto;
-    }
-
-    #clock_js {
-        width: 80px;
-        height: auto;
-        margin: 0;
-        padding: 0;
-
-    }
+  #clock_js {
+    width: 80px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
 }
 
 @media screen and (min-width: 601px) and (max-width: 992px) {
-    .butlp {
-        width: 80px;
-        height: auto;
-    }
+  .butlp {
+    width: 80px;
+    height: auto;
+  }
 
-    #clock_js {
-        width: 170px;
-        height: auto;
-        margin: 0;
-        padding: 0;
-    }
+  #clock_js {
+    width: 170px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
-    .thermo {
-        width: 80px;
-        height: auto;
-        margin: 0;
-        padding: 0;
+  .thermo {
+    width: 80px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
-    }
-
-    .card-panel {
-        min-height: 230px;
-    }
-
+  .card-panel {
+    min-height: 230px;
+  }
 }
 
 @media screen and (min-width: 993px) {
-    .butlp {
-        width: 100px;
-        height: auto;
-    }
+  .butlp {
+    width: 100px;
+    height: auto;
+  }
 
-    #clock_js {
-        width: 180px;
-        height: auto;
-        margin: 0;
-        padding: 0;
-    }
+  #clock_js {
+    width: 180px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
 
-    .thermo {
-        width: 85px;
-        height: auto;
-        margin: 0;
-        padding: 0;
+  .thermo {
+    width: 85px;
+    height: auto;
+    margin: 0;
+    padding: 0;
 
-    }
+  }
 
-    .card-panel {
-        min-height: 230px;
-    }
-
+  .card-panel {
+    min-height: 230px;
+  }
 }
 
 nav {
-    float: left;
-    width: 100%;
-    text-align: center;
-    background-color: transparent;
+  float: left;
+  width: 100%;
+  text-align: center;
+  background-color: transparent;
 }
 
 footer.page-footer {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 99;
-
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
 }
 
 .graph {
-
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 
 }
 
 .side-nav li {
-    width: 100%;
-    font-family: "Roboto";
+  width: 100%;
+  font-family: "Roboto", serif;
 
 }
 
 .title-side-nav {
-    width: 100%;
-    height: auto;
-
+  width: 100%;
+  height: auto;
 }
 
 .waves-effect.waves-pink .waves-ripple {
-    background-color: rgba(236, 64, 122, 0.2);
+  background-color: rgba(236, 64, 122, 0.2);
 }
 
 .interTitle {
-
-    color: #FFFFFF;
-
+  color: #FFFFFF;
 }
 
 .spinner-pink,
 .spinner-pink-only {
-    border-color: #e91e63;
+  border-color: #e91e63;
 }
 
 .graphcont {
-
-    position: relative;
-    height: 100%;
-    margin: auto;
-    margin-bottom: 15px;
-    padding: 0;
+  position: relative;
+  height: 100%;
+  margin: auto auto 15px;
+  padding: 0;
 }
 
 .graph {
-    z-index: 1;
-    position: absolute;
+  z-index: 1;
+  position: absolute;
 }
 
 .axisgraph {
-
-    z-index: 0;
-    position: absolute;
+  z-index: 0;
+  position: absolute;
 }
 
 .title, #titleNav {
-
-    color: #FFFFFF;
-
+  color: #FFFFFF;
 }
 
 #titleNav {
-
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 h4 .typeTitle {
-
-    margin-bottom: 16px;
-    margin-top: 16px;
-
+  margin-bottom: 16px;
+  margin-top: 16px;
 }
 
 .card-title {
-
-    margin: 0px;
-    padding: 10px;
+  margin: 0px;
+  padding: 10px;
 }
 
 .card-title h4 {
-
-    margin: 0.25rem 0 0.125rem 0;
+  margin: 0.25rem 0 0.125rem 0;
 }
 
 .card-panel {
-    margin: 10px;
-    padding: 0px;
+  margin: 10px;
+  padding: 0px;
 }
 
 .card-content {
-    padding: 10px;
-
+  padding: 10px;
 }
 
 .noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none;
-    /* Non-prefixed version, currently
-                                     supported by Chrome and Opera */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 textarea.materialize-textarea {
-
-    padding: 0px;
-
+  padding: 0px;
 }
 
 .btn-flat i {
-    font-size: 1.8rem;
-
+  font-size: 1.8rem;
 }
 
 #maincontent {
-    margin-bottom: 100px;
+  margin-bottom: 100px;
 }
 
 #console-display {
-    overflow: auto;
-    height: 400px;
+  overflow: auto;
+  height: 400px;
 }

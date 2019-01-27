@@ -39,7 +39,7 @@ class ConsoleController extends BackController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $log = curl_exec($ch);
 
-        $card = WidgetFactory::makeCard('console-card', $this->titleView());
+        $card = WidgetFactory::makeCard('console-card', 'Console');
         $card->addContent($this->commandView($sendButton));
         $card->addContent($this->displayView($log));
 
@@ -59,14 +59,6 @@ class ConsoleController extends BackController
     public function commandView($sendButton)
     {
         return $this->getBlock(MODULES . '/Console/Block/commandView.phtml', $sendButton);
-    }
-
-    /**
-     * @return false|string
-     */
-    public function titleView()
-    {
-        return $this->getBlock(MODULES . '/Console/Block/titleView.phtml');
     }
 
     /**

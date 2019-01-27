@@ -54,11 +54,13 @@ class ThermostatModesController extends BackController
             $cardContent .= $addModeFab->getHtml();
         }
 
-        $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $card->addContent($cardContent);
+        $cardModes = WidgetFactory::makeCard($domId, $cardTitle);
+        $cardModes->addContent($cardContent);
 
-        $cards[] = $card;
+        $cardSyncModes =  WidgetFactory::makeCard('sync-mode-card', 'Modes du Thermostat');
 
+        $cards[] = $cardModes;
+        $cards[] = $cardSyncModes;
         $this->page->addVar('cards', $cards);
     }
 

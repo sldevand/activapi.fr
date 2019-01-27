@@ -5,4 +5,3 @@
         </div>
     </div>
 <?php endforeach; ?>
-<script src="<?= DIST . '/socketio.js' ?>"></script>
