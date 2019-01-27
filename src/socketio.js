@@ -6,3 +6,5 @@ const port = 5901;
 
 const socketIOManage = new SocketIOManage(io, address, port);
 socketIOManage.connect().run();
+
+export default socketIOManage;

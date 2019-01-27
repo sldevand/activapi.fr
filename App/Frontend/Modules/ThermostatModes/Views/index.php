@@ -5,3 +5,4 @@
         </div>
     </div>
 <?php endforeach; ?>
+<script src="<?= DIST.'/modesManage.js' ?>"></script>
