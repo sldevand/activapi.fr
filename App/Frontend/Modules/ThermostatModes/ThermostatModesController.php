@@ -6,6 +6,7 @@ use Entity\ThermostatMode;
 use FormBuilder\ThermostatModesFormBuilder;
 use Materialize\FloatingActionButton;
 use Materialize\Link;
+use Materialize\Spinner\Spinner;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\FormHandler;
@@ -57,7 +58,13 @@ class ThermostatModesController extends BackController
         $cardModes = WidgetFactory::makeCard($domId, $cardTitle);
         $cardModes->addContent($cardContent);
 
-        $cardSyncModes =  WidgetFactory::makeCard('sync-mode-card', 'Modes du Thermostat');
+        $cardTitle = $this->syncCardTitleView();
+
+        $cardSyncModes =  WidgetFactory::makeCard('sync-mode-card', $cardTitle);
+
+        /** @var \Materialize\Spinner\Spinner $spinner */
+        $spinner = new Spinner(['id'=>'spinner']);
+        $cardSyncModes->addContent($spinner->getHtml());
 
         $cards[] = $cardModes;
         $cards[] = $cardSyncModes;
@@ -158,6 +165,13 @@ class ThermostatModesController extends BackController
         $this->page->addVar('cards', $cards);
     }
 
+    /**
+     * @return false|string
+     */
+    public function syncCardTitleView()
+    {
+        return $this->getBlock(MODULES . '/ThermostatModes/Block/syncCardTitleView.phtml');
+    }
 
     /**
      * @return false|string

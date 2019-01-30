@@ -24,9 +24,33 @@ export class Modes {
 
             this.dataModes.push(messageTab.slice(2));
 
-            if (this.dataModes.length === 4) {
-                this.createTable(this.dataModes);
+
+            if (this.dataModes.length !== 4) {
+                return;
             }
+
+            this.createTable(this.dataModes);
+            this.checkState()
+                .then((modes) => {
+                    let matched = 0;
+                    for (let mode of modes) {
+                        for (let dataMode of this.dataModes) {
+
+                            if (
+                                dataMode[0] === mode.id
+                                && parseFloat(dataMode[1]).toFixed(2) === parseFloat(mode.consigne).toFixed(2)
+                                && parseFloat(dataMode[2]).toFixed(2) === parseFloat(mode.delta).toFixed(2)
+                            ) {
+                                matched++;
+                            }
+                        }
+                    }
+
+                    if (matched === 4) {
+                        this.stateOn();
+                    }
+
+                });
         });
     }
 
@@ -62,5 +86,30 @@ export class Modes {
         }
 
         return rows;
+    }
+
+    checkState() {
+        return fetch('api/thermostat/mode/')
+            .then((response) => {
+                return response.json();
+            })
+            .catch(err => console.error(err));
+
+    }
+
+    stateOn() {
+        let selector = document.querySelector("#sync-mode-card #check-modes");
+        selector.classList.remove('red');
+        selector.classList.remove('red-text');
+        selector.classList.add('teal');
+        selector.classList.add('teal-text');
+    }
+
+    stateOff() {
+        let selector = document.querySelector("#sync-mode-card #check-modes");
+        selector.classList.remove('teal');
+        selector.classList.remove('teal-text');
+        selector.classList.add('red');
+        selector.classList.add('red-text');
     }
 }

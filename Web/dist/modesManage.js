@@ -2031,15 +2031,6 @@ var h,f,l,d=String.fromCharCode;t.exports={version:"2.1.2",encode:a,decode:u}},f
 },{"buffer":2}],5:[function(require,module,exports){
 "use strict";
 
-var _modes = require("./modes/modes");
-
-var modes = new _modes.Modes();
-modes.init();
-modes.askThermostat();
-
-},{"./modes/modes":6}],6:[function(require,module,exports){
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -2085,15 +2076,72 @@ function () {
 
         _this.dataModes.push(messageTab.slice(2));
 
-        if (_this.dataModes.length === 4) {
-          _this.createTable(_this.dataModes);
+        if (_this.dataModes.length !== 4) {
+          return;
         }
+
+        _this.createTable(_this.dataModes);
+
+        _this.checkState().then(function (modes) {
+          var matched = 0;
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = modes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var mode = _step.value;
+              var _iteratorNormalCompletion2 = true;
+              var _didIteratorError2 = false;
+              var _iteratorError2 = undefined;
+
+              try {
+                for (var _iterator2 = _this.dataModes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                  var dataMode = _step2.value;
+
+                  if (dataMode[0] === mode.id && parseFloat(dataMode[1]).toFixed(2) === parseFloat(mode.consigne).toFixed(2) && parseFloat(dataMode[2]).toFixed(2) === parseFloat(mode.delta).toFixed(2)) {
+                    matched++;
+                  }
+                }
+              } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+                    _iterator2.return();
+                  }
+                } finally {
+                  if (_didIteratorError2) {
+                    throw _iteratorError2;
+                  }
+                }
+              }
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return != null) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+
+          if (matched === 4) {
+            _this.stateOn();
+          }
+        });
       });
     }
   }, {
     key: "createTable",
     value: function createTable(data) {
-      console.log(data);
       var rows = this.createRows(data);
       var template = "<table id=\"tableModes\" class=\"bordered striped responsive-table\">\n                <thead>\n                    <tr><th>nom</th><th>consigne</th><th>delta</th></tr>\n                </thead>\n                <tbody>              \n                ".concat(rows, "              \n                </tbody>\n                </table>");
       document.querySelector("#sync-mode-card .card-content").innerHTML = template;
@@ -2102,26 +2150,26 @@ function () {
     key: "createRow",
     value: function createRow(rowData) {
       var row = '';
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator = rowData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var item = _step.value;
+        for (var _iterator3 = rowData[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var item = _step3.value;
           row += "<td>".concat(item, "</td>");
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+            _iterator3.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError3) {
+            throw _iteratorError3;
           }
         }
       }
@@ -2132,31 +2180,58 @@ function () {
     key: "createRows",
     value: function createRows(data) {
       var rows = '';
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
 
       try {
-        for (var _iterator2 = data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var row = _step2.value;
+        for (var _iterator4 = data[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var row = _step4.value;
           rows += '<tr>' + this.createRow(row) + '</tr>';
         }
       } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
+          if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+            _iterator4.return();
           }
         } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
+          if (_didIteratorError4) {
+            throw _iteratorError4;
           }
         }
       }
 
       return rows;
+    }
+  }, {
+    key: "checkState",
+    value: function checkState() {
+      return fetch('api/thermostat/mode/').then(function (response) {
+        return response.json();
+      }).catch(function (err) {
+        return console.error(err);
+      });
+    }
+  }, {
+    key: "stateOn",
+    value: function stateOn() {
+      var selector = document.querySelector("#sync-mode-card #check-modes");
+      selector.classList.remove('red');
+      selector.classList.remove('red-text');
+      selector.classList.add('teal');
+      selector.classList.add('teal-text');
+    }
+  }, {
+    key: "stateOff",
+    value: function stateOff() {
+      var selector = document.querySelector("#sync-mode-card #check-modes");
+      selector.classList.remove('teal');
+      selector.classList.remove('teal-text');
+      selector.classList.add('red');
+      selector.classList.add('red-text');
     }
   }]);
 
@@ -2165,7 +2240,17 @@ function () {
 
 exports.Modes = Modes;
 
-},{"../socketio.js":7}],7:[function(require,module,exports){
+},{"../socketio.js":7}],6:[function(require,module,exports){
+"use strict";
+
+var _modes = require("./modes/modes");
+
+var modes = new _modes.Modes();
+modes.init();
+modes.askThermostat();
+modes.checkState();
+
+},{"./modes/modes":5}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2268,4 +2353,4 @@ function () {
 
 exports.SocketIOManage = SocketIOManage;
 
-},{}]},{},[5]);
+},{}]},{},[6]);
