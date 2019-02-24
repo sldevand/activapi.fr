@@ -2051,8 +2051,6 @@ var Modes =
 function () {
   function Modes() {
     _classCallCheck(this, Modes);
-
-    this.dataModes = [];
   }
 
   _createClass(Modes, [{
@@ -2067,20 +2065,24 @@ function () {
     value: function init() {
       var _this = this;
 
+      var dataModes = [];
+      this.initStateClickListener();
+      this.initSynchronizeClickListener();
+
       _socketio.default.socket.on("messageConsole", function (data) {
         var messageTab = data.split(" ");
 
-        if (messageTab[1] !== "thermode" || _this.dataModes.length >= 4) {
+        if (messageTab[1] !== "thermode" || dataModes.length >= 4) {
           return;
         }
 
-        _this.dataModes.push(messageTab.slice(2));
+        dataModes.push(messageTab.slice(2));
 
-        if (_this.dataModes.length !== 4) {
+        if (dataModes.length !== 4) {
           return;
         }
 
-        _this.createTable(_this.dataModes);
+        _this.createTable(dataModes);
 
         _this.checkState().then(function (modes) {
           var matched = 0;
@@ -2091,30 +2093,12 @@ function () {
           try {
             for (var _iterator = modes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var mode = _step.value;
-              var _iteratorNormalCompletion2 = true;
-              var _didIteratorError2 = false;
-              var _iteratorError2 = undefined;
 
-              try {
-                for (var _iterator2 = _this.dataModes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                  var dataMode = _step2.value;
+              for (var _i = 0; _i < dataModes.length; _i++) {
+                var dataMode = dataModes[_i];
 
-                  if (dataMode[0] === mode.id && parseFloat(dataMode[1]).toFixed(2) === parseFloat(mode.consigne).toFixed(2) && parseFloat(dataMode[2]).toFixed(2) === parseFloat(mode.delta).toFixed(2)) {
-                    matched++;
-                  }
-                }
-              } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-              } finally {
-                try {
-                  if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-                    _iterator2.return();
-                  }
-                } finally {
-                  if (_didIteratorError2) {
-                    throw _iteratorError2;
-                  }
+                if (dataMode[0] === mode.id && parseFloat(dataMode[1]).toFixed(2) === parseFloat(mode.consigne).toFixed(2) && parseFloat(dataMode[2]).toFixed(2) === parseFloat(mode.delta).toFixed(2)) {
+                  matched++;
                 }
               }
             }
@@ -2135,7 +2119,11 @@ function () {
 
           if (matched === 4) {
             _this.stateOn();
+          } else {
+            _this.stateOff();
           }
+
+          dataModes = [];
         });
       });
     }
@@ -2150,14 +2138,44 @@ function () {
     key: "createRow",
     value: function createRow(rowData) {
       var row = '';
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = rowData[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var item = _step2.value;
+          row += "<td>".concat(item, "</td>");
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      return row;
+    }
+  }, {
+    key: "createRows",
+    value: function createRows(data) {
+      var rows = '';
       var _iteratorNormalCompletion3 = true;
       var _didIteratorError3 = false;
       var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator3 = rowData[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var item = _step3.value;
-          row += "<td>".concat(item, "</td>");
+        for (var _iterator3 = data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var row = _step3.value;
+          rows += '<tr>' + this.createRow(row) + '</tr>';
         }
       } catch (err) {
         _didIteratorError3 = true;
@@ -2170,36 +2188,6 @@ function () {
         } finally {
           if (_didIteratorError3) {
             throw _iteratorError3;
-          }
-        }
-      }
-
-      return row;
-    }
-  }, {
-    key: "createRows",
-    value: function createRows(data) {
-      var rows = '';
-      var _iteratorNormalCompletion4 = true;
-      var _didIteratorError4 = false;
-      var _iteratorError4 = undefined;
-
-      try {
-        for (var _iterator4 = data[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-          var row = _step4.value;
-          rows += '<tr>' + this.createRow(row) + '</tr>';
-        }
-      } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
-            _iterator4.return();
-          }
-        } finally {
-          if (_didIteratorError4) {
-            throw _iteratorError4;
           }
         }
       }
@@ -2219,19 +2207,41 @@ function () {
     key: "stateOn",
     value: function stateOn() {
       var selector = document.querySelector("#sync-mode-card #check-modes");
+      var syncModes = document.querySelector("#sync-mode-card #sync-modes");
       selector.classList.remove('red');
       selector.classList.remove('red-text');
       selector.classList.add('teal');
       selector.classList.add('teal-text');
+      syncModes.style.display = "none";
     }
   }, {
     key: "stateOff",
     value: function stateOff() {
       var selector = document.querySelector("#sync-mode-card #check-modes");
+      var syncModes = document.querySelector("#sync-mode-card #sync-modes");
       selector.classList.remove('teal');
       selector.classList.remove('teal-text');
       selector.classList.add('red');
       selector.classList.add('red-text');
+      syncModes.style.display = "block";
+    }
+  }, {
+    key: "initStateClickListener",
+    value: function initStateClickListener() {
+      var _this2 = this;
+
+      var selector = document.querySelector("#sync-mode-card #check-modes");
+      selector.addEventListener("click", function (e) {
+        _this2.askThermostat();
+      });
+    }
+  }, {
+    key: "initSynchronizeClickListener",
+    value: function initSynchronizeClickListener() {
+      var syncModes = document.querySelector("#sync-mode-card #sync-modes");
+      syncModes.addEventListener('click', function (e) {
+        _socketio.default.socket.emit("syncTherModes", "sync");
+      });
     }
   }]);
 
@@ -2247,8 +2257,10 @@ var _modes = require("./modes/modes");
 
 var modes = new _modes.Modes();
 modes.init();
-modes.askThermostat();
-modes.checkState();
+setTimeout(function () {
+  modes.askThermostat();
+  modes.checkState();
+}, 200);
 
 },{"./modes/modes":5}],7:[function(require,module,exports){
 "use strict";

@@ -1,6 +1,11 @@
 import {Modes} from './modes/modes';
 
 const modes = new Modes();
+
 modes.init();
-modes.askThermostat();
-modes.checkState();
+setTimeout(() => {
+    modes.askThermostat();
+    modes.checkState();
+}, 200);
+
+

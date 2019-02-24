@@ -3,7 +3,6 @@ import socketIOManage from '../socketio.js'
 export class Modes {
 
     constructor() {
-        this.dataModes = [];
     }
 
     askThermostat() {
@@ -12,29 +11,32 @@ export class Modes {
     }
 
     init() {
-        socketIOManage.socket.on("messageConsole", (data) => {
+        let dataModes = [];
 
+        this.initStateClickListener();
+        this.initSynchronizeClickListener();
+
+        socketIOManage.socket.on("messageConsole", (data) => {
             let messageTab = data.split(" ");
             if (
                 messageTab[1] !== "thermode"
-                || this.dataModes.length >= 4
+                || dataModes.length >= 4
             ) {
                 return;
             }
 
-            this.dataModes.push(messageTab.slice(2));
+            dataModes.push(messageTab.slice(2));
 
-
-            if (this.dataModes.length !== 4) {
+            if (dataModes.length !== 4) {
                 return;
             }
 
-            this.createTable(this.dataModes);
+            this.createTable(dataModes);
             this.checkState()
                 .then((modes) => {
                     let matched = 0;
                     for (let mode of modes) {
-                        for (let dataMode of this.dataModes) {
+                        for (let dataMode of dataModes) {
 
                             if (
                                 dataMode[0] === mode.id
@@ -48,7 +50,10 @@ export class Modes {
 
                     if (matched === 4) {
                         this.stateOn();
+                    }else {
+                        this.stateOff();
                     }
+                    dataModes = [];
 
                 });
         });
@@ -99,17 +104,37 @@ export class Modes {
 
     stateOn() {
         let selector = document.querySelector("#sync-mode-card #check-modes");
+        let syncModes = document.querySelector("#sync-mode-card #sync-modes");
         selector.classList.remove('red');
         selector.classList.remove('red-text');
         selector.classList.add('teal');
         selector.classList.add('teal-text');
+        syncModes.style.display = "none";
     }
 
     stateOff() {
         let selector = document.querySelector("#sync-mode-card #check-modes");
+        let syncModes = document.querySelector("#sync-mode-card #sync-modes");
         selector.classList.remove('teal');
         selector.classList.remove('teal-text');
         selector.classList.add('red');
         selector.classList.add('red-text');
+        syncModes.style.display = "block";
+
+    }
+
+    initStateClickListener() {
+        let selector = document.querySelector("#sync-mode-card #check-modes");
+        selector.addEventListener("click", (e) => {
+            this.askThermostat();
+        });
+    }
+
+    initSynchronizeClickListener(){
+        let syncModes = document.querySelector("#sync-mode-card #sync-modes");
+        syncModes.addEventListener('click',(e)=>{
+            socketIOManage.socket.emit("syncTherModes", "sync");
+        });
+
     }
 }
