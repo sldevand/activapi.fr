@@ -1,3 +1,3 @@
-<?php		
-	echo json_encode($scenarios);
+<?php
+echo json_encode($scenarios);
 	

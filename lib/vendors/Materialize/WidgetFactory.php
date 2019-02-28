@@ -42,6 +42,10 @@ class WidgetFactory
         $tableDatas = [];
         $headers = [];
 
+        if(empty($datas[0])){
+            return new Table([]);
+        }
+
         foreach ($datas[0] as $key => $data) {
             $headers[] = $key;
         }

@@ -11,6 +11,11 @@ class Table extends Widget
 
     public function getHtml()
     {
+
+        if(empty($this->datas)){
+            return '<span>Pas de données!</span>';
+        }
+
         $prepHtml = '<table id="' . $this->id() . '"  class="bordered striped responsive-table">';
         $prepHtml .= '<thead><tr>';
         foreach ($this->headers as $header) {
