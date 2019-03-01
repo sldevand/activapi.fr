@@ -13,38 +13,34 @@
 </head>
 
 <body>
-
-<nav class="primaryColor noselect">
-    <div class="nav-wrapper textOnPrimaryColor">
-        <div class="valign-wrapper">
-        <div class="brand-logo center">ActivAPI</div>
-            <a id="menubutton" data-activates="slide-out" class="button-collapse show-on-large">
-                <i class="material-icons">menu</i>
-            </a>
-            <i id="ioconnection" class="valign material-icons z-depth-1 circle red lighten-3 red-text right">fiber_manual_record</i>
+    <nav class="primaryColor noselect">
+        <div class="nav-wrapper textOnPrimaryColor">
+            <div class="valign-wrapper">
+                <div class="brand-logo center">ActivAPI</div>
+                <a id="menubutton" data-activates="slide-out" class="button-collapse show-on-large">
+                    <i class="material-icons">menu</i>
+                </a>
+                <i id="ioconnection" class="valign material-icons z-depth-1 circle red lighten-3 red-text right">fiber_manual_record</i>
+            </div>
         </div>
+    </nav>
+
+    <ul id="slide-out" class="side-nav">
+        <?php include("sideNav/sideNavMainPart.html"); ?>
+    </ul>
+
+    <div id="maincontent" class="container-light">
+        <?php if ($user->hasFlash()) echo '<p style="text-align: center;">', $user->getFlash(), '</p>'; ?>
+        <?= $content ?>
     </div>
-</nav>
 
-<ul id="slide-out" class="side-nav">
-    <?php include("sideNav/sideNavMainPart.html"); ?>
-</ul>
-
-<div id="maincontent" class="container-light">
-    <?php if ($user->hasFlash()) echo '<p style="text-align: center;">', $user->getFlash(), '</p>'; ?>
-
-    <?= $content ?>
-</div>
-
-<script>
-$("#menubutton").sideNav({
-
-        closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-        draggable: true, // Choose whether you can drag to open on touch screens
-        menuWidth: 250
-    });
-</script>
-<script src="<?= DIST . '/socketio.js' ?>"></script>
-
+    <script src="<?= DIST . '/socketio.js' ?>"></script>
+    <script>
+        $("#menubutton").sideNav({
+            closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+            draggable: true, // Choose whether you can drag to open on touch screens
+            menuWidth: 250
+        });
+    </script>
 </body>
 </html>

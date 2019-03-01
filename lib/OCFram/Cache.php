@@ -1,182 +1,276 @@
 <?php
+
 namespace OCFram;
 
 use \DateTime;
 use \DateTimeZone;
 use \DateInterval;
 
-class Cache extends ApplicationComponent{
+/**
+ * Class Cache
+ * @package OCFram
+ */
+class Cache extends ApplicationComponent
+{
+    /**
+     * @var
+     */
+    protected $timeStamp;
 
-	protected $timeStamp;
-	protected $fileName;
-	protected $fileArray=[];
+    /**
+     * @var
+     */
+    protected $fileName;
 
-	//TimeStamp Management Methods
-	public function makeTimeStamp(){
+    /**
+     * @var array
+     */
+    protected $fileArray = [];
 
-		$dateTime = new DateTime('NOW',new DateTimeZone('Europe/Paris'));
-		$expiration = $this->app()->config()->get('cacheExpiration');
+    public function makeTimeStamp()
+    {
+        $dateTime = new DateTime('NOW', new DateTimeZone('Europe/Paris'));
+        $expiration = $this->app()->config()->get('cacheExpiration');
 
-		$dateTime->add(DateInterval::createFromDateString($expiration));
-		$this->timeStamp= $dateTime->getTimestamp();
+        $dateTime->add(DateInterval::createFromDateString($expiration));
+        $this->timeStamp = $dateTime->getTimestamp();
+    }
 
-	}
+    /**
+     * @return bool
+     */
+    public function getTimeStamp()
+    {
+        if (!empty($this->fileArray)) {
+            return false;
+        }
 
-	public function getTimeStamp(){
+        $this->timeStamp = $this->fileArray[0];
 
-		if(!is_null($this->fileArray) && !empty($this->fileArray)){
-			$this->timeStamp=$this->fileArray[0];
+        return true;
+    }
 
-			return true;
-		}else{
-			return false;
-		}
-	}
+    /**
+     * @return bool
+     */
+    public function isExpired()
+    {
+        $dateTime = new DateTime('NOW', new DateTimeZone('Europe/Paris'));
+        $now = $dateTime->getTimestamp();
+        $this->getTimeStamp();
+        if ((int)$this->timeStamp - (int)$now >= 0) {
+            return false;
+        }
 
-	public function isExpired(){
+        $this->deleteFile();
 
-		$dateTime = new DateTime('NOW',new DateTimeZone('Europe/Paris'));
-		$now = $dateTime->getTimestamp();
-		$this->getTimeStamp();
-		if((int)$this->timeStamp-(int)$now <0){
-			$this->deleteFile();
-			return true;
-		}else{
-			return false;
-		}
-	}
+        return true;
+    }
 
-	//File Management Methods
+    /**
+     * @return bool
+     */
+    public function exists()
+    {
+        return file_exists($this->fileName);
+    }
 
-	public function exists(){
-		return file_exists($this->fileName);
-	}
+    public function getFile()
+    {
+        $this->fileArray = file($this->fileName, FILE_SKIP_EMPTY_LINES);
+    }
 
-	public function getFile(){
-		$this->fileArray = file($this->fileName,FILE_SKIP_EMPTY_LINES);
-	}
+    /**
+     * @return bool
+     */
+    public function deleteFile()
+    {
+        if (!$this->exists()) {
+            return false;
+        }
 
-	public function deleteFile(){
- 		 if($this->exists()){return unlink($this->fileName);}
-                else{return false;}
+        return unlink($this->fileName);
+    }
 
-	}
+    /**
+     * @param string $file
+     * @return bool|mixed
+     */
+    public function getData($file)
+    {
+        $this->setDataPath($file);
 
-	//Data Management Methods
-	public function getData($file){
+        if (!$this->exists()) {
+            return false;
+        }
 
-		$this->setDataPath($file);
-		if($this->exists()){$this->getFile();}
-		else{return false;}
+        $this->getFile();
 
-		 if($this->isExpired()){ return false;}
-			$fileArray=$this->fileArray[1];
-			$data=unserialize($fileArray);
+        if ($this->isExpired()) {
+            return false;
+        }
 
+        $fileArray = $this->fileArray[1];
+        $data = unserialize($fileArray);
 
-			if(!empty($data) || !is_null($data)){
-				return $data;
-			}else { return false;}
-	}
+        if (empty($data)) {
+            return false;
+        }
 
-	public function saveData($file,array $entities){
+        return $data;
+    }
 
-		$this->setDataPath($file);
+    /**
+     * @param $file
+     * @param array $entities
+     */
+    public function saveData($file, array $entities)
+    {
+        $this->setDataPath($file);
+        $this->makeTimeStamp();
+        if (!$this->exists()) {
+            return;
+        }
+        file_put_contents($this->fileName, $this->timeStamp() . PHP_EOL);
+        file_put_contents($this->fileName, serialize($entities), FILE_APPEND);
+    }
 
-		$this->makeTimeStamp();
+    /**
+     * @param string $file
+     */
+    public function setDataPath($file)
+    {
+        $this->fileName = $this->app()->config()->get('cache') . 'datas' . '/' . $file;
+    }
 
-		if($this->exists()){
-			file_put_contents($this->fileName,$this->timeStamp().PHP_EOL);
-			file_put_contents($this->fileName, serialize($entities),FILE_APPEND);
-		}
-	}
+    /**
+     * @param BackController $controller
+     * @return bool|Page
+     */
+    public function getView($controller)
+    {
+        $this->setViewPath($controller);
+        $content = '';
 
-	public function setDataPath($file){
+        if ($this->exists()) {
+            return false;
+        }
 
-		$this->fileName=$this->app()->config()->get('cache').'datas'.'/'
-						.$file;
-	}
+        $this->getFile();
 
-	//View Management Methods
-	public function getView($controller){
+        if ($this->isExpired()) {
+            return false;
+        }
 
-		$this->setViewPath($controller);
-		$content='';
+        foreach ($this->fileArray as $key => $line) {
+            if ($key > 0) {
+                $content .= $line;
+            }
+        }
 
-		if($this->exists()){$this->getFile();}
-		else{return false;}
+        if (empty($content)) {
+            return false;
+        }
 
-		 if($this->isExpired()){ return false;}
+        $page = new Page($this->app());
+        $page->setContentCache($content);
 
-			foreach($this->fileArray as $key => $line){
-				if($key>0){
-					$content.=$line;
-				}
-			}
+        return $page;
+    }
 
-			if(!empty($content)){
-				$page =  new Page($this->app());
-				$page->setContentCache( $content);
-				return $page;
-			}else { return false;}
-	}
+    /**
+     * @param BackController $controller
+     * @param $html
+     */
+    public
+    function saveView($controller, $html)
+    {
+        $this->setViewPath($controller);
+        $this->makeTimeStamp();
+        file_put_contents($this->fileName, $this->timeStamp() . PHP_EOL);
+        file_put_contents($this->fileName, $html, FILE_APPEND);
+    }
 
-	public function saveView($controller,$html){
+    /**
+     * @param BackController $controller
+     */
+    public
+    function setViewPath($controller)
+    {
+        $this->fileName = $this->app()->config()->get('cache') . 'views' . '/' .
+            $this->app()->name() . '_' .
+            $controller->module() . '_' .
+            $controller->action() . '-' .
+            $controller->viewId();
+    }
 
-		$this->setViewPath($controller);
-		$this->makeTimeStamp();
-		file_put_contents($this->fileName,$this->timeStamp().PHP_EOL);
-		file_put_contents($this->fileName, $html,FILE_APPEND);
-	}
+    /**
+     * @return mixed
+     */
+    public function timeStamp()
+    {
+        return $this->timeStamp;
+    }
 
-	public function setViewPath($controller){
-		$this->fileName=$this->app()->config()->get('cache').'views'.'/'.
-						$this->app()->name().'_'.
-						$controller->module().'_'.
-						$controller->action().'-'.
-						$controller->viewId();
-	}
+    /**
+     * @return mixed
+     */
+    public function datas()
+    {
+        return $this->datas;
+    }
 
-	//GETTERS
-	public function timeStamp() {
-		return $this->timeStamp;
-	}
+    /**
+     * @return mixed
+     */
+    public function fileName()
+    {
+        return $this->fileName;
+    }
 
-	public function datas() {
-		return $this->datas;
-	}
+    /**
+     * @return array
+     */
+    public function fileArray()
+    {
+        return $this->fileArray;
+    }
 
-	public function fileName() {
-		return $this->fileName;
-	}
+    /**
+     * @param $timeStamp
+     */
+    public function setTimeStamp($timeStamp)
+    {
+        $this->timeStamp = $timeStamp;
+    }
 
-	public function fileArray() {
-		return $this->fileArray;
-	}
+    /**
+     * @param array $datas
+     */
+    public function setDatas(array $datas)
+    {
+        if (!empty($datas) && is_array($datas)) {
+            $this->datas = $datas;
+        }
+    }
 
-	//SETTERS
-	public function setTimeStamp($timeStamp) {
-		$this->timeStamp=$timeStamp;
-	}
+    /**
+     * @param $fileName
+     */
+    public function setFileName($fileName)
+    {
+        if (!empty($fileName) && is_string($fileName)) {
+            $this->fileName = $fileName;
+        }
+    }
 
-	public function setDatas(array $datas) {
-
-		if(!empty($datas) && is_array($datas)){
-			$this->datas=$datas;
-		}
-	}
-
-	public function setFileName($fileName) {
-		if(!empty($fileName) && is_string($fileName)){
-			$this->fileName=$fileName;
-		}
-	}
-
-	public function setFileArray(array $fileArray) {
-
-		if(!empty($fileArray) && is_array($fileArray)){
-			$this->fileArray=$fileArray;
-		}
-	}
-
+    /**
+     * @param array $fileArray
+     */
+    public function setFileArray(array $fileArray)
+    {
+        if (!empty($fileArray) && is_array($fileArray)) {
+            $this->fileArray = $fileArray;
+        }
+    }
 }

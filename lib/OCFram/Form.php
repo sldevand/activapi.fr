@@ -25,10 +25,12 @@ class Form
 
     /**
      * @param Field $field
+     * @param null|string $wrapper
      * @return $this
      */
-    public function add(Field $field)
+    public function add(Field $field, $wrapper = null)
     {
+        $field->setWrapper($wrapper);
         $attr = $field->name();
         $field->setValue($this->entity->$attr());
 
@@ -42,8 +44,11 @@ class Form
     public function createView()
     {
         $view = '';
+        /** @var Field $field */
         foreach ($this->fields as $field) {
-            $view .= $field->buildWidget() . '<br />';
+            $view .= '<div class="' . $field->getWrapper() . '">';
+            $view .= $field->buildWidget();
+            $view .= '</div>';
         }
 
         return $view;

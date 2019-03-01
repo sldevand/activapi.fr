@@ -14,22 +14,27 @@ abstract class BackController extends ApplicationComponent
      * @var string
      */
     protected $action = '';
+
     /**
      * @var string
      */
     protected $module = '';
+
     /**
      * @var null|Page
      */
     protected $page = null;
+
     /**
      * @var string
      */
     protected $view = '';
+
     /**
      * @var null|Managers
      */
     protected $managers = null;
+
     /**
      * @var null|Cache
      */
@@ -92,9 +97,6 @@ abstract class BackController extends ApplicationComponent
         $this->page->setContentFile(__DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php');
     }
 
-    /**
-     *
-     */
     public function execute()
     {
         $method = 'execute' . ucfirst($this->action);
@@ -107,41 +109,38 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     *
+     * @throws \Exception
      */
     public function deleteCache()
     {
         $folderRoot = $this->app()->config()->get('cache');
 
         if (!file_exists($folderRoot)) {
-            $arrayRoot = scandir($folderRoot);
+            throw new \Exception("Le dossier $folderRoot n'existe pas!");
+        }
 
-            array_shift($arrayRoot);
-            array_shift($arrayRoot);
+        $arrayRoot = scandir($folderRoot);
 
-            foreach ($arrayRoot as $folderData) {
+        array_shift($arrayRoot);
+        array_shift($arrayRoot);
 
-                if (file_exists($folderRoot . $folderData)) {
-
-                    $arrayFolderData = scandir($folderRoot . $folderData);
-
-                    array_shift($arrayFolderData);
-                    array_shift($arrayFolderData);
-
-                    foreach ($arrayFolderData as $file) {
-
-                        $this->cache()->setFileName($folderRoot . $folderData . '/' . $file);
-                        $this->cache()->deleteFile();
-                    }
-
-                } else {
-                    echo 'Le dossier ' . $folderRoot . $folderData . ' n\'existe pas! <br>';
-                }
+        foreach ($arrayRoot as $folderData) {
+            if (!file_exists($folderRoot . $folderData)) {
+                continue;
             }
-        } else {
-            echo 'Le dossier ' . $folderRoot . ' n\'existe pas! <br>';
+
+            $arrayFolderData = scandir($folderRoot . $folderData);
+
+            array_shift($arrayFolderData);
+            array_shift($arrayFolderData);
+
+            foreach ($arrayFolderData as $file) {
+                $this->cache()->setFileName($folderRoot . $folderData . '/' . $file);
+                $this->cache()->deleteFile();
+            }
         }
     }
+
 
     /**
      * @return null|Cache
@@ -166,9 +165,6 @@ abstract class BackController extends ApplicationComponent
     {
         return $this->module;
     }
-
-
-    //SETTERS
 
     /**
      * @return string
@@ -200,7 +196,7 @@ abstract class BackController extends ApplicationComponent
     public function setCache(Cache $cache)
     {
         if (empty($cache)) {
-            throw new \InvalidArgumentException('Le ne doit pas être un Cache vide!');
+            throw new \InvalidArgumentException('Le cache ne doit pas être un Cache vide!');
         }
 
         $this->cache = $cache;
@@ -219,11 +215,11 @@ abstract class BackController extends ApplicationComponent
      * @param mixed ...$args
      * @return false|string
      */
-    public function getBlock($fileName, ...$args)
+    public
+    function getBlock($fileName, ...$args)
     {
         ob_start();
         include $fileName;
-
         return ob_get_clean();
     }
 
@@ -233,6 +229,7 @@ abstract class BackController extends ApplicationComponent
     public function getApiUrl(){
         $key = OSDetectorFactory::getApiAddressKey();
         $apiBaseAddress = $this->app()->config()->get($key);
+
         return $apiBaseAddress . "api/mesures/";
     }
 }

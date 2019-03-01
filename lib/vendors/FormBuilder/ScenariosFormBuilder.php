@@ -27,28 +27,29 @@ class ScenariosFormBuilder extends FormBuilder
         $this->form
             ->add(
                 new StringField([
-                    'label' => 'scenarioid',
+                    'label' => 'Id',
                     'name' => 'scenarioid',
                     'value' => $this->form()->entity()->scenarioid(),
-                    'hidden' => true
+                    'readonly' => 'true'
                 ])
             )->add(
                 new StringField([
-                    'label' => 'nom',
+                    'label' => 'Nom',
                     'name' => 'nom',
                     'value' => $this->form()->entity()->nom(),
-                    'required' => true
-                ])
+                    'required' => 'true'
+                ]),
+                'col s8'
             )->add(
                 new SelectField([
-                    'label' => 'actionneur',
+                    'label' => 'Actionneur',
                     'name' => 'actionneurid',
                     'selected' => $this->form()->entity()->actionneurid(),
                     'options' => $actionneurs
                 ])
             )->add(
                 new NumberField([
-                    'label' => 'etat',
+                    'label' => 'Etat',
                     'name' => 'etat',
                     'min' => 0,
                     'max' => 255,
