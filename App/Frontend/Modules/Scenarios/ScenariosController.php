@@ -37,27 +37,34 @@ class ScenariosController extends ScenariosBackController
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('addScenarioFab', $addScenarioFab);
-
     }
 
     /**
-     * @param $senarios
+     * @param array $scenarios
      * @return \Materialize\Card\Card
      */
-    public function makeScenariosWidget($senarios)
+    public function makeScenariosWidget($scenarios)
     {
         $domId = 'Scenarios';
 
-        $scenarios = json_decode(json_encode($senarios), true);
+        $scenarios = json_decode(json_encode($scenarios), true);
         $scenariosData = [];
 
         foreach ($scenarios as $scenario) {
-            //DATA PREPARE FOR TABLE
-            $linkEdit = new Link('', "../activapi.fr/scenarios-edit-" . $scenario["scenarioid"], 'edit', 'primaryTextColor');
-            $linkDelete = new Link('', "../activapi.fr/scenarios-delete-" . $scenario["scenarioid"], 'delete', 'secondaryTextColor');
+            $linkEdit = new Link(
+                '',
+                "../activapi.fr/scenarios-edit-" . $scenario["scenarioid"],
+                'edit',
+                'primaryTextColor'
+            );
+            $linkDelete = new Link(
+                '',
+                "../activapi.fr/scenarios-delete-" . $scenario["scenarioid"],
+                'delete',
+                'secondaryTextColor'
+            );
             $scenario["editer"] = $linkEdit->getHtmlForTable();
             $scenario["supprimer"] = $linkDelete->getHtmlForTable();
-
             $scenariosData[] = $scenario;
         }
 
@@ -101,7 +108,6 @@ class ScenariosController extends ScenariosBackController
 
         $this->page->addVar('title', "Suppression du Scenario");
         $this->page->addVar('card', $card);
-
     }
 
     /**
@@ -126,7 +132,6 @@ class ScenariosController extends ScenariosBackController
                 $id = $request->getData('scenarioid');
                 $item->setId($id);
             }
-
         } else {
             if ($request->getExists('scenarioid')) {
                 $id = $request->getData("scenarioid");
@@ -134,7 +139,6 @@ class ScenariosController extends ScenariosBackController
             } else {
                 $domId = 'Ajout';
                 $item = new Scenario();
-
             }
         }
 
@@ -152,11 +156,13 @@ class ScenariosController extends ScenariosBackController
             $this->app->httpResponse()->redirect('../activapi.fr/scenarios');
         }
 
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/scenarios",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 

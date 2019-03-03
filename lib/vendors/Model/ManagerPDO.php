@@ -2,163 +2,196 @@
 
 namespace Model;
 
-use \OCFram\Manager;
-use \OCFram\Entity;
-use \Debug\Log;
+use Exception;
+use OCFram\Entity;
+use OCFram\Manager;
 
+/**
+ * Class ManagerPDO
+ * @package Model
+ */
+class ManagerPDO extends Manager
+{
+    /**
+     * @var string $tableName
+     */
+    protected $tableName;
 
-class ManagerPDO extends Manager{
+    /**
+     * @var Entity $entity
+     */
+    protected $entity;
 
-	//Just override the $tableName in inherited class.
-	protected $tableName;
-	protected $entity;
+    /**
+     * @param Entity $entity
+     * @throws Exception
+     */
+    public function save(Entity $entity)
+    {
+        if (!$entity->isValid()) {
+            throw new \RuntimeException($entity->erreurs()["notValid"]);
+        }
 
-	public function save(Entity $entity){       
-		if ($entity->isValid()) {     
-		  $entity->isNew() ? $this->add($entity) : $this->update($entity);
-		} else {
+        $entity->isNew() ? $this->add($entity) : $this->update($entity);
+    }
 
-		  throw new \RuntimeException($entity->erreurs()["notValid"]);
-		}
-	}
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function count()
+    {
+        $sql = "SELECT COUNT(*) FROM $this->tableName";
+        $q = $this->prepare($sql);
+        $q->execute();
+        $result = $q->fetchColumn();
+        $q->closeCursor();
 
-	public function count(){
+        return $result;
+    }
 
-		$sql = "SELECT COUNT(*) FROM $this->tableName";
+    /**
+     * @param int $id
+     */
+    public function delete($id)
+    {
+        $this->dao->exec("DELETE FROM $this->tableName WHERE id = " . (int)$id);
+    }
 
-		$q = $this->dao->prepare($sql);
-        if(!is_bool($q)){
-            $q->execute();
-            $result = $q->fetchColumn();
-            $q->closeCursor();
-            return $result;
-        }else{
-             throw new \RuntimeException("PDO error : cannot count $this->tableName elements");
-        }    	
-  	}
+    /**
+     * @param Entity $entity
+     * @return bool
+     * @throws Exception
+     */
+    public function update(Entity $entity)
+    {
+        $sql = "UPDATE $this->tableName SET ";
+        $properties = $entity->properties();
+        $sql .= $this->addProperties($sql, $properties);
+        $sql .= "WHERE id = :id";
+        $q = $this->prepare($sql);
+        $this->bindProperties($q, $properties);
+        $success = $q->execute();
+        $q->closeCursor();
 
-	public function delete($id){
-		$this->dao->exec("DELETE FROM $this->tableName WHERE id = ".(int) $id);
-	}
+        return $success;
+    }
 
-	public function update(Entity $entity){
+    /**
+     * @param Entity $entity
+     * @return bool
+     * @throws Exception
+     */
+    public function add(Entity $entity)
+    {
+        $sql = "INSERT INTO $this->tableName (";
+        $properties = $entity->properties();
+        $sql .= $this->addProperties($sql, $properties);
+        $sql .= ") VALUES (";
+        $sql .= $this->addProperties($sql, $properties);
+        $sql .= ")";
+        $q = $this->prepare($sql);
+        $this->bindProperties($q, $properties);
+        $success = $q->execute();
+        $q->closeCursor();
 
-		$sql = "UPDATE $this->tableName SET ";
-		$properties = $entity->properties();
-		$count = count($properties)-2;
-		$i=1;
+        return $success;
+    }
 
-		foreach ($properties as $key => $property) {
-		 	if($key!="id" && $key!="erreurs"){
+    /**
+     * @param int $id
+     * @return Entity|null
+     * @throws \Exception
+     */
+    public function getUnique($id)
+    {
+        $sql = "SELECT * FROM $this->tableName WHERE id = :id";
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
+        $q->execute();
+        $entityName = "\\Entity\\" . ucfirst(substr($this->tableName, 0, -1));
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $entityName);
+        $this->entity = $q->fetch();
+        $q->closeCursor();
 
-		 		$sql .= $key." = :".$key;
-		 		if($i<$count) $sql.=",";
-		 		$sql.=" ";
-		 	}
-		 	$i++;
-		} 
+        return $this->entity;
+    }
 
-		$sql .= "WHERE id = :id"; 
+    /**
+     * @return string
+     */
+    public function tableName()
+    {
+        return $this->tableName;
+    }
 
-		$q = $this->dao->prepare($sql);
-	    if(!is_bool($q)){
-			foreach ($properties as $key => $property) {
-			
-				if($key!="erreurs"){		
-					$q->bindValue(':'.$key,$property);
-				}
-			}
+    /**
+     * @param string $tableName
+     * @return ManagerPDO
+     * @throws Exception
+     */
+    public function setTableName($tableName)
+    {
+        if (empty($tableName) || !is_string($tableName)) {
+            throw new Exception("$tableName is not a string or is empty");
+        }
+        $this->tableName = $tableName;
 
-		  	$q->execute();
-		  	$q->closeCursor();   
-		}else{
+        return $this;
+    }
 
-			throw new \RuntimeException("PDO error : cannot update $entity");
-		}
-	}
+    /**
+     * @param string $sql
+     * @return \PDOStatement
+     * @throws \Exception
+     */
+    public function prepare($sql)
+    {
+        $query = $this->dao->prepare($sql);
+        if (!$query) {
+            throw new \Exception($this->dao->errorInfo());
+        }
 
-	public function add(Entity $entity){
+        return $query;
+    }
 
+    /**
+     * @param string $sql
+     * @return string
+     */
+    public function addProperties($sql, $properties)
+    {
+        $count = count($properties) - 2;
+        $i = 1;
+        foreach ($properties as $key => $property) {
+            if ($key !== "id" && $key !== "erreurs") {
+                $sql .= $key . " = :" . $key;
+                if ($i < $count) {
+                    $sql .= ",";
+                }
+                $sql .= " ";
+            }
+            $i++;
+        }
 
-		$sql = "INSERT INTO $this->tableName (";
-	  	$properties = $entity->properties();
-	  	$count = count($properties)-2;
-	  	$i=1;
+        return $sql;
+    }
 
-	  	foreach ($properties as $key => $property) {
-	  	 	if($key!="id" && $key!="erreurs"){
-	  	 		$sql .= $key;
-	  	 		if($i<$count) $sql.=",";
-	  	 		$sql.=" ";
-	  	 	}
-	  	 	$i++;
-	  	} 
+    /**
+     * @param \PDOStatement $query
+     * @param $properties
+     * @throws Exception
+     */
+    public function bindProperties(&$query, $properties)
+    {
+        if (!$query) {
+            throw new \Exception($this->dao->errorInfo());
+        }
 
-	  	$i=1;
-	  	$sql .= ") VALUES (";
-		foreach ($properties as $key => $property) {
-	  	 	if($key!="id" && $key!="erreurs"){
-	  	 		$sql .= ":".$key;
-	  	 		if($i<$count) $sql.=",";
-	  	 		$sql.=" ";
-	  	 	}
-	  	 	$i++;
-	  	} 
-		$sql .= ")";
-	 
-		$q = $this->dao->prepare($sql);
-
-		if(!is_bool($q)){  
-			foreach ($properties as $key => $property) {
-			
-				if($key!="erreurs" && $key!="id"){		
-					$q->bindValue(':'.$key,$property);
-				}
-			}
-			$success = $q->execute();
-			$q->closeCursor();
-		}else{
-			throw new \RuntimeException("PDO error : cannot add $entity");
-		}
-	
-	}
-
-	public function getUnique($id)
-	 {
-
-	 	$entityName = "\\Entity\\".ucfirst(substr($this->tableName, 0, -1));  
-		
-	 	$sql="SELECT * FROM $this->tableName WHERE id = :id"; 
-
-		$q = $this->dao->prepare($sql);
-		$q->bindValue(':id', (int) $id, \PDO::PARAM_INT);
-		$q->execute();		
-
-		$q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $entityName);
-
-		if ($this->entity = $q->fetch()){
-		  $q->closeCursor();
-		  return $this->entity;
-		}else{
-
-			throw new \Exception("PDO error : cannot fetch unique $entity at $id");
-		}
-
-		$q->closeCursor();
-		return null;
-	 }
-
- 	
-  	//GETTERS
-	public function tableName(){return $this->tableName;}	
-
-	//SETTERS
-	public function setTableName($tableName){
-		if(!empty($tableName) && is_string($tableName)){
-			$this->tableName=$tableName;
-		}else{
-			throw new Exception("$tableName is not a string or is empty");
-		}
-	}
-
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs") {
+                $query->bindValue(':' . $key, $property);
+            }
+        }
+    }
 }

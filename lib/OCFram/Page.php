@@ -26,7 +26,7 @@ class Page extends ApplicationComponent
 
     /**
      * @param string $var
-     * @param string $value
+     * @param mixed $value
      */
     public function addVar($var, $value)
     {

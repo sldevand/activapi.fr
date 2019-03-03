@@ -2,16 +2,15 @@
 
 namespace Model;
 
-use \OCFram\Manager;
-use \Entity\Scenario;
+use OCFram\Entity;
 
-class ScenariosManagerPDO extends Manager
+class ScenariosManagerPDO extends ManagerPDO
 {
     /**
-     * @param Scenario $scenario
+     * @param Entity $scenario
      * @return mixed
      */
-    public function add(Scenario $scenario)
+    public function add(Entity $scenario)
     {
         //On vérifie si le nom existe deja dans scenario_corresp
         $q = $this->dao->prepare('SELECT nom FROM scenario_corresp WHERE nom=:nom');
@@ -24,16 +23,12 @@ class ScenariosManagerPDO extends Manager
         echo $scenario->nom();
 
         if ($nom != $scenario->nom()) {
-
-
-            //Ajout du nom dans scenario_corresp
             $q = $this->dao->prepare('INSERT INTO scenario_corresp (nom) VALUES (:nom)');
             $q->bindValue(':nom', $scenario->nom());
             $success = $q->execute();
             $q->closeCursor();
         } else {
             echo 'ce nom existe deja';
-
         }
 
         //On ramene l'id de scenario_corresp en fonction du nom
@@ -44,7 +39,9 @@ class ScenariosManagerPDO extends Manager
         $q->closeCursor();
 
         //On persiste dans scenario l'objet scenario
-        $q = $this->dao->prepare('INSERT INTO scenario (scenarioid,actionneurid,etat) VALUES (:scenarioid,:actionneurid,:etat)');
+        $q = $this->dao->prepare(
+            'INSERT INTO scenario (scenarioid,actionneurid,etat) VALUES (:scenarioid,:actionneurid,:etat)'
+        );
         $q->bindValue(':scenarioid', $scenario->scenarioid());
         $q->bindValue(':actionneurid', $scenario->actionneurid());
         $q->bindValue(':etat', $scenario->etat());
@@ -84,10 +81,12 @@ class ScenariosManagerPDO extends Manager
 
     /**
      * @param $id
+     * @return null|Entity
+     * @throws \Exception
      */
     public function getUnique($id)
     {
-
+        return parent::getUnique($id);
     }
 
     /**
@@ -99,7 +98,7 @@ class ScenariosManagerPDO extends Manager
 			FROM scenario_corresp 
 			INNER JOIN scenario
 			ON scenario.scenarioid = scenario_corresp.id	   
-	';
+	    ';
 
         $q = $this->dao->prepare($sql);
         $q->execute();
@@ -110,7 +109,6 @@ class ScenariosManagerPDO extends Manager
         $q->closeCursor();
 
         return $result;
-
     }
 
     /**
@@ -125,7 +123,7 @@ class ScenariosManagerPDO extends Manager
 			ON scenario.scenarioid = scenario_corresp.id	   
 		    WHERE scenario.scenarioid=:id
 		    GROUP BY scenario.scenarioid
-	';
+	    ';
 
         $q = $this->dao->prepare($sql);
         $q->bindParam(':id', $id);
@@ -137,7 +135,6 @@ class ScenariosManagerPDO extends Manager
         $q->closeCursor();
 
         return $result;
-
     }
 
     /**
@@ -160,13 +157,12 @@ class ScenariosManagerPDO extends Manager
         $q->closeCursor();
 
         return $result;
-
     }
 
     /**
-     * @param Scenario $scenario
+     * @param Entity $scenario
      */
-    public function update(Scenario $scenario)
+    public function update(Entity $scenario)
     {
 
         $q = $this->dao->prepare('UPDATE scenario_corresp SET nom = :nom WHERE id = :id');
@@ -181,21 +177,26 @@ class ScenariosManagerPDO extends Manager
     }
 
     /**
-     * @param Scenario $scenario
+     * @param Entity $scenario
      */
-    public function updateItem(Scenario $scenario)
+    public function updateItem(Entity $scenario)
     {
-        $q = $this->dao->prepare('UPDATE scenario SET scenarioid = :scenarioid, actionneurid = :actionneurid, etat = :etat WHERE id = :id');
+        $q = $this->dao->prepare(
+            'UPDATE scenario 
+                      SET scenarioid = :scenarioid, actionneurid = :actionneurid, etat = :etat 
+                      WHERE id = :id'
+        );
 
-        if ($q) {
-            $q->bindValue(':id', $scenario->id());
-            $q->bindValue(':scenarioid', $scenario->scenarioid());
-            $q->bindValue(':actionneurid', $scenario->actionneurid());
-            $q->bindValue(':etat', $scenario->etat());
-            $q->execute();
-            $q->closeCursor();
-        } else {
+        if (!$q) {
             print_r($this->dao->errorInfo());
+            return;
         }
+
+        $q->bindValue(':id', $scenario->id());
+        $q->bindValue(':scenarioid', $scenario->scenarioid());
+        $q->bindValue(':actionneurid', $scenario->actionneurid());
+        $q->bindValue(':etat', $scenario->etat());
+        $q->execute();
+        $q->closeCursor();
     }
 }
