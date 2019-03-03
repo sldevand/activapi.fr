@@ -32,7 +32,10 @@ class Form
     {
         $field->setWrapper($wrapper);
         $attr = $field->name();
-        $field->setValue($this->entity->$attr());
+
+        if (empty($field->getValue())) {
+            $field->setValue($this->entity->$attr());
+        }
 
         $this->fields[] = $field;
         return $this;

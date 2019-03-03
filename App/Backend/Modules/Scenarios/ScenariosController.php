@@ -5,6 +5,7 @@ namespace App\Backend\Modules\Scenarios;
 use Entity\Actionneur;
 use Entity\Scenario;
 use Model\ActionneursManagerPDO;
+use Model\ScenariosManagerPDO;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 
@@ -72,15 +73,26 @@ class ScenariosController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeInsert(HTTPRequest $request)
     {
+        /** @var ScenariosManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Scenarios');
+
+        if (!$request->postsExist()) {
+            $request->getJsonPost();
+        }
+
+        $nom = $request->postData('nom');
+        $actionneurId = $request->postData('actionneurid');
+        $etat = $request->postData('etat');
+
         $scenario = new Scenario(
             [
-                'nom' => $request->postData('nom'),
-                'actionneurid' => $request->postData('actionneurid'),
-                'etat' => $request->postData('etat')
+                'nom' => $nom,
+                'actionneurid' => $actionneurId,
+                'etat' => $etat
 
             ]
         );

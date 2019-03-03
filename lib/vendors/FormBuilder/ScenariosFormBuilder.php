@@ -2,6 +2,7 @@
 
 namespace FormBuilder;
 
+use Entity\Scenario;
 use OCFram\FormBuilder;
 use OCFram\NumberField;
 use OCFram\SelectField;
@@ -15,14 +16,13 @@ class ScenariosFormBuilder extends FormBuilder
 {
     public function build()
     {
-        $actionneursRaw = json_decode(json_encode($this->form()->entity()->actionneurs), true);
-
-        $actionneurs = [];
-        foreach ($actionneursRaw as $key => $actionneur) {
-            $actionneurs[$actionneur["id"]] = $actionneur["nom"];
+        $actionneursListRaw = json_decode(json_encode($this->form()->entity()->actionneurs), true);
+        $actionneursSelect = [];
+        foreach ($actionneursListRaw as $key => $actionneur) {
+            $actionneursSelect[$actionneur["id"]] = $actionneur["nom"];
         }
 
-        $etat = !empty($this->form()->entity()->etat()) ? $this->form()->entity()->etat() : '0';
+        $sequence = !empty($this->form()->entity()->sequence) ? $this->form()->entity()->sequence : [];
 
         $this->form
             ->add(
@@ -31,7 +31,8 @@ class ScenariosFormBuilder extends FormBuilder
                     'name' => 'scenarioid',
                     'value' => $this->form()->entity()->scenarioid(),
                     'readonly' => 'true'
-                ])
+                ]),
+                'col s4'
             )->add(
                 new StringField([
                     'label' => 'Nom',
@@ -40,13 +41,28 @@ class ScenariosFormBuilder extends FormBuilder
                     'required' => 'true'
                 ]),
                 'col s8'
-            )->add(
+            );
+        if (empty($sequence)) {
+            $this->createNewSequenceFields($actionneursSelect);
+        } else {
+            $this->createSequenceFields($sequence, $actionneursSelect);
+        }
+    }
+
+    /**
+     * @param array $actionneursSelect
+     */
+    public function createNewSequenceFields($actionneursSelect)
+    {
+        $this->form
+            ->add(
                 new SelectField([
                     'label' => 'Actionneur',
                     'name' => 'actionneurid',
-                    'selected' => $this->form()->entity()->actionneurid(),
-                    'options' => $actionneurs
-                ])
+                    'options' => $actionneursSelect,
+                    'required' => 'true'
+                ]),
+                'col s8'
             )->add(
                 new NumberField([
                     'label' => 'Etat',
@@ -54,8 +70,41 @@ class ScenariosFormBuilder extends FormBuilder
                     'min' => 0,
                     'max' => 255,
                     'step' => 1,
-                    'value' => $etat
-                ])
+                    'required' => 'true'
+                ]),
+                'col s4'
             );
+    }
+
+    /**
+     * @param Scenario[] $sequence
+     * @param array $actionneursSelect
+     */
+    public function createSequenceFields($sequence, $actionneursSelect)
+    {
+        foreach ($sequence as $item) {
+            $this->form
+                ->add(
+                    new SelectField([
+                        'label' => 'Actionneur',
+                        'name' => 'actionneurid',
+                        'selected' => $item->actionneurId(),
+                        'options' => $actionneursSelect,
+                        'required' => 'true'
+                    ]),
+                    'col s8'
+                )->add(
+                    new NumberField([
+                        'label' => 'Etat',
+                        'name' => 'etat',
+                        'min' => 0,
+                        'max' => 255,
+                        'step' => 1,
+                        'value' => $item->etat(),
+                        'required' => 'true'
+                    ]),
+                    'col s4'
+                );
+        }
     }
 }

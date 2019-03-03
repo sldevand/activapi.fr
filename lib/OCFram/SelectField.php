@@ -1,54 +1,92 @@
 <?php
+
 namespace OCFram;
 
+/**
+ * Class SelectField
+ * @package OCFram
+ */
 class SelectField extends Field
 {
-  protected $options=[];
-  protected $selected;
-  protected $disabled;
-  
-  public function buildWidget()
-  { $disabled='';
-    if($this->disabled) $disabled="disabled";
+    /**
+     * @var array $options
+     */
+    protected $options = [];
 
-    $widget = '';
-    
-    if (!empty($this->errorMessage))
+    /**
+     * @var string $selected
+     */
+    protected $selected;
+
+    /**
+     * @var string $disabled
+     */
+    protected $disabled;
+
+    /**
+     * @return mixed|string
+     */
+    public function buildWidget()
     {
-      $widget .= $this->errorMessage.'<br />';
-    }  
+        $disabled = '';
+        if ($this->disabled) {
+            $disabled = "disabled";
+        }
 
-    $widget .= '<label>'.$this->label.'</label>';
-    $widget .='<select '.$disabled.' name="'.$this->name.'">';   
+        $widget = '';
 
-    foreach ($this->options as $key => $option) {       
-     $widget .='<option value="'.$key.'"';
+        if (!empty($this->errorMessage)) {
+            $widget .= $this->errorMessage . '<br />';
+        }
 
-     if($key==$this->selected) $widget.='selected';   
+        $widget .= '<label>' . $this->label . '</label>';
+        $widget .= '<select ' . $disabled . ' name="' . $this->name . '">';
 
-     $widget .= '>'.$option.'</option>';
+        foreach ($this->options as $key => $option) {
+            $widget .= '<option value="' . $key . '"';
+
+            if ($key == $this->selected) {
+                $widget .= 'selected';
+            }
+
+            $widget .= '>' . $option . '</option>';
+        }
+
+        $widget .= '</select>';
+        return $widget;
     }
 
-    $widget .='</select>';    
-    return $widget;
-  }
-  
-  public function setOptions($options)
-  {
-   if(is_array($options)){
-    $this->options=$options;
-   }else{
-    throw new \RuntimeException('Les options sont invalides!');
-   }
-  }
+    /**
+     * @param $options
+     */
+    public function setOptions($options)
+    {
+        if (is_array($options)) {
+            $this->options = $options;
+        } else {
+            throw new \RuntimeException('Les options sont invalides!');
+        }
+    }
 
-  public function setSelected($selected)
-  {
-    $this->selected=$selected;
-  }
+    /**
+     * @param string $selected
+     * @return SelectField
+     */
+    public function setSelected($selected)
+    {
+        $this->selected = $selected;
 
-   public function setDisabled($disabled)
-  {
-    $this->disabled=$disabled;
-  }
+        return $this;
+    }
+
+    /**
+     * @param string $disabled
+     * @return SelectField
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+
+        return $this;
+    }
 }

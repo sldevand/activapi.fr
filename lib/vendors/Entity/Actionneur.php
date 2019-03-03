@@ -1,77 +1,216 @@
 <?php
+
 namespace Entity;
 
-use \OCFram\Entity;
+use OCFram\Entity;
 
-class Actionneur extends Entity{
-	protected $nom;
-	protected $module;
-	protected $protocole;
-	protected $adresse;
-	protected $type;
-	protected $radioid;
-	protected $etat;
-	protected $categorie;
+/**
+ * Class Actionneur
+ * @package Entity
+ */
+class Actionneur extends Entity
+{
+    /**
+     * @var string $nom
+     */
+    protected $nom;
 
-	//GETTERS
+    /**
+     * @var string $module
+     */
+    protected $module;
 
-	public function nom(){return $this->nom;}
-	public function module(){return $this->module;}
-	public function protocole(){return $this->protocole;}
-	public function adresse(){return $this->adresse;}
-	public function type(){return $this->type;}
-	public function radioid(){return $this->radioid;}
-	public function etat(){return $this->etat;}
-	public function categorie(){return $this->categorie;}
+    /**
+     * @var string $protocole
+     */
+    protected $protocole;
 
-	//SETTERS
+    /**
+     * @var string $adresse
+     */
+    protected $adresse;
 
-	public function setNom($nom){
-		$this->nom=$nom;
-	}
+    /**
+     * @var string $type
+     */
+    protected $type;
 
-	public function setModule($module){
-		$this->module=$module;
-	}
+    /**
+     * @var string $radioid
+     */
+    protected $radioid;
 
-	public function setProtocole($protocole){
-		$this->protocole=$protocole;
-	}
-	
-	public function setAdresse($adresse){
-		$this->adresse=$adresse;
-	}	
-	
-	public function setType($type){
-		$this->type=$type;
-	}
-		
-	public function setRadioid($radioid){
+    /**
+     * @var string $etat
+     */
+    protected $etat;
 
-		$this->radioid=$radioid;
-	}
+    /**
+     * @var string $categorie
+     */
+    protected $categorie;
 
-	public function setEtat($etat){
-		$this->etat=$etat;
-	}
-	
-	public function setCategorie($categorie){
-		$this->categorie=$categorie;
-	}
+    /**
+     * @return string
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
 
-	
-	public function jsonSerialize(){
+    /**
+     * @param string $nom
+     * @return Actionneur
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+        return $this;
+    }
 
-		return array(
-			'id' => $this->id(),
-			'nom' => $this->nom,
-			'module' => $this->module,
-			'protocole' => $this->protocole,
-			'adresse' => $this->adresse,
-			'type'=>$this->type,
-			'radioid' => $this->radioid,
-			'etat'=>$this->etat,
-			'categorie'=>$this->categorie
-		);
-	}
+    /**
+     * @return string
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    /**
+     * @param string $module
+     * @return Actionneur
+     */
+    public function setModule($module)
+    {
+        $this->module = $module;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProtocole()
+    {
+        return $this->protocole;
+    }
+
+    /**
+     * @param string $protocole
+     * @return Actionneur
+     */
+    public function setProtocole($protocole)
+    {
+        $this->protocole = $protocole;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdresse()
+    {
+        return $this->adresse;
+    }
+
+    /**
+     * @param string $adresse
+     * @return Actionneur
+     */
+    public function setAdresse($adresse)
+    {
+        $this->adresse = $adresse;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return Actionneur
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRadioid()
+    {
+        return $this->radioid;
+    }
+
+    /**
+     * @param string $radioid
+     * @return Actionneur
+     */
+    public function setRadioid($radioid)
+    {
+        $this->radioid = $radioid;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEtat()
+    {
+        return $this->etat;
+    }
+
+    /**
+     * @param string $etat
+     * @return Actionneur
+     */
+    public function setEtat($etat)
+    {
+        $this->etat = $etat;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategorie()
+    {
+        return $this->categorie;
+    }
+
+    /**
+     * @param string $categorie
+     * @return Actionneur
+     */
+    public function setCategorie($categorie)
+    {
+        $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+
+        return array(
+            'id' => $this->id(),
+            'nom' => $this->nom,
+            'module' => $this->module,
+            'protocole' => $this->protocole,
+            'adresse' => $this->adresse,
+            'type' => $this->type,
+            'radioid' => $this->radioid,
+            'etat' => $this->etat,
+            'categorie' => $this->categorie
+        );
+    }
 }

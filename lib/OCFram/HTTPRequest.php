@@ -71,6 +71,22 @@ class HTTPRequest extends ApplicationComponent
     }
 
     /**
+     * @return bool
+     */
+    public function postsExist()
+    {
+        return !empty($_POST);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJsonPost()
+    {
+        return $_POST = json_decode(file_get_contents('php://input'), true);
+    }
+
+    /**
      * @return mixed
      */
     public function requestURI()

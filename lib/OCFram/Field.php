@@ -148,6 +148,14 @@ abstract class Field
     }
 
     /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
      * @param string $label
      * @return $this
      */

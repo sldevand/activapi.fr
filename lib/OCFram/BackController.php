@@ -31,6 +31,11 @@ abstract class BackController extends ApplicationComponent
     protected $view = '';
 
     /**
+     * @var int
+     */
+    protected $viewId = '';
+
+    /**
      * @var null|Managers
      */
     protected $managers = null;
@@ -93,8 +98,15 @@ abstract class BackController extends ApplicationComponent
         }
 
         $this->view = $view;
+        $contentFile = __DIR__ . '/../../App/'
+            . $this->app->name()
+            . '/Modules/'
+            . $this->module
+            . '/Views/'
+            . $this->view
+            . '.php';
 
-        $this->page->setContentFile(__DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php');
+        $this->page->setContentFile($contentFile);
     }
 
     public function execute()
@@ -203,7 +215,7 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     * @param $viewId
+     * @param int $viewId
      */
     public function setViewId($viewId)
     {
@@ -215,8 +227,7 @@ abstract class BackController extends ApplicationComponent
      * @param mixed ...$args
      * @return false|string
      */
-    public
-    function getBlock($fileName, ...$args)
+    public function getBlock($fileName, ...$args)
     {
         ob_start();
         include $fileName;
@@ -226,10 +237,19 @@ abstract class BackController extends ApplicationComponent
     /**
      * @return string
      */
-    public function getApiUrl(){
+    public function getApiUrl()
+    {
         $key = OSDetectorFactory::getApiAddressKey();
         $apiBaseAddress = $this->app()->config()->get($key);
 
         return $apiBaseAddress . "api/mesures/";
+    }
+
+    /**
+     * @return int
+     */
+    public function getViewId()
+    {
+        return $this->viewId;
     }
 }

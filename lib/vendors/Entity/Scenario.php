@@ -36,6 +36,27 @@ class Scenario extends Entity
     protected $etat;
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        $properties = get_object_vars($this);
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs"
+                && !isset($property)
+                && $key !== 'actionneur'
+                && $key !== 'id'
+            ) {
+                $objClass = new \ReflectionObject($this);
+                $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is not set";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @return string
      */
     public function nom()

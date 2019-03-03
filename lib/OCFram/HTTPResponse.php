@@ -9,12 +9,12 @@ namespace OCFram;
 class HTTPResponse extends ApplicationComponent
 {
     /**
-     * @var
+     * @var Page $page
      */
     protected $page;
 
     /**
-     * @param $location
+     * @param string $location
      */
     public function redirect($location)
     {
@@ -26,9 +26,7 @@ class HTTPResponse extends ApplicationComponent
     {
         $this->page = new Page($this->app);
         $this->page->setContentFile(__DIR__ . '/../../Errors/404.html');
-
         $this->addHeader('HTTP/1.0 404 Not Found');
-
         $this->send();
     }
 
@@ -47,6 +45,7 @@ class HTTPResponse extends ApplicationComponent
 
     public function sendJSON()
     {
+        header('Content-Type: application/json');
         exit($this->page->getGeneratedJSON());
     }
 
@@ -67,8 +66,15 @@ class HTTPResponse extends ApplicationComponent
      * @param bool $secure
      * @param bool $httpOnly
      */
-    public function setCookie($name, $value = '', $expire = 0, $path = null, $domain = null, $secure = false, $httpOnly = true)
-    {
+    public function setCookie(
+        $name,
+        $value = '',
+        $expire = 0,
+        $path = null,
+        $domain = null,
+        $secure = false,
+        $httpOnly = true
+    ) {
         setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
     }
 }

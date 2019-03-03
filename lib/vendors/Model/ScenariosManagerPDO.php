@@ -2,6 +2,8 @@
 
 namespace Model;
 
+use Entity\Actionneur;
+use Entity\Scenario;
 use OCFram\Entity;
 
 class ScenariosManagerPDO extends ManagerPDO
@@ -9,21 +11,18 @@ class ScenariosManagerPDO extends ManagerPDO
     /**
      * @param Entity $scenario
      * @return mixed
+     * @throws \Exception
      */
     public function add(Entity $scenario)
     {
-        //On vérifie si le nom existe deja dans scenario_corresp
-        $q = $this->dao->prepare('SELECT nom FROM scenario_corresp WHERE nom=:nom');
+        $q = $this->prepare('SELECT nom FROM scenario_corresp WHERE nom=:nom');
         $q->bindValue(':nom', $scenario->nom());
         $q->execute();
         $nom = $q->fetchColumn();
         $q->closeCursor();
 
-        echo $nom;
-        echo $scenario->nom();
-
-        if ($nom != $scenario->nom()) {
-            $q = $this->dao->prepare('INSERT INTO scenario_corresp (nom) VALUES (:nom)');
+        if ($nom !== $scenario->nom()) {
+            $q = $this->prepare('INSERT INTO scenario_corresp (nom) VALUES (:nom)');
             $q->bindValue(':nom', $scenario->nom());
             $success = $q->execute();
             $q->closeCursor();
@@ -32,14 +31,14 @@ class ScenariosManagerPDO extends ManagerPDO
         }
 
         //On ramene l'id de scenario_corresp en fonction du nom
-        $q = $this->dao->prepare('SELECT id FROM scenario_corresp WHERE nom=:nom');
+        $q = $this->prepare('SELECT id FROM scenario_corresp WHERE nom=:nom');
         $q->bindValue(':nom', $scenario->nom());
         $q->execute();
         $scenario->setScenarioid((int)$q->fetchColumn());
         $q->closeCursor();
 
         //On persiste dans scenario l'objet scenario
-        $q = $this->dao->prepare(
+        $q = $this->prepare(
             'INSERT INTO scenario (scenarioid,actionneurid,etat) VALUES (:scenarioid,:actionneurid,:etat)'
         );
         $q->bindValue(':scenarioid', $scenario->scenarioid());
@@ -102,9 +101,7 @@ class ScenariosManagerPDO extends ManagerPDO
 
         $q = $this->dao->prepare($sql);
         $q->execute();
-
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Scenario');
-
         $result = $q->fetchAll();
         $q->closeCursor();
 
@@ -161,36 +158,28 @@ class ScenariosManagerPDO extends ManagerPDO
 
     /**
      * @param Entity $scenario
+     * @throws \Exception
      */
     public function update(Entity $scenario)
     {
-
-        $q = $this->dao->prepare('UPDATE scenario_corresp SET nom = :nom WHERE id = :id');
-        if ($q) {
-            $q->bindValue(':id', $scenario->id());
-            $q->bindValue(':nom', $scenario->nom());
-            $q->execute();
-            $q->closeCursor();
-        } else {
-            print_r($this->dao->errorInfo());
-        }
+        $q = $this->prepare('UPDATE scenario_corresp SET nom = :nom WHERE id = :id');
+        $q->bindValue(':id', $scenario->id());
+        $q->bindValue(':nom', $scenario->nom());
+        $q->execute();
+        $q->closeCursor();
     }
 
     /**
      * @param Entity $scenario
+     * @throws \Exception
      */
     public function updateItem(Entity $scenario)
     {
-        $q = $this->dao->prepare(
+        $q = $this->prepare(
             'UPDATE scenario 
                       SET scenarioid = :scenarioid, actionneurid = :actionneurid, etat = :etat 
                       WHERE id = :id'
         );
-
-        if (!$q) {
-            print_r($this->dao->errorInfo());
-            return;
-        }
 
         $q->bindValue(':id', $scenario->id());
         $q->bindValue(':scenarioid', $scenario->scenarioid());
@@ -198,5 +187,28 @@ class ScenariosManagerPDO extends ManagerPDO
         $q->bindValue(':etat', $scenario->etat());
         $q->execute();
         $q->closeCursor();
+    }
+
+    /**
+     * @param int $scenarioId
+     * @return array
+     * @throws \Exception
+     */
+    public function getSequence($scenarioId = null)
+    {
+        if (!$scenarioId) {
+            return [];
+        }
+
+        $q = $this->prepare(
+            'SELECT * FROM scenario WHERE scenarioid = :scenarioid'
+        );
+        $q->bindValue(':scenarioid', (int)$scenarioId);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, Scenario::class);
+        $result = $q->fetchAll();
+        $q->closeCursor();
+
+        return $result;
     }
 }

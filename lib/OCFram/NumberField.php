@@ -12,10 +12,12 @@ class NumberField extends Field
      * @var float $min
      */
     protected $min;
+
     /**
      * @var float $max
      */
     protected $max;
+
     /**
      * @var float $step
      */

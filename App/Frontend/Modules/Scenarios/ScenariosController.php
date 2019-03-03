@@ -8,6 +8,7 @@ use FormBuilder\ScenariosFormBuilder;
 use Materialize\FloatingActionButton;
 use Materialize\Link;
 use Materialize\WidgetFactory;
+use Model\ScenariosManagerPDO;
 use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 
@@ -19,6 +20,7 @@ class ScenariosController extends ScenariosBackController
 {
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
@@ -112,9 +114,11 @@ class ScenariosController extends ScenariosBackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
+        /** @var ScenariosManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Scenarios');
         $actionneursManager = $this->managers->getManagerOf('Actionneurs');
         $actionneurs = $actionneursManager->getList();
@@ -131,11 +135,13 @@ class ScenariosController extends ScenariosBackController
             if ($request->getExists('scenarioid')) {
                 $id = $request->getData('scenarioid');
                 $item->setId($id);
+                $item->sequence = $manager->getSequence($id);
             }
         } else {
             if ($request->getExists('scenarioid')) {
                 $id = $request->getData("scenarioid");
                 $item = $manager->getScenario($id);
+                $item->sequence = $manager->getSequence($id);
             } else {
                 $domId = 'Ajout';
                 $item = new Scenario();
@@ -145,11 +151,9 @@ class ScenariosController extends ScenariosBackController
         $item->actionneurs = $actionneurs;
 
         $cards = [];
-
         $tmfb = new ScenariosFormBuilder($item);
         $tmfb->build();
         $form = $tmfb->form();
-
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {

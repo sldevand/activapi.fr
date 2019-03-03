@@ -31,7 +31,7 @@
     <route url="\/activapi.fr\/thermostat-modes-delete-([0-9]+)" module="ThermostatModes" action="delete" vars="id"/>
     <route url="\/activapi.fr\/thermostat-modes-edit-([0-9]+)" module="ThermostatModes" action="edit" vars="id"/>
 
-    <route url="\/activapi.fr\/scenarios-?([0-9]*)?" module="Scenarios" action="index" vars="id" />
+    <route url="\/activapi.fr\/scenarios-?([0-9]*)?\/?" module="Scenarios" action="index" vars="id" />
     <route url="\/activapi.fr\/scenarios-add" module="Scenarios" action="edit"/>
     <route url="\/activapi.fr\/scenarios-delete-([0-9]+)" module="Scenarios" action="delete"  vars="id"  />
     <route url="\/activapi.fr\/scenarios-delete-item" module="Scenarios" action="deleteitem"  />

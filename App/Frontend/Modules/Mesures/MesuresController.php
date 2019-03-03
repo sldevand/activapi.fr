@@ -49,7 +49,7 @@ class MesuresController extends BackController
         $domId = 'Mesures';
         $table = WidgetFactory::makeTable($domId, $listeMesures);
         $card = WidgetFactory::makeCard($domId, $domId);
-        $card->addContent($this->measuresView($nbMesures,$nDernieresMesures,$table));
+        $card->addContent($this->measuresView($nbMesures, $nDernieresMesures, $table));
 
         return $card;
     }
