@@ -1,7 +1,8 @@
-<?php $form = $args[0] ?>
+<?php
+    $form = $args[0];
+    $button = $args[1];
+?>
 <form action="" method="post" class="row">
     <?= $form->createView(); ?>
-    <div class="col s12">
-        <input class="btn-flat" type="submit" value="Valider"/>
-    </div>
+    <?= $button->getHtml(); ?>
 </form>

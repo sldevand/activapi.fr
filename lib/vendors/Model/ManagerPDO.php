@@ -67,7 +67,7 @@ class ManagerPDO extends Manager
     {
         $sql = "UPDATE $this->tableName SET ";
         $properties = $entity->properties();
-        $sql .= $this->addProperties($sql, $properties);
+        $sql = $this->addProperties($sql, $properties);
         $sql .= "WHERE id = :id";
         $q = $this->prepare($sql);
         $this->bindProperties($q, $properties);
@@ -149,7 +149,7 @@ class ManagerPDO extends Manager
     {
         $query = $this->dao->prepare($sql);
         if (!$query) {
-            throw new \Exception($this->dao->errorInfo());
+            throw new \Exception(implode(" ", $this->dao->errorInfo()));
         }
 
         return $query;

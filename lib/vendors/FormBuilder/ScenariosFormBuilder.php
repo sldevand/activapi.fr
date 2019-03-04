@@ -16,7 +16,7 @@ class ScenariosFormBuilder extends FormBuilder
 {
     public function build()
     {
-        $actionneursListRaw = json_decode(json_encode($this->form()->entity()->actionneurs), true);
+        $actionneursListRaw = json_decode(json_encode($this->form()->entity()->actionneursList), true);
         $actionneursSelect = [];
         foreach ($actionneursListRaw as $key => $actionneur) {
             $actionneursSelect[$actionneur["id"]] = $actionneur["nom"];
@@ -56,17 +56,25 @@ class ScenariosFormBuilder extends FormBuilder
     {
         $this->form
             ->add(
+                new StringField([
+                    'label' => 'ItemId',
+                    'name' => 'actionneurs[id][]',
+                    'required' => 'true',
+                    'readonly' => 'true'
+                ]),
+                'col s2'
+            )->add(
                 new SelectField([
                     'label' => 'Actionneur',
-                    'name' => 'actionneurid',
+                    'name' => 'actionneurs[actionneurid][]',
                     'options' => $actionneursSelect,
                     'required' => 'true'
                 ]),
-                'col s8'
+                'col s6'
             )->add(
                 new NumberField([
                     'label' => 'Etat',
-                    'name' => 'etat',
+                    'name' => 'actionneurs[etat][]',
                     'min' => 0,
                     'max' => 255,
                     'step' => 1,
@@ -85,18 +93,28 @@ class ScenariosFormBuilder extends FormBuilder
         foreach ($sequence as $item) {
             $this->form
                 ->add(
+                    new StringField([
+                        'label' => 'ItemId',
+                        'name' => 'actionneurs[id][]',
+                        'value' => $item->id(),
+                        'required' => 'true',
+                        'readonly' => 'true'
+                    ]),
+                    'col s2'
+                )
+                ->add(
                     new SelectField([
                         'label' => 'Actionneur',
-                        'name' => 'actionneurid',
+                        'name' => 'actionneurs[actionneurid][]',
                         'selected' => $item->actionneurId(),
                         'options' => $actionneursSelect,
                         'required' => 'true'
                     ]),
-                    'col s8'
+                    'col s6'
                 )->add(
                     new NumberField([
                         'label' => 'Etat',
-                        'name' => 'etat',
+                        'name' => 'actionneurs[etat][]',
                         'min' => 0,
                         'max' => 255,
                         'step' => 1,

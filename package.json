@@ -12,6 +12,7 @@
         "babelifyGraph": "./node_modules/.bin/watchify  ./src/graphs.js -t [babelify] -o ./Web/dist/graphs.js",
         "babelifySocketio": "./node_modules/.bin/watchify  ./src/socketio.js -t [babelify] -o ./Web/dist/socketio.js",
         "babelifyModes": "./node_modules/.bin/watchify  ./src/modesManage.js -t [babelify] -o ./Web/dist/modesManage.js",
+        "babelifyScenarios": "./node_modules/.bin/watchify  ./src/scenariosManage.js -t [babelify] -o ./Web/dist/scenariosManage.js",
         "sassify": "./node_modules/.bin/node-sass --watch ./src/index.scss ./Web/dist/index.css",
         "sync": "./node_modules/.bin/browser-sync start --server --files \"./Web/dist/index.*\""
     },

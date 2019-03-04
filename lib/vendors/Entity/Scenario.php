@@ -36,6 +36,11 @@ class Scenario extends Entity
     protected $etat;
 
     /**
+     * @var Actionneur[] $actionneurs
+     */
+    protected $actionneurs;
+
+    /**
      * @return bool
      */
     public function isValid()
@@ -46,6 +51,9 @@ class Scenario extends Entity
                 && !isset($property)
                 && $key !== 'actionneur'
                 && $key !== 'id'
+                && $key !== 'actionneurid'
+                && $key !== 'etat'
+
             ) {
                 $objClass = new \ReflectionObject($this);
                 $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is not set";
@@ -70,6 +78,14 @@ class Scenario extends Entity
     public function actionneur()
     {
         return $this->actionneur;
+    }
+
+    /**
+     * @return Actionneur[]
+     */
+    public function actionneurs()
+    {
+        return $this->actionneurs;
     }
 
     /**
@@ -149,6 +165,32 @@ class Scenario extends Entity
         $this->etat = $etat;
 
         return $this;
+    }
+
+    /**
+     * @param Actionneur[] actionneurs
+     */
+    public function setActionneurs($actionneurs)
+    {
+        $this->actionneurs = $actionneurs;
+    }
+
+    /**
+     * @param Actionneur $actionneur
+     */
+    public function addActionneur($actionneur)
+    {
+        $this->actionneurs[$actionneur->id()] = $actionneur;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function removeActionneur($id)
+    {
+        if (!empty($this->actionneurs[$id])) {
+            unset($this->actionneurs[$id]);
+        }
     }
 
     /**

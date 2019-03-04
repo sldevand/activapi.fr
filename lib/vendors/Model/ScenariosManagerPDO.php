@@ -2,7 +2,6 @@
 
 namespace Model;
 
-use Entity\Actionneur;
 use Entity\Scenario;
 use OCFram\Entity;
 
@@ -15,42 +14,75 @@ class ScenariosManagerPDO extends ManagerPDO
      */
     public function add(Entity $scenario)
     {
-        $q = $this->prepare('SELECT nom FROM scenario_corresp WHERE nom=:nom');
+
+        if ($this->fetchScenarioCorresp($scenario)) {
+            return false;
+        }
+
+        $scenarioCorresp = $this->insertScenarioCorresp($scenario);
+        $scenario->setScenarioid($scenarioCorresp);
+
+        foreach ($scenario->actionneurs() as $actionneur) {
+            $scenario->setId($actionneur->getRadioId());
+            $scenario->setActionneurId($actionneur->id());
+            $scenario->setEtat($actionneur->getEtat());
+            $this->insertScenario($scenario);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $scenario
+     * @return string
+     * @throws \Exception
+     */
+    public function fetchScenarioCorresp($scenario)
+    {
+        $q = $this->prepare('SELECT * FROM scenario_corresp WHERE nom=:nom');
         $q->bindValue(':nom', $scenario->nom());
         $q->execute();
         $nom = $q->fetchColumn();
         $q->closeCursor();
 
-        if ($nom !== $scenario->nom()) {
-            $q = $this->prepare('INSERT INTO scenario_corresp (nom) VALUES (:nom)');
-            $q->bindValue(':nom', $scenario->nom());
-            $success = $q->execute();
-            $q->closeCursor();
-        } else {
-            echo 'ce nom existe deja';
-        }
+        return $nom;
+    }
 
-        //On ramene l'id de scenario_corresp en fonction du nom
-        $q = $this->prepare('SELECT id FROM scenario_corresp WHERE nom=:nom');
+    /**
+     * @param $scenario
+     * @return bool
+     * @throws \Exception
+     */
+    public function insertScenarioCorresp($scenario)
+    {
+        $q = $this->prepare('INSERT INTO scenario_corresp (nom) VALUES (:nom)');
         $q->bindValue(':nom', $scenario->nom());
-        $q->execute();
-        $scenario->setScenarioid((int)$q->fetchColumn());
+        $success = $q->execute();
         $q->closeCursor();
 
-        //On persiste dans scenario l'objet scenario
+        return $this->fetchScenarioCorresp($scenario);
+    }
+
+    /**
+     * @param $scenario
+     * @return mixed
+     * @throws \Exception
+     */
+    public function insertScenario($scenario)
+    {
         $q = $this->prepare(
             'INSERT INTO scenario (scenarioid,actionneurid,etat) VALUES (:scenarioid,:actionneurid,:etat)'
         );
         $q->bindValue(':scenarioid', $scenario->scenarioid());
         $q->bindValue(':actionneurid', $scenario->actionneurid());
         $q->bindValue(':etat', $scenario->etat());
-
         $q->execute();
         $result = $q->fetchColumn();
         $q->closeCursor();
 
         return $result;
     }
+
 
     /**
      * @return mixed
@@ -137,6 +169,7 @@ class ScenariosManagerPDO extends ManagerPDO
     /**
      * @param $id
      * @return mixed
+     * @throws \Exception
      */
     public function getName($id)
     {
@@ -147,7 +180,7 @@ class ScenariosManagerPDO extends ManagerPDO
 	          WHERE scenario.id=:id
 	';
 
-        $q = $this->dao->prepare($sql);
+        $q = $this->prepare($sql);
         $q->bindParam(':id', $id);
         $q->execute();
         $result = $q->fetchColumn();
@@ -167,6 +200,13 @@ class ScenariosManagerPDO extends ManagerPDO
         $q->bindValue(':nom', $scenario->nom());
         $q->execute();
         $q->closeCursor();
+
+        foreach ($scenario->actionneurs() as $actionneur) {
+            $scenario->setId($actionneur->getRadioId());
+            $scenario->setActionneurId($actionneur->id());
+            $scenario->setEtat($actionneur->getEtat());
+            $this->updateItem($scenario);
+        }
     }
 
     /**
@@ -176,16 +216,13 @@ class ScenariosManagerPDO extends ManagerPDO
     public function updateItem(Entity $scenario)
     {
         $q = $this->prepare(
-            'UPDATE scenario 
-                      SET scenarioid = :scenarioid, actionneurid = :actionneurid, etat = :etat 
-                      WHERE id = :id'
+            'UPDATE scenario SET  actionneurid = :actionneurid, etat = :etat WHERE id = :id'
         );
 
         $q->bindValue(':id', $scenario->id());
-        $q->bindValue(':scenarioid', $scenario->scenarioid());
         $q->bindValue(':actionneurid', $scenario->actionneurid());
         $q->bindValue(':etat', $scenario->etat());
-        $q->execute();
+        $result = $q->execute();
         $q->closeCursor();
     }
 

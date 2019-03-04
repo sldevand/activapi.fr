@@ -3,6 +3,8 @@
 namespace App\Frontend\Modules\Scenarios;
 
 use App\Backend\Modules\Scenarios\ScenariosController as ScenariosBackController;
+use App\Frontend\Modules\FormView;
+use Entity\Actionneur;
 use Entity\Scenario;
 use FormBuilder\ScenariosFormBuilder;
 use Materialize\FloatingActionButton;
@@ -18,6 +20,8 @@ use OCFram\HTTPRequest;
  */
 class ScenariosController extends ScenariosBackController
 {
+    use FormView;
+
     /**
      * @param HTTPRequest $request
      * @throws \Exception
@@ -121,21 +125,38 @@ class ScenariosController extends ScenariosBackController
         /** @var ScenariosManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Scenarios');
         $actionneursManager = $this->managers->getManagerOf('Actionneurs');
-        $actionneurs = $actionneursManager->getList();
+        $actionneursList = $actionneursManager->getList();
         $domId = 'Edition';
 
         if ($request->method() == 'POST') {
-            $item = new Scenario([
-                'nom' => $request->postData('nom'),
-                'scenarioid' => $request->postData('scenarioid'),
-                'actionneurid' => $request->postData('actionneurid'),
-                'etat' => $request->postData('etat')
-            ]);
+            $item = new Scenario(
+                [
+                    'nom' => $request->postData('nom'),
+                    'scenarioid' => $request->postData('scenarioid')
+                ]
+            );
+
+            $actionneurs = $request->postData('actionneurs');
 
             if ($request->getExists('scenarioid')) {
                 $id = $request->getData('scenarioid');
                 $item->setId($id);
                 $item->sequence = $manager->getSequence($id);
+            }
+            foreach ($actionneurs as $key => $actionneur) {
+                foreach ($actionneur as $num => $elt) {
+                    $radioId = $elt;
+                    $etat = $actionneurs['etat'][$num];
+                    $actionneurid = $actionneurs['actionneurid'][$num];
+                    $item->addActionneur(new Actionneur(
+                        [
+                            'id' => $actionneurid,
+                            'etat' => $etat,
+                            'radioid' => $radioId
+                        ]
+                    ));
+                }
+                break;
             }
         } else {
             if ($request->getExists('scenarioid')) {
@@ -148,14 +169,15 @@ class ScenariosController extends ScenariosBackController
             }
         }
 
-        $item->actionneurs = $actionneurs;
+        $item->actionneursList = $actionneursList;
+
 
         $cards = [];
         $tmfb = new ScenariosFormBuilder($item);
         $tmfb->build();
         $form = $tmfb->form();
-        $fh = new FormHandler($form, $manager, $request);
 
+        $fh = new FormHandler($form, $manager, $request);
         if ($fh->process()) {
             $this->app->httpResponse()->redirect('../activapi.fr/scenarios');
         }
@@ -176,22 +198,5 @@ class ScenariosController extends ScenariosBackController
 
         $this->page->addVar('title', "Edition du Scénario");
         $this->page->addVar('cards', $cards);
-    }
-
-    /**
-     * @return false|string
-     */
-    public function deleteFormView()
-    {
-        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
-    }
-
-    /**
-     * @param $form
-     * @return false|string
-     */
-    public function editFormView($form)
-    {
-        return $this->getBlock(BLOCK . '/editFormView.phtml', $form);
     }
 }

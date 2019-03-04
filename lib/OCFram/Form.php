@@ -33,7 +33,11 @@ class Form
         $field->setWrapper($wrapper);
         $attr = $field->name();
 
-        if (empty($field->getValue())) {
+        if (!method_exists($this->entity, $attr)) {
+            $attr = 'get' . ucfirst($field->name());
+        }
+
+        if (empty($field->getValue()) && method_exists($this->entity, $attr)) {
             $field->setValue($this->entity->$attr());
         }
 
@@ -73,7 +77,7 @@ class Form
     }
 
     /**
-     * @return Entity
+     * @return mixed
      */
     public function entity()
     {
@@ -81,13 +85,21 @@ class Form
     }
 
     /**
-     * @param Entity $entity
+     * @param mixed $entity
      * @return $this
      */
-    public function setEntity(Entity $entity)
+    public function setEntity($entity)
     {
         $this->entity = $entity;
 
         return $this;
+    }
+
+    /**
+     * @return Field[]
+     */
+    public function getFields()
+    {
+        return $this->fields;
     }
 }
