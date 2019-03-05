@@ -2,6 +2,8 @@
 
 namespace OCFram;
 
+use Materialize\Widget;
+
 /**
  * Class Form
  * @package OCFram
@@ -14,6 +16,9 @@ class Form
     /** @var array $fields */
     protected $fields = [];
 
+    /** @var array $fields */
+    protected $widgets = [];
+
     /**
      * Form constructor.
      * @param Entity $entity
@@ -21,6 +26,17 @@ class Form
     public function __construct(Entity $entity)
     {
         $this->setEntity($entity);
+    }
+
+    /**
+     * @param mixed $entity
+     * @return $this
+     */
+    public function setEntity($entity)
+    {
+        $this->entity = $entity;
+
+        return $this;
     }
 
     /**
@@ -42,6 +58,17 @@ class Form
         }
 
         $this->fields[] = $field;
+        return $this;
+    }
+
+    /**
+     * @param Widget $widget
+     * @return $this
+     */
+    public function addWidget(Widget $widget)
+    {
+        $this->widgets[] = $widget;
+
         return $this;
     }
 
@@ -85,21 +112,18 @@ class Form
     }
 
     /**
-     * @param mixed $entity
-     * @return $this
-     */
-    public function setEntity($entity)
-    {
-        $this->entity = $entity;
-
-        return $this;
-    }
-
-    /**
      * @return Field[]
      */
     public function getFields()
     {
         return $this->fields;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWidgets()
+    {
+        return $this->widgets;
     }
 }
