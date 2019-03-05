@@ -166,6 +166,7 @@ class ScenariosController extends ScenariosBackController
             } else {
                 $domId = 'Ajout';
                 $item = new Scenario();
+                $item->sequence = $manager->getSequence();
             }
         }
 

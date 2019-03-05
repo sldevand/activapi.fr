@@ -234,7 +234,7 @@ class ScenariosManagerPDO extends ManagerPDO
     public function getSequence($scenarioId = null)
     {
         if (!$scenarioId) {
-            return [];
+            return [new Scenario()];
         }
 
         $q = $this->prepare(

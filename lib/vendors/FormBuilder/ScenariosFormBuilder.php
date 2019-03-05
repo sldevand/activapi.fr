@@ -3,6 +3,7 @@
 namespace FormBuilder;
 
 use Entity\Scenario;
+use Materialize\Button\FlatButton;
 use OCFram\FormBuilder;
 use OCFram\NumberField;
 use OCFram\SelectField;
@@ -42,46 +43,9 @@ class ScenariosFormBuilder extends FormBuilder
                 ]),
                 'col s8'
             );
-        if (empty($sequence)) {
-            $this->createNewSequenceFields($actionneursSelect);
-        } else {
-            $this->createSequenceFields($sequence, $actionneursSelect);
-        }
-    }
 
-    /**
-     * @param array $actionneursSelect
-     */
-    public function createNewSequenceFields($actionneursSelect)
-    {
-        $this->form
-            ->add(
-                new StringField([
-                    'label' => 'ItemId',
-                    'name' => 'actionneurs[id][]',
-                    'required' => 'true',
-                    'readonly' => 'true'
-                ]),
-                'col s2'
-            )->add(
-                new SelectField([
-                    'label' => 'Actionneur',
-                    'name' => 'actionneurs[actionneurid][]',
-                    'options' => $actionneursSelect,
-                    'required' => 'true'
-                ]),
-                'col s6'
-            )->add(
-                new NumberField([
-                    'label' => 'Etat',
-                    'name' => 'actionneurs[etat][]',
-                    'min' => 0,
-                    'max' => 255,
-                    'step' => 1,
-                    'required' => 'true'
-                ]),
-                'col s4'
-            );
+            $this->createSequenceFields($sequence, $actionneursSelect);
+
     }
 
     /**
@@ -122,6 +86,12 @@ class ScenariosFormBuilder extends FormBuilder
                         'required' => 'true'
                     ]),
                     'col s4'
+                )->addWidget(new FlatButton(
+                        [
+                            'id' => 'delete-actionneur-' . $item->id(),
+                            'icon' => 'delete'
+                        ]
+                    )
                 );
         }
     }

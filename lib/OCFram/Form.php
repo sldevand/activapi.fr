@@ -63,11 +63,17 @@ class Form
 
     /**
      * @param Widget $widget
+     * @param null|string $after
+     * @param null|string $before
      * @return $this
      */
-    public function addWidget(Widget $widget)
+    public function addWidget(Widget $widget, $before = null, $after = null)
     {
-        $this->widgets[] = $widget;
+        $this->widgets[$widget->id()] = [
+            'widget' => $widget,
+            'before' => $before,
+            'after' => $after
+        ];
 
         return $this;
     }
