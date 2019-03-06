@@ -34,8 +34,9 @@ $addButton = new \Materialize\FloatingActionButton([
         <input type="text" name="nom" id="scenario-name-<?= $entId ?>" value="<?= $scNom ?>" required>
     </div>
 
-
-    <?= $sequences ?>
+    <div id="sequences">
+        <?= $sequences ?>
+    </div>
 
     <?= $submit->getHtml(); ?>
     <?= $addButton->getHtml() ?>
