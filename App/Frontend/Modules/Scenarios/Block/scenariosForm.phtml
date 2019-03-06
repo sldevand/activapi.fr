@@ -10,6 +10,15 @@ $entity = $form->entity();
 $entId = $entity->id();
 $scId = $entity->scenarioid();
 $scNom = $entity->nom();
+
+$addButton = new \Materialize\FloatingActionButton([
+    'id' => 'sequence-add',
+    'icon' => 'add',
+    'wrapper' => 'col s6',
+    'fixed' => true
+
+]);
+
 ?>
 <form class="row" action="" method="post">
     <div class="col s4">
@@ -63,4 +72,5 @@ $scNom = $entity->nom();
         </div>
     <?php endforeach; ?>
     <?= $submit->getHtml(); ?>
+    <?= $addButton->getHtml() ?>
 </form>
