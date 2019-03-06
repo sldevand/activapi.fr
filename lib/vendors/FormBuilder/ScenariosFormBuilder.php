@@ -44,7 +44,7 @@ class ScenariosFormBuilder extends FormBuilder
                 'col s8'
             );
 
-            $this->createSequenceFields($sequence, $actionneursSelect);
+        //$this->createSequenceFields($sequence, $actionneursSelect);
 
     }
 
@@ -60,6 +60,7 @@ class ScenariosFormBuilder extends FormBuilder
                     new StringField([
                         'label' => 'ItemId',
                         'name' => 'actionneurs[id][]',
+                        'id' => 'actionneur-id-' . $item->id(),
                         'value' => $item->id(),
                         'required' => 'true',
                         'readonly' => 'true'
@@ -70,6 +71,7 @@ class ScenariosFormBuilder extends FormBuilder
                     new SelectField([
                         'label' => 'Actionneur',
                         'name' => 'actionneurs[actionneurid][]',
+                        'id' => 'actionneur-select-' . $item->id(),
                         'selected' => $item->actionneurId(),
                         'options' => $actionneursSelect,
                         'required' => 'true'
@@ -79,19 +81,23 @@ class ScenariosFormBuilder extends FormBuilder
                     new NumberField([
                         'label' => 'Etat',
                         'name' => 'actionneurs[etat][]',
+                        'id' => 'actionneur-etat-' . $item->id(),
                         'min' => 0,
                         'max' => 255,
                         'step' => 1,
                         'value' => $item->etat(),
                         'required' => 'true'
                     ]),
-                    'col s4'
+                    'col s2'
                 )->addWidget(new FlatButton(
-                        [
-                            'id' => 'delete-actionneur-' . $item->id(),
-                            'icon' => 'delete'
-                        ]
-                    )
+                    [
+                        'id' => 'actionneur-delete-' . $item->id(),
+                        'icon' => 'delete',
+                        'type' => 'button',
+                        'color' => 'secondaryTextColor',
+                        'wrapper' => 'col s2'
+                    ]),
+                    'actionneur-etat-' . $item->id()
                 );
         }
     }

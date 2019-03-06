@@ -30,10 +30,10 @@ class StringField extends Field
         }
 
         if (!empty($this->label)) {
-            $widget .= '<label for="' . $this->name . '">' . $this->label . '</label>';
+            $widget .= '<label for="' . $this->id . '">' . $this->label . '</label>';
         }
 
-        $widget .= '<input type="text" name="' . $this->name . '" id="' . $this->name . '"';
+        $widget .= '<input type="text" name="' . $this->name . '" id="' . $this->id . '"';
 
         if (isset($this->value)) {
             $widget .= ' value="' . htmlspecialchars($this->value) . '"';

@@ -27,7 +27,8 @@ trait FormView
                 'title' => 'Valider',
                 'color' => 'primaryTextColor',
                 'type' => 'submit',
-                'icon' => 'check'
+                'icon' => 'check',
+                'wrapper' => 'col s12'
             ]
         );
 

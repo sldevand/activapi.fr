@@ -64,14 +64,12 @@ class Form
     /**
      * @param Widget $widget
      * @param null|string $after
-     * @param null|string $before
      * @return $this
      */
-    public function addWidget(Widget $widget, $before = null, $after = null)
+    public function addWidget(Widget $widget, $after = null)
     {
         $this->widgets[$widget->id()] = [
             'widget' => $widget,
-            'before' => $before,
             'after' => $after
         ];
 
@@ -89,9 +87,29 @@ class Form
             $view .= '<div class="' . $field->getWrapper() . '">';
             $view .= $field->buildWidget();
             $view .= '</div>';
+            $view .= $this->createWidgetView($field);
         }
 
+
         return $view;
+    }
+
+    /**
+     * @param Field $field
+     * @return string
+     */
+    public function createWidgetView($field)
+    {
+        $view = '';
+        foreach ($this->widgets as $widget) {
+            if (!empty($widget['after']) && $widget['after'] === $field->id()) {
+                $view .= '<label for="' . $widget['widget']->id() . '">supprimer</label>';
+                $view .= $widget['widget']->getHtml();
+                return $view;
+            }
+        }
+
+        return '';
     }
 
     /**

@@ -35,10 +35,10 @@ class NumberField extends Field
         }
 
         if (!empty($this->label)) {
-            $widget .= '<label for="'.$this->name.'">' . $this->label . '</label>';
+            $widget .= '<label for="' . $this->id . '">' . $this->label . '</label>';
         }
 
-        $widget .= '<input type="number" name="' . $this->name . '" id="'.$this->name.'"';
+        $widget .= '<input type="number" name="' . $this->name . '" id="' . $this->id . '"';
 
         if (isset($this->value)) {
             $widget .= ' value="' . htmlspecialchars($this->value) . '"';

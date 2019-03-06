@@ -14,6 +14,11 @@ abstract class Widget
     protected $_id;
 
     /**
+     * @var string
+     */
+    protected $wrapper;
+
+    /**
      * Widget constructor.
      * @param array $data
      */
@@ -67,8 +72,30 @@ abstract class Widget
     public function getBlock($fileName, ...$args)
     {
         ob_start();
-        include $fileName;
+
+        if (file_exists($fileName)) {
+            require $fileName;
+        }
 
         return ob_get_clean();
+    }
+
+    /**
+     * @return string
+     */
+    public function getWrapper()
+    {
+        return $this->wrapper;
+    }
+
+    /**
+     * @param string $wrapper
+     * @return Widget
+     */
+    public function setWrapper($wrapper)
+    {
+        $this->wrapper = $wrapper;
+
+        return $this;
     }
 }

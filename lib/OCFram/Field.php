@@ -264,10 +264,30 @@ abstract class Field
      */
     public function setWrapper($wrapper)
     {
-        if($wrapper){
+        if ($wrapper) {
             $this->wrapper = $wrapper;
         }
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function id()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     * @return Field
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+
 }

@@ -7,6 +7,7 @@ use App\Frontend\Modules\FormView;
 use Entity\Actionneur;
 use Entity\Scenario;
 use FormBuilder\ScenariosFormBuilder;
+use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\Link;
 use Materialize\WidgetFactory;
@@ -172,10 +173,8 @@ class ScenariosController extends ScenariosBackController
 
         $item->actionneursList = $actionneursList;
 
-
         $cards = [];
         $tmfb = new ScenariosFormBuilder($item);
-        $tmfb->build();
         $form = $tmfb->form();
 
         $fh = new FormHandler($form, $manager, $request);
@@ -194,7 +193,20 @@ class ScenariosController extends ScenariosBackController
         $cardTitle = $link->getHtml();
 
         $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $card->addContent($this->editFormView($form));
+
+        $submitButton = new FlatButton(
+            [
+                'id' => 'submit',
+                'title' => 'Valider',
+                'color' => 'primaryTextColor',
+                'type' => 'submit',
+                'icon' => 'check',
+                'wrapper' => 'col s12'
+            ]
+        );
+
+        $formBlock = $this->getBlock(__DIR__ . '/Block/scenariosForm.phtml', $form, $submitButton);
+        $card->addContent($formBlock);
         $cards[] = $card;
 
         $this->page->addVar('title', "Edition du Scénario");
