@@ -4,6 +4,7 @@ $form = $args[0];
 
 /** @var \Materialize\Button\FlatButton $submit */
 $submit = $args[1];
+$sequences = $args[2];
 
 /** @var \Entity\Scenario $entity */
 $entity = $form->entity();
@@ -15,9 +16,11 @@ $addButton = new \Materialize\FloatingActionButton([
     'id' => 'sequence-add',
     'icon' => 'add',
     'wrapper' => 'col s6',
+    'href' => '#',
     'fixed' => true
 
 ]);
+
 
 ?>
 <form class="row" action="" method="post">
@@ -31,46 +34,9 @@ $addButton = new \Materialize\FloatingActionButton([
         <input type="text" name="nom" id="scenario-name-<?= $entId ?>" value="<?= $scNom ?>" required>
     </div>
 
-    <?php /** @var \Entity\Scenario $sequence */ ?>
-    <?php foreach ($entity->sequence as $sequence) : ?>
-        <div class="row">
-            <div class="col s2">
-                <label for="actionneur-id-<?= $sequence->id() ?>" class="active">ItemId</label>
-                <input type="text" name="actionneurs[id][]" id="actionneur-id-<?= $sequence->id() ?>"
-                       value="<?= $sequence->id() ?>" readonly required/>
-            </div>
 
-            <div class="col s6">
-                <label>Actionneur</label>
-                <div class="select-wrapper"><span class="caret">▼</span>
-                    <select name="actionneurs[actionneurid][]" id="actionneur-select-<?= $sequence->id() ?>">
-                        <?php foreach ($entity->actionneursList as $actionneur) : ?>
-                            <?php
-                            $selected = '';
-                            if ($actionneur->id() === $sequence->actionneurid()) {
-                                $selected = 'selected';
-                            }
-                            ?>
-                            <option value="<?= $actionneur->id() ?>" <?= $selected ?> ><?= $actionneur->getNom() ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
+    <?= $sequences ?>
 
-            <div class="col s2">
-                <label for="actionneur-etat-<?= $sequence->id() ?>" class="active">Etat</label>
-                <input type="number"
-                       name="actionneurs[etat][]"
-                       id="actionneur-etat-<?= $sequence->id() ?>"
-                       value="<?= $sequence->etat() ?>" min="0" max="255"
-                       step="1"/>
-            </div>
-
-            <?php $id = 'scenario-sequence-delete-' . $sequence->id(); ?>
-            <label for"<?= $id ?>">*</label>
-            <i id="<?= $id ?>" class="material-icons secondaryTextColor col s2">delete</i>
-        </div>
-    <?php endforeach; ?>
     <?= $submit->getHtml(); ?>
     <?= $addButton->getHtml() ?>
 </form>

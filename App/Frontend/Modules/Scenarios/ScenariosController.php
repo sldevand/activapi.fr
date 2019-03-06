@@ -205,7 +205,12 @@ class ScenariosController extends ScenariosBackController
             ]
         );
 
-        $formBlock = $this->getBlock(__DIR__ . '/Block/scenariosForm.phtml', $form, $submitButton);
+        $sequences = '';
+        foreach ($form->entity()->sequence as $sequence) {
+            $sequences .= $this->getBlock(__DIR__ . '/Block/sequenceBlock.phtml', $form->entity(), $item->actionneursList, $sequence);
+        }
+
+        $formBlock = $this->getBlock(__DIR__ . '/Block/scenariosForm.phtml', $form, $submitButton, $sequences);
         $card->addContent($formBlock);
         $cards[] = $card;
 
