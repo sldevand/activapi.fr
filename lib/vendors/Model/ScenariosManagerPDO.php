@@ -20,7 +20,6 @@ class ScenariosManagerPDO extends ManagerPDO
 
         $scenarioCorresp = $this->insertScenarioCorresp($scenario);
         $scenario->setScenarioid($scenarioCorresp);
-        $this->deleteItemsWithScenarioId($scenarioCorresp);
         $this->saveItems($scenario);
 
         return true;
@@ -37,7 +36,6 @@ class ScenariosManagerPDO extends ManagerPDO
         $q->bindValue(':nom', $scenario->nom());
         $q->execute();
         $q->closeCursor();
-        $this->deleteItemsWithScenarioId($scenario->id());
         $this->saveItems($scenario);
     }
 
