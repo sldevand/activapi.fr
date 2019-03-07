@@ -14,22 +14,31 @@ class ScenariosManagerPDO extends ManagerPDO
      */
     public function add(Entity $scenario)
     {
-
         if ($this->fetchScenarioCorresp($scenario)) {
             return false;
         }
 
         $scenarioCorresp = $this->insertScenarioCorresp($scenario);
         $scenario->setScenarioid($scenarioCorresp);
-
-        foreach ($scenario->actionneurs() as $actionneur) {
-            $scenario->setId($actionneur->getRadioId());
-            $scenario->setActionneurId($actionneur->id());
-            $scenario->setEtat($actionneur->getEtat());
-            $this->saveItem($scenario);
-        }
+        $this->deleteItemsWithScenarioId($scenarioCorresp);
+        $this->saveItems($scenario);
 
         return true;
+    }
+
+    /**
+     * @param Entity $scenario
+     * @throws \Exception
+     */
+    public function update(Entity $scenario)
+    {
+        $q = $this->prepare('UPDATE scenario_corresp SET nom = :nom WHERE id = :id');
+        $q->bindValue(':id', $scenario->id());
+        $q->bindValue(':nom', $scenario->nom());
+        $q->execute();
+        $q->closeCursor();
+        $this->deleteItemsWithScenarioId($scenario->id());
+        $this->saveItems($scenario);
     }
 
     /**
@@ -107,20 +116,28 @@ class ScenariosManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param $id
+     * @param int $id
      */
     public function delete($id)
     {
         $this->dao->exec('DELETE FROM scenario_corresp WHERE id = ' . (int)$id);
-        $this->dao->exec('DELETE FROM scenario WHERE scenarioid = ' . (int)$id);
+        $this->deleteItemsWithScenarioId($id);
     }
 
     /**
-     * @param $id
+     * @param int $id
      */
     public function deleteItem($id)
     {
         $this->dao->exec('DELETE FROM scenario WHERE id = ' . (int)$id);
+    }
+
+    /**
+     * @param int $scenarioId
+     */
+    public function deleteItemsWithScenarioId($scenarioId)
+    {
+        $this->dao->exec('DELETE FROM scenario WHERE scenarioid = ' . (int)$scenarioId);
     }
 
 
@@ -207,26 +224,6 @@ class ScenariosManagerPDO extends ManagerPDO
      * @param Entity $scenario
      * @throws \Exception
      */
-    public function update(Entity $scenario)
-    {
-        $q = $this->prepare('UPDATE scenario_corresp SET nom = :nom WHERE id = :id');
-        $q->bindValue(':id', $scenario->id());
-        $q->bindValue(':nom', $scenario->nom());
-        $q->execute();
-        $q->closeCursor();
-
-        foreach ($scenario->actionneurs() as $actionneur) {
-            $scenario->setId($actionneur->getRadioId());
-            $scenario->setActionneurId($actionneur->id());
-            $scenario->setEtat($actionneur->getEtat());
-            $this->saveItem($scenario);
-        }
-    }
-
-    /**
-     * @param Entity $scenario
-     * @throws \Exception
-     */
     public function updateItem(Entity $scenario)
     {
         $q = $this->prepare(
@@ -261,5 +258,19 @@ class ScenariosManagerPDO extends ManagerPDO
         $q->closeCursor();
 
         return $result;
+    }
+
+    /**
+     * @param Entity $scenario
+     * @throws \Exception
+     */
+    public function saveItems($scenario)
+    {
+        foreach ($scenario->actionneurs() as $actionneur) {
+            $scenario->setId($actionneur->getRadioId());
+            $scenario->setActionneurId($actionneur->id());
+            $scenario->setEtat($actionneur->getEtat());
+            $this->saveItem($scenario);
+        }
     }
 }

@@ -2,11 +2,6 @@ import {SequenceRowTemplate} from './sequenceRow';
 
 export class Scenarios {
 
-    constructor() {
-
-    }
-
-
     init() {
         fetch('api/actionneurs/')
             .then((data) => {
@@ -17,38 +12,45 @@ export class Scenarios {
             })
             .then(() => {
                 this.initSequenceAddListener();
+                const deleteButtons = document.getElementsByClassName('delete');
+                for (let deleteButton of deleteButtons) {
+                    this.initRemoveButton(deleteButton)
+                }
             })
-            .then(() => this.render())
             .catch(err => console.log(err))
-    }
-
-    render() {
-
-
     }
 
     addRow() {
         const sequences = document.querySelector('#sequences');
-        const elt = document.createElement('div')
+        const elt = document.createElement('div');
         elt.classList.add('row');
+        elt.id = 'delete-button';
         elt.innerHTML = this.createRow();
         sequences.appendChild(elt);
         $('select').material_select();
+
+        this.initRemoveButton(elt.id);
     }
 
     createRow() {
-        const template = new SequenceRowTemplate();
-        return template.render(this.actionneurs);
+        return SequenceRowTemplate.render(this.actionneurs);
     }
 
-    removeRow() {
-
+    removeRow(target) {
+        target.remove();
     }
 
     initSequenceAddListener() {
         const sequenceAdd = document.querySelector('#sequence-add');
         sequenceAdd.addEventListener('click', (e) => {
             this.addRow();
+        });
+    }
+
+    initRemoveButton(deleteButton) {
+
+        deleteButton.addEventListener('click', (e) => {
+            this.removeRow(e.target.parentNode);
         });
     }
 }

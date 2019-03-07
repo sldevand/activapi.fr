@@ -2145,7 +2145,7 @@ module.exports = {
 			animation.currentStep = (animation.currentStep || 0) + count;
 			animation.currentStep = Math.min(animation.currentStep, animation.numSteps);
 
-			helpers.callback(animation.render, [chart, animation], chart);
+			helpers.callback(SequenceRowTemplate.render, [chart, animation], chart);
 			helpers.callback(animation.onAnimationProgress, [animation], chart);
 
 			if (animation.currentStep >= animation.numSteps) {

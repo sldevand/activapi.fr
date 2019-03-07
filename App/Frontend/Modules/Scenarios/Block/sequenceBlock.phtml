@@ -13,7 +13,7 @@ $sequence = $args[2];
     </div>
 
     <div class="col s6">
-        <label>Actionneur</label>
+        <label for="actionneur-select-<?= $sequence->id() ?>">Actionneur</label>
         <div class="select-wrapper"><span class="caret">▼</span>
             <select name="actionneurs[actionneurid][]" id="actionneur-select-<?= $sequence->id() ?>">
                 <?php foreach ($actionneursList as $actionneur) : ?>
@@ -38,7 +38,9 @@ $sequence = $args[2];
                step="1"/>
     </div>
 
-    <?php $id = 'scenario-sequence-delete-' . $sequence->id(); ?>
-    <label for"<?= $id ?>">*</label>
-    <i id="<?= $id ?>" class="material-icons secondaryTextColor col s2">delete</i>
+    <?php $id = 'scenario-sequence-delete' ?>
+
+    <label class="active" for="<?= $id ?>">*</label>
+    <i id="<?= $id ?>" class="material-icons secondaryTextColor col s2 delete">delete</i>
+
 </div>

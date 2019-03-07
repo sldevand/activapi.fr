@@ -7,4 +7,6 @@ $(document).ready(function () {
 let scenarios = new Scenarios();
 scenarios.init();
 
+;
+
 

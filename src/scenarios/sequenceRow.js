@@ -1,5 +1,5 @@
 export class SequenceRowTemplate {
-    render(actionneurs) {
+    static render(actionneurs) {
         let template = `
 <div class="col s2">
     <label for="actionneur-id-" class="active">ItemId</label>
@@ -22,8 +22,8 @@ export class SequenceRowTemplate {
     <input type="number" name="actionneurs[etat][]" id="actionneur-etat-" value="0" min="0" max="255" step="1">
 </div>
 
-<label for"scenario-sequence-delete-"="">*</label>
-<i id="scenario-sequence-delete-" class="material-icons secondaryTextColor col s2">delete</i>
+<label class="active" for="scenario-sequence-delete">*</label>
+<i id="scenario-sequence-delete" class="material-icons secondaryTextColor col s2 delete">delete</i>
 `;
         return template;
     }
