@@ -26,10 +26,24 @@ class ScenariosManagerPDO extends ManagerPDO
             $scenario->setId($actionneur->getRadioId());
             $scenario->setActionneurId($actionneur->id());
             $scenario->setEtat($actionneur->getEtat());
-            $this->insertScenario($scenario);
+            $this->saveItem($scenario);
         }
 
         return true;
+    }
+
+    /**
+     * @param Scenario $scenario
+     * @throws \Exception
+     */
+    public function saveItem($scenario)
+    {
+        if (!$scenario->id()) {
+            $this->insertItem($scenario);
+        } else {
+            $this->updateItem($scenario);
+        }
+
     }
 
     /**
@@ -68,7 +82,7 @@ class ScenariosManagerPDO extends ManagerPDO
      * @return mixed
      * @throws \Exception
      */
-    public function insertScenario($scenario)
+    public function insertItem($scenario)
     {
         $q = $this->prepare(
             'INSERT INTO scenario (scenarioid,actionneurid,etat) VALUES (:scenarioid,:actionneurid,:etat)'
@@ -205,7 +219,7 @@ class ScenariosManagerPDO extends ManagerPDO
             $scenario->setId($actionneur->getRadioId());
             $scenario->setActionneurId($actionneur->id());
             $scenario->setEtat($actionneur->getEtat());
-            $this->updateItem($scenario);
+            $this->saveItem($scenario);
         }
     }
 
