@@ -128,7 +128,7 @@ class ScenariosController extends ScenariosBackController
         $actionneursManager = $this->managers->getManagerOf('Actionneurs');
         $actionneursList = $actionneursManager->getList();
         $domId = 'Edition';
-
+        $deletedActionneurIds = [];
         if ($request->method() == 'POST') {
             $item = new Scenario(
                 [
@@ -149,6 +149,9 @@ class ScenariosController extends ScenariosBackController
                     $radioId = $elt;
                     $etat = $actionneurs['etat'][$num];
                     $actionneurid = $actionneurs['actionneurid'][$num];
+                    if (!empty($actionneurs['deleteId'][$num])) {
+                        $deletedActionneurIds[] = $actionneurs['deleteId'][$num];
+                    }
                     $item->addActionneur(new Actionneur(
                         [
                             'id' => $actionneurid,
@@ -179,6 +182,9 @@ class ScenariosController extends ScenariosBackController
 
         $fh = new FormHandler($form, $manager, $request);
         if ($fh->process()) {
+            foreach ($deletedActionneurIds as $actionneurId) {
+                $manager->deleteItem($actionneurId);
+            }
             $this->app->httpResponse()->redirect('../activapi.fr/scenarios');
         }
 

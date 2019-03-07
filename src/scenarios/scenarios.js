@@ -14,7 +14,7 @@ export class Scenarios {
                 this.initSequenceAddListener();
                 const deleteButtons = document.getElementsByClassName('delete');
                 for (let deleteButton of deleteButtons) {
-                    this.initRemoveButton(deleteButton)
+                    this.initRemoveButton(deleteButton);
                 }
             })
             .catch(err => console.log(err))
@@ -40,6 +40,17 @@ export class Scenarios {
         target.remove();
     }
 
+    addDeletionInput(itemId) {
+        const sequences = document.querySelector('#sequences');
+        const elt = document.createElement('input');
+        elt.setAttribute('value', itemId);
+        elt.setAttribute('name', 'actionneurs[deleteId][]');
+        elt.hidden = true;
+        sequences.appendChild(elt);
+
+
+    }
+
     initSequenceAddListener() {
         const sequenceAdd = document.querySelector('#sequence-add');
         sequenceAdd.addEventListener('click', (e) => {
@@ -51,6 +62,7 @@ export class Scenarios {
 
         deleteButton.addEventListener('click', (e) => {
             this.removeRow(e.target.parentNode);
+            this.addDeletionInput(e.target.parentNode.id);
         });
     }
 }

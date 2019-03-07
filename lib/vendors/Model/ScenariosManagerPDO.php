@@ -5,6 +5,10 @@ namespace Model;
 use Entity\Scenario;
 use OCFram\Entity;
 
+/**
+ * Class ScenariosManagerPDO
+ * @package Model
+ */
 class ScenariosManagerPDO extends ManagerPDO
 {
     /**
@@ -50,7 +54,6 @@ class ScenariosManagerPDO extends ManagerPDO
         } else {
             $this->updateItem($scenario);
         }
-
     }
 
     /**
@@ -175,7 +178,7 @@ class ScenariosManagerPDO extends ManagerPDO
      */
     public function getScenario($id)
     {
-        $sql = 'SELECT scenario.scenarioid,scenario_corresp.nom,scenario.actionneurid,scenario.etat
+        $sql = 'SELECT *
 			FROM scenario_corresp 
 			INNER JOIN scenario
 			ON scenario.scenarioid = scenario_corresp.id	   
@@ -184,7 +187,33 @@ class ScenariosManagerPDO extends ManagerPDO
 	    ';
 
         $q = $this->dao->prepare($sql);
-        $q->bindParam(':id', $id);
+        $q->bindValue(':id', $id);
+        $q->execute();
+
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Scenario');
+
+        $result = $q->fetch();
+        $q->closeCursor();
+
+        return $result;
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function getScenarioByName($name)
+    {
+        $sql = 'SELECT scenario.scenarioid,scenario_corresp.nom,scenario.actionneurid,scenario.etat
+			FROM scenario_corresp 
+			INNER JOIN scenario
+			ON scenario.scenarioid = scenario_corresp.id	   
+		    WHERE scenario_corresp.nom=:nom
+		    GROUP BY scenario.scenarioid
+	    ';
+
+        $q = $this->dao->prepare($sql);
+        $q->bindValue(':nom', $name);
         $q->execute();
 
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Scenario');

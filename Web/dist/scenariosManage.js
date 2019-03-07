@@ -1,6 +1,18 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
+var _scenarios = require("./scenarios/scenarios");
+
+$(document).ready(function () {
+  $('select').material_select();
+});
+var scenarios = new _scenarios.Scenarios();
+scenarios.init();
+;
+
+},{"./scenarios/scenarios":2}],2:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -85,6 +97,16 @@ function () {
       target.remove();
     }
   }, {
+    key: "addDeletionInput",
+    value: function addDeletionInput(itemId) {
+      var sequences = document.querySelector('#sequences');
+      var elt = document.createElement('input');
+      elt.setAttribute('value', itemId);
+      elt.setAttribute('name', 'actionneurs[deleteId][]');
+      elt.hidden = true;
+      sequences.appendChild(elt);
+    }
+  }, {
     key: "initSequenceAddListener",
     value: function initSequenceAddListener() {
       var _this2 = this;
@@ -101,6 +123,8 @@ function () {
 
       deleteButton.addEventListener('click', function (e) {
         _this3.removeRow(e.target.parentNode);
+
+        _this3.addDeletionInput(e.target.parentNode.id);
       });
     }
   }]);
@@ -110,7 +134,7 @@ function () {
 
 exports.Scenarios = Scenarios;
 
-},{"./sequenceRow":2}],2:[function(require,module,exports){
+},{"./sequenceRow":3}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -169,16 +193,4 @@ function () {
 
 exports.SequenceRowTemplate = SequenceRowTemplate;
 
-},{}],3:[function(require,module,exports){
-"use strict";
-
-var _scenarios = require("./scenarios/scenarios");
-
-$(document).ready(function () {
-  $('select').material_select();
-});
-var scenarios = new _scenarios.Scenarios();
-scenarios.init();
-;
-
-},{"./scenarios/scenarios":1}]},{},[3]);
+},{}]},{},[1]);

@@ -157,6 +157,7 @@ class ManagerPDO extends Manager
 
     /**
      * @param string $sql
+     * @param array $properties
      * @return string
      */
     public function addProperties($sql, $properties)

@@ -1,49 +1,64 @@
 <?php
+
 namespace OCFram;
 
-use \PDO;
+use PDO;
+use PDOException;
 
+/**
+ * Class PDOFactory
+ * @package OCFram
+ */
 class PDOFactory
 {
-  public static $lastUsedConnexion='';	
-  public static $pdoAdress='';
-	
-  public static function getMysqlConnexion() {
-   
-	try{
-		$db = new PDO('mysql:host=localhost;dbname=listes;charset=utf8', 'root', '');
-		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	}catch(PdoException $e){
-		die($e->getMessage());
-	}	
-	
-	self::$lastUsedConnexion='mysql';
-	
-    return $db;
-  }
-  
-  public static function getSqliteConnexion() {
-   
-	try{
-	
+    /**
+     * @var string
+     */
+    public static $lastUsedConnexion = '';
+    /**
+     * @var string
+     */
+    public static $pdoAdress = '';
 
-		$db = new PDO(self::$pdoAdress);		 
-		 //$db = new PDO('sqlite:C:\wamp64\www\database\releves.db');
-		//$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	}catch(PdoException $e){
-		die($e->getMessage());
-	}	
-	
-	self::$lastUsedConnexion='sqlite';
-    
-    return $db;
-  }
+    /**
+     * @return PDO
+     */
+    public static function getMysqlConnexion()
+    {
 
-  public static function setPdoAddress($address){
+        try {
+            $db = new PDO('mysql:host=localhost;dbname=listes;charset=utf8', 'root', '');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PdoException $e) {
+            die($e->getMessage());
+        }
 
-		self::$pdoAdress=$address;
-  }
+        self::$lastUsedConnexion = 'mysql';
 
-  
-  
+        return $db;
+    }
+
+    /**
+     * @return PDO
+     */
+    public static function getSqliteConnexion()
+    {
+        try {
+            $db = new PDO(self::$pdoAdress);
+        } catch (PdoException $e) {
+            die($e->getMessage());
+        }
+
+        self::$lastUsedConnexion = 'sqlite';
+
+        return $db;
+    }
+
+    /**
+     * @param $address
+     */
+    public static function setPdoAddress($address)
+    {
+        self::$pdoAdress = $address;
+    }
 }

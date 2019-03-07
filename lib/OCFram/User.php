@@ -2,8 +2,6 @@
 
 namespace OCFram;
 
-session_start();
-
 class User
 {
     /**
@@ -17,6 +15,9 @@ class User
      */
     public function __construct(Application $app)
     {
+        if (empty($_SESSION)) {
+            session_start();
+        }
         $this->app;
     }
 
