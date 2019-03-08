@@ -1,5 +1,5 @@
 export class SequenceRowTemplate {
-    static render(actionneurs) {
+    static render(actionneurs, scenario) {
         let template = `
 <div class="col s2">
     <label for="actionneur-id-" class="active">ItemId</label>
@@ -23,7 +23,7 @@ export class SequenceRowTemplate {
 </div>
 
 <label class="active" for="scenario-sequence-delete">*</label>
-<i id="scenario-sequence-delete" class="material-icons secondaryTextColor col s2 delete">delete</i>
+<i id="scenario-sequence-delete-${scenario.id}" class="material-icons secondaryTextColor col s2 delete">delete</i>
 `;
         return template;
     }

@@ -9,8 +9,20 @@ export class Scenarios {
             })
             .then((actionneurs) => {
                 this.actionneurs = actionneurs;
+
+                const scenario = document.querySelector('#scenarioid');
+                const scenarioid = scenario.getAttribute('value');
+
+                return fetch('api/scenarios/' + scenarioid);
             })
-            .then(() => {
+            .then((data) => {
+                return data.json();
+            })
+            .then((scenarios) => {
+                console.log(scenarios);
+                this.scenarios = scenarios;
+
+               // this.addRows();
                 this.initSequenceAddListener();
                 const deleteButtons = document.getElementsByClassName('delete');
                 for (let deleteButton of deleteButtons) {
@@ -20,20 +32,26 @@ export class Scenarios {
             .catch(err => console.log(err))
     }
 
-    addRow() {
+    addRows() {
+        for (let scenario of this.scenarios) {
+            this.addRow(scenario);
+        }
+    }
+
+    addRow(scenario) {
         const sequences = document.querySelector('#sequences');
         const elt = document.createElement('div');
         elt.classList.add('row');
         elt.id = 'delete-button';
-        elt.innerHTML = this.createRow();
+        elt.innerHTML = this.createRow(scenario);
         sequences.appendChild(elt);
         $('select').material_select();
 
         this.initRemoveButton(elt.id);
     }
 
-    createRow() {
-        return SequenceRowTemplate.render(this.actionneurs);
+    createRow(scenario) {
+        return SequenceRowTemplate.render(this.actionneurs, scenario);
     }
 
     removeRow(target) {

@@ -42,7 +42,15 @@ function () {
         return data.json();
       }).then(function (actionneurs) {
         _this.actionneurs = actionneurs;
-      }).then(function () {
+        var scenario = document.querySelector('#scenarioid');
+        var scenarioid = scenario.getAttribute('value');
+        return fetch('api/scenarios/' + scenarioid);
+      }).then(function (data) {
+        return data.json();
+      }).then(function (scenarios) {
+        console.log(scenarios);
+        _this.scenarios = scenarios; // this.addRows();
+
         _this.initSequenceAddListener();
 
         var deleteButtons = document.getElementsByClassName('delete');
@@ -75,21 +83,48 @@ function () {
       });
     }
   }, {
+    key: "addRows",
+    value: function addRows() {
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = this.scenarios[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var scenario = _step2.value;
+          this.addRow(scenario);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+    }
+  }, {
     key: "addRow",
-    value: function addRow() {
+    value: function addRow(scenario) {
       var sequences = document.querySelector('#sequences');
       var elt = document.createElement('div');
       elt.classList.add('row');
       elt.id = 'delete-button';
-      elt.innerHTML = this.createRow();
+      elt.innerHTML = this.createRow(scenario);
       sequences.appendChild(elt);
       $('select').material_select();
       this.initRemoveButton(elt.id);
     }
   }, {
     key: "createRow",
-    value: function createRow() {
-      return _sequenceRow.SequenceRowTemplate.render(this.actionneurs);
+    value: function createRow(scenario) {
+      return _sequenceRow.SequenceRowTemplate.render(this.actionneurs, scenario);
     }
   }, {
     key: "removeRow",
@@ -157,7 +192,7 @@ function () {
 
   _createClass(SequenceRowTemplate, null, [{
     key: "render",
-    value: function render(actionneurs) {
+    value: function render(actionneurs, scenario) {
       var template = "\n<div class=\"col s2\">\n    <label for=\"actionneur-id-\" class=\"active\">ItemId</label>\n    <input type=\"text\" name=\"actionneurs[id][]\" id=\"actionneur-id-\" value=\"\" readonly=\"\" required=\"\">\n</div>\n\n<div class=\"col s6\">\n    <label for=\"actionneur-select-\">Actionneur</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"actionneurs[actionneurid][]\" id=\"actionneur-select-\">";
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -183,7 +218,7 @@ function () {
         }
       }
 
-      template += "</select>\n    </div>\n</div>\n\n<div class=\"col s2\">\n    <label for=\"actionneur-etat-\" class=\"active\">Etat</label>\n    <input type=\"number\" name=\"actionneurs[etat][]\" id=\"actionneur-etat-\" value=\"0\" min=\"0\" max=\"255\" step=\"1\">\n</div>\n\n<label class=\"active\" for=\"scenario-sequence-delete\">*</label>\n<i id=\"scenario-sequence-delete\" class=\"material-icons secondaryTextColor col s2 delete\">delete</i>\n";
+      template += "</select>\n    </div>\n</div>\n\n<div class=\"col s2\">\n    <label for=\"actionneur-etat-\" class=\"active\">Etat</label>\n    <input type=\"number\" name=\"actionneurs[etat][]\" id=\"actionneur-etat-\" value=\"0\" min=\"0\" max=\"255\" step=\"1\">\n</div>\n\n<label class=\"active\" for=\"scenario-sequence-delete\">*</label>\n<i id=\"scenario-sequence-delete-".concat(scenario.id, "\" class=\"material-icons secondaryTextColor col s2 delete\">delete</i>\n");
       return template;
     }
   }]);
