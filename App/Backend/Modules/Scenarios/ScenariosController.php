@@ -48,24 +48,23 @@ class ScenariosController extends BackController
         /** @var ActionneursManagerPDO $actionneursManager */
         $actionneursManager = $this->managers->getManagerOf('Actionneurs');
         if (empty($id)) {
-            $listeScenarios = $scenarioManager->getList();
+            $sequences = $scenarioManager->getList();
         } else {
-            $listeScenarios = [$scenarioManager->getScenario($id)];
+            $sequences = [$scenarioManager->getScenario($id)];
         }
         $scenariosTab = [];
-        /**
-         * @var string $key
-         * @var Scenario $scenario
-         */
-        foreach ($listeScenarios as $key => $scenario) {
+        /** @var Scenario $sequence */
+        foreach ($sequences as $sequence) {
             /** @var Actionneur $actionneur */
-            $actionneur = $actionneursManager->getUnique($scenario->actionneurid());
-            $listeScenarios[$key]->setActionneur($actionneur);
-            $actionneur->setEtat($listeScenarios[$key]->etat());
-            $scenariosTab[$scenario->scenarioid()]["nom"] = $listeScenarios[$key]->nom();
-            $scenariosTab[$scenario->scenarioid()]["scenarioid"] = $scenario->scenarioid();
-            $tempActionneur = $listeScenarios[$key]->actionneur();
-            $scenariosTab[$scenario->scenarioid()]["data"][$scenario->id()] = $tempActionneur;
+            $actionneurs = $actionneursManager->getList();
+            $sequence->setActionneurs($actionneurs);
+            $scenariosTab[$sequence->scenarioid()]["nom"] = $sequence->nom();
+            $scenariosTab[$sequence->scenarioid()]["scenarioid"] = $sequence->scenarioid();
+
+            foreach ($sequence->getActionneurs() as $tempActionneur) {
+                $scenariosTab[$sequence->scenarioid()]["data"][$sequence->id()] = $tempActionneur;
+            }
+
         }
         $this->page->addVar('scenarios', $scenariosTab);
 

@@ -1,18 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
-var _scenarios = require("./scenarios/scenarios");
-
-$(document).ready(function () {
-  $('select').material_select();
-});
-var scenarios = new _scenarios.Scenarios();
-scenarios.init();
-;
-
-},{"./scenarios/scenarios":2}],2:[function(require,module,exports){
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -49,7 +37,9 @@ function () {
         return data.json();
       }).then(function (scenarios) {
         console.log(scenarios);
-        _this.scenarios = scenarios; // this.addRows();
+        _this.scenarios = scenarios;
+
+        _this.addRows();
 
         _this.initSequenceAddListener();
 
@@ -85,28 +75,8 @@ function () {
   }, {
     key: "addRows",
     value: function addRows() {
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = this.scenarios[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var scenario = _step2.value;
-          this.addRow(scenario);
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
+      for (var scenario in this.scenarios) {
+        this.addRow(scenario);
       }
     }
   }, {
@@ -129,7 +99,7 @@ function () {
   }, {
     key: "removeRow",
     value: function removeRow(target) {
-      target.remove();
+      console.log(target.childNodes.keys().next()); //target.remove();
     }
   }, {
     key: "addDeletionInput",
@@ -157,6 +127,8 @@ function () {
       var _this3 = this;
 
       deleteButton.addEventListener('click', function (e) {
+        console.log(e.target.parentNode.childNodes);
+
         _this3.removeRow(e.target.parentNode);
 
         _this3.addDeletionInput(e.target.parentNode.id);
@@ -169,7 +141,7 @@ function () {
 
 exports.Scenarios = Scenarios;
 
-},{"./sequenceRow":3}],3:[function(require,module,exports){
+},{"./sequenceRow":2}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -228,4 +200,16 @@ function () {
 
 exports.SequenceRowTemplate = SequenceRowTemplate;
 
-},{}]},{},[1]);
+},{}],3:[function(require,module,exports){
+"use strict";
+
+var _scenarios = require("./scenarios/scenarios");
+
+$(document).ready(function () {
+  $('select').material_select();
+});
+var scenarios = new _scenarios.Scenarios();
+scenarios.init();
+;
+
+},{"./scenarios/scenarios":1}]},{},[3]);

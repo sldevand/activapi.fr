@@ -21,8 +21,7 @@ export class Scenarios {
             .then((scenarios) => {
                 console.log(scenarios);
                 this.scenarios = scenarios;
-
-               // this.addRows();
+                this.addRows();
                 this.initSequenceAddListener();
                 const deleteButtons = document.getElementsByClassName('delete');
                 for (let deleteButton of deleteButtons) {
@@ -33,7 +32,7 @@ export class Scenarios {
     }
 
     addRows() {
-        for (let scenario of this.scenarios) {
+        for (let scenario in this.scenarios) {
             this.addRow(scenario);
         }
     }
@@ -55,7 +54,8 @@ export class Scenarios {
     }
 
     removeRow(target) {
-        target.remove();
+        console.log(target.childNodes.keys().next());
+        //target.remove();
     }
 
     addDeletionInput(itemId) {
@@ -79,6 +79,7 @@ export class Scenarios {
     initRemoveButton(deleteButton) {
 
         deleteButton.addEventListener('click', (e) => {
+            console.log(e.target.parentNode.childNodes)
             this.removeRow(e.target.parentNode);
             this.addDeletionInput(e.target.parentNode.id);
         });

@@ -194,6 +194,16 @@ class Scenario extends Entity
     }
 
     /**
+     * @return Actionneur[]
+     */
+    public function getActionneurs()
+    {
+        return $this->actionneurs;
+    }
+
+
+
+    /**
      * @return array
      */
     public function jsonSerialize()
