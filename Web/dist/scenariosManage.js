@@ -37,9 +37,7 @@ function () {
         return data.json();
       }).then(function (scenarios) {
         console.log(scenarios);
-        _this.scenarios = scenarios;
-
-        _this.addRows();
+        _this.scenarios = scenarios; //  this.addRows();
 
         _this.initSequenceAddListener();
 
@@ -81,7 +79,8 @@ function () {
     }
   }, {
     key: "addRow",
-    value: function addRow(scenario) {
+    value: function addRow() {
+      var scenario = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var sequences = document.querySelector('#sequences');
       var elt = document.createElement('div');
       elt.classList.add('row');
@@ -93,13 +92,14 @@ function () {
     }
   }, {
     key: "createRow",
-    value: function createRow(scenario) {
+    value: function createRow() {
+      var scenario = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       return _sequenceRow.SequenceRowTemplate.render(this.actionneurs, scenario);
     }
   }, {
     key: "removeRow",
     value: function removeRow(target) {
-      console.log(target.childNodes.keys().next()); //target.remove();
+      target.remove();
     }
   }, {
     key: "addDeletionInput",
@@ -127,11 +127,9 @@ function () {
       var _this3 = this;
 
       deleteButton.addEventListener('click', function (e) {
-        console.log(e.target.parentNode.childNodes);
-
         _this3.removeRow(e.target.parentNode);
 
-        _this3.addDeletionInput(e.target.parentNode.id);
+        _this3.addDeletionInput(e.target.parentNode.dataset.sequenceid);
       });
     }
   }]);
@@ -164,7 +162,8 @@ function () {
 
   _createClass(SequenceRowTemplate, null, [{
     key: "render",
-    value: function render(actionneurs, scenario) {
+    value: function render(actionneurs) {
+      var scenario = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var template = "\n<div class=\"col s2\">\n    <label for=\"actionneur-id-\" class=\"active\">ItemId</label>\n    <input type=\"text\" name=\"actionneurs[id][]\" id=\"actionneur-id-\" value=\"\" readonly=\"\" required=\"\">\n</div>\n\n<div class=\"col s6\">\n    <label for=\"actionneur-select-\">Actionneur</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"actionneurs[actionneurid][]\" id=\"actionneur-select-\">";
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -190,7 +189,7 @@ function () {
         }
       }
 
-      template += "</select>\n    </div>\n</div>\n\n<div class=\"col s2\">\n    <label for=\"actionneur-etat-\" class=\"active\">Etat</label>\n    <input type=\"number\" name=\"actionneurs[etat][]\" id=\"actionneur-etat-\" value=\"0\" min=\"0\" max=\"255\" step=\"1\">\n</div>\n\n<label class=\"active\" for=\"scenario-sequence-delete\">*</label>\n<i id=\"scenario-sequence-delete-".concat(scenario.id, "\" class=\"material-icons secondaryTextColor col s2 delete\">delete</i>\n");
+      template += "</select>\n    </div>\n</div>\n\n<div class=\"col s2\">\n    <label for=\"actionneur-etat-\" class=\"active\">Etat</label>\n    <input type=\"number\" name=\"actionneurs[etat][]\" id=\"actionneur-etat-\" value=\"0\" min=\"0\" max=\"255\" step=\"1\">\n</div>\n\n<label class=\"active\" for=\"scenario-sequence-delete\">*</label>\n<i id=\"scenario-sequence-delete\" class=\"material-icons secondaryTextColor col s2 delete\">delete</i>\n";
       return template;
     }
   }]);

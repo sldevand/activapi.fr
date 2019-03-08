@@ -5,7 +5,7 @@ $sequence = $args[2];
 
 ?>
 
-<div class="row">
+<div class="row" data-sequenceid="<?= $sequence->id() ?>">
     <div class="col s2">
         <label for="actionneur-id-<?= $sequence->id() ?>" class="active">ItemId</label>
         <input type="text" name="actionneurs[id][]" id="actionneur-id-<?= $sequence->id() ?>"

@@ -21,7 +21,7 @@ export class Scenarios {
             .then((scenarios) => {
                 console.log(scenarios);
                 this.scenarios = scenarios;
-                this.addRows();
+                //  this.addRows();
                 this.initSequenceAddListener();
                 const deleteButtons = document.getElementsByClassName('delete');
                 for (let deleteButton of deleteButtons) {
@@ -37,7 +37,7 @@ export class Scenarios {
         }
     }
 
-    addRow(scenario) {
+    addRow(scenario=null) {
         const sequences = document.querySelector('#sequences');
         const elt = document.createElement('div');
         elt.classList.add('row');
@@ -49,13 +49,12 @@ export class Scenarios {
         this.initRemoveButton(elt.id);
     }
 
-    createRow(scenario) {
+    createRow(scenario=null) {
         return SequenceRowTemplate.render(this.actionneurs, scenario);
     }
 
     removeRow(target) {
-        console.log(target.childNodes.keys().next());
-        //target.remove();
+        target.remove();
     }
 
     addDeletionInput(itemId) {
@@ -79,9 +78,8 @@ export class Scenarios {
     initRemoveButton(deleteButton) {
 
         deleteButton.addEventListener('click', (e) => {
-            console.log(e.target.parentNode.childNodes)
             this.removeRow(e.target.parentNode);
-            this.addDeletionInput(e.target.parentNode.id);
+            this.addDeletionInput(e.target.parentNode.dataset.sequenceid);
         });
     }
 }

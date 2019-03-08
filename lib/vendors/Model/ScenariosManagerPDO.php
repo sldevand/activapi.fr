@@ -141,26 +141,15 @@ class ScenariosManagerPDO extends ManagerPDO
         $this->dao->exec('DELETE FROM scenario WHERE scenarioid = ' . (int)$scenarioId);
     }
 
-
-    /**
-     * @param $id
-     * @return null|Entity
-     * @throws \Exception
-     */
-    public function getUnique($id)
-    {
-        return parent::getUnique($id);
-    }
-
     /**
      * @return mixed
      */
     public function getList()
     {
-        $sql = 'SELECT  scenario.id,scenario.scenarioid,scenario_corresp.nom,scenario.actionneurid,scenario.etat
+        $sql = 'SELECT *
 			FROM scenario_corresp 
 			INNER JOIN scenario
-			ON scenario.scenarioid = scenario_corresp.id	   
+			ON scenario.scenarioid = scenario_corresp.id  
 	    ';
 
         $q = $this->dao->prepare($sql);
@@ -183,7 +172,6 @@ class ScenariosManagerPDO extends ManagerPDO
 			INNER JOIN scenario
 			ON scenario.scenarioid = scenario_corresp.id	   
 		    WHERE scenario.scenarioid=:id
-		    GROUP BY scenario.scenarioid
 	    ';
 
         $q = $this->dao->prepare($sql);
