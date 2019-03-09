@@ -12,7 +12,7 @@
 	<route url="\/activapi.fr\/api\/actionneurs\/add" module="Actionneurs" action="insert" />
 	<route url="\/activapi.fr\/api\/actionneurs\/update" module="Actionneurs" action="update" />
 
-	<route url="\/activapi.fr\/api\/scenarios\/([0-9]*)?" module="Scenarios" action="index" vars="id" />	
+	<route url="\/activapi.fr\/api\/scenarios\/?([0-9]*)?" module="Scenarios" action="index" vars="id" />
 	<route url="\/activapi.fr\/api\/scenarios\/add" module="Scenarios" action="insert"  />	
 	<route url="\/activapi.fr\/api\/scenarios\/delete" module="Scenarios" action="delete"  />	
 	<route url="\/activapi.fr\/api\/scenarios\/delete-item" module="Scenarios" action="deleteitem"  />

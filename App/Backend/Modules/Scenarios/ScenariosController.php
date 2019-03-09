@@ -45,13 +45,31 @@ class ScenariosController extends BackController
         $id = $request->getData("id");
         /** @var ScenariosManagerPDO $scenarioManager */
         $scenarioManager = $this->managers->getManagerOf('Scenarios');
+
+        try {
+            $sequences = $scenarioManager->getSequences($id);
+        } catch (\Exception $e) {
+            $message = ['error' => $e->getMessage()];
+            $this->page->addVar('scenarios', $message);
+
+            return $message;
+        }
+
+        $scenariosTab = $this->mapSequences($sequences);
+        $this->page->addVar('scenarios', $scenariosTab);
+
+        return $scenariosTab;
+    }
+
+    /**
+     * @param $sequences
+     * @return array
+     * @throws \Exception
+     */
+    public function mapSequences($sequences)
+    {
         /** @var ActionneursManagerPDO $actionneursManager */
         $actionneursManager = $this->managers->getManagerOf('Actionneurs');
-        if (empty($id)) {
-            $sequences = $scenarioManager->getList();
-        } else {
-            $sequences = [$scenarioManager->getScenario($id)];
-        }
         $scenariosTab = [];
         /** @var Scenario $sequence */
         foreach ($sequences as $sequence) {
@@ -66,7 +84,6 @@ class ScenariosController extends BackController
             }
 
         }
-        $this->page->addVar('scenarios', $scenariosTab);
 
         return $scenariosTab;
     }

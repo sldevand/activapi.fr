@@ -142,6 +142,20 @@ class ScenariosManagerPDO extends ManagerPDO
     }
 
     /**
+     * @param null $id
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getSequences($id = null)
+    {
+        if (empty($id)) {
+            return $this->getList();
+        } else {
+            return $this->getScenario($id);
+        }
+    }
+
+    /**
      * @return mixed
      */
     public function getList()
@@ -164,6 +178,7 @@ class ScenariosManagerPDO extends ManagerPDO
     /**
      * @param $id
      * @return mixed
+     * @throws \Exception
      */
     public function getScenario($id)
     {
@@ -174,7 +189,7 @@ class ScenariosManagerPDO extends ManagerPDO
 		    WHERE scenario.scenarioid=:id
 	    ';
 
-        $q = $this->dao->prepare($sql);
+        $q = $this->prepare($sql);
         $q->bindValue(':id', $id);
         $q->execute();
 
@@ -183,7 +198,11 @@ class ScenariosManagerPDO extends ManagerPDO
         $result = $q->fetch();
         $q->closeCursor();
 
-        return $result;
+        if (!$result) {
+            throw new \Exception('Pas de scenario à cet id!');
+        }
+
+        return [$result];
     }
 
     /**
