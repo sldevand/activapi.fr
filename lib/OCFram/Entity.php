@@ -126,13 +126,14 @@ abstract class Entity implements \ArrayAccess, \JsonSerializable
     abstract public function jsonSerialize();
 
     /**
+     * @param $ignoreProperties
      * @return bool
      */
-    public function isValid()
+    public function isValid($ignoreProperties)
     {
         $properties = get_object_vars($this);
         foreach ($properties as $key => $property) {
-            if ($key !== "erreurs" && $key !== "id" && !isset($property)) {
+            if ($key !== "erreurs" && $key !== "id" && !isset($property) && !in_array($key, $ignoreProperties)) {
                 $objClass = new \ReflectionObject($this);
                 $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is not set";
                 return false;

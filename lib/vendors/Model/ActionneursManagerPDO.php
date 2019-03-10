@@ -2,6 +2,8 @@
 
 namespace Model;
 
+use Entity\Actionneur;
+
 /**
  * Class ActionneursManagerPDO
  * @package Model
@@ -19,16 +21,29 @@ class ActionneursManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param string $categorie
-     * @return array
+     * @param string|null $categorie
+     * @param array|null $in
+     * @return Actionneur[]
      * @throws \Exception
      */
-    public function getList($categorie = "")
+    public function getList($categorie = null, $in = null)
     {
         $sql = "SELECT * FROM $this->tableName";
+
         if (!empty($categorie)) {
             $sql .= ' WHERE categorie = :categorie';
         }
+
+        if (!empty($categorie) && !empty($in)) {
+            $sql .= ' AND';
+        }
+
+        if (!empty($in) && !empty($in['field'])) {
+            $field = $in['field'];
+            $values = $in['values'];
+            $sql .= " $field IN ($values)";
+        }
+
         $q = $this->prepare($sql);
         if (!empty($categorie)) {
             $q->bindParam(':categorie', $categorie);

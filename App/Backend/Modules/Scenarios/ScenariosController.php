@@ -2,7 +2,6 @@
 
 namespace App\Backend\Modules\Scenarios;
 
-use Entity\Actionneur;
 use Entity\Scenario;
 use Model\ActionneursManagerPDO;
 use Model\ScenariosManagerPDO;
@@ -46,8 +45,11 @@ class ScenariosController extends BackController
         /** @var ScenariosManagerPDO $scenarioManager */
         $scenarioManager = $this->managers->getManagerOf('Scenarios');
 
+        /** @var ActionneursManagerPDO $actionneursManager */
+        $actionneursManager = $this->managers->getManagerOf('Actionneurs');
+
         try {
-            $sequences = $scenarioManager->getSequences($id);
+            $sequences = $scenarioManager->getSequences($actionneursManager, $id);
         } catch (\Exception $e) {
             $message = ['error' => $e->getMessage()];
             $this->page->addVar('scenarios', $message);
@@ -55,37 +57,9 @@ class ScenariosController extends BackController
             return $message;
         }
 
-        $scenariosTab = $this->mapSequences($sequences);
-        $this->page->addVar('scenarios', $scenariosTab);
+        $this->page->addVar('scenarios', $sequences);
 
-        return $scenariosTab;
-    }
-
-    /**
-     * @param $sequences
-     * @return array
-     * @throws \Exception
-     */
-    public function mapSequences($sequences)
-    {
-        /** @var ActionneursManagerPDO $actionneursManager */
-        $actionneursManager = $this->managers->getManagerOf('Actionneurs');
-        $scenariosTab = [];
-        /** @var Scenario $sequence */
-        foreach ($sequences as $sequence) {
-            /** @var Actionneur $actionneur */
-            $actionneurs = $actionneursManager->getList();
-            $sequence->setActionneurs($actionneurs);
-            $scenariosTab[$sequence->scenarioid()]["nom"] = $sequence->nom();
-            $scenariosTab[$sequence->scenarioid()]["scenarioid"] = $sequence->scenarioid();
-
-            foreach ($sequence->getActionneurs() as $tempActionneur) {
-                $scenariosTab[$sequence->scenarioid()]["data"][$sequence->id()] = $tempActionneur;
-            }
-
-        }
-
-        return $scenariosTab;
+        return $sequences;
     }
 
     /**

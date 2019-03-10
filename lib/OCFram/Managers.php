@@ -1,32 +1,54 @@
 <?php
+
 namespace OCFram;
 
+/**
+ * Class Managers
+ * @package OCFram
+ */
 class Managers
 {
-  protected $api = null;
-  protected $dao = null;
-  protected $managers = [];
+    /**
+     * @var null
+     */
+    protected $api = null;
 
-  public function __construct($api, $dao)
-  {
-    $this->api = $api;
-    $this->dao = $dao;
-  }
+    /**
+     * @var null
+     */
+    protected $dao = null;
 
-  public function getManagerOf($module)
-  {
-    if (!is_string($module) || empty($module))
+    /**
+     * @var array
+     */
+    protected $managers = [];
+
+    /**
+     * Managers constructor.
+     * @param $api
+     * @param $dao
+     */
+    public function __construct($api, $dao)
     {
-      throw new \InvalidArgumentException('Le module spécifié est invalide');
+        $this->api = $api;
+        $this->dao = $dao;
     }
 
-    if (!isset($this->managers[$module]))
+    /**
+     * @param $module
+     * @return mixed
+     */
+    public function getManagerOf($module)
     {
-      $manager = '\\Model\\'.$module.'Manager'.$this->api;
+        if (!is_string($module) || empty($module)) {
+            throw new \InvalidArgumentException('Le module spécifié est invalide');
+        }
 
-      $this->managers[$module] = new $manager($this->dao);
+        if (!isset($this->managers[$module])) {
+            $manager = '\\Model\\' . $module . 'Manager' . $this->api;
+            $this->managers[$module] = new $manager($this->dao);
+        }
+
+        return $this->managers[$module];
     }
-
-    return $this->managers[$module];
-  }
 }

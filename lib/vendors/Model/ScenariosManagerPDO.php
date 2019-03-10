@@ -2,6 +2,7 @@
 
 namespace Model;
 
+use Entity\Actionneur;
 use Entity\Scenario;
 use OCFram\Entity;
 
@@ -11,6 +12,9 @@ use OCFram\Entity;
  */
 class ScenariosManagerPDO extends ManagerPDO
 {
+    /** @var ActionneursManagerPDO $actionneursManager */
+    protected $actionneursManager;
+
     /**
      * @param Entity $scenario
      * @return mixed
@@ -142,72 +146,78 @@ class ScenariosManagerPDO extends ManagerPDO
     }
 
     /**
+     * @param ActionneursManagerPDO $actionneursManager
      * @param null $id
      * @return mixed
      * @throws \Exception
      */
-    public function getSequences($id = null)
+    public function getSequences($actionneursManager, $id = null)
     {
-        if (empty($id)) {
-            return $this->getList();
-        } else {
-            return $this->getScenario($id);
-        }
+        $this->setActionneursManager($actionneursManager);
+
+        return $this->getList($id);
     }
 
     /**
-     * @return mixed
-     */
-    public function getList()
-    {
-        $sql = 'SELECT *
-			FROM scenario_corresp 
-			INNER JOIN scenario
-			ON scenario.scenarioid = scenario_corresp.id  
-	    ';
-
-        $q = $this->dao->prepare($sql);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Scenario');
-        $result = $q->fetchAll();
-        $q->closeCursor();
-
-        return $result;
-    }
-
-    /**
-     * @param $id
+     * @param null $id
+     * @param bool $lazyLoading
      * @return mixed
      * @throws \Exception
      */
-    public function getScenario($id)
+    public function getList($id = null, $lazyLoading = false)
     {
         $sql = 'SELECT *
 			FROM scenario_corresp 
 			INNER JOIN scenario
-			ON scenario.scenarioid = scenario_corresp.id	   
-		    WHERE scenario.scenarioid=:id
+			ON scenario.scenarioid = scenario_corresp.id
 	    ';
 
-        $q = $this->prepare($sql);
-        $q->bindValue(':id', $id);
-        $q->execute();
-
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Scenario');
-
-        $result = $q->fetch();
-        $q->closeCursor();
-
-        if (!$result) {
-            throw new \Exception('Pas de scenario à cet id!');
+        if (!empty($id)) {
+            $sql .= " WHERE scenario.scenarioid=:id";
         }
 
-        return [$result];
+        $q = $this->prepare($sql);
+        if (!empty($id)) {
+            $q->bindValue(':id', $id);
+        }
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Scenario');
+        $scenarios = $q->fetchAll();
+        $q->closeCursor();
+
+        if ($lazyLoading) {
+            return $scenarios;
+        }
+
+        return $this->setActionneursOnScenarios($scenarios);
+    }
+
+    /**
+     * @param Scenario[] $scenarios
+     * @return array
+     * @throws \Exception
+     */
+    protected function setActionneursOnScenarios($scenarios)
+    {
+        $scenariosTab = [];
+        /** @var Actionneur[] $actionneurs */
+        $actionneurs = $this->actionneursManager->getList();
+
+        foreach ($scenarios as $scenario) {
+            $scenariosTab[$scenario->scenarioid()]["nom"] = $scenario->nom();
+            $scenariosTab[$scenario->scenarioid()]["scenarioid"] = $scenario->scenarioid();
+            $actionneutTemp = $actionneurs[$scenario->actionneurid()];
+            $actionneutTemp->setEtat($scenario->etat());
+            $scenariosTab[$scenario->scenarioid()]["data"][$scenario->id()] = $actionneutTemp;
+        }
+
+        return $scenariosTab;
     }
 
     /**
      * @param string $name
      * @return mixed
+     * @throws \Exception
      */
     public function getScenarioByName($name)
     {
@@ -216,10 +226,9 @@ class ScenariosManagerPDO extends ManagerPDO
 			INNER JOIN scenario
 			ON scenario.scenarioid = scenario_corresp.id	   
 		    WHERE scenario_corresp.nom=:nom
-		    GROUP BY scenario.scenarioid
 	    ';
 
-        $q = $this->dao->prepare($sql);
+        $q = $this->prepare($sql);
         $q->bindValue(':nom', $name);
         $q->execute();
 
@@ -306,5 +315,24 @@ class ScenariosManagerPDO extends ManagerPDO
             $scenario->setEtat($actionneur->getEtat());
             $this->saveItem($scenario);
         }
+    }
+
+    /**
+     * @return ActionneursManagerPDO
+     */
+    public function getActionneursManager()
+    {
+        return $this->actionneursManager;
+    }
+
+    /**
+     * @param ActionneursManagerPDO $actionneursManager
+     * @return ScenariosManagerPDO
+     */
+    public function setActionneursManager($actionneursManager)
+    {
+        $this->actionneursManager = $actionneursManager;
+
+        return $this;
     }
 }

@@ -24,15 +24,17 @@ class ManagerPDO extends Manager
 
     /**
      * @param Entity $entity
+     * @param null $ignoreProperties
+     * @return bool
      * @throws Exception
      */
-    public function save(Entity $entity)
+    public function save(Entity $entity, $ignoreProperties = null)
     {
-        if (!$entity->isValid()) {
+        if (!$entity->isValid($ignoreProperties)) {
             throw new \RuntimeException($entity->erreurs()["notValid"]);
         }
 
-        $entity->isNew() ? $this->add($entity) : $this->update($entity);
+        return $entity->isNew() ? $this->add($entity, $ignoreProperties) : $this->update($entity, $ignoreProperties);
     }
 
     /**
@@ -60,13 +62,16 @@ class ManagerPDO extends Manager
 
     /**
      * @param Entity $entity
+     * @param $ignoreProperties
      * @return bool
      * @throws Exception
      */
-    public function update(Entity $entity)
+    public function update(Entity $entity, $ignoreProperties = null)
     {
+
+
         $sql = "UPDATE $this->tableName SET ";
-        $properties = $entity->properties();
+        $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = $this->addProperties($sql, $properties);
         $sql .= "WHERE id = :id";
         $q = $this->prepare($sql);
@@ -79,23 +84,52 @@ class ManagerPDO extends Manager
 
     /**
      * @param Entity $entity
+     * @param null|array $ignoreProperties
      * @return bool
      * @throws Exception
      */
-    public function add(Entity $entity)
+    public function add($entity, $ignoreProperties = null)
     {
+        $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = "INSERT INTO $this->tableName (";
-        $properties = $entity->properties();
-        $sql .= $this->addProperties($sql, $properties);
+        $sql .= $this->addInsertProperties($properties);
         $sql .= ") VALUES (";
-        $sql .= $this->addProperties($sql, $properties);
-        $sql .= ")";
+        $sql .= $this->addInsertProperties($properties, true);
+        $sql .= ");";
         $q = $this->prepare($sql);
-        $this->bindProperties($q, $properties);
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs" && $key !== 'id') {
+                $q->bindValue(":$key", $property);
+            }
+        }
+
         $success = $q->execute();
         $q->closeCursor();
 
+        var_dump($this->dao->errorInfo());
+
         return $success;
+    }
+
+    /**
+     * @param Entity $entity
+     * @param null $ignoreProperties
+     * @return array
+     */
+    protected function ignoreProperties(Entity $entity, $ignoreProperties = null)
+    {
+        if (empty($ignoreProperties)) {
+            return $entity->properties();
+        }
+
+        $properties = [];
+        foreach ($entity->properties() as $key => $property) {
+            if (!in_array($key, $ignoreProperties)) {
+                $properties[$key] = $property;
+            }
+        }
+
+        return $properties;
     }
 
     /**
@@ -179,14 +213,43 @@ class ManagerPDO extends Manager
     }
 
     /**
+     * @param array $properties
+     * @param bool $isValue
+     * @return string
+     */
+    public function addInsertProperties($properties, $isValue = false)
+    {
+        $count = count($properties) - 2;
+        $i = 1;
+        $sql = '';
+        foreach ($properties as $key => $property) {
+            if ($key !== "id" && $key !== "erreurs") {
+                if ($isValue) {
+                    $sql .= ':';
+                }
+                $sql .= $key;
+                if ($i < $count) {
+                    $sql .= ",";
+                }
+//                $sql .= " ";
+            }
+            $i++;
+        }
+
+        return $sql;
+    }
+
+
+    /**
      * @param \PDOStatement $query
      * @param $properties
+     * @return \PDOStatement
      * @throws Exception
      */
-    public function bindProperties(&$query, $properties)
+    public function bindProperties($query, $properties)
     {
         if (!$query) {
-            throw new \Exception($this->dao->errorInfo());
+            throw new Exception($this->dao->errorInfo());
         }
 
         foreach ($properties as $key => $property) {
@@ -194,5 +257,7 @@ class ManagerPDO extends Manager
                 $query->bindValue(':' . $key, $property);
             }
         }
+
+        return $query;
     }
 }
