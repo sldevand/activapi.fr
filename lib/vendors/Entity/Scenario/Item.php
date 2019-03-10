@@ -89,8 +89,11 @@ class Item extends Entity
      */
     public function jsonSerialize()
     {
-        // TODO: Implement jsonSerialize() method.
+        return [
+            'id' => $this->id(),
+            'actionneurId' => $this->getActionneurId(),
+            'actionneur' => $this->getActionneur(),
+            'etat' => $this->getEtat()
+        ];
     }
-
-
 }
