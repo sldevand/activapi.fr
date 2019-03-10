@@ -3,8 +3,8 @@
 namespace Tests\Model;
 
 use Entity\Actionneur;
-use Entity\Scenario;
-use Model\ScenariosManagerPDO;
+use Entity\Scenario\Scenario;
+use Model\Scenario\ScenariosManagerPDO;
 use OCFram\PDOFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -19,25 +19,34 @@ class ScenariosManagerPDOTest extends TestCase
      */
     public static $db;
 
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        PDOFactory::setPdoAddress('sqlite:C:\wamp64\www\database\releves.db');
+
+        $command = SQLITE_PATH . " " . TEST_DB_PATH;
+        $dsn = "sqlite:" . TEST_DB_PATH;
+
+        PDOFactory::setPdoAddress($dsn);
         self::$db = PDOFactory::getSqliteConnexion();
+
+        if (file_exists(TEST_INIT_SQL_PATH)) {
+            $sql = file_get_contents(TEST_INIT_SQL_PATH);
+            self::$db->exec($sql);
+        }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testSave()
     {
         /** @var ScenariosManagerPDO $manager */
         $manager = new ScenariosManagerPDO(self::$db);
-
-        $actionneurs = $this->makeActionneurs();
-        $scenario = $this->makeScenario($actionneurs);
-
+        $scenario = $this->makeScenario();
         $manager->save($scenario);
+        $persisted = $manager->getUnique(1, $scenario);
 
-        $persisted = $manager->getScenarioByName($scenario->nom());
+        var_dump($persisted);
 
         self::assertEquals($scenario, $persisted);
     }
@@ -67,17 +76,14 @@ class ScenariosManagerPDOTest extends TestCase
     }
 
     /**
-     * @param Actionneur[] $actionneurs
      * @return Scenario
      */
-    public function makeScenario($actionneurs)
+    public function makeScenario()
     {
         return new Scenario(
             [
                 'id' => '1',
-                'scenarioid' => '1',
-                'nom' => 'ScenarioTest',
-                'actionneurs' => $actionneurs
+                'nom' => 'ScenarioTest'
             ]
         );
     }

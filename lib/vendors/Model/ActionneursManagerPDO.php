@@ -18,6 +18,7 @@ class ActionneursManagerPDO extends ManagerPDO
     {
         parent::__construct($dao);
         $this->tableName = 'actionneurs';
+        $this->entity = new Actionneur();
     }
 
     /**

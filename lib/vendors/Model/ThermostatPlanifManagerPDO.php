@@ -1,126 +1,146 @@
 <?php
+
 namespace Model;
 
-use \OCFram\Manager;
-use \Entity\ThermostatPlanif;
-use \Entity\ThermostatPlanifNom;
-use \Entity\ThermostatMode;
-use \Debug\Log;
+use Entity\ThermostatPlanif;
+use Exception;
+use OCFram\Entity;
 
-class ThermostatPlanifManagerPDO extends Manager{
- 
-  public function count(){
-    return $this->dao->query('SELECT COUNT(*) FROM thermostat_planif')->fetchColumn();
-  }
+class ThermostatPlanifManagerPDO extends ManagerPDO
+{
 
-   public function countPlanifs(){
-    return $this->dao->query('SELECT COUNT(*) FROM thermostat_corresp')->fetchColumn();
-  }
-
-  public function delete($id){
-    $this->dao->exec('DELETE FROM thermostat_corresp WHERE id = '.(int) $id);
-    $this->dao->exec('DELETE FROM thermostat_planif WHERE nomid = '.(int) $id);
-  } 
-
-  public function getListArray(){
-
-   $liste=$this->getAllPlanifs();
-
-    $listeTab=[];
-
-    foreach($liste as $value){
-      $nomid = (int)$value["id"];
-      $listeTab[]=$this->getList($nomid);    
-
-    }
-    return $listeTab;
-  }
-    
-  public function getList($id){
-
-    $sql = 'SELECT * FROM thermostat_planif';	
-
-    if(!is_null($id) && !empty($id)){
-      $sql.=' WHERE nomid=:nomid';}
-
-  	$q = $this->dao->prepare($sql);
-
-    if(!is_null($id) && !empty($id)){
-      $q->bindValue(':nomid',$id);
-    }
-  	$q->execute();
-    $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanif');
-    $listeThermostatPlanif = $q->fetchAll();
-    $q->closeCursor();
-
-
-    foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
-      $nom = $this->getNom($thermostatPlanif->nomid());
-      $thermostatPlanif->setNom($nom);  
-
-      $mode = $this->getMode($thermostatPlanif->modeid());     
-             
-      $thermostatPlanif->setMode($mode);  
-     
-      $defaultMode = $this->getMode($thermostatPlanif->defaultModeid());    
-      $thermostatPlanif->setDefaultMode($defaultMode);   
-    }
-    return $listeThermostatPlanif;
-  }
-
-  public function getUnique($id)
-  {
-    $sql = 'SELECT * FROM thermostat_planif WHERE id = :id'; 
-
-
-    $q = $this->dao->prepare($sql);
-    if($q){
-      $q->bindValue(':id', (int) $id, \PDO::PARAM_INT);
-      $q->execute();
-      $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanif');
-      $thermostatPlanif = $q->fetch();
-      $q->closeCursor();
-
-      if($thermostatPlanif->modeid()){
-        $thermostatPlanif->setMode( $this->getMode($thermostatPlanif->modeid()));
-      }else{
-        throw new \RuntimeException('modeid is null!');
-      }
-
-      if($thermostatPlanif->defaultModeid()){
-          $thermostatPlanif->setDefaultMode( $this->getMode($thermostatPlanif->defaultModeid()));
-      }else{
-        throw new \RuntimeException('defaultModeid is null!');
-      }
-   
-
-    }else{
-
-        echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( $this->dao->errorInfo(),-1);
-      
-    }
- 
-    return $thermostatPlanif;
-  }
-
-  public function save(ThermostatPlanif $thermostatPlanif){  
-
-    if ($thermostatPlanif->isValid())
-    {     
-      $thermostatPlanif->isNew() ? $this->addPlanifTable($thermostatPlanif->nom()) : $this->modify($thermostatPlanif);
-    }
-    else
+    /**
+     * ThermostatPlanifManagerPDO constructor.
+     * @param \PDO $dao
+     */
+    public function __construct(\PDO $dao)
     {
-      throw new \RuntimeException('Le thermostatPlanif doit être valide pour être enregistré');
+        parent::__construct($dao);
+        $this->tableName = 'thermostat_planif';
+        $this->entity = new ThermostatPlanif();
     }
-  
-  }
 
-  public function modify(ThermostatPlanif $thermostatPlanif){
+    /**
+     * @return mixed
+     */
+    public function countPlanifs()
+    {
+        return $this->dao->query('SELECT COUNT(*) FROM thermostat_corresp')->fetchColumn();
+    }
 
-  
-    $sql = 'UPDATE thermostat_planif 
+    /**
+     * @param int $id
+     */
+    public function delete($id)
+    {
+        $this->dao->exec("DELETE FROM thermostat_corresp WHERE id = $id");
+        $this->dao->exec("DELETE FROM $this->tableName WHERE nomid = $id");
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function getListArray()
+    {
+        $liste = $this->getAllPlanifs();
+        $listeTab = [];
+        foreach ($liste as $value) {
+            $nomid = (int)$value["id"];
+            $listeTab[] = $this->getList($nomid);
+        }
+
+        return $listeTab;
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     * @throws Exception
+     */
+    public function getList($id = null)
+    {
+        $sql = 'SELECT * FROM thermostat_planif';
+
+        if (!empty($id)) {
+            $sql .= ' WHERE nomid=:nomid';
+        }
+
+        $q = $this->prepare($sql);
+
+        if (!is_null($id) && !empty($id)) {
+            $q->bindValue(':nomid', $id);
+        }
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanif');
+        $listeThermostatPlanif = $q->fetchAll();
+        $q->closeCursor();
+
+        foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
+            $nom = $this->getNom($thermostatPlanif->nomid());
+            $thermostatPlanif->setNom($nom);
+            $mode = $this->getMode($thermostatPlanif->modeid());
+            $thermostatPlanif->setMode($mode);
+            $defaultMode = $this->getMode($thermostatPlanif->defaultModeid());
+            $thermostatPlanif->setDefaultMode($defaultMode);
+        }
+
+        return $listeThermostatPlanif;
+    }
+
+    /**
+     * @param int $id
+     * @return mixed|null|\OCFram\Entity
+     * @throws Exception
+     */
+    public function getUnique($id)
+    {
+        $sql = 'SELECT * FROM thermostat_planif WHERE id = :id';
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanif');
+        $thermostatPlanif = $q->fetch();
+        $q->closeCursor();
+
+        if (empty($thermostatPlanif->modeid())) {
+            throw new \RuntimeException('modeid is null!');
+        }
+
+        if (empty($thermostatPlanif->defaultModeid())) {
+            throw new \RuntimeException('defaultModeid is null!');
+        }
+
+        $thermostatPlanif->setMode($this->getMode($thermostatPlanif->modeid()));
+        $thermostatPlanif->setDefaultMode($this->getMode($thermostatPlanif->defaultModeid()));
+
+        return $thermostatPlanif;
+    }
+
+    /**
+     * @param Entity $thermostatPlanif
+     * @param array $ignoreProperties
+     * @return bool|int
+     * @throws Exception
+     */
+    public function save($thermostatPlanif, $ignoreProperties = [])
+    {
+        if (!$thermostatPlanif->isValid($ignoreProperties)) {
+            throw new \RuntimeException('Le thermostatPlanif doit être valide pour être enregistré');
+        }
+
+        return $thermostatPlanif->isNew()
+            ? $this->addPlanifTable($thermostatPlanif->nom())
+            : $this->modify($thermostatPlanif);
+    }
+
+    /**
+     * @param ThermostatPlanif $thermostatPlanif
+     * @throws Exception
+     */
+    public function modify(ThermostatPlanif $thermostatPlanif)
+    {
+        $sql = 'UPDATE thermostat_planif 
             SET             
             modeid=:modeid,
             defaultModeid=:defaultModeid,
@@ -130,200 +150,179 @@ class ThermostatPlanifManagerPDO extends Manager{
             heure2Stop=:heure2Stop           
             WHERE id=:id';
 
-    $q = $this->dao->prepare($sql);
-
-    if($q){
-      $q->bindValue(':id',$thermostatPlanif->id());       
-      $q->bindValue(':modeid',$thermostatPlanif->modeid());
-      $q->bindValue(':defaultModeid',$thermostatPlanif->defaultModeid());
-      $q->bindValue(':heure1Start',$thermostatPlanif->heure1Start());
-      $q->bindValue(':heure1Stop',$thermostatPlanif->heure1Stop());
-      $q->bindValue(':heure2Start',$thermostatPlanif->heure2Start());
-      $q->bindValue(':heure2Stop',$thermostatPlanif->heure2Stop()); 
-
-      $q->execute();
-      $q->closeCursor();
-    }else{     
-      echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( $this->dao->errorInfo());
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', $thermostatPlanif->id());
+        $q->bindValue(':modeid', $thermostatPlanif->modeid());
+        $q->bindValue(':defaultModeid', $thermostatPlanif->defaultModeid());
+        $q->bindValue(':heure1Start', $thermostatPlanif->heure1Start());
+        $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
+        $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
+        $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
+        $q->execute();
+        $q->closeCursor();
     }
-  } 
-  
 
-   public function add(ThermostatPlanif $thermostatPlanif){
 
-  
-    $sql = 'INSERT INTO thermostat_planif 
+    /**
+     * @param Entity $thermostatPlanif
+     * @param array $ignoreProperties
+     * @return bool|void
+     * @throws Exception
+     */
+    public function add($thermostatPlanif, $ignoreProperties = [])
+    {
+        $sql = 'INSERT INTO thermostat_planif 
             (jour,modeid,defaultModeid,heure1Start,heure1Stop,heure2Start,heure2Stop,nomid) 
             VALUES          
             (:jour,:modeid,:defaultModeid,:heure1Start,:heure1Stop,:heure2Start,:heure2Stop,:nomid) ';
 
-    $q = $this->dao->prepare($sql);
-
-    if($q){    
-      $q->bindValue(':jour',$thermostatPlanif->jour());
-      $q->bindValue(':modeid',$thermostatPlanif->modeid());
-      $q->bindValue(':defaultModeid',$thermostatPlanif->defaultModeid());
-      $q->bindValue(':heure1Start',$thermostatPlanif->heure1Start());
-      $q->bindValue(':heure1Stop',$thermostatPlanif->heure1Stop());
-      $q->bindValue(':heure2Start',$thermostatPlanif->heure2Start());
-      $q->bindValue(':heure2Stop',$thermostatPlanif->heure2Stop()); 
-      $q->bindValue(':nomid',$thermostatPlanif->nomid());
-
-      $q->execute();
-      $q->closeCursor();
-    }else{     
-      echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( $this->dao->errorInfo());
-    }
-  } 
-
-
-
-  public function addPlanifTable($nom){
-
-    $nomid=(int)$this->addNom($nom);
-    if($nomid>0){
-      $thermostatPlanifs=[];
-      for($jour=1;$jour<8;$jour++){
-
-        $thermostatPlanif = new ThermostatPlanif([         
-          "jour"=>$jour,
-          "modeid"=>"1",
-          "defaultModeid"=>"3",
-          "heure1Start"=>"",
-          "heure1Stop"=>"",
-          "heure2Start"=>"",
-          "heure2Stop"=>"",
-          "nomid"=>$nomid
-        ]);
-
-        $this->add($thermostatPlanif);     
-      }
-
-        return $nomid;
-      
-    }else{
-      return 0;
-
-    }
-    
-
-
-
-  }
-
-   public function getMode($id){
-
-      $sql='SELECT * FROM thermostat_modes WHERE id = :id';
-
-      $q = $this->dao->prepare($sql);
-      $q->bindValue(':id',$id);
-      $q->execute();
-      $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-      $mode = $q->fetch();
-      $q->closeCursor();
-      return $mode;
-
-   }
-
-   public function getModes(){
-
-      $sql='SELECT * FROM thermostat_modes';
-
-      $q = $this->dao->prepare($sql);    
-      $q->execute();
-      $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-      $modes= $q->fetchAll();
-      $q->closeCursor();
-      return $modes;
-
-   }
-
-   public function addNom($name){
-
-    $noms = $this->getNoms();
-
-    foreach($noms as $key=>$nom){
-      if($nom->nom()==$name){
-         return "Ce Nom existe déjà!";  
-      }   
+        $q = $this->prepare($sql);
+        $q->bindValue(':jour', $thermostatPlanif->jour());
+        $q->bindValue(':modeid', $thermostatPlanif->modeid());
+        $q->bindValue(':defaultModeid', $thermostatPlanif->defaultModeid());
+        $q->bindValue(':heure1Start', $thermostatPlanif->heure1Start());
+        $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
+        $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
+        $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
+        $q->bindValue(':nomid', $thermostatPlanif->nomid());
+        $q->execute();
+        $q->closeCursor();
     }
 
-    $sql='INSERT INTO thermostat_corresp (nom) VALUES (:nom)';
-    $q = $this->dao->prepare($sql);    
-    if($q){
-      
-      $q->bindValue(':nom',$name);
-      $q->execute();
 
-      $lastId=$this->dao->lastInsertId();
-    }else{     
-      echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( $this->dao->errorInfo());
+    /**
+     * @param string $nom
+     * @return int
+     * @throws Exception
+     */
+    public function addPlanifTable($nom)
+    {
+        $nomId = (int)$this->addNom($nom);
+        if ($nomId <= 0) {
+            return 0;
+        }
+
+        for ($jour = 1; $jour < 8; $jour++) {
+            $thermostatPlanif = new ThermostatPlanif([
+                "jour" => $jour,
+                "modeid" => "1",
+                "defaultModeid" => "3",
+                "heure1Start" => "",
+                "heure1Stop" => "",
+                "heure2Start" => "",
+                "heure2Stop" => "",
+                "nomid" => $nomId
+            ]);
+
+            $this->add($thermostatPlanif);
+        }
+
+        return $nomId;
     }
-    return $lastId;
-   }
-  
-    public function getNom($id){
 
-      $sql='SELECT * FROM thermostat_corresp WHERE id = :id';
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getMode($id)
+    {
+        $sql = 'SELECT * FROM thermostat_modes WHERE id = :id';
 
-      $q = $this->dao->prepare($sql);
-      if($q){
-        $q->bindValue(':id', (int) $id, \PDO::PARAM_INT);
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', $id);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
+        $mode = $q->fetch();
+        $q->closeCursor();
+
+        return $mode;
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function getModes()
+    {
+        $sql = 'SELECT * FROM thermostat_modes';
+        $q = $this->prepare($sql);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
+        $modes = $q->fetchAll();
+        $q->closeCursor();
+
+        return $modes;
+    }
+
+    /**
+     * @param stirng $name
+     * @return string
+     * @throws Exception
+     */
+    public function addNom($name)
+    {
+        $noms = $this->getNoms();
+        foreach ($noms as $key => $nom) {
+            if ($nom->nom() == $name) {
+                return "Ce Nom existe déjà!";
+            }
+        }
+
+        $sql = 'INSERT INTO thermostat_corresp (nom) VALUES (:nom)';
+        $q = $this->prepare($sql);
+        $q->bindValue(':nom', $name);
+        $q->execute();
+
+        return $this->dao->lastInsertId();
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws Exception
+     */
+    public function getNom($id)
+    {
+        $sql = 'SELECT * FROM thermostat_corresp WHERE id = :id';
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanifNom');
         $nom = $q->fetch();
         $q->closeCursor();
-      }else{     
-        echo "\nPDO::errorInfo():\n";
-        throw new \RuntimeException( $this->dao->errorInfo());
-      }
-      return $nom;
-   }
 
-   public function getNoms(){
+        return $nom;
+    }
 
-      $sql='SELECT * FROM thermostat_corresp';
-
-      $q = $this->dao->prepare($sql);      
-
-      if($q){
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function getNoms()
+    {
+        $sql = 'SELECT * FROM thermostat_corresp';
+        $q = $this->prepare($sql);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanifNom');
-        $noms= $q->fetchAll();
+        $noms = $q->fetchAll();
         $q->closeCursor();
-      }else{     
-      echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( $this->dao->errorInfo());
+
+        return $noms;
     }
-      return $noms;
-   }
 
-    public function getAllPlanifs(){
-
-     $sql='SELECT * FROM thermostat_corresp';
-
-      $q = $this->dao->prepare($sql);      
-
-      if($q){
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function getAllPlanifs()
+    {
+        $sql = 'SELECT * FROM thermostat_corresp';
+        $q = $this->prepare($sql);
         $q->execute();
-        $planifs= $q->fetchAll();
+        $planifs = $q->fetchAll();
         $q->closeCursor();
-      }else{     
-      echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( $this->dao->errorInfo());
+
+        return $planifs;
     }
-
-      return $planifs;
-
-
-   }
-
-
-
-
 }
-
-

@@ -1,49 +1,66 @@
 <?php
+
 namespace Entity;
 
-use \OCFram\Entity;
+use OCFram\Entity;
+
+class ThermostatMode extends Entity
+{
+    protected $nom;
+    protected $consigne;
+    protected $delta;
+
+    public function isValid($ignoreProperties = [])
+    {
+        parent::isValid($ignoreProperties);
+
+        return !(empty($this->nom) || empty($this->consigne) || empty($this->delta));
+    }
+
+    //GETTERS
+    public function nom()
+    {
+        return $this->nom;
+    }
+
+    public function consigne()
+    {
+        return $this->consigne;
+    }
+
+    public function delta()
+    {
+        return $this->delta;
+    }
 
 
-class ThermostatMode extends Entity{
+    //SETTERS
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+    }
 
-	protected $nom;
-	protected $consigne;
-	protected $delta;
+    public function setConsigne($consigne)
+    {
 
-	public function isValid()
-  	{
-   	 return !(empty($this->nom) || empty($this->consigne) || empty($this->delta));
-  	}
+        $this->consigne = $consigne;
+    }
 
-	//GETTERS
-	public function nom(){return $this->nom;}	
-	public function consigne(){return $this->consigne;}
-	public function delta(){return $this->delta;}
+    public function setDelta($delta)
+    {
+        $this->delta = $delta;
+    }
 
+    public function jsonSerialize()
+    {
 
-	//SETTERS
-	public function setNom($nom){
-		$this->nom=$nom;
-	}
-		
-	public function setConsigne($consigne){
-
-		$this->consigne=$consigne;
-	}
-
-	public function setDelta($delta){
-		$this->delta=$delta;
-	}
-	
-	public function jsonSerialize(){
-
-		return array(
-			'id' => $this->id(),
-			'nom' => $this->nom,			
-			'consigne' => $this->consigne,
-			'delta'=>$this->delta		
-		);
-	}
+        return array(
+            'id' => $this->id(),
+            'nom' => $this->nom,
+            'consigne' => $this->consigne,
+            'delta' => $this->delta
+        );
+    }
 
 
 }

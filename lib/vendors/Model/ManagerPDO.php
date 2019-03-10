@@ -24,11 +24,11 @@ class ManagerPDO extends Manager
 
     /**
      * @param Entity $entity
-     * @param null $ignoreProperties
+     * @param array $ignoreProperties
      * @return bool
      * @throws Exception
      */
-    public function save(Entity $entity, $ignoreProperties = null)
+    public function save($entity, $ignoreProperties = [])
     {
         if (!$entity->isValid($ignoreProperties)) {
             throw new \RuntimeException($entity->erreurs()["notValid"]);
@@ -66,10 +66,8 @@ class ManagerPDO extends Manager
      * @return bool
      * @throws Exception
      */
-    public function update(Entity $entity, $ignoreProperties = null)
+    public function update($entity, $ignoreProperties = null)
     {
-
-
         $sql = "UPDATE $this->tableName SET ";
         $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = $this->addProperties($sql, $properties);
@@ -84,11 +82,11 @@ class ManagerPDO extends Manager
 
     /**
      * @param Entity $entity
-     * @param null|array $ignoreProperties
+     * @param array $ignoreProperties
      * @return bool
      * @throws Exception
      */
-    public function add($entity, $ignoreProperties = null)
+    public function add($entity, $ignoreProperties = [])
     {
         $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = "INSERT INTO $this->tableName (";
@@ -106,10 +104,54 @@ class ManagerPDO extends Manager
         $success = $q->execute();
         $q->closeCursor();
 
-        var_dump($this->dao->errorInfo());
-
         return $success;
     }
+
+    /**
+     * @param int $id
+     * @return Entity|null
+     * @throws Exception
+     */
+    public function getUnique($id)
+    {
+        $sql = "SELECT * FROM $this->tableName WHERE id = :id";
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
+        $entity = $q->fetch();
+        $q->closeCursor();
+
+        return $entity;
+    }
+
+    /**
+     * @param int | null $id
+     * @return array
+     * @throws Exception
+     */
+    public function getAll($id = null)
+    {
+        $sql = "SELECT * FROM $this->tableName";
+        if (!empty($id)) {
+            $sql .= ' WHERE id=:id';
+        }
+
+        $q = $this->prepare($sql);
+
+        if (!is_null($id) && !empty($id)) {
+            $q->bindValue(':id', $id);
+        }
+
+        $q = $this->prepare($sql);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
+        $entity = $q->fetchAll();
+        $q->closeCursor();
+
+        return $entity;
+    }
+
 
     /**
      * @param Entity $entity
@@ -132,23 +174,13 @@ class ManagerPDO extends Manager
         return $properties;
     }
 
-    /**
-     * @param int $id
-     * @return Entity|null
-     * @throws \Exception
-     */
-    public function getUnique($id)
-    {
-        $sql = "SELECT * FROM $this->tableName WHERE id = :id";
-        $q = $this->prepare($sql);
-        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
-        $q->execute();
-        $entityName = "\\Entity\\" . ucfirst(substr($this->tableName, 0, -1));
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $entityName);
-        $this->entity = $q->fetch();
-        $q->closeCursor();
 
-        return $this->entity;
+    /**
+     * @return null|string
+     */
+    public function getEntityName()
+    {
+        return get_class($this->entity);
     }
 
     /**

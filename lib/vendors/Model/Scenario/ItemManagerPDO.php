@@ -2,6 +2,7 @@
 
 namespace Model\Scenario;
 
+use Entity\Scenario\Item;
 use Model\ManagerPDO;
 use OCFram\Entity;
 
@@ -19,15 +20,16 @@ class ItemManagerPDO extends ManagerPDO
     {
         parent::__construct($dao);
         $this->tableName = 'item';
+        $this->entity = new Item();
     }
 
     /**
      * @param Entity $entity
-     * @param null $ignoreProperties
+     * @param array $ignoreProperties
      * @return bool
      * @throws \Exception
      */
-    public function save(Entity $entity, $ignoreProperties = null)
+    public function save($entity, $ignoreProperties = [])
     {
         return parent::save($entity, ['actionneur']);
     }

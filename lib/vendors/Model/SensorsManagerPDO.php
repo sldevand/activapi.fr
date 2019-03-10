@@ -2,6 +2,8 @@
 
 namespace Model;
 
+use Entity\Sensor;
+
 /**
  * Class SensorsManagerPDO
  * @package Model
@@ -13,6 +15,7 @@ class SensorsManagerPDO extends ManagerPDO
     {
         parent::__construct($dao);
         $this->tableName = 'sensors';
+        $this->entity = new Sensor();
     }
 
     /**

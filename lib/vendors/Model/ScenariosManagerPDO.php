@@ -16,11 +16,23 @@ class ScenariosManagerPDO extends ManagerPDO
     protected $actionneursManager;
 
     /**
+     * MesuresManagerPDO constructor.
+     * @param \PDO $dao
+     */
+    public function __construct(\PDO $dao)
+    {
+        parent::__construct($dao);
+        $this->tableName = 'mesures';
+        $this->entity = new Scenario();
+    }
+
+    /**
      * @param Entity $scenario
+     * @param null | array $ignoreProperties
      * @return mixed
      * @throws \Exception
      */
-    public function add(Entity $scenario)
+    public function add($scenario, $ignoreProperties = [])
     {
         if ($this->fetchScenarioCorresp($scenario)) {
             return false;
@@ -35,9 +47,10 @@ class ScenariosManagerPDO extends ManagerPDO
 
     /**
      * @param Entity $scenario
+     * @param null | array $ignoreProperties
      * @throws \Exception
      */
-    public function update(Entity $scenario)
+    public function update($scenario, $ignoreProperties = [])
     {
         $q = $this->prepare('UPDATE scenario_corresp SET nom = :nom WHERE id = :id');
         $q->bindValue(':id', $scenario->id());

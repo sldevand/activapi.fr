@@ -2,6 +2,7 @@
 
 namespace Model\Scenario;
 
+use Entity\Scenario\Sequence;
 use Model\ManagerPDO;
 use OCFram\Entity;
 
@@ -19,16 +20,19 @@ class SequencesManagerPDO extends ManagerPDO
     {
         parent::__construct($dao);
         $this->tableName = 'sequence';
+        $this->entity = new Sequence();
     }
 
     /**
      * @param Entity $entity
-     * @param null $ignoreProperties
+     * @param array $ignoreProperties
      * @return bool
      * @throws \Exception
      */
-    public function save(Entity $entity, $ignoreProperties = null)
+    public function save($entity, $ignoreProperties = [])
     {
         return parent::save($entity, ['items']);
     }
+
+    //TODO implement getAll here
 }

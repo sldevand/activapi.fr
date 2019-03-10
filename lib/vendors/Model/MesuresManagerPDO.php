@@ -19,6 +19,7 @@ class MesuresManagerPDO extends ManagerPDO
     {
         parent::__construct($dao);
         $this->tableName = 'mesures';
+        $this->entity = new Mesure();
     }
 
     /**

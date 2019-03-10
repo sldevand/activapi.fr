@@ -1,113 +1,75 @@
 <?php
+
 namespace Model;
 
-use \OCFram\Manager;
-use \Entity\ThermostatMode;
-use \Debug\Log;
+use Entity\ThermostatMode;
 
-class ThermostatModesManagerPDO extends Manager{
- 
-  public function count(){
-    return $this->dao->query('SELECT COUNT(*) FROM thermostat_modes')->fetchColumn();
-  }
-
-  public function delete($id){
-    $this->dao->exec('DELETE FROM thermostat_modes WHERE id = '.(int) $id);
-  } 
-
-  public function getList(){
-
-    $sql = 'SELECT * FROM thermostat_modes';
-    $q = $this->dao->prepare($sql);
-    $q->execute();
-    $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-    $thermostatModes = $q->fetchAll();
-    $q->closeCursor();
-    
-    return $thermostatModes;
-  }
-
-  public function getUnique($id)
-  {
-    $sql = 'SELECT * FROM thermostat_modes WHERE id = :id'; 
-
-    $thermostatMode=null;
-
-    $q = $this->dao->prepare($sql);
-    if($q){
-      $q->bindValue(':id', (int) $id, \PDO::PARAM_INT);
-      $q->execute();
-      $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-      $thermostatMode = $q->fetch();
-      $q->closeCursor();     
-
-    }else{
-
-        echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( $this->dao->errorInfo(),-1);
-      
+/**
+ * Class ThermostatModesManagerPDO
+ * @package Model
+ */
+class ThermostatModesManagerPDO extends ManagerPDO
+{
+    /**
+     * ThermostatModesManagerPDO constructor.
+     * @param \PDO $dao
+     */
+    public function __construct(\PDO $dao)
+    {
+        parent::__construct($dao);
+        $this->tableName = 'thermostat_modes';
+        $this->entity = new ThermostatMode();
     }
- 
-    return $thermostatMode;
-  }
 
-  public function add(ThermostatMode $thermostatMode){
+    /**
+     * @param \OCFram\Entity $thermostatMode
+     * @param array $ignoreProperties
+     * @throws \Exception
+     */
+    public function save($thermostatMode, $ignoreProperties = [])
+    {
+        if (!$thermostatMode->isValid($ignoreProperties)) {
+            throw new \RuntimeException('Le thermostatMode doit être validé pour être enregistré');
+        }
 
-    $sql = 'INSERT INTO thermostat_modes (nom,consigne,delta) 
+        $thermostatMode->isNew() ? $this->add($thermostatMode) : $this->modify($thermostatMode);
+    }
+
+    /**
+     * @param \OCFram\Entity $thermostatMode
+     * @param array $ignoreProperties
+     * @return bool|void
+     * @throws \Exception
+     */
+    public function add($thermostatMode, $ignoreProperties = [])
+    {
+        $sql = 'INSERT INTO thermostat_modes (nom,consigne,delta) 
               VALUES (:nom,:consigne,:delta)';
-    $q = $this->dao->prepare($sql);
- 
-    if($q){      
-      $q->bindValue(':consigne',$thermostatMode->consigne()); 
-      $q->bindValue(':nom',$thermostatMode->nom());
-      $q->bindValue(':delta',$thermostatMode->delta());  
-
-      $q->execute();
-      $q->closeCursor();
-    }else{     
-      echo "\nPDO::errorInfo():\n";
-      throw new \RuntimeException( Log::d($this->dao->errorInfo()));
+        $q = $this->prepare($sql);
+        $q->bindValue(':consigne', $thermostatMode->consigne());
+        $q->bindValue(':nom', $thermostatMode->nom());
+        $q->bindValue(':delta', $thermostatMode->delta());
+        $q->execute();
+        $q->closeCursor();
     }
-  }
 
-  public function modify(ThermostatMode $thermostatMode){
+    /**
+     * @param \OCFram\Entity $thermostatMode
+     * @throws \Exception
+     */
+    public function modify($thermostatMode)
+    {
+        $sql = 'UPDATE thermostat_modes 
+                SET nom=:nom, consigne=:consigne, delta=:delta                 
+                WHERE id=:id';
 
-    $sql = 'UPDATE thermostat_modes 
-              SET             
-              nom=:nom,
-              consigne=:consigne,
-              delta=:delta                 
-              WHERE id=:id';
-
-      $q = $this->dao->prepare($sql);
-      
-      if($q){
-        $q->bindValue(':id',$thermostatMode->id());     
-        $q->bindValue(':consigne',$thermostatMode->consigne()); 
-        $q->bindValue(':nom',$thermostatMode->nom());
-        $q->bindValue(':delta',$thermostatMode->delta());  
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', $thermostatMode->id());
+        $q->bindValue(':consigne', $thermostatMode->consigne());
+        $q->bindValue(':nom', $thermostatMode->nom());
+        $q->bindValue(':delta', $thermostatMode->delta());
 
         $q->execute();
         $q->closeCursor();
-      }else{     
-        echo "\nPDO::errorInfo():\n";
-        throw new \RuntimeException( $this->dao->errorInfo());
     }
-  
-  }
-
-  public function save(ThermostatMode $thermostatMode){
-
-    if ($thermostatMode->isValid())
-    {     
-      $thermostatMode->isNew() ? $this->add($thermostatMode) : $this->modify($thermostatMode);
-    }
-    else
-    {
-      throw new \RuntimeException('Le thermostatMode doit être validé pour être enregistré');
-    }
-  
-  }
 }
-
-

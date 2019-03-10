@@ -42,14 +42,11 @@ class ScenariosController extends BackController
     public function executeIndex(HTTPRequest $request)
     {
         $id = $request->getData("id");
-        /** @var ScenariosManagerPDO $scenarioManager */
-        $scenarioManager = $this->managers->getManagerOf('Scenarios');
-
-        /** @var ActionneursManagerPDO $actionneursManager */
-        $actionneursManager = $this->managers->getManagerOf('Actionneurs');
+        /** @var \Model\Scenario\ScenariosManagerPDO $scenarioManager */
+        $scenarioManager = $this->managers->getManagerOf('Scenario\Scenarios');
 
         try {
-            $sequences = $scenarioManager->getSequences($actionneursManager, $id);
+            $sequences = $scenarioManager->getSequences($id);
         } catch (\Exception $e) {
             $message = ['error' => $e->getMessage()];
             $this->page->addVar('scenarios', $message);

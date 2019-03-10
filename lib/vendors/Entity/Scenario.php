@@ -41,9 +41,10 @@ class Scenario extends Entity
     protected $actionneurs;
 
     /**
+     * @param $ignoreProperties
      * @return bool
      */
-    public function isValid()
+    public function isValid($ignoreProperties = [])
     {
         $properties = get_object_vars($this);
         foreach ($properties as $key => $property) {
@@ -200,7 +201,6 @@ class Scenario extends Entity
     {
         return $this->actionneurs;
     }
-
 
 
     /**

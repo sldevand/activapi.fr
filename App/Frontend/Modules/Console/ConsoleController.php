@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Modules\Console;
 
-use Materialize\FlatButton;
+use Materialize\Button\FlatButton;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\HTTPRequest;

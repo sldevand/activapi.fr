@@ -2,6 +2,7 @@
 
 namespace OCFram;
 
+use Materialize\Button\FlatButton;
 use SFram\OSDetectorFactory;
 
 /**
@@ -230,8 +231,35 @@ abstract class BackController extends ApplicationComponent
     public function getBlock($fileName, ...$args)
     {
         ob_start();
-        include $fileName;
+        require $fileName;
         return ob_get_clean();
+    }
+
+    /**
+     * @return false|string
+     */
+    public function deleteFormView()
+    {
+        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
+    }
+
+    /**
+     * @param $form
+     * @return false|string
+     */
+    public function editFormView($form)
+    {
+        $submitButton = new FlatButton(
+            [
+                'id' => 'submit',
+                'title' => 'Valider',
+                'color' => 'primaryTextColor',
+                'type' => 'submit',
+                'icon' => 'check',
+                'wrapper' => 'col s12'
+            ]
+        );
+        return $this->getBlock(BLOCK . '/editFormView.phtml', $form, $submitButton);
     }
 
     /**
