@@ -14,10 +14,10 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        self::dropandCreateTables();
+        self::dropAndCreateTables();
     }
 
-    public static function dropandCreateTables()
+    public static function dropAndCreateTables()
     {
         if (file_exists(SCENARIOS_SQL_PATH)) {
             $sql = file_get_contents(SCENARIOS_SQL_PATH);
@@ -47,7 +47,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function testGetAll($scenarios, $expected)
     {
-        self::dropandCreateTables();
+        self::dropAndCreateTables();
         $manager = $this->getManager();
         foreach ($scenarios as $scenario) {
             $manager->save($scenario);
@@ -64,7 +64,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function testDelete($scenario, $expected)
     {
-        self::dropandCreateTables();
+        self::dropAndCreateTables();
 
         $manager = $this->getManager();
         $manager->save($scenario);
