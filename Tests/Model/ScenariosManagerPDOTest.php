@@ -11,7 +11,17 @@ use Model\Scenario\ScenariosManagerPDO;
  */
 class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 {
-       /**
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        if (file_exists(SCENARIOS_SQL_PATH)) {
+            $sql = file_get_contents(SCENARIOS_SQL_PATH);
+            self::$db->exec($sql);
+        }
+    }
+
+    /**
      * @dataProvider scenariosProvider
      * @param Scenario $expected
      * @param Scenario $scenario

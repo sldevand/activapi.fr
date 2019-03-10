@@ -23,10 +23,5 @@ abstract class AbstractManagerPDOTest extends TestCase
         $dsn = "sqlite:" . TEST_DB_PATH;
         PDOFactory::setPdoAddress($dsn);
         self::$db = PDOFactory::getSqliteConnexion();
-
-        if (file_exists(TEST_INIT_SQL_PATH)) {
-            $sql = file_get_contents(TEST_INIT_SQL_PATH);
-            self::$db->exec($sql);
-        }
     }
 }
