@@ -18,7 +18,7 @@ class User
         if (empty($_SESSION)) {
             session_start();
         }
-        $this->app;
+        $this->app = $app;
     }
 
     public function getAttribute($attr)
