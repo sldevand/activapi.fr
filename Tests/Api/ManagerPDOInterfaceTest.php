@@ -17,4 +17,10 @@ interface ManagerPDOInterfaceTest
     public function testGetAll($entities, $expected);
 
     public function testDelete($entity, $expected);
+
+    public function saveProvider();
+
+    public function getAllProvider();
+
+    public function deleteProvider();
 }

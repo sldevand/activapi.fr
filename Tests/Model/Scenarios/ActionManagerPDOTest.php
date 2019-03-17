@@ -27,7 +27,7 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider actionSaveProvider
+     * @dataProvider saveProvider
      * @param Action $expected
      * @param Action $action
      * @throws \Exception
@@ -41,7 +41,7 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider actionsGetAllProvider
+     * @dataProvider getAllProvider
      * @param Action[] $expected
      * @param Action[] $actions
      * @throws \Exception
@@ -58,7 +58,7 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider actionDeleteProvider
+     * @dataProvider deleteProvider
      * @param Action $expected
      * @param Action $action
      * @throws \Exception
@@ -79,7 +79,7 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function actionSaveProvider()
+    public function saveProvider()
     {
         return [
             "createAction" => [
@@ -96,7 +96,7 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function actionsGetAllProvider()
+    public function getAllProvider()
     {
         return [
             "createActions" => [
@@ -119,7 +119,7 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function actionDeleteProvider()
+    public function deleteProvider()
     {
         return [
             "deleteAction" => [

@@ -28,30 +28,30 @@ class ModuleVersionManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @dataProvider saveProvider
-     * @param ModuleVersion $entity
+     * @param ModuleVersion $moduleVersion
      * @param ModuleVersion $expected
      * @throws \Exception
      */
-    public function testSave($entity, $expected)
+    public function testSave($moduleVersion, $expected)
     {
         $manager = $this->getManager();
-        $manager->save($entity);
+        $manager->save($moduleVersion);
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
     }
 
     /**
      * @dataProvider getAllProvider
-     * @param ModuleVersion[] $entities
+     * @param ModuleVersion[] $moduleVersions
      * @param ModuleVersion[] $expected
      * @throws \Exception
      */
-    public function testGetAll($entities, $expected)
+    public function testGetAll($moduleVersions, $expected)
     {
         self::dropAndCreateTables();
 
         $manager = $this->getManager();
-        foreach ($entities as $entity) {
+        foreach ($moduleVersions as $entity) {
             $manager->save($entity);
         }
         $persisted = $manager->getAll();
@@ -60,16 +60,16 @@ class ModuleVersionManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @dataProvider deleteProvider
-     * @param ModuleVersion $entity
+     * @param ModuleVersion $moduleVersion
      * @param ModuleVersion $expected
      * @throws \Exception
      */
-    public function testDelete($entity, $expected)
+    public function testDelete($moduleVersion, $expected)
     {
         self::dropAndCreateTables();
 
         $manager = $this->getManager();
-        $manager->save($entity);
+        $manager->save($moduleVersion);
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
         $manager->delete($expected->id());

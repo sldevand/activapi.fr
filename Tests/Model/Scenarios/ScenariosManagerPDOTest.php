@@ -26,7 +26,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider scenariosSaveProvider
+     * @dataProvider saveProvider
      * @param Scenario $expected
      * @param Scenario $scenario
      * @throws \Exception
@@ -40,7 +40,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider scenariosGetAllProvider
+     * @dataProvider getAllProvider
      * @param Scenario[] $expected
      * @param Scenario[] $scenarios
      * @throws \Exception
@@ -57,7 +57,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider scenarioDeleteProvider
+     * @dataProvider deleteProvider
      * @param Scenario $expected
      * @param Scenario $scenario
      * @throws \Exception
@@ -78,7 +78,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function scenariosSaveProvider()
+    public function saveProvider()
     {
         return [
             "createScenario" => [
@@ -95,7 +95,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function scenariosGetAllProvider()
+    public function getAllProvider()
     {
         return [
             "createScenario" => [
@@ -118,7 +118,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function scenarioDeleteProvider()
+    public function deleteProvider()
     {
         return [
             "deleteScenario" => [

@@ -26,7 +26,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider sequenceSaveProvider
+     * @dataProvider saveProvider
      * @param Sequence $expected
      * @param Sequence $sequence
      * @throws \Exception
@@ -40,7 +40,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider sequencesGetAllProvider
+     * @dataProvider getAllProvider
      * @param Sequence[] $expected
      * @param Sequence[] $sequences
      * @throws \Exception
@@ -57,7 +57,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider sequenceDeleteProvider
+     * @dataProvider deleteProvider
      * @param Sequence $expected
      * @param Sequence $sequence
      * @throws \Exception
@@ -78,7 +78,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function sequenceSaveProvider()
+    public function saveProvider()
     {
         return [
             "createSequence" => [
@@ -95,7 +95,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function sequencesGetAllProvider()
+    public function getAllProvider()
     {
         return [
             "createSequences" => [
@@ -118,7 +118,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function sequenceDeleteProvider()
+    public function deleteProvider()
     {
         return [
             "deleteSequence" => [
