@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS scenario;
 DROP TABLE IF EXISTS scenario_corresp;
 DROP TABLE IF EXISTS sequence;
-DROP TABLE IF EXISTS item;
-DROP TABLE IF EXISTS sequence_item;
+DROP TABLE IF EXISTS action;
+DROP TABLE IF EXISTS sequence_action;
 
 CREATE TABLE IF NOT EXISTS scenario 
 (
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS sequence
     FOREIGN KEY (scenarioId) REFERENCES scenario (id) 
 );
 
-CREATE TABLE IF NOT EXISTS item 
+CREATE TABLE IF NOT EXISTS action
 (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     actionneurId INTEGER NOT NULL,
@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS item
     FOREIGN KEY (actionneurId) REFERENCES actionneurs (id) 
 );
 
-CREATE TABLE IF NOT EXISTS sequence_item 
+CREATE TABLE IF NOT EXISTS sequence_action
 (
     sequenceId INTEGER NOT NULL,
-    itemId INTEGER NOT NULL,
+    actionId INTEGER NOT NULL,
     FOREIGN KEY (sequenceId) REFERENCES "sequence" (id),
-    FOREIGN KEY (itemId) REFERENCES "item" (id)
+    FOREIGN KEY (actionId) REFERENCES "action" (id)
 );

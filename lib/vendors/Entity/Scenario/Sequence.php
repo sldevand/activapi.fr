@@ -21,9 +21,9 @@ class Sequence extends Entity
     protected $scenarioId;
 
     /**
-     * @var Item[] $items
+     * @var Action[] $actions
      */
-    protected $items;
+    protected $actions;
 
     /**
      * @return string
@@ -77,20 +77,20 @@ class Sequence extends Entity
     }
 
     /**
-     * @return Item[]
+     * @return Action[]
      */
-    public function getItems()
+    public function getActions()
     {
-        return $this->items;
+        return $this->actions;
     }
 
     /**
-     * @param Item[] $items
+     * @param Action[] $actions
      * @return Sequence
      */
-    public function setItems($items)
+    public function setActions($actions)
     {
-        $this->items = $items;
+        $this->actions = $actions;
         return $this;
     }
 }

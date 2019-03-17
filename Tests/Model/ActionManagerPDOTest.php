@@ -3,14 +3,14 @@
 namespace Tests\Model;
 
 use Entity\Actionneur;
-use Entity\Scenario\Item;
-use Model\Scenario\ItemManagerPDO;
+use Entity\Scenario\Action;
+use Model\Scenario\ActionManagerPDO;
 
 /**
- * Class ItemsManagerPDOTest
- * @package Tests\Models
+ * Class ActionsManagerPDOTest
+ * @package Tests\Model
  */
-class ItemsManagerPDOTest extends AbstractManagerPDOTest
+class ActionManagerPDOTest extends AbstractManagerPDOTest
 {
     public static function setUpBeforeClass()
     {
@@ -27,48 +27,48 @@ class ItemsManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @dataProvider itemSaveProvider
-     * @param Item $expected
-     * @param Item $item
+     * @dataProvider actionSaveProvider
+     * @param Action $expected
+     * @param Action $action
      * @throws \Exception
      */
-    public function testSave($item, $expected)
+    public function testSave($action, $expected)
     {
         $manager = $this->getManager();
-        $manager->save($item);
+        $manager->save($action);
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
     }
 
     /**
-     * @dataProvider itemsGetAllProvider
-     * @param Item[] $expected
-     * @param Item[] $items
+     * @dataProvider actionsGetAllProvider
+     * @param Action[] $expected
+     * @param Action[] $actions
      * @throws \Exception
      */
-    public function testGetAll($items, $expected)
+    public function testGetAll($actions, $expected)
     {
         self::dropAndCreateTables();
         $manager = $this->getManager();
-        foreach ($items as $item) {
-            $manager->save($item);
+        foreach ($actions as $action) {
+            $manager->save($action);
         }
         $persisted = $manager->getAll();
         self::assertEquals($expected, $persisted);
     }
 
     /**
-     * @dataProvider itemDeleteProvider
-     * @param Item $expected
-     * @param Item $item
+     * @dataProvider actionDeleteProvider
+     * @param Action $expected
+     * @param Action $action
      * @throws \Exception
      */
-    public function testDelete($item, $expected)
+    public function testDelete($action, $expected)
     {
         self::dropAndCreateTables();
 
         $manager = $this->getManager();
-        $manager->save($item);
+        $manager->save($action);
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
         $manager->delete($expected->id());
@@ -79,16 +79,16 @@ class ItemsManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function itemSaveProvider()
+    public function actionSaveProvider()
     {
         return [
-            "createItem" => [
-                $this->makeItem(1, 150),
-                $this->makeItem(1, 150, 1)
+            "createAction" => [
+                $this->makeAction(1, 150),
+                $this->makeAction(1, 150, 1)
             ],
-            "updateItem" => [
-                $this->makeItem(2, 180, 1),
-                $this->makeItem(2, 180, 1)
+            "updateAction" => [
+                $this->makeAction(2, 180, 1),
+                $this->makeAction(2, 180, 1)
             ]
         ];
     }
@@ -96,21 +96,21 @@ class ItemsManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function itemsGetAllProvider()
+    public function actionsGetAllProvider()
     {
         return [
-            "createItems" => [
+            "createActions" => [
                 [
-                    $this->makeItem(1, 150),
-                    $this->makeItem(13, 225),
-                    $this->makeItem(2, 0),
-                    $this->makeItem(4, 120)
+                    $this->makeAction(1, 150),
+                    $this->makeAction(13, 225),
+                    $this->makeAction(2, 0),
+                    $this->makeAction(4, 120)
                 ],
                 [
-                    $this->makeItem(1, 150, 1),
-                    $this->makeItem(13, 225, 2),
-                    $this->makeItem(2, 0, 3),
-                    $this->makeItem(4, 120, 4)
+                    $this->makeAction(1, 150, 1),
+                    $this->makeAction(13, 225, 2),
+                    $this->makeAction(2, 0, 3),
+                    $this->makeAction(4, 120, 4)
                 ]
             ]
         ];
@@ -119,12 +119,12 @@ class ItemsManagerPDOTest extends AbstractManagerPDOTest
     /**
      * @return array
      */
-    public function itemDeleteProvider()
+    public function actionDeleteProvider()
     {
         return [
-            "deleteItem" => [
-                $this->makeItem(1, 150),
-                $this->makeItem(1, 150, 1)
+            "deleteAction" => [
+                $this->makeAction(1, 150),
+                $this->makeAction(1, 150, 1)
             ]
         ];
     }
@@ -133,11 +133,11 @@ class ItemsManagerPDOTest extends AbstractManagerPDOTest
      * @param $actionneurId
      * @param $etat
      * @param null | int $id
-     * @return Item
+     * @return Action
      */
-    public function makeItem($actionneurId, $etat, $id = null)
+    public function makeAction($actionneurId, $etat, $id = null)
     {
-        return new Item(
+        return new Action(
             [
                 'id' => $id,
                 'actionneurId' => $actionneurId,
@@ -150,11 +150,11 @@ class ItemsManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @return ItemManagerPDO
+     * @return ActionManagerPDO
      */
     public function getManager()
     {
-        /** @var ItemManagerPDO $manager */
-        return new ItemManagerPDO(self::$db);
+        /** @var ActionManagerPDO $manager */
+        return new ActionManagerPDO(self::$db);
     }
 }

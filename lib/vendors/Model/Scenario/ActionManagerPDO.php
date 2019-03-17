@@ -2,25 +2,25 @@
 
 namespace Model\Scenario;
 
-use Entity\Scenario\Item;
+use Entity\Scenario\Action;
 use Model\ManagerPDO;
 use OCFram\Entity;
 
 /**
- * Class ItemManagerPDO
+ * Class ActionManagerPDO
  * @package Model\Scenario
  */
-class ItemManagerPDO extends ManagerPDO
+class ActionManagerPDO extends ManagerPDO
 {
     /**
-     * ItemManagerPDO constructor.
+     * ActionManagerPDO constructor.
      * @param \PDO $dao
      */
     public function __construct(\PDO $dao)
     {
         parent::__construct($dao);
-        $this->tableName = 'item';
-        $this->entity = new Item();
+        $this->tableName = 'action';
+        $this->entity = new Action();
     }
 
     /**

@@ -31,7 +31,7 @@ class SequencesManagerPDO extends ManagerPDO
      */
     public function save($entity, $ignoreProperties = [])
     {
-        return parent::save($entity, ['items']);
+        return parent::save($entity, ['actions']);
     }
 
     //TODO implement getAll here

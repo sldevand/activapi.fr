@@ -7,10 +7,10 @@ use Entity\Actionneur;
 use OCFram\Entity;
 
 /**
- * Class Item
+ * Class Action
  * @package Entity\Scenario
  */
-class Item extends Entity
+class Action extends Entity
 {
     /**
      * @var int $actionneurId
@@ -37,7 +37,7 @@ class Item extends Entity
 
     /**
      * @param int $actionneurId
-     * @return Item
+     * @return Action
      */
     public function setActionneurId($actionneurId)
     {
@@ -56,7 +56,7 @@ class Item extends Entity
 
     /**
      * @param Actionneur $actionneur
-     * @return Item
+     * @return Action
      */
     public function setActionneur($actionneur)
     {
@@ -75,7 +75,7 @@ class Item extends Entity
 
     /**
      * @param string $etat
-     * @return Item
+     * @return Action
      */
     public function setEtat($etat)
     {
