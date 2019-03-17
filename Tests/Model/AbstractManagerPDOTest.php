@@ -4,12 +4,13 @@ namespace Tests\Model;
 
 use OCFram\PDOFactory;
 use PHPUnit\Framework\TestCase;
+use Tests\Api\ManagerPDOInterfaceTest;
 
 /**
  * Class AbstractManagerPDOTest
  * @package Tests\Model
  */
-abstract class AbstractManagerPDOTest extends TestCase
+abstract class AbstractManagerPDOTest extends TestCase implements ManagerPDOInterfaceTest
 {
     /**
      * @var \PDO
