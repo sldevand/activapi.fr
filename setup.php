@@ -16,8 +16,9 @@ const DEFAULT_APP = 'Frontend';
 const APP = __DIR__ . '/';
 const LIB = __DIR__ . '/lib';
 const VENDORS = LIB . '/vendors';
+const TESTS = __DIR__ . '/Tests';
 
-const FRONTEND =  __DIR__ . '/App/Frontend';
-const MODULES =FRONTEND.'/Modules';
-const TEMPLATES = FRONTEND.'/Templates';
+const FRONTEND = __DIR__ . '/App/Frontend';
+const MODULES = FRONTEND . '/Modules';
+const TEMPLATES = FRONTEND . '/Templates';
 const BLOCK = TEMPLATES . '/Block';
