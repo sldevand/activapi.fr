@@ -21,4 +21,12 @@ abstract class Manager
     {
         $this->dao = $dao;
     }
+
+    /**
+     * @return \PDO
+     */
+    public function getDao()
+    {
+        return $this->dao;
+    }
 }
