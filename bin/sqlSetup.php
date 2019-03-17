@@ -19,7 +19,7 @@ $config = new Config(new BackendApplication());
 PDOFactory::setPdoAddress($config->get($key));
 $pdo = PDOFactory::getSqliteConnexion();
 
-echo PHP_EOL . 'Beginning of Updates';
+echo PHP_EOL . 'Beginning of Sql Updates';
 try {
     if (file_exists($moduleVersionSqlPath) && $script = file_get_contents($moduleVersionSqlPath)) {
         $pdo->exec($script);
@@ -45,3 +45,4 @@ try {
 } catch (Exception $e) {
     echo $e->getMessage();
 }
+echo PHP_EOL . 'End of Sql Updates';
