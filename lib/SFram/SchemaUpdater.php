@@ -25,14 +25,21 @@ class SchemaUpdater
     protected $moduleVersionManagerDao;
 
     /**
+     * @var string $sqlScriptsDir
+     */
+    protected $sqlScriptsDir;
+
+    /**
      * SchemaUpdater constructor.
      * @param GeneralConfig $config
      * @param ModuleVersionManagerPDO $moduleVersionManagerDao
+     * @param string $sqlScriptsDir
      */
-    public function __construct($config, $moduleVersionManagerDao)
+    public function __construct($config, $moduleVersionManagerDao, $sqlScriptsDir)
     {
         $this->config = $config;
         $this->moduleVersionManagerDao = $moduleVersionManagerDao;
+        $this->sqlScriptsDir = $sqlScriptsDir;
     }
 
     /**
@@ -51,7 +58,8 @@ class SchemaUpdater
             if (!$moduleVersion) {
                 $updated[] = $this->saveAndExecuteScript($this->createModuleVersion($configName, $configVersion));
             } elseif ($moduleVersion && $this->toUpdate($moduleVersion, $configName, $configVersion)) {
-                $this->saveAndExecuteScript($moduleVersion);
+                $moduleVersion->setVersionNumber($configVersion);
+                $updated[] = $this->saveAndExecuteScript($moduleVersion);
             }
         }
 
@@ -88,7 +96,11 @@ class SchemaUpdater
      */
     public function getSqlScriptFilename($moduleVersion)
     {
-        return ROOT . '/sql/' . $moduleVersion->getModuleName() . '-' . $moduleVersion->getVersionNumber() . '.sql';
+        return $this->sqlScriptsDir
+            . $moduleVersion->getModuleName()
+            . '-'
+            . $moduleVersion->getVersionNumber()
+            . '.sql';
     }
 
     /**
