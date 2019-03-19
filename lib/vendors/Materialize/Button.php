@@ -9,52 +9,41 @@ namespace Materialize;
 abstract class Button extends Widget
 {
     /**
-     * @var string
+     * @var string $title
      */
     protected $title = null;
+
     /**
-     * @var string
+     * @var string $icon
      */
     protected $icon = null;
+
     /**
-     * @var string
+     * @var string $align
      */
     protected $align = 'left';
+
     /**
-     * @var string
+     * @var string $href
      */
     protected $href = '';
+
     /**
-     * @var string
+     * @var string $type
      */
     protected $type = '';
+
     /**
-     * @var string
+     * @var string $color
      */
     protected $color = '';
 
     /**
-     * @return null
+     * @return string
      */
     public function title()
     {
         return $this->title;
-    }
-
-    /**
-     * @return null
-     */
-    public function icon()
-    {
-        return $this->icon;
-    }
-
-    /**
-     * @return string
-     */
-    public function align()
-    {
-        return $this->align;
     }
 
     /**
@@ -74,15 +63,7 @@ abstract class Button extends Widget
     }
 
     /**
-     * @return string
-     */
-    public function color()
-    {
-        return $this->color;
-    }
-
-    /**
-     * @param $title
+     * @param string $title
      */
     public function setTitle($title)
     {
@@ -90,7 +71,7 @@ abstract class Button extends Widget
     }
 
     /**
-     * @param $icon
+     * @param string $icon
      */
     public function setIcon($icon)
     {
@@ -98,11 +79,10 @@ abstract class Button extends Widget
     }
 
     /**
-     * @param $align
+     * @param string $align
      */
     public function setAlign($align)
     {
-
         if ($align == 'right') {
             $this->align = $align;
         } else {
@@ -111,7 +91,7 @@ abstract class Button extends Widget
     }
 
     /**
-     * @param $href
+     * @param string $href
      */
     public function setHref($href)
     {
@@ -119,7 +99,7 @@ abstract class Button extends Widget
     }
 
     /**
-     * @param $type
+     * @param string $type
      */
     public function setType($type)
     {
@@ -127,7 +107,7 @@ abstract class Button extends Widget
     }
 
     /**
-     * @param $color
+     * @param string $color
      */
     public function setColor($color)
     {
@@ -145,5 +125,29 @@ abstract class Button extends Widget
         }
 
         return $icon;
+    }
+
+    /**
+     * @return string
+     */
+    public function icon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @return string
+     */
+    public function align()
+    {
+        return $this->align;
+    }
+
+    /**
+     * @return string
+     */
+    public function color()
+    {
+        return $this->color;
     }
 }

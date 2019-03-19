@@ -28,6 +28,19 @@ class Action extends Entity
     protected $etat;
 
     /**
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id(),
+            'actionneurId' => $this->getActionneurId(),
+            'actionneur' => $this->getActionneur(),
+            'etat' => $this->getEtat()
+        ];
+    }
+
+    /**
      * @return int
      */
     public function getActionneurId()
@@ -82,18 +95,5 @@ class Action extends Entity
         $this->etat = $etat;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->id(),
-            'actionneurId' => $this->getActionneurId(),
-            'actionneur' => $this->getActionneur(),
-            'etat' => $this->getEtat()
-        ];
     }
 }

@@ -1,96 +1,244 @@
 <?php
+
 namespace Entity;
 
-use \OCFram\Entity;
+use Exception;
+use OCFram\Entity;
 
-class Sensor extends Entity{
+/**
+ * Class Sensor
+ * @package Entity
+ */
+class Sensor extends Entity
+{
 
-	protected $radioid;
-	protected $releve;
-	protected $actif;
-	protected $valeur1;
-	protected $valeur2;
-	protected $nom;
-	protected $categorie;
-	protected $radioaddress;
 
-	//GETTERS
-	public function radioid(){return $this->radioid;}
-	public function releve(){return $this->releve;}
-	public function actif(){return $this->actif;}
-	public function valeur1(){return $this->valeur1;}
-	public function valeur2(){return $this->valeur2;}
-	public function nom(){return $this->nom;}
-	public function categorie(){return $this->categorie;}
-	public function radioaddress(){return $this->radioaddress;}
+    /**
+     * @var string $radioid
+     */
+    protected $radioid;
 
-	//SETTERS
+    /**
+     * @var string $releve
+     */
+    protected $releve;
 
-	public function setRadioid($radioid){
+    /**
+     * @var bool $actif
+     */
+    protected $actif;
 
-		if(!empty($radioid) && is_string($radioid)){
-			$this->radioid=$radioid;
-		}else{
-			throw new Exception('radioid invalide!');
-		}
-	}
+    /**
+     * @var float $valeur1
+     */
+    protected $valeur1;
 
-	public function setReleve($releve){
-		$this->releve=$releve;
-	}
+    /**
+     * @var float $valeur2
+     */
+    protected $valeur2;
 
-	public function setActif($actif){
-		$this->actif=$actif;
-	}
+    /**
+     * @var string $nom
+     */
+    protected $nom;
 
-	public function setValeur1($valeur1){
-		$this->valeur1=$valeur1;
-	}
+    /**
+     * @var string $categorie
+     */
+    protected $categorie;
 
-	public function setValeur2($valeur2){
-		$this->valeur2=$valeur2;
-	}
+    /**
+     * @var string $radioaddress
+     */
+    protected $radioaddress;
 
-	public function setNom($nom){
+    /**
+     * @return string
+     */
+    public function radioid()
+    {
+        return $this->radioid;
+    }
 
-		if(!empty($nom) && is_string($nom)){
-			$this->nom=$nom;
-		}else{
-			throw new Exception('nom invalide!');
-		}
-	}
+    /**
+     * @return string
+     */
+    public function releve()
+    {
+        return $this->releve;
+    }
 
-	public function setCategorie($categorie){
+    /**
+     * @return bool
+     */
+    public function actif()
+    {
+        return $this->actif;
+    }
 
-		if(!empty($categorie) && is_string($categorie)){
-			$this->categorie=$categorie;
-		}else{
-			throw new Exception('categorie invalide!');
-		}
-	}
+    /**
+     * @return float
+     */
+    public function valeur1()
+    {
+        return $this->valeur1;
+    }
 
-	public function setRadioaddress($radioaddress){
+    /**
+     * @return float
+     */
+    public function valeur2()
+    {
+        return $this->valeur2;
+    }
 
-		if(!empty($radioaddress) && is_string($radioaddress)){
-			$this->radioaddress=$radioaddress;
-		}else{
-			throw new Exception('radioaddress invalide!');
-		}
-	}
+    /**
+     * @return string
+     */
+    public function nom()
+    {
+        return $this->nom;
+    }
 
-	 	
-	public function jsonSerialize(){
+    /**
+     * @return string
+     */
+    public function categorie()
+    {
+        return $this->categorie;
+    }
 
-		return array(
-			'id' => $this->id(),
-			'radioid' => $this->radioid,
-			'releve' => $this->releve,
-			'actif' => $this->actif,
-			'valeur1' => $this->valeur1,
-			'valeur2' => $this->valeur2,
-			'nom' => $this->nom,
-			'categorie' => $this->categorie,
-			'radioaddress' => $this->radioaddress
-		);
-	}
+    /**
+     * @return string
+     */
+    public function radioaddress()
+    {
+        return $this->radioaddress;
+    }
+
+    /**
+     * @param string $radioid
+     * @return Sensor
+     * @throws Exception
+     */
+    public function setRadioid($radioid)
+    {
+
+        if (empty($radioid) || !is_string($radioid)) {
+            throw new Exception('radioid invalide!');
+        }
+        $this->radioid = $radioid;
+
+        return $this;
+    }
+
+    /**
+     * @param string $releve
+     * @return Sensor
+     */
+    public function setReleve($releve)
+    {
+        $this->releve = $releve;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $actif
+     * @return Sensor
+     */
+    public function setActif($actif)
+    {
+        $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @param float $valeur1
+     * @return Sensor
+     */
+    public function setValeur1($valeur1)
+    {
+        $this->valeur1 = $valeur1;
+
+        return $this;
+    }
+
+    /**
+     * @param float $valeur2
+     * @return Sensor
+     */
+    public function setValeur2($valeur2)
+    {
+        $this->valeur2 = $valeur2;
+
+        return $this;
+    }
+
+    /**
+     * @param string $nom
+     * @return Sensor
+     * @throws Exception
+     */
+    public function setNom($nom)
+    {
+        if (empty($nom) || !is_string($nom)) {
+            throw new Exception('nom invalide!');
+        }
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * @param string $categorie
+     * @return Sensor
+     * @throws Exception
+     */
+    public function setCategorie($categorie)
+    {
+        if (empty($categorie) || !is_string($categorie)) {
+            throw new Exception('categorie invalide!');
+        }
+
+        $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    /**
+     * @param string $radioaddress
+     * @return Sensor
+     * @throws Exception
+     */
+    public function setRadioaddress($radioaddress)
+    {
+        if (empty($radioaddress) || !is_string($radioaddress)) {
+            throw new Exception('radioaddress invalide!');
+        }
+        $this->radioaddress = $radioaddress;
+
+        return $this;
+    }
+
+
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return array(
+            'id' => $this->id(),
+            'radioid' => $this->radioid,
+            'releve' => $this->releve,
+            'actif' => $this->actif,
+            'valeur1' => $this->valeur1,
+            'valeur2' => $this->valeur2,
+            'nom' => $this->nom,
+            'categorie' => $this->categorie,
+            'radioaddress' => $this->radioaddress
+        );
+    }
 }

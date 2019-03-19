@@ -15,6 +15,9 @@ use OCFram\StringField;
  */
 class ScenariosFormBuilder extends FormBuilder
 {
+    /**
+     * @return mixed|void
+     */
     public function build()
     {
         $actionneursListRaw = json_decode(json_encode($this->form()->entity()->actionneursList), true);
@@ -45,7 +48,6 @@ class ScenariosFormBuilder extends FormBuilder
             );
 
         //$this->createSequenceFields($sequence, $actionneursSelect);
-
     }
 
     /**
@@ -89,14 +91,16 @@ class ScenariosFormBuilder extends FormBuilder
                         'required' => 'true'
                     ]),
                     'col s2'
-                )->addWidget(new FlatButton(
-                    [
-                        'id' => 'actionneur-delete-' . $item->id(),
-                        'icon' => 'delete',
-                        'type' => 'button',
-                        'color' => 'secondaryTextColor',
-                        'wrapper' => 'col s2'
-                    ]),
+                )->addWidget(
+                    new FlatButton(
+                        [
+                            'id' => 'actionneur-delete-' . $item->id(),
+                            'icon' => 'delete',
+                            'type' => 'button',
+                            'color' => 'secondaryTextColor',
+                            'wrapper' => 'col s2'
+                        ]
+                    ),
                     'actionneur-etat-' . $item->id()
                 );
         }

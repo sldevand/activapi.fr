@@ -20,7 +20,7 @@ class RaisedButton extends Button
      */
     public function getHtml()
     {
-        return $this->getBlock(LIB.'/vendors/Materialize/Button/raisedButton.phtml');
+        return $this->getBlock(LIB . '/vendors/Materialize/Button/raisedButton.phtml');
     }
 
     /**

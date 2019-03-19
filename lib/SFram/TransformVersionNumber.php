@@ -2,6 +2,10 @@
 
 namespace SFram;
 
+/**
+ * Trait TransformVersionNumber
+ * @package SFram
+ */
 trait TransformVersionNumber
 {
 

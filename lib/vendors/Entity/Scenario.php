@@ -169,14 +169,6 @@ class Scenario extends Entity
     }
 
     /**
-     * @param Actionneur[] actionneurs
-     */
-    public function setActionneurs($actionneurs)
-    {
-        $this->actionneurs = $actionneurs;
-    }
-
-    /**
      * @param Actionneur $actionneur
      */
     public function addActionneur($actionneur)
@@ -202,6 +194,13 @@ class Scenario extends Entity
         return $this->actionneurs;
     }
 
+    /**
+     * @param Actionneur[] actionneurs
+     */
+    public function setActionneurs($actionneurs)
+    {
+        $this->actionneurs = $actionneurs;
+    }
 
     /**
      * @return array

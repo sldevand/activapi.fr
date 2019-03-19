@@ -15,6 +15,6 @@ class FlatButton extends Button
      */
     public function getHtml()
     {
-        return $this->getBlock(LIB.'/vendors/Materialize/Button/flatButton.phtml');
+        return $this->getBlock(LIB . '/vendors/Materialize/Button/flatButton.phtml');
     }
 }

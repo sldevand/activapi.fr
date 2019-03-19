@@ -11,27 +11,31 @@ use Materialize\Widget;
  */
 class Card extends Widget
 {
-
     /**
      * @var string
      */
     protected $bgColor = 'teal';
+
     /**
      * @var string
      */
     protected $textColor = 'white-text';
+
     /**
      * @var string
      */
     protected $shade = '';
+
     /**
      * @var string
      */
     protected $title = 'Title';
+
     /**
      * @var array
      */
     protected $contents = [];
+
     /**
      * @var array
      */
@@ -47,13 +51,14 @@ class Card extends Widget
 
     /**
      * @param LinkNavbar $link
+     * @return Card
      */
     public function addLink(LinkNavbar $link)
     {
         $this->links[] = $link;
-    }
 
-    //GETTERS
+        return $this;
+    }
 
     /**
      * @return string
@@ -88,7 +93,7 @@ class Card extends Widget
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function contents()
     {
@@ -103,77 +108,94 @@ class Card extends Widget
         return $this->links;
     }
 
-    //SETTERS
-
     /**
-     * @param $bgColor
+     * @param string $bgColor
+     * @return Card
      */
     public function setBgColor($bgColor)
     {
         if (is_string($bgColor) && !empty($bgColor)) {
             $this->bgColor = $bgColor;
         }
+
+        return $this;
     }
 
     /**
-     * @param $textColor
+     * @param string $textColor
+     * @return Card
      */
     public function setTextColor($textColor)
     {
         if (is_string($textColor) && !empty($textColor)) {
             $this->textColor = $textColor;
         }
+
+        return $this;
     }
 
     /**
-     * @param $shade
+     * @param string $shade
+     * @return Card
      */
     public function setShade($shade)
     {
         if (is_string($shade) && !empty($shade)) {
             $this->shade = $shade;
         }
+
+        return $this;
     }
 
     /**
-     * @param $title
+     * @param string $title
+     * @return Card
      */
     public function setTitle($title)
     {
         if (is_string($title) && !empty($title)) {
             $this->title = $title;
         }
+
+        return $this;
     }
 
     /**
      * @param array $contents
+     * @return Card
      */
     public function setContents($contents)
     {
         if (!empty($contents)) {
             $this->contents = $contents;
         }
+
+        return $this;
     }
 
     /**
-     * @param $content
+     * @param array $content
+     * @return Card
      */
     public function addContent($content)
     {
         if (!empty($content)) {
             $this->contents[] = $content;
         }
+
+        return $this;
     }
 
     /**
-     * @param $links
+     * @param array $links
+     * @return Card
      */
     public function setLinks($links)
     {
         if (is_array($links) && !empty($links)) {
             $this->links = $links;
         }
+
+        return $this;
     }
-
-
 }

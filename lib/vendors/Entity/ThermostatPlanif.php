@@ -212,6 +212,7 @@ class ThermostatPlanif extends Entity
     public function setJour($jour)
     {
         $this->jour = $jour;
+
         return $this;
     }
 
@@ -230,6 +231,7 @@ class ThermostatPlanif extends Entity
     public function setModeid($modeid)
     {
         $this->modeid = $modeid;
+
         return $this;
     }
 
@@ -248,6 +250,7 @@ class ThermostatPlanif extends Entity
     public function setMode($mode)
     {
         $this->mode = $mode;
+
         return $this;
     }
 
@@ -266,6 +269,7 @@ class ThermostatPlanif extends Entity
     public function setDefaultModeid($defaultModeid)
     {
         $this->defaultModeid = $defaultModeid;
+
         return $this;
     }
 
@@ -284,6 +288,7 @@ class ThermostatPlanif extends Entity
     public function setDefaultMode($defaultMode)
     {
         $this->defaultMode = $defaultMode;
+
         return $this;
     }
 
@@ -302,6 +307,7 @@ class ThermostatPlanif extends Entity
     public function setHeure1Start($heure1Start)
     {
         $this->heure1Start = $heure1Start;
+
         return $this;
     }
 
@@ -320,6 +326,7 @@ class ThermostatPlanif extends Entity
     public function setHeure1Stop($heure1Stop)
     {
         $this->heure1Stop = $heure1Stop;
+
         return $this;
     }
 
@@ -338,6 +345,7 @@ class ThermostatPlanif extends Entity
     public function setHeure2Start($heure2Start)
     {
         $this->heure2Start = $heure2Start;
+
         return $this;
     }
 
@@ -356,6 +364,7 @@ class ThermostatPlanif extends Entity
     public function setHeure2Stop($heure2Stop)
     {
         $this->heure2Stop = $heure2Stop;
+
         return $this;
     }
 

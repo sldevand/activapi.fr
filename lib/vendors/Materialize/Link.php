@@ -1,63 +1,180 @@
 <?php
+
 namespace Materialize;
 
-class Link extends Widget{
-	
-	protected $_title;
-	protected $_link;
-	protected $_icon;
-	protected $_iconColor;
-	protected $_titleColor;
-	protected $_align;	
-	
-	
-	public function __construct($title,$link,$icon='',$iconColor='',$titleColor=''){		
-		$this->setTitle($title);
-		$this->setLink($link);
-		$this->setIcon($icon);
-		$this->setIconColor($iconColor);	
-		$this->setTitleColor($titleColor);		
-	}
-	
-	public function getHtml(){		
-	
-		
-		return '<a href="'.$this->_link.'" class="valign-wrapper">'.
-					'<i class="material-icons '.$this->iconColor().' left valign">'.$this->icon().'</i>'.
-					'<div class="'.$this->titleColor().' valign">'.$this->title().'</div>
-				</a>';
-	}
+/**
+ * Class Link
+ * @package Materialize
+ */
+class Link extends Widget
+{
+    /**
+     * @var string $_title
+     */
+    protected $_title;
 
-	public function getHtmlForTable(){
-		
-		$iconHtml = '<i class="material-icons '.$this->iconColor().' left">'.$this->icon().'</i>';
-		
-		return '<a href="'.$this->_link.'" style="margin:10px;" class="center">'.$iconHtml.$this->title().'</a>';
-	}	
-		
-	public function title(){return $this->_title;}
-	public function icon(){return $this->_icon;}
-	public function iconColor(){return $this->_iconColor;}
-	public function titleColor(){return $this->_titleColor;}
-	public function link(){return $this->_link;}
-	
-	public function setTitle($title){
-		$this->_title=$title;
-	}	
-	
-	public function setIcon($icon){
-		$this->_icon=$icon;
-	}
+    /**
+     * @var string $_link
+     */
+    protected $_link;
 
-	public function setIconColor($iconColor){
-		$this->_iconColor=$iconColor;
-	}
+    /**
+     * @var string $_icon
+     */
+    protected $_icon;
 
-	public function setTitleColor($titleColor){
-		$this->_titleColor=$titleColor;
-	}
-	
-	public function setLink($link){
-		$this->_link=$link;
-	}	
+    /**
+     * @var string $_iconColor
+     */
+    protected $_iconColor;
+
+    /**
+     * @var string $_titleColor
+     */
+    protected $_titleColor;
+
+    /**
+     * @var string $_align
+     */
+    protected $_align;
+
+
+    /**
+     * Link constructor.
+     * @param $title
+     * @param $link
+     * @param string $icon
+     * @param string $iconColor
+     * @param string $titleColor
+     */
+    public function __construct($title, $link, $icon = '', $iconColor = '', $titleColor = '')
+    {
+        parent::__construct([]);
+        $this->setTitle($title);
+        $this->setLink($link);
+        $this->setIcon($icon);
+        $this->setIconColor($iconColor);
+        $this->setTitleColor($titleColor);
+    }
+
+    /**
+     * @return string
+     */
+    public function getHtml()
+    {
+        return '<a href="' . $this->_link . '" class="valign-wrapper">' .
+            '<i class="material-icons ' . $this->iconColor() . ' left valign">' . $this->icon() . '</i>' .
+            '<div class="' . $this->titleColor() . ' valign">' . $this->title() . '</div>
+			</a>';
+    }
+
+    /**
+     * @return string
+     */
+    public function getHtmlForTable()
+    {
+        $iconHtml = '<i class="material-icons ' . $this->iconColor() . ' left">' . $this->icon() . '</i>';
+
+        return '<a href="' . $this->_link . '" style="margin:10px;" class="center">' . $iconHtml . $this->title() . '</a>';
+    }
+
+    /**
+     * @return string
+     */
+    public function iconColor()
+    {
+        return $this->_iconColor;
+    }
+
+    /**
+     * @return string
+     */
+    public function icon()
+    {
+        return $this->_icon;
+    }
+
+    /**
+     * @return string
+     */
+    public function titleColor()
+    {
+        return $this->_titleColor;
+    }
+
+    /**
+     * @return string
+     */
+    public function title()
+    {
+        return $this->_title;
+    }
+
+    /**
+     * @return string
+     */
+    public function link()
+    {
+        return $this->_link;
+    }
+
+    /**
+     * @param string $title
+     * @return Link
+     */
+    public function setTitle($title)
+    {
+        $this->_title = $title;
+        return $this;
+    }
+
+    /**
+     * @param string $link
+     * @return Link
+     */
+    public function setLink($link)
+    {
+        $this->_link = $link;
+        return $this;
+    }
+
+    /**
+     * @param string $icon
+     * @return Link
+     */
+    public function setIcon($icon)
+    {
+        $this->_icon = $icon;
+        return $this;
+    }
+
+    /**
+     * @param string $iconColor
+     * @return Link
+     */
+    public function setIconColor($iconColor)
+    {
+        $this->_iconColor = $iconColor;
+        return $this;
+    }
+
+    /**
+     * @param string $titleColor
+     * @return Link
+     */
+    public function setTitleColor($titleColor)
+    {
+        $this->_titleColor = $titleColor;
+        return $this;
+    }
+
+    /**
+     * @param string $align
+     * @return Link
+     */
+    public function setAlign($align)
+    {
+        $this->_align = $align;
+        return $this;
+    }
 }

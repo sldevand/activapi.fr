@@ -1,134 +1,391 @@
 <?php
+
 namespace Entity;
 
-use \OCFram\Entity;
-use \Entity\ThermostatMode;
-use \Entity\Sensor;
+use OCFram\Entity;
 
-class Thermostat extends Entity{
-	protected $nom;
-	protected $modeid;
-	protected $mode;
-	protected $sensorid;
-	protected $sensor;
-	protected $planning;
-	protected $planningName;
-	protected $manuel;
-	protected $consigne;
-	protected $delta;
-	protected $interne;
-	protected $etat;
-	protected $releve;
-	protected $temperature;
-	protected $hygrometrie;
+/**
+ * Class Thermostat
+ * @package Entity
+ */
+class Thermostat extends Entity
+{
+    /**
+     * @var string $nom
+     */
+    protected $nom;
 
+    /**
+     * @var int $modeid
+     */
+    protected $modeid;
 
-	//GETTERS
+    /**
+     * @var ThermostatMode $mode
+     */
+    protected $mode;
 
-	public function nom(){return $this->nom;}
-	public function modeid(){return $this->modeid;}
-	public function mode(){return $this->mode;}
-	public function sensorid(){return $this->sensorid;}
-	public function sensor(){return $this->sensor;}
-	public function planning(){return $this->planning;}
-	public function planningName(){return $this->planningName;}
-	public function manuel(){return $this->manuel;}
-	public function consigne(){return $this->consigne;}
-	public function delta(){return $this->delta;}
-	public function interne(){return $this->interne;}
-	public function etat(){return $this->etat;}
-	public function releve(){return $this->releve;}
-	public function temperature(){return $this->temperature;}
-	public function hygrometrie(){return $this->hygrometrie;}
+    /**
+     * @var int $sensorid
+     */
+    protected $sensorid;
 
-	//SETTERS
+    /**
+     * @var Sensor $sensor
+     */
+    protected $sensor;
 
+    /**
+     * @var ThermostatPlanif $planning
+     */
+    protected $planning;
 
+    /**
+     * @var string $planningName
+     */
+    protected $planningName;
 
-	public function setNom($nom){
-		$this->nom=$nom;
-	}
+    /**
+     * @var bool $manuel
+     */
+    protected $manuel;
 
-	public function setModeid($modeid){
-		$this->modeid=$modeid;
-	}
+    /**
+     * @var float $consigne
+     */
+    protected $consigne;
 
-	public function setMode(ThermostatMode $mode){
-		$this->mode=$mode;
-	}
+    /**
+     * @var float $delta
+     */
+    protected $delta;
 
-	public function setSensorid($sensorid){
-		$this->sensorid=$sensorid;
-	}
+    /**
+     * @var bool $interne
+     */
+    protected $interne;
 
-	public function setSensor(Sensor $sensor){
-		$this->sensor=$sensor;
-	}
+    /**
+     * @var int $etat
+     */
+    protected $etat;
 
-	public function setPlanning($planning){
-		$this->planning=$planning;
-	}
+    /**
+     * @var string $releve
+     */
+    protected $releve;
 
-	public function setPlanningName($planningName){
-		$this->planningName=$planningName;
-	}
+    /**
+     * @var float $temperature
+     */
+    protected $temperature;
 
-	public function setManuel($manuel){
-		$this->manuel=$manuel;
-	}
+    /**
+     * @var float $hygrometrie
+     */
+    protected $hygrometrie;
 
-	public function setConsigne($consigne){
+    /**
+     * @return string
+     */
+    public function nom()
+    {
+        return $this->nom;
+    }
 
-		$this->consigne=$consigne;
-	}
+    /**
+     * @return int
+     */
+    public function modeid()
+    {
+        return $this->modeid;
+    }
 
-	public function setDelta($delta){
-		$this->delta=$delta;
-	}
+    /**
+     * @return ThermostatMode
+     */
+    public function mode()
+    {
+        return $this->mode;
+    }
 
-	public function setInterne($interne){
-		$this->interne=$interne;
-	}
+    /**
+     * @return int
+     */
+    public function sensorid()
+    {
+        return $this->sensorid;
+    }
 
-	public function setEtat($etat){
-		$this->etat=$etat;
-	}
+    /**
+     * @return Sensor
+     */
+    public function sensor()
+    {
+        return $this->sensor;
+    }
 
-	public function setReleve($releve){
-		$this->releve=$releve;
-	}
+    /**
+     * @return ThermostatPlanif
+     */
+    public function planning()
+    {
+        return $this->planning;
+    }
 
-	public function setTemperature($temperature){
-		$this->temperature=$temperature;
-	}
+    /**
+     * @return string
+     */
+    public function planningName()
+    {
+        return $this->planningName;
+    }
 
-	public function setHygrometrie($hygrometrie){
-		$this->hygrometrie=$hygrometrie;
-	}
+    /**
+     * @return bool
+     */
+    public function manuel()
+    {
+        return $this->manuel;
+    }
 
-	public function jsonSerialize(){
+    /**
+     * @return bool
+     */
+    public function interne()
+    {
+        return $this->interne;
+    }
 
-		return array(
-			'id' => $this->id(),
-			'nom' => $this->nom,
-			'mode' => $this->mode,
-			'sensor' => $this->sensor,
-			'modeid' => $this->modeid,
-			'sensorid' => $this->sensorid,
-			'planning' => $this->planning,
-			'planningName' => $this->planningName,
-			'manuel'=>$this->manuel,
-			'consigne' => $this->consigne,
-			'delta'=>$this->delta,
-			'interne'=>$this->interne,
-			'etat'=>$this->etat,
-			'releve'=>$this->releve,
-			'temperature'=>$this->temperature,
-			'hygrometrie'=>$this->hygrometrie
-		);
-	}
+    /**
+     * @return string
+     */
+    public function releve()
+    {
+        return $this->releve;
+    }
 
-	public function hasChanged(Thermostat $thermostat){
-		return ($thermostat->etat()!=$this->etat() || $thermostat->consigne()!=$this->consigne() || $thermostat->delta()!=$this->delta());
-	}
+    /**
+     * @return float
+     */
+    public function temperature()
+    {
+        return $this->temperature;
+    }
+
+    /**
+     * @return float
+     */
+    public function hygrometrie()
+    {
+        return $this->hygrometrie;
+    }
+
+    /**
+     * @return int
+     */
+    public function etat()
+    {
+        return $this->etat;
+    }
+
+    /**
+     * @return float
+     */
+    public function consigne()
+    {
+        return $this->consigne;
+    }
+
+    /**
+     * @return float
+     */
+    public function delta()
+    {
+        return $this->delta;
+    }
+
+    /**
+     * @param string $nom
+     * @return Thermostat
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+        return $this;
+    }
+
+    /**
+     * @param int $modeid
+     * @return Thermostat
+     */
+    public function setModeid($modeid)
+    {
+        $this->modeid = $modeid;
+        return $this;
+    }
+
+    /**
+     * @param ThermostatMode $mode
+     * @return Thermostat
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+        return $this;
+    }
+
+    /**
+     * @param int $sensorid
+     * @return Thermostat
+     */
+    public function setSensorid($sensorid)
+    {
+        $this->sensorid = $sensorid;
+        return $this;
+    }
+
+    /**
+     * @param Sensor $sensor
+     * @return Thermostat
+     */
+    public function setSensor($sensor)
+    {
+        $this->sensor = $sensor;
+        return $this;
+    }
+
+    /**
+     * @param ThermostatPlanif $planning
+     * @return Thermostat
+     */
+    public function setPlanning($planning)
+    {
+        $this->planning = $planning;
+        return $this;
+    }
+
+    /**
+     * @param string $planningName
+     * @return Thermostat
+     */
+    public function setPlanningName($planningName)
+    {
+        $this->planningName = $planningName;
+        return $this;
+    }
+
+    /**
+     * @param bool $manuel
+     * @return Thermostat
+     */
+    public function setManuel($manuel)
+    {
+        $this->manuel = $manuel;
+        return $this;
+    }
+
+    /**
+     * @param float $consigne
+     * @return Thermostat
+     */
+    public function setConsigne($consigne)
+    {
+        $this->consigne = $consigne;
+        return $this;
+    }
+
+    /**
+     * @param float $delta
+     * @return Thermostat
+     */
+    public function setDelta($delta)
+    {
+        $this->delta = $delta;
+        return $this;
+    }
+
+    /**
+     * @param bool $interne
+     * @return Thermostat
+     */
+    public function setInterne($interne)
+    {
+        $this->interne = $interne;
+        return $this;
+    }
+
+    /**
+     * @param int $etat
+     * @return Thermostat
+     */
+    public function setEtat($etat)
+    {
+        $this->etat = $etat;
+        return $this;
+    }
+
+    /**
+     * @param string $releve
+     * @return Thermostat
+     */
+    public function setReleve($releve)
+    {
+        $this->releve = $releve;
+        return $this;
+    }
+
+    /**
+     * @param float $temperature
+     * @return Thermostat
+     */
+    public function setTemperature($temperature)
+    {
+        $this->temperature = $temperature;
+        return $this;
+    }
+
+    /**
+     * @param float $hygrometrie
+     * @return Thermostat
+     */
+    public function setHygrometrie($hygrometrie)
+    {
+        $this->hygrometrie = $hygrometrie;
+        return $this;
+    }
+
+    /**
+     * @param Thermostat $thermostat
+     * @return bool
+     */
+    public function hasChanged(Thermostat $thermostat)
+    {
+        return ($thermostat->etat() != $this->etat() || $thermostat->consigne() != $this->consigne() || $thermostat->delta() != $this->delta());
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return array(
+            'id' => $this->id(),
+            'nom' => $this->nom,
+            'mode' => $this->mode,
+            'sensor' => $this->sensor,
+            'modeid' => $this->modeid,
+            'sensorid' => $this->sensorid,
+            'planning' => $this->planning,
+            'planningName' => $this->planningName,
+            'manuel' => $this->manuel,
+            'consigne' => $this->consigne,
+            'delta' => $this->delta,
+            'interne' => $this->interne,
+            'etat' => $this->etat,
+            'releve' => $this->releve,
+            'temperature' => $this->temperature,
+            'hygrometrie' => $this->hygrometrie
+        );
+    }
 }

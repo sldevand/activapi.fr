@@ -26,6 +26,18 @@ class Sequence extends Entity
     protected $actions;
 
     /**
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id(),
+            'nom' => $this->getNom(),
+            'sequence' => $this->getScenarioId()
+        ];
+    }
+
+    /**
      * @return string
      */
     public function getNom()
@@ -61,19 +73,6 @@ class Sequence extends Entity
         $this->scenarioId = $scenarioId;
 
         return $this;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->id(),
-            'nom' => $this->getNom(),
-            'sequence' => $this->getScenarioId()
-        ];
     }
 
     /**

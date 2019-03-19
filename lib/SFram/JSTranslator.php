@@ -9,13 +9,13 @@ namespace SFram;
 class JSTranslator
 {
     /**
-     * @var
+     * @var array $phpVars
      */
     protected $phpVars;
 
     /**
      * JSTranslator constructor.
-     * @param $phpVars
+     * @param array $phpVars
      * @throws \Exception
      */
     public function __construct($phpVars)
@@ -24,8 +24,8 @@ class JSTranslator
     }
 
     /**
-     * @param $key
-     * @param $phpVar
+     * @param string $key
+     * @param array $phpVar
      */
     public function addVar($key, $phpVar)
     {
@@ -33,7 +33,7 @@ class JSTranslator
     }
 
     /**
-     * @param $phpVars
+     * @param array $phpVars
      * @throws \Exception
      */
     public function setPhpVars($phpVars)

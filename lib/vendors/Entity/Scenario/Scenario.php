@@ -20,6 +20,17 @@ class Scenario extends Entity
      */
     protected $sequence;
 
+    /**
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id(),
+            'nom' => $this->getNom(),
+            'sequence' => $this->getSequence()
+        ];
+    }
 
     /**
      * @return string
@@ -57,17 +68,5 @@ class Scenario extends Entity
         $this->sequence = $sequence;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'id' => $this->id(),
-            'nom' => $this->getNom(),
-            'sequence' => $this->getSequence()
-        ];
     }
 }
