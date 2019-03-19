@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS module_version;
+
+CREATE TABLE IF NOT EXISTS module_version
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    moduleName VARCHAR(100) NOT NULL UNIQUE,
+    versionNumber VARCHAR(100) NOT NULL
+);
