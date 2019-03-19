@@ -216,11 +216,11 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     * @param int $viewId
+     * @return false|string
      */
-    public function setViewId($viewId)
+    public function deleteFormView()
     {
-        $this->viewId = $viewId;
+        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
     }
 
     /**
@@ -233,14 +233,6 @@ abstract class BackController extends ApplicationComponent
         ob_start();
         require $fileName;
         return ob_get_clean();
-    }
-
-    /**
-     * @return false|string
-     */
-    public function deleteFormView()
-    {
-        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
     }
 
     /**
@@ -279,5 +271,13 @@ abstract class BackController extends ApplicationComponent
     public function getViewId()
     {
         return $this->viewId;
+    }
+
+    /**
+     * @param int $viewId
+     */
+    public function setViewId($viewId)
+    {
+        $this->viewId = $viewId;
     }
 }

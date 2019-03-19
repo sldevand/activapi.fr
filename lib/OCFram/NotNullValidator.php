@@ -1,10 +1,19 @@
 <?php
+
 namespace OCFram;
 
+/**
+ * Class NotNullValidator
+ * @package OCFram
+ */
 class NotNullValidator extends Validator
 {
-  public function isValid($value)
-  {
-    return $value != '';
-  }
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function isValid($value)
+    {
+        return !empty($value);
+    }
 }
