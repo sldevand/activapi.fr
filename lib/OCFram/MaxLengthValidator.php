@@ -1,33 +1,52 @@
 <?php
+
 namespace OCFram;
 
+use RuntimeException;
+
+/**
+ * Class MaxLengthValidator
+ * @package OCFram
+ */
 class MaxLengthValidator extends Validator
 {
-  protected $maxLength;
-  
-  public function __construct($errorMessage, $maxLength)
-  {
-    parent::__construct($errorMessage);
-    
-    $this->setMaxLength($maxLength);
-  }
-  
-  public function isValid($value)
-  {
-    return strlen($value) <= $this->maxLength;
-  }
-  
-  public function setMaxLength($maxLength)
-  {
-    $maxLength = (int) $maxLength;
-    
-    if ($maxLength > 0)
+    /**
+     * @var int
+     */
+    protected $maxLength;
+
+    /**
+     * MaxLengthValidator constructor.
+     * @param string $errorMessage
+     * @param int $maxLength
+     */
+    public function __construct($errorMessage, $maxLength)
     {
-      $this->maxLength = $maxLength;
+        parent::__construct($errorMessage);
+
+        $this->setMaxLength($maxLength);
     }
-    else
+
+    /**
+     * @param string $value
+     * @return bool
+     */
+    public function isValid($value)
     {
-      throw new \RuntimeException('La longueur maximale doit être un nombre supérieur à 0');
+        return strlen($value) <= $this->maxLength;
     }
-  }
+
+    /**
+     * @param int $maxLength
+     * @throws RuntimeException
+     */
+    public function setMaxLength($maxLength)
+    {
+        $maxLength = (int)$maxLength;
+        if ($maxLength <= 0) {
+            throw new RuntimeException('La longueur maximale doit être un nombre supérieur à 0');
+        }
+
+        $this->maxLength = $maxLength;
+    }
 }

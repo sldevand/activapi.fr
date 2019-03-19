@@ -47,7 +47,7 @@ abstract class Application
         $this->httpResponse = new HTTPResponse($this);
         $this->user = new User($this);
         $this->config = new Config($this);
-        $this->router = new Router;
+        $this->router = new Router();
 
         $this->name = '';
     }
@@ -57,7 +57,7 @@ abstract class Application
      */
     public function getController()
     {
-        $xml = new \DOMDocument;
+        $xml = new \DOMDocument();
         $xml->load(__DIR__ . '/../../App/' . $this->name . '/Config/routes.xml');
 
         $routes = $xml->getElementsByTagName('route');

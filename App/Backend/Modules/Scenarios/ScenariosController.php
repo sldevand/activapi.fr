@@ -3,8 +3,7 @@
 namespace App\Backend\Modules\Scenarios;
 
 use Entity\Scenario;
-use Model\ActionneursManagerPDO;
-use Model\ScenariosManagerPDO;
+use Model\Scenario\ScenariosManagerPDO;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 

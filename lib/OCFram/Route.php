@@ -1,90 +1,149 @@
 <?php
+
 namespace OCFram;
 
+/**
+ * Class Route
+ * @package OCFram
+ */
 class Route
 {
-  protected $action;
-  protected $module;
-  protected $url;
-  protected $varsNames;
-  protected $vars = [];
+    /**
+     * @var string $action
+     */
+    protected $action;
 
-  public function __construct($url, $module, $action, array $varsNames)
-  {
-    $this->setUrl($url);
-    $this->setModule($module);
-    $this->setAction($action);
-    $this->setVarsNames($varsNames);
-  }
+    /**
+     * @var string $module
+     */
+    protected $module;
 
-  public function hasVars()
-  {
-    return !empty($this->varsNames);
-  }
+    /**
+     * @var string $url
+     */
+    protected $url;
 
-  public function match($url)
-  {
-    if (preg_match('`^'.$this->url.'$`', $url, $matches))
+    /**
+     * @var array $varsNames
+     */
+    protected $varsNames;
+
+    /**
+     * @var array $vars
+     */
+    protected $vars = [];
+
+    /**
+     * Route constructor.
+     * @param $url
+     * @param $module
+     * @param $action
+     * @param array $varsNames
+     */
+    public function __construct($url, $module, $action, array $varsNames)
     {
-      return $matches;
+        $this->setUrl($url);
+        $this->setModule($module);
+        $this->setAction($action);
+        $this->setVarsNames($varsNames);
     }
-    else
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
     {
-      return false;
+        if (is_string($url)) {
+            $this->url = $url;
+        }
     }
-  }
 
-  public function setAction($action)
-  {
-    if (is_string($action))
+    /**
+     * @param string $module
+     */
+    public function setModule($module)
     {
-      $this->action = $action;
+        if (is_string($module)) {
+            $this->module = $module;
+        }
     }
-  }
 
-  public function setModule($module)
-  {
-    if (is_string($module))
+    /**
+     * @param string $action
+     */
+    public function setAction($action)
     {
-      $this->module = $module;
+        if (is_string($action)) {
+            $this->action = $action;
+        }
     }
-  }
 
-  public function setUrl($url)
-  {
-    if (is_string($url))
+    /**
+     * @param array $varsNames
+     */
+    public function setVarsNames(array $varsNames)
     {
-      $this->url = $url;
+        $this->varsNames = $varsNames;
     }
-  }
 
-  public function setVarsNames(array $varsNames)
-  {
-    $this->varsNames = $varsNames;
-  }
+    /**
+     * @return bool
+     */
+    public function hasVars()
+    {
+        return !empty($this->varsNames);
+    }
 
-  public function setVars(array $vars)
-  {
-    $this->vars = $vars;
-  }
+    /**
+     * @param string $url
+     * @return bool
+     */
+    public function match($url)
+    {
+        if (!preg_match('`^' . $this->url . '$`', $url, $matches)) {
+            return false;
+        }
 
-  public function action()
-  {
-    return $this->action;
-  }
+        return $matches;
+    }
 
-  public function module()
-  {
-    return $this->module;
-  }
+    /**
+     * @param array $vars
+     */
+    public function setVars(array $vars)
+    {
+        $this->vars = $vars;
+    }
 
-  public function vars()
-  {
-    return $this->vars;
-  }
+    /**
+     * @return string
+     */
+    public function action()
+    {
+        return $this->action;
+    }
 
-  public function varsNames()
-  {
-    return $this->varsNames;
-  }
+    /**
+     * @return string
+     */
+    public function module()
+    {
+        return $this->module;
+    }
+
+    /**
+     * @return array
+     */
+    public function vars()
+    {
+        return $this->vars;
+    }
+
+    /**
+     * @return array
+     */
+    public function varsNames()
+    {
+        return $this->varsNames;
+    }
 }

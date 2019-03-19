@@ -2,9 +2,9 @@
 
 namespace OCFram;
 
-use \DateTime;
-use \DateTimeZone;
-use \DateInterval;
+use DateInterval;
+use DateTime;
+use DateTimeZone;
 
 /**
  * Class Cache
@@ -13,19 +13,24 @@ use \DateInterval;
 class Cache extends ApplicationComponent
 {
     /**
-     * @var
+     * @var string $timeStamp
      */
     protected $timeStamp;
 
     /**
-     * @var
+     * @var string $fileName
      */
     protected $fileName;
 
     /**
-     * @var array
+     * @var array $fileArray
      */
     protected $fileArray = [];
+
+    /**
+     * @var array $datas
+     */
+    protected $datas = [];
 
     public function makeTimeStamp()
     {
@@ -121,7 +126,7 @@ class Cache extends ApplicationComponent
     }
 
     /**
-     * @param $file
+     * @param string $file
      * @param array $entities
      */
     public function saveData($file, array $entities)
@@ -182,8 +187,7 @@ class Cache extends ApplicationComponent
      * @param BackController $controller
      * @param $html
      */
-    public
-    function saveView($controller, $html)
+    public function saveView($controller, $html)
     {
         $this->setViewPath($controller);
         $this->makeTimeStamp();
@@ -194,8 +198,7 @@ class Cache extends ApplicationComponent
     /**
      * @param BackController $controller
      */
-    public
-    function setViewPath($controller)
+    public function setViewPath($controller)
     {
         $this->fileName = $this->app()->config()->get('cache') . 'views' . '/' .
             $this->app()->name() . '_' .

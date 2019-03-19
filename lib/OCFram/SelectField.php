@@ -24,7 +24,7 @@ class SelectField extends Field
     protected $disabled;
 
     /**
-     * @return mixed|string
+     * @return string
      */
     public function buildWidget()
     {
@@ -40,7 +40,7 @@ class SelectField extends Field
         }
 
         $widget .= '<label>' . $this->label . '</label>';
-        $widget .= '<select ' . $disabled . ' name="' . $this->name . '" id="'.$this->id.'">';
+        $widget .= '<select ' . $disabled . ' name="' . $this->name . '" id="' . $this->id . '">';
 
         foreach ($this->options as $key => $option) {
             $widget .= '<option value="' . $key . '"';
@@ -53,19 +53,20 @@ class SelectField extends Field
         }
 
         $widget .= '</select>';
+
         return $widget;
     }
 
     /**
-     * @param $options
+     * @param array $options
      */
     public function setOptions($options)
     {
-        if (is_array($options)) {
-            $this->options = $options;
-        } else {
+        if (!is_array($options)) {
             throw new \RuntimeException('Les options sont invalides!');
         }
+
+        $this->options = $options;
     }
 
     /**

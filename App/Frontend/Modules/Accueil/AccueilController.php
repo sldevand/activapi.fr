@@ -36,6 +36,9 @@ class AccueilController extends BackController
         return $card;
     }
 
+    /**
+     * @return false|string
+     */
     public function getHomeView()
     {
         return $this->getBlock(__DIR__ . '/Block/homeView.phtml');

@@ -2,6 +2,10 @@
 
 namespace OCFram;
 
+/**
+ * Class User
+ * @package OCFram
+ */
 class User
 {
     /**
@@ -21,11 +25,18 @@ class User
         $this->app = $app;
     }
 
+    /**
+     * @param string $attr
+     * @return null | string
+     */
     public function getAttribute($attr)
     {
         return isset($_SESSION[$attr]) ? $_SESSION[$attr] : null;
     }
 
+    /**
+     * @return string
+     */
     public function getFlash()
     {
         $flash = $_SESSION['flash'];
@@ -34,21 +45,34 @@ class User
         return $flash;
     }
 
+    /**
+     * @return bool
+     */
     public function hasFlash()
     {
         return isset($_SESSION['flash']);
     }
 
+    /**
+     * @return bool
+     */
     public function isAuthenticated()
     {
         return isset($_SESSION['auth']) && $_SESSION['auth'] === true;
     }
 
+    /**
+     * @param string $attr
+     * @param string $value
+     */
     public function setAttribute($attr, $value)
     {
         $_SESSION[$attr] = $value;
     }
 
+    /**
+     * @param bool $authenticated
+     */
     public function setAuthenticated($authenticated = true)
     {
         if (!is_bool($authenticated)) {
@@ -58,6 +82,9 @@ class User
         $_SESSION['auth'] = $authenticated;
     }
 
+    /**
+     * @param string $value
+     */
     public function setFlash($value)
     {
         $_SESSION['flash'] = $value;

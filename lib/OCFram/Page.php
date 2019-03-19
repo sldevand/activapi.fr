@@ -18,7 +18,6 @@ class Page extends ApplicationComponent
      */
     protected $contentCache = '';
 
-
     /**
      * @var array $vars
      */
@@ -65,7 +64,6 @@ class Page extends ApplicationComponent
         require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.php';
 
         return ob_get_clean();
-
     }
 
     /**

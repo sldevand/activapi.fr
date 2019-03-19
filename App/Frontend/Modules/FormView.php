@@ -4,9 +4,12 @@ namespace App\Frontend\Modules;
 
 use Materialize\Button\FlatButton;
 
+/**
+ * Trait FormView
+ * @package App\Frontend\Modules
+ */
 trait FormView
 {
-
     /**
      * @return false|string
      */

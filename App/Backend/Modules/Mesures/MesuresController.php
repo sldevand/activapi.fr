@@ -86,7 +86,9 @@ class MesuresController extends BackController
 
         if (!$listeMesures) {
             $listeMesures = $manager->getSensorList($sensorID, $dateMinFull, $dateMaxFull);
-            if (!$today) $this->cache()->saveData($cacheFile, $listeMesures);
+            if (!$today) {
+                $this->cache()->saveData($cacheFile, $listeMesures);
+            }
         }
 
         if ($listeMesures) {
@@ -98,7 +100,6 @@ class MesuresController extends BackController
         $this->page->addVar('id', $id);
         $this->page->addVar('listeMesures', $listeMesures);
         $this->page->addVar('sensorID', $sensorID);
-
     }
 
     /***
@@ -120,7 +121,9 @@ class MesuresController extends BackController
                 break;
             case "week":
                 $day = date('w');
-                if ($day == 0) $day = 7;
+                if ($day == 0) {
+                    $day = 7;
+                }
                 $dateMin = date("Y-m-d", strtotime('-' . ($day - 1) . ' days'));
                 $dateMax = date("Y-m-d", strtotime('+' . (7 - $day) . ' days'));
                 break;
@@ -216,7 +219,9 @@ class MesuresController extends BackController
     public function executeSensors(HTTPRequest $request)
     {
         $categorie = $request->getData("categorie");
-        if ($categorie == null) $categorie = "";
+        if ($categorie === null) {
+            $categorie = "";
+        }
         $manager = $this->managers->getManagerOf('Mesures');
         $sensors = $manager->getSensors($categorie);
         foreach ($sensors as $sensor) {
