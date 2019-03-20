@@ -12,32 +12,32 @@ use Materialize\Widget;
 class Card extends Widget
 {
     /**
-     * @var string
+     * @var string $bgColor
      */
     protected $bgColor = 'teal';
 
     /**
-     * @var string
+     * @var string $textColor
      */
     protected $textColor = 'white-text';
 
     /**
-     * @var string
+     * @var string $shade
      */
     protected $shade = '';
 
     /**
-     * @var string
+     * @var string $title
      */
     protected $title = 'Title';
 
     /**
-     * @var array
+     * @var array $contents
      */
     protected $contents = [];
 
     /**
-     * @var array
+     * @var array $links
      */
     protected $links = [];
 

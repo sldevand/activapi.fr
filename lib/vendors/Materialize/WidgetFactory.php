@@ -17,7 +17,6 @@ class WidgetFactory
      */
     public static function makeCard($domId, $cardTitle)
     {
-
         $cardOpt = [
             'id' => $domId,
             'bgColor' => 'primaryLightColor',
@@ -36,13 +35,12 @@ class WidgetFactory
      */
     public static function makeTable($domId, $rawDatas, $jsonencode = true, $hideColumns = [])
     {
-
         $datas = $jsonencode ? json_decode(json_encode($rawDatas), true) : (array)$rawDatas;
 
         $tableDatas = [];
         $headers = [];
 
-        if(empty($datas[0])){
+        if (empty($datas[0])) {
             return new Table([]);
         }
 

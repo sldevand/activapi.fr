@@ -38,6 +38,20 @@ abstract class Button extends Widget
      */
     protected $color = '';
 
+
+    /**
+     * @return string
+     */
+    public function getIconHtml()
+    {
+        $icon = '';
+        if (!is_null($this->icon())) {
+            $icon = '<i class="material-icons ' . $this->align() . ' ' . $this->color() . '">' . $this->icon() . '</i>';
+        }
+
+        return $icon;
+    }
+
     /**
      * @return string
      */
@@ -62,70 +76,6 @@ abstract class Button extends Widget
         return $this->type;
     }
 
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * @param string $icon
-     */
-    public function setIcon($icon)
-    {
-        $this->icon = $icon;
-    }
-
-    /**
-     * @param string $align
-     */
-    public function setAlign($align)
-    {
-        if ($align == 'right') {
-            $this->align = $align;
-        } else {
-            $this->align = 'left';
-        }
-    }
-
-    /**
-     * @param string $href
-     */
-    public function setHref($href)
-    {
-        $this->href = $href;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @param string $color
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIconHtml()
-    {
-        $icon = '';
-        if (!is_null($this->icon())) {
-            $icon = '<i class="material-icons ' . $this->align() . ' ' . $this->color() . '">' . $this->icon() . '</i>';
-        }
-
-        return $icon;
-    }
 
     /**
      * @return string
@@ -149,5 +99,75 @@ abstract class Button extends Widget
     public function color()
     {
         return $this->color;
+    }
+
+    /**
+     * @param string $title
+     * @return Button
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @param string $icon
+     * @return Button
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * @param string $align
+     * @return Button
+     */
+    public function setAlign($align)
+    {
+        if ($align === 'right') {
+            $this->align = $align;
+        } else {
+            $this->align = 'left';
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $href
+     * @return Button
+     */
+    public function setHref($href)
+    {
+        $this->href = $href;
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return Button
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @param string $color
+     * @return Button
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
     }
 }
