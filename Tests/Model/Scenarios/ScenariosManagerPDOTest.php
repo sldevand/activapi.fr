@@ -3,9 +3,8 @@
 namespace Tests\Model;
 
 use Entity\Scenario\Scenario;
-use Model\Scenario\ActionManagerPDO;
+use Entity\Scenario\Sequence;
 use Model\Scenario\ScenariosManagerPDO;
-use Model\Scenario\SequencesManagerPDO;
 
 /**
  * Class ScenariosManagerPDOTest
@@ -39,6 +38,9 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
         $manager->save($scenario);
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
+
+        $res = $manager->getLastInserted('scenario');
+        self::assertTrue($res == 1);
     }
 
     /**
@@ -82,14 +84,16 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function saveProvider()
     {
+        $sequences = $this->mockSequences();
+
         return [
             "createScenario" => [
-                $this->makeScenario('ScenarioTest'),
-                $this->makeScenario('ScenarioTest', 1)
+                $this->makeScenario('ScenarioTest', $sequences),
+                $this->makeScenario('ScenarioTest', $sequences, 1)
             ],
             "updateScenario" => [
-                $this->makeScenario('ScenarioTest2', 1),
-                $this->makeScenario('ScenarioTest2', 1)
+                $this->makeScenario('ScenarioTest2', $sequences, 1),
+                $this->makeScenario('ScenarioTest2', $sequences, 1)
             ]
         ];
     }
@@ -99,19 +103,21 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getAllProvider()
     {
+        $sequences = $this->mockSequences();
+
         return [
             "createScenario" => [
                 [
-                    $this->makeScenario('TestScenario1'),
-                    $this->makeScenario('TestScenario2'),
-                    $this->makeScenario('TestScenario3'),
-                    $this->makeScenario('TestScenario4')
+                    $this->makeScenario('TestScenario1', $sequences),
+                    $this->makeScenario('TestScenario2', $sequences),
+                    $this->makeScenario('TestScenario3', $sequences),
+                    $this->makeScenario('TestScenario4', $sequences)
                 ],
                 [
-                    $this->makeScenario('TestScenario1', '1'),
-                    $this->makeScenario('TestScenario2', '2'),
-                    $this->makeScenario('TestScenario3', '3'),
-                    $this->makeScenario('TestScenario4', '4')
+                    $this->makeScenario('TestScenario1', $sequences, '1'),
+                    $this->makeScenario('TestScenario2', $sequences, '2'),
+                    $this->makeScenario('TestScenario3', $sequences, '3'),
+                    $this->makeScenario('TestScenario4', $sequences, '4')
                 ]
             ]
         ];
@@ -122,27 +128,29 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function deleteProvider()
     {
+        $sequences = $this->mockSequences();
         return [
             "deleteScenario" => [
-                $this->makeScenario('ScenarioTest'),
-                $this->makeScenario('ScenarioTest', 1)
+                $this->makeScenario('ScenarioTest', $sequences),
+                $this->makeScenario('ScenarioTest', $sequences, 1)
             ]
         ];
     }
 
     /**
-     * @param $nom
-     * @param null | int $id
-     * @return Scenario
+     * @return Sequence[]
      */
-    public function makeScenario($nom, $id = null)
+    public function mockSequences()
     {
-        return new Scenario(
-            [
-                'id' => $id,
-                'nom' => $nom
-            ]
-        );
+        $actionneur = $this->makeActionneur('Salon', 0);
+        $actionneur2 = $this->makeActionneur('Dalle', 0);
+        $actions = [
+            $this->makeAction($actionneur, 0),
+            $this->makeAction($actionneur2, 100)
+        ];
+        return [
+            $this->makeSequence('Eteindre Salon', $actions)
+        ];
     }
 
     /**
@@ -150,11 +158,6 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getManager()
     {
-        $actionManagerPDO = new ActionManagerPDO(self::$db);
-        $actionManagerPDOArray = ['actionManagerPDO' => $actionManagerPDO];
-        $sequencesManagerPDO = new SequencesManagerPDO(self::$db, $actionManagerPDOArray);
-        $sequencesManagerPDOArray = ['sequencesManagerPDO' => $sequencesManagerPDO];
-
-        return self::$managers->getManagerOf('Scenario\Scenarios', $sequencesManagerPDOArray);
+        return $this->getScenariosManager();
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Model\Scenario;
 
+use Entity\Actionneur;
 use Entity\Scenario\Action;
+use Model\ActionneursManagerPDO;
 use Model\ManagerPDO;
-use OCFram\Entity;
 
 /**
  * Class ActionManagerPDO
@@ -12,6 +13,11 @@ use OCFram\Entity;
  */
 class ActionManagerPDO extends ManagerPDO
 {
+    /**
+     * @var ActionneursManagerPDO $actionneursManagerPDO
+     */
+    protected $actionneursManagerPDO;
+
     /**
      * ActionManagerPDO constructor.
      * @param \PDO $dao
@@ -21,17 +27,54 @@ class ActionManagerPDO extends ManagerPDO
     {
         parent::__construct($dao, $args);
         $this->tableName = 'action';
+        $this->actionneursManagerPDO = $args['actionneursManagerPDO'];
         $this->entity = new Action();
     }
 
     /**
-     * @param Entity $entity
+     * @param Action $action
      * @param array $ignoreProperties
      * @return bool
      * @throws \Exception
      */
-    public function save($entity, $ignoreProperties = [])
+    public function save($action, $ignoreProperties = [])
     {
-        return parent::save($entity, ['actionneur']);
+        return parent::save($action, ['actionneur']);
+    }
+
+    /**
+     * @param int $id
+     * @return Action
+     * @throws \Exception
+     */
+    public function getUnique($id)
+    {
+        /** @var Action $action */
+        $action = parent::getUnique($id);
+        if ($action) {
+            /** @var Actionneur $actionneur */
+            $actionneur = $this->actionneursManagerPDO->getUnique($action->getActionneurId());
+            $action->setActionneur($actionneur);
+        }
+
+        return $action;
+    }
+
+    /**
+     * @param int $id
+     * @return Action[]
+     * @throws \Exception
+     */
+    public function getAll($id = null)
+    {
+        /** @var Action[] $actions */
+        $actions = parent::getAll($id);
+        foreach ($actions as $key => $action) {
+            /** @var Actionneur $actionneur */
+            $actionneur = $this->actionneursManagerPDO->getUnique($action->getActionneurId());
+            $actions[$key]->setActionneur($actionneur);
+        }
+
+        return $actions;
     }
 }

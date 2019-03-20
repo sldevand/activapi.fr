@@ -12,19 +12,17 @@ use Model\Scenario\ActionManagerPDO;
  */
 class ActionManagerPDOTest extends AbstractManagerPDOTest
 {
-
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
+        self::executeSqlScript(ACTIONNEURS_SQL_PATH);
+        self::executeSqlScript(ACTIONNEURS_DATA_SQL_PATH);
         self::dropAndCreateTables();
     }
 
     public static function dropAndCreateTables()
     {
-        if (file_exists(SCENARIOS_SQL_PATH)) {
-            $sql = file_get_contents(SCENARIOS_SQL_PATH);
-            self::$db->exec($sql);
-        }
+        self::executeSqlScript(SCENARIOS_SQL_PATH);
     }
 
     /**
@@ -79,39 +77,41 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function saveProvider()
     {
         return [
             "createAction" => [
-                $this->makeAction(1, 150),
-                $this->makeAction(1, 150, 1)
+                $this->makeAction($this->mockActionneur(), 150),
+                $this->makeAction($this->mockActionneur(), 150, 1)
             ],
             "updateAction" => [
-                $this->makeAction(2, 180, 1),
-                $this->makeAction(2, 180, 1)
+                $this->makeAction($this->mockActionneur(), 180, 1),
+                $this->makeAction($this->mockActionneur(), 180, 1)
             ]
         ];
     }
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function getAllProvider()
     {
         return [
             "createActions" => [
                 [
-                    $this->makeAction(1, 150),
-                    $this->makeAction(13, 225),
-                    $this->makeAction(2, 0),
-                    $this->makeAction(4, 120)
+                    $this->makeAction($this->mockActionneur(), 150),
+                    $this->makeAction($this->mockActionneur(), 225),
+                    $this->makeAction($this->mockActionneur(), 0),
+                    $this->makeAction($this->mockActionneur(), 120)
                 ],
                 [
-                    $this->makeAction(1, 150, 1),
-                    $this->makeAction(13, 225, 2),
-                    $this->makeAction(2, 0, 3),
-                    $this->makeAction(4, 120, 4)
+                    $this->makeAction($this->mockActionneur(), 150, 1),
+                    $this->makeAction($this->mockActionneur(), 225, 2),
+                    $this->makeAction($this->mockActionneur(), 0, 3),
+                    $this->makeAction($this->mockActionneur(), 120, 4)
                 ]
             ]
         ];
@@ -119,33 +119,36 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function deleteProvider()
     {
         return [
             "deleteAction" => [
-                $this->makeAction(1, 150),
-                $this->makeAction(1, 150, 1)
+                $this->makeAction($this->mockActionneur(), 150),
+                $this->makeAction($this->mockActionneur(), 150, 1)
             ]
         ];
     }
 
     /**
-     * @param $actionneurId
-     * @param $etat
-     * @param null | int $id
-     * @return Action
+     * @return \Entity\Actionneur
+     * @throws \Exception
      */
-    public function makeAction($actionneurId, $etat, $id = null)
+    public function mockActionneur()
     {
-        return new Action(
+        /** @var Actionneur $actionneur */
+        return new Actionneur(
             [
-                'id' => $id,
-                'actionneurId' => $actionneurId,
-                new Actionneur(
-                    ['id' => $actionneurId]
-                ),
-                'etat' => $etat
+                'id' => '1',
+                'nom' => 'Salon',
+                'module' => 'cc1101',
+                'protocole' => 'chacon',
+                'adresse' => '14549858',
+                'type' => 'relay',
+                'radioid' => 2,
+                'etat' => 0,
+                'categorie' => 'inter'
             ]
         );
     }
@@ -155,7 +158,6 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getManager()
     {
-        /** @var ActionManagerPDO $manager */
-        return new ActionManagerPDO(self::$db);
+        return $this->getActionManager();
     }
 }

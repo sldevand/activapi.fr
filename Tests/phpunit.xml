@@ -4,7 +4,8 @@
          bootstrap="bootstrap.php"
          cacheResult="true"
          colors="true"
-         verbose="true">
+         verbose="true"
+         >
     <testsuites>
         <testsuite name="unit">
             <directory suffix="Test.php">.</directory>

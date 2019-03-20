@@ -16,11 +16,6 @@ class Sequence extends Entity
     protected $nom;
 
     /**
-     * @var int $scenarioId
-     */
-    protected $scenarioId;
-
-    /**
      * @var Action[] $actions
      */
     protected $actions;
@@ -33,7 +28,7 @@ class Sequence extends Entity
         return [
             'id' => $this->id(),
             'nom' => $this->getNom(),
-            'sequence' => $this->getScenarioId()
+            'actions' => $this->getActions()
         ];
     }
 
@@ -52,25 +47,6 @@ class Sequence extends Entity
     public function setNom($nom)
     {
         $this->nom = $nom;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getScenarioId()
-    {
-        return $this->scenarioId;
-    }
-
-    /**
-     * @param int $scenarioId
-     * @return Sequence
-     */
-    public function setScenarioId($scenarioId)
-    {
-        $this->scenarioId = $scenarioId;
 
         return $this;
     }

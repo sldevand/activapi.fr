@@ -13,14 +13,14 @@ use OCFram\Entity;
 class Action extends Entity
 {
     /**
-     * @var int $actionneurId
-     */
-    protected $actionneurId;
-
-    /**
      * @var Actionneur $actionneur
      */
     protected $actionneur;
+
+    /**
+     * @var int $actionneurId
+     */
+    protected $actionneurId;
 
     /**
      * @var string $etat
@@ -34,29 +34,10 @@ class Action extends Entity
     {
         return [
             'id' => $this->id(),
-            'actionneurId' => $this->getActionneurId(),
+            'actionneurId' => $this->getActionneur()->id(),
             'actionneur' => $this->getActionneur(),
             'etat' => $this->getEtat()
         ];
-    }
-
-    /**
-     * @return int
-     */
-    public function getActionneurId()
-    {
-        return $this->actionneurId;
-    }
-
-    /**
-     * @param int $actionneurId
-     * @return Action
-     */
-    public function setActionneurId($actionneurId)
-    {
-        $this->actionneurId = $actionneurId;
-
-        return $this;
     }
 
     /**
@@ -74,6 +55,7 @@ class Action extends Entity
     public function setActionneur($actionneur)
     {
         $this->actionneur = $actionneur;
+        $this->actionneurId = $actionneur->id();
 
         return $this;
     }
@@ -93,6 +75,25 @@ class Action extends Entity
     public function setEtat($etat)
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getActionneurId()
+    {
+        return $this->actionneurId;
+    }
+
+    /**
+     * @param int $actionneurId
+     * @return Action
+     */
+    public function setActionneurId($actionneurId)
+    {
+        $this->actionneurId = $actionneurId;
 
         return $this;
     }

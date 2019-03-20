@@ -138,12 +138,10 @@ class ManagerPDO extends Manager
         }
 
         $q = $this->prepare($sql);
-
-        if (!is_null($id) && !empty($id)) {
+        if (!empty($id)) {
             $q->bindValue(':id', $id);
         }
 
-        $q = $this->prepare($sql);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
         $entity = $q->fetchAll();
@@ -152,6 +150,20 @@ class ManagerPDO extends Manager
         return $entity;
     }
 
+    /**
+     * @param string $table
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getLastInserted($table)
+    {
+        $sql = 'SELECT seq FROM sqlite_sequence WHERE name="' . $table . '"';
+        $q = $this->query($sql);
+        $q->execute();
+        $res = $q->fetchColumn();
+
+        return $res;
+    }
 
     /**
      * @param Entity $entity

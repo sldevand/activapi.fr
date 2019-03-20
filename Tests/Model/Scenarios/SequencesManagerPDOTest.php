@@ -2,8 +2,8 @@
 
 namespace Tests\Model;
 
+use Entity\Scenario\Action;
 use Entity\Scenario\Sequence;
-use Model\Scenario\ActionManagerPDO;
 use Model\Scenario\SequencesManagerPDO;
 
 /**
@@ -83,12 +83,12 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     {
         return [
             "createSequence" => [
-                $this->makeSequence('Test1', 150),
-                $this->makeSequence('Test1', 150, 1)
+                $this->makeSequence('Test1', $this->mockActions()),
+                $this->makeSequence('Test1', $this->mockActions(), 1)
             ],
             "updateSequence" => [
-                $this->makeSequence('Test2', 150, 1),
-                $this->makeSequence('Test2', 150, 1),
+                $this->makeSequence('Test2', $this->mockActions(), 1),
+                $this->makeSequence('Test2', $this->mockActions(), 1),
             ]
         ];
     }
@@ -101,16 +101,16 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         return [
             "createSequences" => [
                 [
-                    $this->makeSequence('Test1', 150),
-                    $this->makeSequence('Test2', 225),
-                    $this->makeSequence('Test3', 0),
-                    $this->makeSequence('Test4', 120)
+                    $this->makeSequence('Test1', $this->mockActions()),
+                    $this->makeSequence('Test2', $this->mockActions()),
+                    $this->makeSequence('Test3', $this->mockActions()),
+                    $this->makeSequence('Test4', $this->mockActions())
                 ],
                 [
-                    $this->makeSequence('Test1', 150, 1),
-                    $this->makeSequence('Test2', 225, 2),
-                    $this->makeSequence('Test3', 0, 3),
-                    $this->makeSequence('Test4', 120, 4)
+                    $this->makeSequence('Test1', $this->mockActions(), 1),
+                    $this->makeSequence('Test2', $this->mockActions(), 2),
+                    $this->makeSequence('Test3', $this->mockActions(), 3),
+                    $this->makeSequence('Test4', $this->mockActions(), 4)
                 ]
             ]
         ];
@@ -123,27 +123,23 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     {
         return [
             "deleteSequence" => [
-                $this->makeSequence('Test1', 150),
-                $this->makeSequence('Test1', 150, 1)
+                $this->makeSequence('Test1', $this->mockActions()),
+                $this->makeSequence('Test1', $this->mockActions(), 1)
             ]
         ];
     }
 
     /**
-     * @param $nom
-     * @param $scenarioId
-     * @param null | int $id
-     * @return Sequence
+     * @return Action[]
      */
-    public function makeSequence($nom, $scenarioId, $id = null)
+    public function mockActions()
     {
-        return new Sequence(
-            [
-                'id' => $id,
-                'nom' => $nom,
-                'scenarioId' => $scenarioId
-            ]
-        );
+        $actionneur = $this->makeActionneur('Salon', 0);
+        $actionneur2 = $this->makeActionneur('Dalle', 0);
+        return [
+            $this->makeAction($actionneur, 0),
+            $this->makeAction($actionneur2, 100)
+        ];
     }
 
     /**
@@ -151,8 +147,6 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getManager()
     {
-        $actionManagerPDO = new ActionManagerPDO(self::$db);
-        $actionManagerPDOArray = ['actionManagerPDO' => $actionManagerPDO];
-        return new SequencesManagerPDO(self::$db, $actionManagerPDOArray);
+        return $this->getSequencesManager();
     }
 }
