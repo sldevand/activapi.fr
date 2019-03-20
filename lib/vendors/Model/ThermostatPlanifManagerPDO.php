@@ -6,9 +6,12 @@ use Entity\ThermostatPlanif;
 use Exception;
 use OCFram\Entity;
 
+/**
+ * Class ThermostatPlanifManagerPDO
+ * @package Model
+ */
 class ThermostatPlanifManagerPDO extends ManagerPDO
 {
-
     /**
      * ThermostatPlanifManagerPDO constructor.
      * @param \PDO $dao

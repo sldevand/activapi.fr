@@ -171,7 +171,7 @@ class SchemaUpdater
     /**
      * @param string $moduleName
      * @param string $versionNumber
-     * @param null $id
+     * @param int | null $id
      * @return ModuleVersion
      */
     public function createModuleVersion($moduleName, $versionNumber, $id = null)

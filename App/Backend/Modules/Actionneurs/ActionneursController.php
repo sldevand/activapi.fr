@@ -25,7 +25,6 @@ class ActionneursController extends BackController
         $this->app->httpResponse()->redirect('.');
     }
 
-
     /**
      * @param HTTPRequest $request
      */

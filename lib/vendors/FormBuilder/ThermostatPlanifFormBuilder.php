@@ -13,7 +13,7 @@ use OCFram\TimePickerField;
 class ThermostatPlanifFormBuilder extends FormBuilder
 {
     /**
-     * @return mixed|void
+     * @return mixed
      */
     public function build()
     {

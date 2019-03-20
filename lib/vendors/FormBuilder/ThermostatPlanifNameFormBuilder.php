@@ -12,7 +12,7 @@ use OCFram\StringField;
 class ThermostatPlanifNameFormBuilder extends FormBuilder
 {
     /**
-     * @return mixed|void
+     * @return mixed
      */
     public function build()
     {

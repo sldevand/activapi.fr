@@ -8,9 +8,8 @@ namespace SFram;
  */
 trait TransformVersionNumber
 {
-
     /**
-     * @param $versionNumber
+     * @param string $versionNumber
      * @return int
      */
     public function getComparableVersionNumber($versionNumber)

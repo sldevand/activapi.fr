@@ -11,7 +11,7 @@ use RuntimeException;
 class MaxLengthValidator extends Validator
 {
     /**
-     * @var int
+     * @var int $maxLength
      */
     protected $maxLength;
 

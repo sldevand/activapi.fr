@@ -38,11 +38,17 @@ class HTTPResponse extends ApplicationComponent
         header($header);
     }
 
+    /**
+     *
+     */
     public function send()
     {
         exit($this->page->getGeneratedPage());
     }
 
+    /**
+     *
+     */
     public function sendJSON()
     {
         header('Content-Type: application/json');
@@ -74,8 +80,7 @@ class HTTPResponse extends ApplicationComponent
         $domain = null,
         $secure = false,
         $httpOnly = true
-    )
-    {
+    ) {
         setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
     }
 }

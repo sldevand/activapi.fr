@@ -3,6 +3,7 @@
 namespace Model;
 
 use Entity\Sensor;
+use PDO;
 
 /**
  * Class SensorsManagerPDO
@@ -10,8 +11,11 @@ use Entity\Sensor;
  */
 class SensorsManagerPDO extends ManagerPDO
 {
-
-    public function __construct(\PDO $dao)
+    /**
+     * SensorsManagerPDO constructor.
+     * @param PDO $dao
+     */
+    public function __construct($dao)
     {
         parent::__construct($dao);
         $this->tableName = 'sensors';
@@ -36,7 +40,7 @@ class SensorsManagerPDO extends ManagerPDO
         }
 
         $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Sensor');
+        $q->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '\Entity\Sensor');
         $listeSensor = $q->fetchAll();
         $q->closeCursor();
 

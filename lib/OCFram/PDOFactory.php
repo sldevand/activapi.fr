@@ -12,11 +12,12 @@ use PDOException;
 class PDOFactory
 {
     /**
-     * @var string
+     * @var string $lastUsedConnexion
      */
     public static $lastUsedConnexion = '';
+
     /**
-     * @var string
+     * @var string $pdoAdress
      */
     public static $pdoAdress = '';
 
@@ -55,7 +56,7 @@ class PDOFactory
     }
 
     /**
-     * @param $address
+     * @param string $address
      */
     public static function setPdoAddress($address)
     {

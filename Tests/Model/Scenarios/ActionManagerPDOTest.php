@@ -12,6 +12,7 @@ use Model\Scenario\ActionManagerPDO;
  */
 class ActionManagerPDOTest extends AbstractManagerPDOTest
 {
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();

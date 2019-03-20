@@ -27,7 +27,7 @@ class User
 
     /**
      * @param string $attr
-     * @return null | string
+     * @return string
      */
     public function getAttribute($attr)
     {

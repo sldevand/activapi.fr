@@ -59,7 +59,7 @@ class StringField extends Field
     }
 
     /**
-     * @param $maxLength
+     * @param int $maxLength
      * @return StringField
      */
     public function setMaxLength($maxLength)
@@ -76,7 +76,7 @@ class StringField extends Field
     }
 
     /**
-     * @param $readonly
+     * @param string $readonly
      * @return StringField
      */
     public function setReadonly($readonly)

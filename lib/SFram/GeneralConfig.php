@@ -2,6 +2,8 @@
 
 namespace SFram;
 
+use DOMDocument;
+
 /**
  * Class GeneralConfig
  * @package SFram
@@ -30,7 +32,7 @@ class GeneralConfig
     }
 
     /**
-     * @param $var
+     * @param string $var
      * @return mixed|null
      */
     public function get($var)
@@ -53,7 +55,7 @@ class GeneralConfig
         }
 
         $vars = [];
-        $xml = new \DOMDocument;
+        $xml = new DOMDocument();
         $xml->load($this->configFile);
         $elements = $xml->getElementsByTagName('module');
         foreach ($elements as $element) {

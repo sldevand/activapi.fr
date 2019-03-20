@@ -9,12 +9,12 @@ namespace OCFram;
 class Managers
 {
     /**
-     * @var null
+     * @var string $api
      */
     protected $api = null;
 
     /**
-     * @var null
+     * @var \PDO $dao
      */
     protected $dao = null;
 
@@ -25,8 +25,8 @@ class Managers
 
     /**
      * Managers constructor.
-     * @param $api
-     * @param $dao
+     * @param string $api
+     * @param \PDO $dao
      */
     public function __construct($api, $dao)
     {
@@ -35,7 +35,7 @@ class Managers
     }
 
     /**
-     * @param $module
+     * @param string $module
      * @return mixed
      */
     public function getManagerOf($module)

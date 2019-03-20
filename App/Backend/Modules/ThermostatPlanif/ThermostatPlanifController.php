@@ -12,7 +12,6 @@ use OCFram\HTTPRequest;
  */
 class ThermostatPlanifController extends BackController
 {
-
     /**
      * @param HTTPRequest $request
      */
@@ -44,7 +43,6 @@ class ThermostatPlanifController extends BackController
 
         $this->page->addVar('thermostatPlanifs', $thermostatPlanifs);
     }
-
 
     /**
      * @param HTTPRequest $request

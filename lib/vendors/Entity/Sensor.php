@@ -11,8 +11,6 @@ use OCFram\Entity;
  */
 class Sensor extends Entity
 {
-
-
     /**
      * @var string $radioid
      */

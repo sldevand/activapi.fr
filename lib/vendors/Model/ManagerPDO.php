@@ -209,13 +209,28 @@ class ManagerPDO extends Manager
     /**
      * @param string $sql
      * @return \PDOStatement
-     * @throws \Exception
+     * @throws Exception
      */
     public function prepare($sql)
     {
         $query = $this->dao->prepare($sql);
         if (!$query) {
-            throw new \Exception(implode(" ", $this->dao->errorInfo()));
+            throw new Exception(implode(" ", $this->dao->errorInfo()));
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param string $sql
+     * @return \PDOStatement
+     * @throws Exception
+     */
+    public function query($sql)
+    {
+        $query = $this->dao->query($sql);
+        if (!$query) {
+            throw new Exception(implode(" ", $this->dao->errorInfo()));
         }
 
         return $query;

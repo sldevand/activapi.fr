@@ -15,7 +15,6 @@ use OCFram\HTTPRequest;
  */
 class MesuresController extends BackController
 {
-
     /**
      * @param HTTPRequest $request
      */
@@ -26,7 +25,6 @@ class MesuresController extends BackController
         $this->app->user()->setFlash('La mesure a bien été supprimée !');
         $this->app->httpResponse()->redirect('.');
     }
-
 
     /**
      * @param HTTPRequest $request

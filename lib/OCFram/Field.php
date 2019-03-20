@@ -288,6 +288,4 @@ abstract class Field
         $this->id = $id;
         return $this;
     }
-
-
 }

@@ -60,7 +60,7 @@ class NumberField extends Field
     }
 
     /**
-     * @param $min
+     * @param float $min
      * @return NumberField
      */
     public function setMin($min)
@@ -71,7 +71,7 @@ class NumberField extends Field
     }
 
     /**
-     * @param $max
+     * @param float $max
      * @return NumberField
      */
     public function setMax($max)
@@ -82,7 +82,7 @@ class NumberField extends Field
     }
 
     /**
-     * @param $step
+     * @param float $step
      * @return NumberField
      */
     public function setStep($step)

@@ -182,30 +182,6 @@ class Thermostat extends Entity
     }
 
     /**
-     * @return int
-     */
-    public function etat()
-    {
-        return $this->etat;
-    }
-
-    /**
-     * @return float
-     */
-    public function consigne()
-    {
-        return $this->consigne;
-    }
-
-    /**
-     * @return float
-     */
-    public function delta()
-    {
-        return $this->delta;
-    }
-
-    /**
      * @param string $nom
      * @return Thermostat
      */
@@ -362,6 +338,30 @@ class Thermostat extends Entity
     public function hasChanged(Thermostat $thermostat)
     {
         return ($thermostat->etat() != $this->etat() || $thermostat->consigne() != $this->consigne() || $thermostat->delta() != $this->delta());
+    }
+
+    /**
+     * @return int
+     */
+    public function etat()
+    {
+        return $this->etat;
+    }
+
+    /**
+     * @return float
+     */
+    public function consigne()
+    {
+        return $this->consigne;
+    }
+
+    /**
+     * @return float
+     */
+    public function delta()
+    {
+        return $this->delta;
     }
 
     /**
