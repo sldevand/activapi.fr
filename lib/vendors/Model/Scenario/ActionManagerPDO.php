@@ -15,10 +15,11 @@ class ActionManagerPDO extends ManagerPDO
     /**
      * ActionManagerPDO constructor.
      * @param \PDO $dao
+     * @param array $args
      */
-    public function __construct(\PDO $dao)
+    public function __construct(\PDO $dao, $args = [])
     {
-        parent::__construct($dao);
+        parent::__construct($dao, $args);
         $this->tableName = 'action';
         $this->entity = new Action();
     }

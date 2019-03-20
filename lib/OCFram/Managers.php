@@ -24,21 +24,29 @@ class Managers
     protected $managers = [];
 
     /**
+     * @var array $args
+     */
+    protected $args;
+
+    /**
      * Managers constructor.
      * @param string $api
      * @param \PDO $dao
+     * @param array $args
      */
-    public function __construct($api, $dao)
+    public function __construct($api, $dao, $args = [])
     {
         $this->api = $api;
         $this->dao = $dao;
+        $this->args = $args;
     }
 
     /**
      * @param string $module
+     * @param array $args
      * @return mixed
      */
-    public function getManagerOf($module)
+    public function getManagerOf($module, $args = [])
     {
         if (!is_string($module) || empty($module)) {
             throw new \InvalidArgumentException('Le module spécifié est invalide');
@@ -46,7 +54,7 @@ class Managers
 
         if (!isset($this->managers[$module])) {
             $manager = '\\Model\\' . $module . 'Manager' . $this->api;
-            $this->managers[$module] = new $manager($this->dao);
+            $this->managers[$module] = new $manager($this->dao, $args);
         }
 
         return $this->managers[$module];

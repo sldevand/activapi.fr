@@ -3,9 +3,7 @@
 namespace Model\Scenario;
 
 use Entity\Scenario\Scenario;
-use Model\ActionneursManagerPDO;
 use Model\ManagerPDO;
-use OCFram\Entity;
 
 /**
  * Class ScenariosManagerPDO
@@ -14,34 +12,44 @@ use OCFram\Entity;
 class ScenariosManagerPDO extends ManagerPDO
 {
     /**
+     * @var SequencesManagerPDO $sequencesManagerPDO
+     */
+    protected $sequencesManagerPDO;
+
+    /**
      * ScenariosManagerPDO constructor.
      * @param \PDO $dao
+     * @param array $args
      */
-    public function __construct(\PDO $dao)
+    public function __construct(\PDO $dao, $args)
     {
-        parent::__construct($dao);
+        parent::__construct($dao, $args);
         $this->tableName = 'scenario';
+        $this->sequencesManagerPDO = $args['sequencesManagerPDO'];
         $this->entity = new Scenario();
     }
 
     /**
-     * @param Entity $entity
+     * @param Scenario $scenario
      * @param array $ignoreProperties
      * @return bool
      * @throws \Exception
      */
-    public function save($entity, $ignoreProperties = [])
+    public function save($scenario, $ignoreProperties = [])
     {
-        return parent::save($entity, ['sequence']);
+        $sequences = $this->getSequences($scenario->id());
+
+
+        return parent::save($scenario, ['sequence']);
     }
 
     /**
      * @param int $id
      * @return array
+     * @throws \Exception
      */
     public function getSequences($id)
     {
-        //TODO implement get sequences here
-        return [];
+        return $this->sequencesManagerPDO->getAll($id);
     }
 }

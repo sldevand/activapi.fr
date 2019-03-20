@@ -9,17 +9,24 @@ namespace OCFram;
 abstract class Manager
 {
     /**
-     * @var \PDO
+     * @var \PDO $dao
      */
     protected $dao;
 
     /**
+     * @var array $args
+     */
+    protected $args;
+
+    /**
      * Manager constructor.
      * @param \PDO $dao
+     * @param array $args
      */
-    public function __construct($dao)
+    public function __construct($dao, $args = [])
     {
         $this->dao = $dao;
+        $this->args = $args;
     }
 
     /**

@@ -13,13 +13,20 @@ use OCFram\Entity;
 class SequencesManagerPDO extends ManagerPDO
 {
     /**
+     * @var ActionManagerPDO $actionManagerPDO
+     */
+    protected $actionManagerPDO;
+
+    /**
      * SequencesManagerPDO constructor.
      * @param \PDO $dao
+     * @param $args
      */
-    public function __construct(\PDO $dao)
+    public function __construct(\PDO $dao, $args)
     {
-        parent::__construct($dao);
+        parent::__construct($dao, $args);
         $this->tableName = 'sequence';
+        $this->actionManagerPDO = $args['actionManagerPDO'];
         $this->entity = new Sequence();
     }
 

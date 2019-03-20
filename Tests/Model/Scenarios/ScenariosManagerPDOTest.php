@@ -3,7 +3,9 @@
 namespace Tests\Model;
 
 use Entity\Scenario\Scenario;
+use Model\Scenario\ActionManagerPDO;
 use Model\Scenario\ScenariosManagerPDO;
+use Model\Scenario\SequencesManagerPDO;
 
 /**
  * Class ScenariosManagerPDOTest
@@ -148,7 +150,11 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getManager()
     {
-        /** @var ScenariosManagerPDO $manager */
-        return new ScenariosManagerPDO(self::$db);
+        $actionManagerPDO = new ActionManagerPDO(self::$db);
+        $actionManagerPDOArray = ['actionManagerPDO' => $actionManagerPDO];
+        $sequencesManagerPDO = new SequencesManagerPDO(self::$db, $actionManagerPDOArray);
+        $sequencesManagerPDOArray = ['sequencesManagerPDO' => $sequencesManagerPDO];
+
+        return self::$managers->getManagerOf('Scenario\Scenarios', $sequencesManagerPDOArray);
     }
 }
