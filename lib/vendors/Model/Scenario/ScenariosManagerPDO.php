@@ -38,9 +38,9 @@ class ScenariosManagerPDO extends ManagerPDO
     public function save($scenario, $ignoreProperties = [])
     {
         $sequences = $this->getSequences($scenario->id());
+        $scenario->setSequences($sequences);
 
-
-        return parent::save($scenario, ['sequence']);
+        return parent::save($scenario, ['sequences']);
     }
 
     /**

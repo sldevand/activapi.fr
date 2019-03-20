@@ -16,9 +16,9 @@ class Scenario extends Entity
     protected $nom;
 
     /**
-     * @var Sequence $sequence
+     * @var Sequence[] $sequences
      */
-    protected $sequence;
+    protected $sequences;
 
     /**
      * @return mixed
@@ -28,7 +28,7 @@ class Scenario extends Entity
         return [
             'id' => $this->id(),
             'nom' => $this->getNom(),
-            'sequence' => $this->getSequence()
+            'sequence' => $this->getSequences()
         ];
     }
 
@@ -52,20 +52,42 @@ class Scenario extends Entity
     }
 
     /**
-     * @return Sequence
+     * @return Sequence[]
      */
-    public function getSequence()
+    public function getSequences()
     {
-        return $this->sequence;
+        return $this->sequences;
+    }
+
+    /**
+     * @param Sequence[] $sequences
+     * @return Scenario
+     */
+    public function setSequences($sequences)
+    {
+        $this->sequences = $sequences;
+
+        return $this;
     }
 
     /**
      * @param Sequence $sequence
      * @return Scenario
      */
-    public function setSequence($sequence)
+    public function addSequence($sequence)
     {
-        $this->sequence = $sequence;
+        $this->sequences[$sequence->getNom()] = $sequence;
+
+        return $this;
+    }
+
+    /**
+     * @param string $nom
+     * @return Scenario
+     */
+    public function removeSequence($nom)
+    {
+        unset($this->sequences[$nom]);
 
         return $this;
     }
