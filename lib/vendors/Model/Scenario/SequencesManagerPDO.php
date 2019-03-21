@@ -2,9 +2,9 @@
 
 namespace Model\Scenario;
 
+use Entity\Scenario\Action;
 use Entity\Scenario\Sequence;
 use Model\ManagerPDO;
-use OCFram\Entity;
 
 /**
  * Class SequencesManagerPDO
@@ -31,15 +31,70 @@ class SequencesManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param Entity $entity
+     * @param Sequence $sequence
      * @param array $ignoreProperties
-     * @return bool
+     * @return void
      * @throws \Exception
      */
-    public function save($entity, $ignoreProperties = [])
+    public function save($sequence, $ignoreProperties = [])
     {
-        return parent::save($entity, ['actions']);
+        $actions = $sequence->getActions();
+        if ($actions) {
+            foreach ($actions as $action) {
+                $this->actionManagerPDO->save($action);
+            }
+        }
+
+        parent::save($sequence, ['actions']);
     }
 
-    //TODO implement getAll here
+    /**
+     * @param int $id
+     * @return Sequence
+     * @throws \Exception
+     */
+    public function getUnique($id)
+    {
+        /** @var Sequence $sequence */
+        $sequence = parent::getUnique($id);
+        if ($sequence) {
+            /** @var Action[] $actions */
+            $actions = $this->getSequenceActions($id);
+            $sequence->setActions($actions);
+        }
+
+        return $sequence;
+    }
+
+    public function saveSequenceAction(){
+
+    }
+
+    /**
+     * @param int $sequenceId
+     * @return array $Action[]
+     * @throws \Exception
+     */
+    public function getSequenceActions($sequenceId)
+    {
+        $sql = 'SELECT * FROM sequence_action as sa
+                INNER JOIN sequence s on sa.sequenceId = s.id
+                WHERE sa.sequenceId = 1;';
+
+        $q = $this->prepare($sql);
+        $q->bindValue(':sequenceId', $sequenceId);
+
+        $q->execute();
+
+        $actions = [];
+        $rows = $q->fetchAll();
+
+        if ($rows) {
+            foreach ($rows as $row) {
+                $actions[] = $this->actionManagerPDO->getUnique($row['actionId']);
+            }
+        }
+
+        return $actions;
+    }
 }

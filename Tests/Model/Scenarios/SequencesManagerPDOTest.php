@@ -20,10 +20,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
 
     public static function dropAndCreateTables()
     {
-        if (file_exists(SCENARIOS_SQL_PATH)) {
-            $sql = file_get_contents(SCENARIOS_SQL_PATH);
-            self::$db->exec($sql);
-        }
+        self::executeSqlScript(SCENARIOS_SQL_PATH);
     }
 
     /**
@@ -74,6 +71,22 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         $manager->delete($expected->id());
         $persisted = $manager->getUnique($expected->id());
         self::assertNotEquals($expected, $persisted);
+    }
+
+    /**
+     * @param $sequenceId
+     * @throws \Exception
+     */
+    public function testGetSequenceActions($sequenceId)
+    {
+        $manager = $this->getManager();
+
+
+        $actions = $manager->getSequenceActions($sequenceId);
+
+        //TODO Improve this test
+
+        self::assertTrue(!empty($actions));
     }
 
     /**

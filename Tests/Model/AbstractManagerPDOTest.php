@@ -2,12 +2,16 @@
 
 namespace Tests\Model;
 
+use Entity\action\SequenceAction;
 use Entity\Actionneur;
 use Entity\Scenario\Action;
 use Entity\Scenario\Scenario;
+use Entity\Scenario\ScenarioSequence;
 use Entity\Scenario\Sequence;
 use Model\Scenario\ActionManagerPDO;
+use Model\Scenario\ScenarioSequenceManagerPDO;
 use Model\Scenario\ScenariosManagerPDO;
+use Model\Scenario\SequenceActionManagerPDO;
 use Model\Scenario\SequencesManagerPDO;
 use Tests\AbstractPDOTestCase;
 use Tests\Api\ManagerPDOInterfaceTest;
@@ -36,6 +40,23 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
     }
 
     /**
+     * @param int $scenarioId
+     * @param int $sequenceId
+     * @param int [ null $id
+     * @return ScenarioSequence
+     */
+    public function makeScenarioSequence($scenarioId, $sequenceId, $id = null)
+    {
+        return new ScenarioSequence(
+            [
+                'id' => $id,
+                'scenarioId' => $scenarioId,
+                'sequenceId' => $sequenceId
+            ]
+        );
+    }
+
+    /**
      * @param string $nom
      * @param Action[] $actions
      * @param int | null $id
@@ -48,6 +69,23 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
                 'id' => $id,
                 'nom' => $nom,
                 'actions' => $actions
+            ]
+        );
+    }
+
+    /**
+     * @param int $sequenceId
+     * @param int $actionId
+     * @param int | null $id
+     * @return SequenceAction
+     */
+    public function makeSequenceAction($sequenceId, $actionId, $id = null)
+    {
+        return new SequenceAction(
+            [
+                'id' => $id,
+                'sequenceId' => $sequenceId,
+                'actionId' => $actionId,
             ]
         );
     }
@@ -111,5 +149,21 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
     {
         $sequencesManagerPDOArray = ['sequencesManagerPDO' => $this->getSequencesManager()];
         return self::$managers->getManagerOf('Scenario\Scenarios', $sequencesManagerPDOArray);
+    }
+
+    /**
+     * @return ScenarioSequenceManagerPDO
+     */
+    public function getScenarioSequenceManager()
+    {
+        return self::$managers->getManagerOf('Scenario\ScenarioSequence');
+    }
+
+    /**
+     * @return SequenceActionManagerPDO
+     */
+    public function getSequenceActionManager()
+    {
+        return self::$managers->getManagerOf('Scenario\SequenceAction');
     }
 }
