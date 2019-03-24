@@ -2,12 +2,12 @@
 
 namespace Tests\Model;
 
-use Entity\action\SequenceAction;
 use Entity\Actionneur;
 use Entity\Scenario\Action;
 use Entity\Scenario\Scenario;
 use Entity\Scenario\ScenarioSequence;
 use Entity\Scenario\Sequence;
+use Entity\Scenario\SequenceAction;
 use Model\Scenario\ActionManagerPDO;
 use Model\Scenario\ScenarioSequenceManagerPDO;
 use Model\Scenario\ScenariosManagerPDO;

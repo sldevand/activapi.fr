@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity\action;
+namespace Entity\Scenario;
 
 use OCFram\Entity;
 
