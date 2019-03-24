@@ -46,8 +46,8 @@ class SequencesManagerPDO extends ManagerPDO
     public function save($sequence, $ignoreProperties = [])
     {
         parent::save($sequence, ['actions']);
-        $actions = $sequence->getActions();
         $sequenceId = $this->getSequenceId($sequence);
+        $actions = $sequence->getActions();
 
         if ($actions) {
             foreach ($actions as $action) {
