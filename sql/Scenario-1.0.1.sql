@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS action
 
 CREATE TABLE IF NOT EXISTS sequence_action
 (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     sequenceId INTEGER NOT NULL,
     actionId INTEGER NOT NULL,
     FOREIGN KEY (sequenceId) REFERENCES "sequence" (id),
@@ -33,6 +34,7 @@ CREATE TABLE IF NOT EXISTS sequence_action
 
 CREATE TABLE IF NOT EXISTS scenario_sequence
 (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     scenarioId INTEGER NOT NULL,
     sequenceId INTEGER NOT NULL,
     FOREIGN KEY (scenarioId) REFERENCES "scenario" (id),
