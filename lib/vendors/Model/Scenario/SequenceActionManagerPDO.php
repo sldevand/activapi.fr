@@ -2,7 +2,7 @@
 
 namespace Model\Scenario;
 
-use Entity\action\SequenceAction;
+use Entity\Scenario\SequenceAction;
 use Model\ManagerPDO;
 
 /**
