@@ -15,8 +15,6 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        self::executeSqlScript(ACTIONNEURS_SQL_PATH);
-        self::executeSqlScript(ACTIONNEURS_DATA_SQL_PATH);
         self::dropAndCreateTables();
     }
 
@@ -71,8 +69,11 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
         $manager->delete($expected->id());
+
+        self::expectException('Exception');
+        self::expectExceptionMessage('No action found!');
+
         $persisted = $manager->getUnique($expected->id());
-        self::assertNotEquals($expected, $persisted);
     }
 
     /**

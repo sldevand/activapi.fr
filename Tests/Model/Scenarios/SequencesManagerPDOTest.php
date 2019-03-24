@@ -74,22 +74,6 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
     }
 
     /**
-     * @param $sequenceId
-     * @throws \Exception
-     */
-    public function testGetSequenceActions($sequenceId)
-    {
-        $manager = $this->getManager();
-
-
-        $actions = $manager->getSequenceActions($sequenceId);
-
-        //TODO Improve this test
-
-        self::assertTrue(!empty($actions));
-    }
-
-    /**
      * @return array
      */
     public function saveProvider()
@@ -147,8 +131,8 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
      */
     public function mockActions()
     {
-        $actionneur = $this->makeActionneur('Salon', 0);
-        $actionneur2 = $this->makeActionneur('Dalle', 0);
+        $actionneur = $this->makeActionneur('Salon', 1);
+        $actionneur2 = $this->makeActionneur('Dalle', 2);
         return [
             $this->makeAction($actionneur, 0),
             $this->makeAction($actionneur2, 100)

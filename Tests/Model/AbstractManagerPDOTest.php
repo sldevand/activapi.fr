@@ -127,9 +127,8 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
      */
     public function getActionManager()
     {
-        $actionneursManagerPDO = self::$managers->getManagerOf('Actionneurs');
-        $actionneursManagerPDOArray = ['actionneursManagerPDO' => $actionneursManagerPDO];
-        return self::$managers->getManagerOf('Scenario\Action', $actionneursManagerPDOArray);
+        $managers = ['actionneursManagerPDO' => self::$managers->getManagerOf('Actionneurs')];
+        return self::$managers->getManagerOf('Scenario\Action', $managers);
     }
 
     /**
@@ -137,8 +136,11 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
      */
     public function getSequencesManager()
     {
-        $actionManagerPDOArray = ['actionManagerPDO' => $this->getActionManager()];
-        return self::$managers->getManagerOf('Scenario\Sequences', $actionManagerPDOArray);
+        $managers = [
+            'actionManagerPDO' => $this->getActionManager(),
+            'sequenceActionManagerPDO' => $this->getSequenceActionManager()
+        ];
+        return self::$managers->getManagerOf('Scenario\Sequences', $managers);
     }
 
 
@@ -147,8 +149,15 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
      */
     public function getScenariosManager()
     {
-        $sequencesManagerPDOArray = ['sequencesManagerPDO' => $this->getSequencesManager()];
-        return self::$managers->getManagerOf('Scenario\Scenarios', $sequencesManagerPDOArray);
+        $managers = [
+            'sequencesManagerPDO' => $this->getSequencesManager(),
+            'scenarioSequenceManagerPDO' => $this->getScenarioSequenceManager()
+        ];
+
+        return self::$managers->getManagerOf(
+            'Scenario\Scenarios',
+            $managers
+        );
     }
 
     /**

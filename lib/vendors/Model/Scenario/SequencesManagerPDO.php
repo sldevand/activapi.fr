@@ -4,6 +4,7 @@ namespace Model\Scenario;
 
 use Entity\Scenario\Action;
 use Entity\Scenario\Sequence;
+use Entity\Scenario\SequenceAction;
 use Model\ManagerPDO;
 
 /**
@@ -18,6 +19,11 @@ class SequencesManagerPDO extends ManagerPDO
     protected $actionManagerPDO;
 
     /**
+     * @var SequenceActionManagerPDO $sequenceActionManagerPDO
+     */
+    protected $sequenceActionManagerPDO;
+
+    /**
      * SequencesManagerPDO constructor.
      * @param \PDO $dao
      * @param $args
@@ -27,6 +33,7 @@ class SequencesManagerPDO extends ManagerPDO
         parent::__construct($dao, $args);
         $this->tableName = 'sequence';
         $this->actionManagerPDO = $args['actionManagerPDO'];
+        $this->sequenceActionManagerPDO = $args['sequenceActionManagerPDO'];
         $this->entity = new Sequence();
     }
 
@@ -38,14 +45,34 @@ class SequencesManagerPDO extends ManagerPDO
      */
     public function save($sequence, $ignoreProperties = [])
     {
+        parent::save($sequence, ['actions']);
         $actions = $sequence->getActions();
+        $sequenceId = $this->getSequenceId($sequence);
+
         if ($actions) {
             foreach ($actions as $action) {
                 $this->actionManagerPDO->save($action);
+                $actionId = $this->actionManagerPDO->getActionId($action);
+                $this->sequenceActionManagerPDO->save(new SequenceAction([
+                    'sequenceId' => $sequenceId,
+                    'actionId' => $actionId
+                ]));
             }
         }
+    }
 
-        parent::save($sequence, ['actions']);
+    /**
+     * @param Sequence $sequence
+     * @return int|mixed
+     * @throws \Exception
+     */
+    public function getSequenceId($sequence)
+    {
+        if (!$sequence->id()) {
+            return $this->getLastInserted($this->tableName);
+        }
+
+        return $sequence->id();
     }
 
     /**
@@ -66,10 +93,6 @@ class SequencesManagerPDO extends ManagerPDO
         return $sequence;
     }
 
-    public function saveSequenceAction(){
-
-    }
-
     /**
      * @param int $sequenceId
      * @return array $Action[]
@@ -79,7 +102,7 @@ class SequencesManagerPDO extends ManagerPDO
     {
         $sql = 'SELECT * FROM sequence_action as sa
                 INNER JOIN sequence s on sa.sequenceId = s.id
-                WHERE sa.sequenceId = 1;';
+                WHERE sa.sequenceId = :sequenceId;';
 
         $q = $this->prepare($sql);
         $q->bindValue(':sequenceId', $sequenceId);

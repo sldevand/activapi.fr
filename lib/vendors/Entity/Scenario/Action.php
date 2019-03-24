@@ -4,6 +4,7 @@
 namespace Entity\Scenario;
 
 use Entity\Actionneur;
+use Exception;
 use OCFram\Entity;
 
 /**
@@ -51,9 +52,13 @@ class Action extends Entity
     /**
      * @param Actionneur $actionneur
      * @return Action
+     * @throws Exception
      */
     public function setActionneur($actionneur)
     {
+        if (empty($actionneur)) {
+            throw new Exception('No actionneur was set');
+        }
         $this->actionneur = $actionneur;
         $this->actionneurId = $actionneur->id();
 

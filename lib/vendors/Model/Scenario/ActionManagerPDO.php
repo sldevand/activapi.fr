@@ -43,6 +43,20 @@ class ActionManagerPDO extends ManagerPDO
     }
 
     /**
+     * @param Action $action
+     * @return int|mixed
+     * @throws \Exception
+     */
+    public function getActionId($action)
+    {
+        if (!$action->id()) {
+            return $this->getLastInserted($this->tableName);
+        }
+
+        return $action->id();
+    }
+
+    /**
      * @param int $id
      * @return Action
      * @throws \Exception
@@ -51,11 +65,13 @@ class ActionManagerPDO extends ManagerPDO
     {
         /** @var Action $action */
         $action = parent::getUnique($id);
-        if ($action) {
-            /** @var Actionneur $actionneur */
-            $actionneur = $this->actionneursManagerPDO->getUnique($action->getActionneurId());
-            $action->setActionneur($actionneur);
+        if (empty($action)) {
+            throw new \Exception('No action found!');
         }
+
+        /** @var Actionneur $actionneur */
+        $actionneur = $this->actionneursManagerPDO->getUnique($action->getActionneurId());
+        $action->setActionneur($actionneur);
 
         return $action;
     }

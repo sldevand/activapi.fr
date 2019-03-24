@@ -26,6 +26,9 @@ class AbstractPDOTestCase extends TestCase
         PDOFactory::setPdoAddress($dsn);
         self::$db = PDOFactory::getSqliteConnexion();
         self::$managers = new Managers('PDO', self::$db);
+
+        self::executeSqlScript(ACTIONNEURS_SQL_PATH);
+        self::executeSqlScript(ACTIONNEURS_DATA_SQL_PATH);
     }
 
     /**
