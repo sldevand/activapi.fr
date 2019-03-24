@@ -84,13 +84,32 @@ class SequencesManagerPDO extends ManagerPDO
     {
         /** @var Sequence $sequence */
         $sequence = parent::getUnique($id);
-        if ($sequence) {
-            /** @var Action[] $actions */
-            $actions = $this->getSequenceActions($id);
-            $sequence->setActions($actions);
+        if (empty($sequence)) {
+            throw new \Exception('No sequence was found!');
         }
 
+        /** @var Action[] $actions */
+        $actions = $this->getSequenceActions($id);
+        $sequence->setActions($actions);
+
         return $sequence;
+    }
+
+    public function getAll($id = null)
+    {
+        /** @var Sequence[] $sequences */
+        $sequences = parent::getAll($id);
+        if (empty($sequences)) {
+            throw new \Exception('No sequences were found!');
+        }
+
+        foreach ($sequences as $key => $sequence) {
+            /** @var Action[] $actions */
+            $actions = $this->getSequenceActions($sequence->id());
+            $sequences[$key]->setActions($actions);
+        }
+
+        return $sequences;
     }
 
     /**

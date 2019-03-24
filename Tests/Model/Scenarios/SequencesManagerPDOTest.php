@@ -2,7 +2,7 @@
 
 namespace Tests\Model;
 
-use Entity\Scenario\Action;
+use Entity\Actionneur;
 use Entity\Scenario\Sequence;
 use Model\Scenario\SequencesManagerPDO;
 
@@ -69,8 +69,11 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
         $manager->delete($expected->id());
-        $persisted = $manager->getUnique($expected->id());
-        self::assertNotEquals($expected, $persisted);
+
+        self::expectException('Exception');
+        self::expectExceptionMessage('No sequence was found!');
+
+        $manager->getUnique($expected->id());
     }
 
     /**
@@ -78,14 +81,19 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
      */
     public function saveProvider()
     {
+        $actions = $this->mockActions();
+        foreach ($actions as $key => $action) {
+            $actions[$key]->setId($key + 1);
+        }
+
         return [
             "createSequence" => [
                 $this->makeSequence('Test1', $this->mockActions()),
-                $this->makeSequence('Test1', $this->mockActions(), 1)
+                $this->makeSequence('Test1', $actions, '1')
             ],
             "updateSequence" => [
-                $this->makeSequence('Test2', $this->mockActions(), 1),
-                $this->makeSequence('Test2', $this->mockActions(), 1),
+                $this->makeSequence('Test2', $actions, '1'),
+                $this->makeSequence('Test2', $actions, '1'),
             ]
         ];
     }
@@ -104,10 +112,10 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
                     $this->makeSequence('Test4', $this->mockActions())
                 ],
                 [
-                    $this->makeSequence('Test1', $this->mockActions(), 1),
-                    $this->makeSequence('Test2', $this->mockActions(), 2),
-                    $this->makeSequence('Test3', $this->mockActions(), 3),
-                    $this->makeSequence('Test4', $this->mockActions(), 4)
+                    $this->makeSequence('Test1', $this->mockActions(1), 1),
+                    $this->makeSequence('Test2', $this->mockActions(3), 2),
+                    $this->makeSequence('Test3', $this->mockActions(5), 3),
+                    $this->makeSequence('Test4', $this->mockActions(7), 4)
                 ]
             ]
         ];
@@ -121,21 +129,57 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         return [
             "deleteSequence" => [
                 $this->makeSequence('Test1', $this->mockActions()),
-                $this->makeSequence('Test1', $this->mockActions(), 1)
+                $this->makeSequence('Test1', $this->mockActions(1), 1)
             ]
         ];
     }
 
     /**
-     * @return Action[]
+     * @param null $id
+     * @return array
      */
-    public function mockActions()
+    public function mockActions($id = null)
     {
-        $actionneur = $this->makeActionneur('Salon', 1);
-        $actionneur2 = $this->makeActionneur('Dalle', 2);
+        /** @var Actionneur $actionneur */
+        $actionneur = new Actionneur(
+            [
+                'id' => '1',
+                'nom' => 'Salon',
+                'module' => 'cc1101',
+                'protocole' => 'chacon',
+                'adresse' => '14549858',
+                'type' => 'relay',
+                'radioid' => 2,
+                'etat' => 0,
+                'categorie' => 'inter'
+            ]
+        );
+
+        /** @var Actionneur $actionneur2 */
+        $actionneur2 = new Actionneur(
+            [
+                'id' => '2',
+                'nom' => 'Dalle_TV',
+                'module' => 'bt',
+                'protocole' => 'cnt',
+                'adresse' => '00:00:00:00:00',
+                'type' => 'blueLamp',
+                'radioid' => 'val',
+                'etat' => '210',
+                'categorie' => 'dimmer'
+            ]
+        );
+
+        if ($id) {
+            return [
+                $this->makeAction($actionneur, '0', $id),
+                $this->makeAction($actionneur2, '100', $id + 1)
+            ];
+        }
+
         return [
-            $this->makeAction($actionneur, 0),
-            $this->makeAction($actionneur2, 100)
+            $this->makeAction($actionneur, '0'),
+            $this->makeAction($actionneur2, '100')
         ];
     }
 

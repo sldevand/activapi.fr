@@ -8,6 +8,7 @@ use Entity\Scenario\Scenario;
 use Entity\Scenario\ScenarioSequence;
 use Entity\Scenario\Sequence;
 use Entity\Scenario\SequenceAction;
+use Model\ActionneursManagerPDO;
 use Model\Scenario\ActionManagerPDO;
 use Model\Scenario\ScenarioSequenceManagerPDO;
 use Model\Scenario\ScenariosManagerPDO;
@@ -127,7 +128,7 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
      */
     public function getActionManager()
     {
-        $managers = ['actionneursManagerPDO' => self::$managers->getManagerOf('Actionneurs')];
+        $managers = ['actionneursManagerPDO' => $this->getActionneursManager()];
         return self::$managers->getManagerOf('Scenario\Action', $managers);
     }
 
@@ -174,5 +175,13 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
     public function getSequenceActionManager()
     {
         return self::$managers->getManagerOf('Scenario\SequenceAction');
+    }
+
+    /**
+     * @return ActionneursManagerPDO
+     */
+    public function getActionneursManager()
+    {
+        return self::$managers->getManagerOf('Actionneurs');
     }
 }

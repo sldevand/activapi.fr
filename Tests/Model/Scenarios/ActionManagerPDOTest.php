@@ -73,7 +73,7 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
         self::expectException('Exception');
         self::expectExceptionMessage('No action found!');
 
-        $persisted = $manager->getUnique($expected->id());
+        $manager->getUnique($expected->id());
     }
 
     /**
