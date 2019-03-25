@@ -49,8 +49,8 @@ abstract class BackController extends ApplicationComponent
     /**
      * BackController constructor.
      * @param Application $app
-     * @param $module
-     * @param $action
+     * @param string $module
+     * @param string $action
      */
     public function __construct(Application $app, $module, $action)
     {

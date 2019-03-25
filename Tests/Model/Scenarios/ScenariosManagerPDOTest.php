@@ -34,6 +34,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function testSave($scenario, $expected)
     {
+        self::dropAndCreateTables();
         $manager = $this->getManager();
         $manager->save($scenario);
         $persisted = $manager->getUnique($expected->id());
@@ -51,7 +52,6 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function testGetAll($scenarios, $expected)
     {
-        self::markTestSkipped();
         self::dropAndCreateTables();
         $manager = $this->getManager();
         foreach ($scenarios as $scenario) {
