@@ -1,15 +1,21 @@
 <?php
 namespace OCFram;
 
+use DOMDocument;
+
 class Config extends ApplicationComponent
 {
   protected $vars = [];
 
-  public function get($var)
+    /**
+     * @param $var
+     * @return mixed|null
+     */
+    public function get($var)
   {
     if (!$this->vars)
     {
-      $xml = new \DOMDocument;
+      $xml = new DOMDocument();
       $xml->load(__DIR__.'/../../App/'.$this->app->name().'/Config/app.xml');
 
       $elements = $xml->getElementsByTagName('define');
