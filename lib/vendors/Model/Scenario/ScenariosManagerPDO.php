@@ -111,7 +111,7 @@ class ScenariosManagerPDO extends ManagerPDO
 
         if ($rows) {
             foreach ($rows as $row) {
-                $sequences[] = $this->sequencesManagerPDO->getUnique($row['actionId']);
+                $sequences[] = $this->sequencesManagerPDO->getUnique($row['sequenceId']);
             }
         }
 

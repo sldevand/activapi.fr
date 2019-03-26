@@ -80,6 +80,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function saveProvider()
     {
@@ -99,6 +100,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function getAllProvider()
     {
@@ -124,6 +126,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @return array
+     * @throws \Exception
      */
     public function deleteProvider()
     {
@@ -138,11 +141,12 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 
     /**
      * @return Sequence[]
+     * @throws \Exception
      */
     public function mockSequences()
     {
-        $actionneur = $this->makeActionneur('Salon', 0);
-        $actionneur2 = $this->makeActionneur('Dalle', 0);
+        $actionneur = $this->mockActionneur();
+        $actionneur2 = $this->mockActionneur();
         $actions = [
             $this->makeAction($actionneur, 0),
             $this->makeAction($actionneur2, 100)

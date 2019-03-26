@@ -35,7 +35,7 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
             [
                 'id' => $id,
                 'nom' => $nom,
-                'asequences' => $sequences
+                'sequences' => $sequences
             ]
         );
     }
@@ -122,6 +122,30 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
             ]
         );
     }
+
+    /**
+     * @return \Entity\Actionneur
+     * @throws \Exception
+     */
+    public function mockActionneur()
+    {
+        /** @var Actionneur $actionneur */
+        return new Actionneur(
+            [
+                'id' => '1',
+                'nom' => 'Salon',
+                'module' => 'cc1101',
+                'protocole' => 'chacon',
+                'adresse' => '14549858',
+                'type' => 'relay',
+                'radioid' => 2,
+                'etat' => 0,
+                'categorie' => 'inter'
+            ]
+        );
+    }
+
+
 
     /**
      * @return ActionManagerPDO
