@@ -69,16 +69,13 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function testDelete($scenario, $expected)
     {
-        self::markTestSkipped();
         self::dropAndCreateTables();
-
         $manager = $this->getManager();
         $manager->save($scenario);
-        $persisted = $manager->getUnique($expected->id());
-        self::assertEquals($expected, $persisted);
         $manager->delete($expected->id());
-        $persisted = $manager->getUnique($expected->id());
-        self::assertNotEquals($expected, $persisted);
+        self::expectException('Exception');
+        self::expectExceptionMessage('No scenario was found!');
+        $manager->getUnique($expected->id());
     }
 
     /**
