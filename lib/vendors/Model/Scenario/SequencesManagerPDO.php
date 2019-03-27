@@ -51,7 +51,6 @@ class SequencesManagerPDO extends ManagerPDO
 
         if ($actions) {
             foreach ($actions as $action) {
-                $this->actionManagerPDO->save($action);
                 $actionId = $this->actionManagerPDO->getActionId($action);
                 $this->sequenceActionManagerPDO->save(new SequenceAction([
                     'sequenceId' => $sequenceId,
