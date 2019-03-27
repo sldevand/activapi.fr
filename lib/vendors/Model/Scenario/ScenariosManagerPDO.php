@@ -51,8 +51,12 @@ class ScenariosManagerPDO extends ManagerPDO
 
         if ($sequences) {
             foreach ($sequences as $sequence) {
-                $this->sequencesManagerPDO->save($sequence);
-                $sequenceId = $this->sequencesManagerPDO->getSequenceId($sequence);
+                $sequenceId = $sequence->id();
+
+                if (empty($sequenceId)) {
+                    continue;
+                }
+
                 $this->scenarioSequenceManagerPDO->save(new ScenarioSequence([
                     'sequenceId' => $sequenceId,
                     'scenarioId' => $scenarioId
@@ -61,6 +65,11 @@ class ScenariosManagerPDO extends ManagerPDO
         }
     }
 
+    /**
+     * @param int $id
+     * @return Scenario
+     * @throws \Exception
+     */
     public function getUnique($id)
     {
         /** @var Scenario $scenario */
@@ -74,6 +83,29 @@ class ScenariosManagerPDO extends ManagerPDO
         $scenario->setSequences($sequences);
 
         return $scenario;
+    }
+
+    /**
+     * @param int | null $id
+     * @return Scenario[]
+     * @throws \Exception
+     */
+    public function getAll($id = null)
+    {
+        /** @var Scenario[] $scenarios */
+        $scenarios = parent::getAll($id);
+        if (empty($scenarios)) {
+            throw new \Exception('No scenarios were found!');
+        }
+
+        foreach ($scenarios as $key => $scenario) {
+            /** @var Sequence[] $sequences */
+            $sequences = $this->getScenarioSequences($scenario->id());
+            $scenarios[$key]->setSequences($sequences);
+        }
+
+
+        return $scenarios;
     }
 
     /**
@@ -108,7 +140,6 @@ class ScenariosManagerPDO extends ManagerPDO
 
         $sequences = [];
         $rows = $q->fetchAll();
-
         if ($rows) {
             foreach ($rows as $row) {
                 $sequences[] = $this->sequencesManagerPDO->getUnique($row['sequenceId']);

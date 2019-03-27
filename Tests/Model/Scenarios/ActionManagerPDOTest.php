@@ -2,7 +2,6 @@
 
 namespace Tests\Model;
 
-use Entity\Actionneur;
 use Entity\Scenario\Action;
 use Model\Scenario\ActionManagerPDO;
 
@@ -82,14 +81,16 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
      */
     public function saveProvider()
     {
+        $actionneurs = $this->mockActionneurs();
+
         return [
             "createAction" => [
-                $this->makeAction($this->mockActionneur(), 150),
-                $this->makeAction($this->mockActionneur(), 150, 1)
+                $this->makeAction($actionneurs[0], 150),
+                $this->makeAction($actionneurs[0], 150, 1)
             ],
             "updateAction" => [
-                $this->makeAction($this->mockActionneur(), 180, 1),
-                $this->makeAction($this->mockActionneur(), 180, 1)
+                $this->makeAction($actionneurs[0], 180, 1),
+                $this->makeAction($actionneurs[0], 180, 1)
             ]
         ];
     }
@@ -100,19 +101,21 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getAllProvider()
     {
+        $actionneurs = $this->mockActionneurs();
+
         return [
             "createActions" => [
                 [
-                    $this->makeAction($this->mockActionneur(), 150),
-                    $this->makeAction($this->mockActionneur(), 225),
-                    $this->makeAction($this->mockActionneur(), 0),
-                    $this->makeAction($this->mockActionneur(), 120)
+                    $this->makeAction($actionneurs[0], 150),
+                    $this->makeAction($actionneurs[1], 225),
+                    $this->makeAction($actionneurs[2], 0),
+                    $this->makeAction($actionneurs[3], 120)
                 ],
                 [
-                    $this->makeAction($this->mockActionneur(), 150, 1),
-                    $this->makeAction($this->mockActionneur(), 225, 2),
-                    $this->makeAction($this->mockActionneur(), 0, 3),
-                    $this->makeAction($this->mockActionneur(), 120, 4)
+                    $this->makeAction($actionneurs[0], 150, 1),
+                    $this->makeAction($actionneurs[1], 225, 2),
+                    $this->makeAction($actionneurs[2], 0, 3),
+                    $this->makeAction($actionneurs[3], 120, 4)
                 ]
             ]
         ];
@@ -124,34 +127,14 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
      */
     public function deleteProvider()
     {
+        $actionneurs = $this->mockActionneurs();
+
         return [
             "deleteAction" => [
-                $this->makeAction($this->mockActionneur(), 150),
-                $this->makeAction($this->mockActionneur(), 150, 1)
+                $this->makeAction($actionneurs[0], 150),
+                $this->makeAction($actionneurs[0], 150, 1)
             ]
         ];
-    }
-
-    /**
-     * @return \Entity\Actionneur
-     * @throws \Exception
-     */
-    public function mockActionneur()
-    {
-        /** @var Actionneur $actionneur */
-        return new Actionneur(
-            [
-                'id' => '1',
-                'nom' => 'Salon',
-                'module' => 'cc1101',
-                'protocole' => 'chacon',
-                'adresse' => '14549858',
-                'type' => 'relay',
-                'radioid' => 2,
-                'etat' => 0,
-                'categorie' => 'inter'
-            ]
-        );
     }
 
     /**

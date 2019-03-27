@@ -24,6 +24,79 @@ use Tests\Api\ManagerPDOInterfaceTest;
 abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInterfaceTest
 {
     /**
+     * Saves four actions
+     *
+     * @throws \Exception
+     */
+    public function fixtureActions()
+    {
+        $actionneurManager = $this->getActionneursManager();
+        $actionsManager = $this->getActionManager();
+        $actionneurs = $actionneurManager->getAll();
+        $action = $this->makeAction($actionneurs[0], 120);
+        $action2 = $this->makeAction($actionneurs[1], 255);
+        $action3 = $this->makeAction($actionneurs[2], 0);
+        $action4 = $this->makeAction($actionneurs[3], 12);
+        $actionsManager->save($action);
+        $actionsManager->save($action2);
+        $actionsManager->save($action3);
+        $actionsManager->save($action4);
+    }
+
+    /**
+     * Saves two sequences
+     *
+     * @throws \Exception
+     */
+    public function fixtureSequences()
+    {
+        $sequencesManager = $this->getSequencesManager();
+        $actionsManager = $this->getActionManager();
+        $actions = $actionsManager->getAll();
+
+        $actionsForSequence1 = array_slice($actions, 0, 2);
+        $actionsForSequence2 = array_slice($actions, 2);
+
+        $sequence1 = $this->makeSequence('Test1', $actionsForSequence1);
+        $sequence2 = $this->makeSequence('Test2', $actionsForSequence2);
+
+        $sequencesManager->save($sequence1);
+        $sequencesManager->save($sequence2);
+    }
+
+    /**
+     * return Action[]
+     */
+    public function mockActions()
+    {
+        $actionneurs = $this->mockActionneurs();
+
+        return [
+            $this->makeAction($actionneurs[0], 120, 1),
+            $this->makeAction($actionneurs[1], 255, 2),
+            $this->makeAction($actionneurs[2], 0, 3),
+            $this->makeAction($actionneurs[3], 12, 4)
+        ];
+    }
+
+    /**
+     * @return Sequence[]
+     */
+    public function mockSequences()
+    {
+        $actions = $this->mockActions();
+
+        $actionsForSequence1 = array_slice($actions, 0, 2);
+        $actionsForSequence2 = array_slice($actions, 2);
+
+        return [
+            $this->makeSequence('Test1', $actionsForSequence1, 1),
+            $this->makeSequence('Test2', $actionsForSequence2, 2)
+        ];
+    }
+
+
+    /**
      * @param $nom
      * @param Sequence[] $sequences
      * @param null | int $id
@@ -124,27 +197,66 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
     }
 
     /**
-     * @return \Entity\Actionneur
-     * @throws \Exception
+     * @return Actionneur[]
      */
-    public function mockActionneur()
+    public function mockActionneurs()
     {
         /** @var Actionneur $actionneur */
-        return new Actionneur(
-            [
-                'id' => '1',
-                'nom' => 'Salon',
-                'module' => 'cc1101',
-                'protocole' => 'chacon',
-                'adresse' => '14549858',
-                'type' => 'relay',
-                'radioid' => 2,
-                'etat' => 0,
-                'categorie' => 'inter'
-            ]
-        );
+        return [
+            new Actionneur(
+                [
+                    'id' => 1,
+                    'nom' => 'Salon',
+                    'module' => 'cc1101',
+                    'protocole' => 'chacon',
+                    'adresse' => '14549858',
+                    'type' => 'relay',
+                    'radioid' => 2,
+                    'etat' => 0,
+                    'categorie' => 'inter'
+                ]
+            ),
+            new Actionneur(
+                [
+                    'id' => 2,
+                    'nom' => 'Dalle_TV',
+                    'module' => 'bt',
+                    'protocole' => 'cnt',
+                    'adresse' => '00:00:00:00:00',
+                    'type' => 'blueLamp',
+                    'radioid' => 'val',
+                    'etat' => 210,
+                    'categorie' => 'dimmer'
+                ]
+            ),
+            new Actionneur(
+                [
+                    'id' => 3,
+                    'nom' => 'Thermostat',
+                    'module' => 'nrf24',
+                    'protocole' => 'node',
+                    'adresse' => '2Nodw',
+                    'type' => 'ther',
+                    'radioid' => '0',
+                    'etat' => 0,
+                    'categorie' => 'thermostat'
+                ]
+            ),
+            new Actionneur(
+                [
+                    'id' => 4,
+                    'nom' => 'Chambre',
+                    'module' => 'cc1101',
+                    'protocole' => 'chacon',
+                    'adresse' => '14549858',
+                    'type' => 'relay',
+                    'radioid' => '1',
+                    'etat' => 0,
+                    'categorie' => 'inter'
+                ]
+            )
+        ];
     }
-
 
 
     /**

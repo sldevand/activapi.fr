@@ -3,7 +3,6 @@
 namespace Tests\Model;
 
 use Entity\Scenario\Scenario;
-use Entity\Scenario\Sequence;
 use Model\Scenario\ScenariosManagerPDO;
 
 /**
@@ -20,10 +19,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 
     public static function dropAndCreateTables()
     {
-        if (file_exists(SCENARIOS_SQL_PATH)) {
-            $sql = file_get_contents(SCENARIOS_SQL_PATH);
-            self::$db->exec($sql);
-        }
+        self::executeSqlScript(SCENARIOS_SQL_PATH);
     }
 
     /**
@@ -35,13 +31,27 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     public function testSave($scenario, $expected)
     {
         self::dropAndCreateTables();
-        $manager = $this->getManager();
-        $manager->save($scenario);
-        $persisted = $manager->getUnique($expected->id());
+        $this->fixtureActions();
+        $this->fixtureSequences();
+
+        $scenarioManager = $this->getManager();
+
+        $scenarioManager->save($scenario);
+        $persisted = $scenarioManager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
 
-        $res = $manager->getLastInserted('scenario');
-        self::assertTrue($res == 1);
+        $scenarioId = $scenarioManager->getLastInserted('scenario');
+        self::assertTrue($scenarioId == 1);
+
+        //Update Test
+        $expected->setId(1);
+        $expected->setNom('Test2');
+        $scenario->setId($scenarioId);
+        $scenario->setNom('Test2');
+
+        $scenarioManager->save($scenario);
+        $persisted = $scenarioManager->getUnique($expected->id());
+        self::assertEquals($expected, $persisted);
     }
 
     /**
@@ -53,6 +63,9 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     public function testGetAll($scenarios, $expected)
     {
         self::dropAndCreateTables();
+        $this->fixtureActions();
+        $this->fixtureSequences();
+
         $manager = $this->getManager();
         foreach ($scenarios as $scenario) {
             $manager->save($scenario);
@@ -88,12 +101,8 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 
         return [
             "createScenario" => [
-                $this->makeScenario('ScenarioTest', $sequences),
-                $this->makeScenario('ScenarioTest', $sequences, 1)
-            ],
-            "updateScenario" => [
-                $this->makeScenario('ScenarioTest2', $sequences, 1),
-                $this->makeScenario('ScenarioTest2', $sequences, 1)
+                $this->makeScenario('Test1', $sequences),
+                $this->makeScenario('Test1', $sequences, 1)
             ]
         ];
     }
@@ -136,23 +145,6 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
                 $this->makeScenario('ScenarioTest', $sequences),
                 $this->makeScenario('ScenarioTest', $sequences, 1)
             ]
-        ];
-    }
-
-    /**
-     * @return Sequence[]
-     * @throws \Exception
-     */
-    public function mockSequences()
-    {
-        $actionneur = $this->mockActionneur();
-        $actionneur2 = $this->mockActionneur();
-        $actions = [
-            $this->makeAction($actionneur, 0),
-            $this->makeAction($actionneur2, 100)
-        ];
-        return [
-            $this->makeSequence('Eteindre Salon', $actions)
         ];
     }
 
