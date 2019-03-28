@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Backend\Modules\Scenarios\Views;
+namespace App\Backend\Modules\Sequences;
 
-use App\Backend\Modules\Scenarios\AbstractScenarioManagersController;
+use App\Backend\Modules\AbstractScenarioManagersController;
 use OCFram\HTTPRequest;
 use OCFram\RestInterface;
 
@@ -15,32 +15,32 @@ class SequencesController extends AbstractScenarioManagersController implements 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function get($httpRequest)
+    public function executeGet($httpRequest)
     {
-        // TODO: Implement get() method.
+        // TODO: Implement executeGet() method.
     }
 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function post($httpRequest)
+    public function exectuePost($httpRequest)
     {
-        // TODO: Implement post() method.
+        // TODO: Implement exectuePost() method.
     }
 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function put($httpRequest)
+    public function executePut($httpRequest)
     {
-        // TODO: Implement put() method.
+        // TODO: Implement executePut() method.
     }
 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function delete($httpRequest)
+    public function executeDelete($httpRequest)
     {
-        // TODO: Implement delete() method.
+        // TODO: Implement executeDelete() method.
     }
 }

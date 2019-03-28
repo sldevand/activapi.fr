@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Backend\Modules\Scenarios;
+namespace App\Backend\Modules;
 
 use Model\ActionneursManagerPDO;
 use Model\Scenario\ActionManagerPDO;

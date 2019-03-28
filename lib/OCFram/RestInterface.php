@@ -7,20 +7,20 @@ interface RestInterface
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function get($httpRequest);
+    public function executeGet($httpRequest);
 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function post($httpRequest);
+    public function exectuePost($httpRequest);
 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function put($httpRequest);
+    public function executePut($httpRequest);
 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function delete($httpRequest);
+    public function executeDelete($httpRequest);
 }
