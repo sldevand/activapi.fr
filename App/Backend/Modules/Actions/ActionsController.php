@@ -23,7 +23,7 @@ class ActionsController extends AbstractScenarioManagersController implements Re
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function exectuePost($httpRequest)
+    public function executePost($httpRequest)
     {
         // TODO: Implement exectuePost() method.
     }

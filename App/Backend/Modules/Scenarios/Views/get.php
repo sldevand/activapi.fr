@@ -1,2 +1,2 @@
 <?php
-echo json_encode($scenarios, JSON_PRETTY_PRINT);
+echo json_encode($data, JSON_PRETTY_PRINT);

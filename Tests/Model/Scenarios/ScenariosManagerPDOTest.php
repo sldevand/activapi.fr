@@ -36,11 +36,9 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 
         $scenarioManager = $this->getManager();
 
-        $scenarioManager->save($scenario);
+        $scenarioId = $scenarioManager->save($scenario);
         $persisted = $scenarioManager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
-
-        $scenarioId = $scenarioManager->getLastInserted('scenario');
         self::assertTrue($scenarioId == 1);
 
         //Update Test
@@ -49,8 +47,11 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
         $scenario->setId($scenarioId);
         $scenario->setNom('Test2');
 
+        self::expectExceptionMessage('SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: scenario_sequence.scenarioId, scenario_sequence.sequenceId');
+
         $scenarioManager->save($scenario);
         $persisted = $scenarioManager->getUnique($expected->id());
+
         self::assertEquals($expected, $persisted);
     }
 

@@ -40,29 +40,31 @@ class ScenariosManagerPDO extends ManagerPDO
     /**
      * @param Scenario $scenario
      * @param array $ignoreProperties
-     * @return void
+     * @return int
      * @throws \Exception
      */
     public function save($scenario, $ignoreProperties = [])
     {
         parent::save($scenario, ['sequences']);
         $scenarioId = $this->getScenarioId($scenario);
-        $sequences = $scenario->getSequences();
-
-        if ($sequences) {
-            foreach ($sequences as $sequence) {
-                $sequenceId = $sequence->id();
-
-                if (empty($sequenceId)) {
-                    continue;
-                }
-
-                $this->scenarioSequenceManagerPDO->save(new ScenarioSequence([
-                    'sequenceId' => $sequenceId,
-                    'scenarioId' => $scenarioId
-                ]));
-            }
+        if (!$sequences = $scenario->getSequences()) {
+            return $scenarioId;
         }
+
+        foreach ($sequences as $sequence) {
+            $sequenceId = $sequence->id();
+
+            if (empty($sequenceId)) {
+                continue;
+            }
+
+            $this->scenarioSequenceManagerPDO->save(new ScenarioSequence([
+                'sequenceId' => $sequenceId,
+                'scenarioId' => $scenarioId
+            ]));
+        }
+
+        return $scenarioId;
     }
 
     /**
@@ -138,12 +140,13 @@ class ScenariosManagerPDO extends ManagerPDO
 
         $q->execute();
 
+        if (!$rows = $q->fetchAll()) {
+            return [];
+        }
+
         $sequences = [];
-        $rows = $q->fetchAll();
-        if ($rows) {
-            foreach ($rows as $row) {
-                $sequences[] = $this->sequencesManagerPDO->getUnique($row['sequenceId']);
-            }
+        foreach ($rows as $row) {
+            $sequences[] = $this->sequencesManagerPDO->getUnique($row['sequenceId']);
         }
 
         return $sequences;

@@ -12,7 +12,7 @@ interface RestInterface
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function exectuePost($httpRequest);
+    public function executePost($httpRequest);
 
     /**
      * @param HTTPRequest $httpRequest

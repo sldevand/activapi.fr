@@ -46,6 +46,7 @@ class PDOFactory
     {
         try {
             $db = new PDO(self::$pdoAdress);
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PdoException $e) {
             die($e->getMessage());
         }

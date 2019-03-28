@@ -3,6 +3,7 @@
 namespace App\Backend\Modules\Scenarios;
 
 use App\Backend\Modules\AbstractScenarioManagersController;
+use Entity\Scenario\Scenario;
 use Exception;
 use OCFram\HTTPRequest;
 use OCFram\RestInterface;
@@ -19,24 +20,53 @@ class ScenariosController extends AbstractScenarioManagersController implements 
      */
     public function executeGet($httpRequest)
     {
+        if ($httpRequest->method() !== 'GET') {
+            $error = ["error" => 'Wrong method : ' . $httpRequest->method() . ', use GET method instead'];
+            return $this->page()->addVar('scenarios', $error);
+        }
         $scenarioManager = $this->getScenariosManager();
 
         try {
-            $scenarios = $scenarioManager->getAll();
+            $data = $scenarioManager->getAll();
         } catch (Exception $e) {
-            $scenarios = ["error" => $e->getMessage()];
+            $data = ["error" => $e->getMessage()];
+            return $this->page()->addVar('scenarios', $data);
         }
 
-
-        $this->page()->addVar('scenarios', $scenarios);
+        return $this->page()->addVar('scenarios', $data);
     }
 
     /**
      * @param HTTPRequest $httpRequest
+     * @throws Exception
      */
-    public function exectuePost($httpRequest)
+    public function executePost($httpRequest)
     {
-        // TODO: Implement exectuePost() method.
+        if ($httpRequest->method() !== 'POST') {
+            $error = ["error" => 'Wrong method : ' . $httpRequest->method() . ', use POST method instead'];
+            return $this->page()->addVar('data', $error);
+        }
+
+        if (!$jsonPost = $httpRequest->getJsonPost()) {
+            return $this->page->addVar('data', ['error' => 'No JSON body sent from client']);
+        }
+
+        if (!empty($jsonPost['id'])) {
+            return $this->page->addVar('data', ['error' => 'JSON body contains an id, use PUT method instead']);
+        }
+
+        $scenario = new Scenario($jsonPost);
+
+        try {
+            $scenarioId = $this->getScenariosManager()->save($scenario);
+        } catch (Exception $e) {
+            $data = ["error" => $e->getMessage()];
+            return $this->page()->addVar('data', $data);
+        }
+
+        $persisted = $this->getScenariosManager()->getUnique($scenarioId);
+
+        return $this->page->addVar('data', $persisted);
     }
 
     /**
@@ -44,7 +74,17 @@ class ScenariosController extends AbstractScenarioManagersController implements 
      */
     public function executePut($httpRequest)
     {
-        // TODO: Implement executePut() method.
+        if ($httpRequest->method() !== 'PUT') {
+            $error = ["error" => 'Wrong method : ' . $httpRequest->method() . ', use PUT method instead'];
+            return $this->page()->addVar('data', $error);
+        }
+
+        if (!$jsonPost = $httpRequest->getJsonPost()) {
+            return $this->page->addVar('data', ['error' => 'No JSON body sent from client']);
+        }
+
+
+        return $this->page->addVar('data', $scenario);
     }
 
     /**
@@ -52,6 +92,10 @@ class ScenariosController extends AbstractScenarioManagersController implements 
      */
     public function executeDelete($httpRequest)
     {
+        if ($httpRequest->method() !== 'DELETE') {
+            $error = ["error" => 'Wrong method : ' . $httpRequest->method() . ', use DELETE method instead'];
+            return $this->page()->addVar('data', $error);
+        }
         // TODO: Implement executeDelete() method.
     }
 }

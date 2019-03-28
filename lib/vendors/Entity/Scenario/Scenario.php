@@ -28,7 +28,7 @@ class Scenario extends Entity
         return [
             'id' => $this->id(),
             'nom' => $this->getNom(),
-            'sequence' => $this->getSequences()
+            'sequences' => $this->getSequences()
         ];
     }
 

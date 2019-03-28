@@ -23,7 +23,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
     /**
      * @param HTTPRequest $httpRequest
      */
-    public function exectuePost($httpRequest)
+    public function executePost($httpRequest)
     {
         // TODO: Implement exectuePost() method.
     }

@@ -34,11 +34,11 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         $this->fixtureActions();
 
         $manager = $this->getManager();
-        $manager->save($sequence);
+        $sequenceId = $manager->save($sequence);
         $persisted = $manager->getUnique($expected->id());
         self::assertEquals($expected, $persisted);
 
-        $sequenceId = $manager->getLastInserted('sequence');
+
         self::assertTrue($sequenceId == 1);
 
         //Update Test
@@ -46,6 +46,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         $expected->setNom('Test2');
         $sequence->setId($sequenceId);
         $sequence->setNom('Test2');
+        self::expectExceptionMessage('SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: sequence_action.sequenceId, sequence_action.actionId');
 
         $manager->save($sequence);
         $persisted = $manager->getUnique($expected->id());
@@ -104,7 +105,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         return [
             "createSequence" => [
                 $this->makeSequence('Test1', $actions),
-                $this->makeSequence('Test1', $actions, '1')
+                $this->makeSequence('Test1', $actions, 1)
             ]
         ];
     }
