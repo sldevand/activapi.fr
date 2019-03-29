@@ -85,12 +85,12 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
 
         return [
             "createAction" => [
-                $this->makeAction($actionneurs[0], 150),
-                $this->makeAction($actionneurs[0], 150, 1)
+                $this->makeAction('Test1', $actionneurs[0], 150),
+                $this->makeAction('Test1', $actionneurs[0], 150, 1)
             ],
             "updateAction" => [
-                $this->makeAction($actionneurs[0], 180, 1),
-                $this->makeAction($actionneurs[0], 180, 1)
+                $this->makeAction('Test2', $actionneurs[0], 180, 1),
+                $this->makeAction('Test2', $actionneurs[0], 180, 1)
             ]
         ];
     }
@@ -106,16 +106,16 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
         return [
             "createActions" => [
                 [
-                    $this->makeAction($actionneurs[0], 150),
-                    $this->makeAction($actionneurs[1], 225),
-                    $this->makeAction($actionneurs[2], 0),
-                    $this->makeAction($actionneurs[3], 120)
+                    $this->makeAction('Test1', $actionneurs[0], 150),
+                    $this->makeAction('Test2', $actionneurs[1], 225),
+                    $this->makeAction('Test3', $actionneurs[2], 0),
+                    $this->makeAction('Test4', $actionneurs[3], 120)
                 ],
                 [
-                    $this->makeAction($actionneurs[0], 150, 1),
-                    $this->makeAction($actionneurs[1], 225, 2),
-                    $this->makeAction($actionneurs[2], 0, 3),
-                    $this->makeAction($actionneurs[3], 120, 4)
+                    $this->makeAction('Test1', $actionneurs[0], 150, 1),
+                    $this->makeAction('Test2', $actionneurs[1], 225, 2),
+                    $this->makeAction('Test3', $actionneurs[2], 0, 3),
+                    $this->makeAction('Test4', $actionneurs[3], 120, 4)
                 ]
             ]
         ];
@@ -131,8 +131,8 @@ class ActionManagerPDOTest extends AbstractManagerPDOTest
 
         return [
             "deleteAction" => [
-                $this->makeAction($actionneurs[0], 150),
-                $this->makeAction($actionneurs[0], 150, 1)
+                $this->makeAction('Test1', $actionneurs[0], 150),
+                $this->makeAction('Test1', $actionneurs[0], 150, 1)
             ]
         ];
     }

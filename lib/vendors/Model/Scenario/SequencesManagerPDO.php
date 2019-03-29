@@ -114,6 +114,18 @@ class SequencesManagerPDO extends ManagerPDO
     }
 
     /**
+     * @param int $id
+     * @return bool
+     * @throws \Exception
+     */
+    public function delete($id)
+    {
+        parent::delete($id);
+
+        return $this->deleteSequenceActions($id);
+    }
+
+    /**
      * @param int $sequenceId
      * @return array $Action[]
      * @throws \Exception
@@ -139,5 +151,21 @@ class SequencesManagerPDO extends ManagerPDO
         }
 
         return $actions;
+    }
+
+    /**
+     * @param int $sequenceId
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteSequenceActions($sequenceId)
+    {
+        $sql = 'DELETE FROM sequence_action
+                WHERE sequenceId = :sequenceId;';
+
+        $q = $this->prepare($sql);
+        $q->bindValue(':sequenceId', $sequenceId);
+
+        return $q->execute();
     }
 }

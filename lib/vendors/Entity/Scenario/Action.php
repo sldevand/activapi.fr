@@ -14,6 +14,12 @@ use OCFram\Entity;
 class Action extends Entity
 {
     /**
+     * @var string $nom
+     */
+    protected $nom;
+
+
+    /**
      * @var Actionneur $actionneur
      */
     protected $actionneur;
@@ -35,10 +41,30 @@ class Action extends Entity
     {
         return [
             'id' => $this->id(),
+            'nom' => $this->getNom(),
             'actionneurId' => $this->getActionneur()->id(),
             'actionneur' => $this->getActionneur(),
             'etat' => $this->getEtat()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * @param string $nom
+     * @return Action
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
     }
 
     /**

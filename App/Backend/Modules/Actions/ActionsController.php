@@ -3,7 +3,8 @@
 namespace App\Backend\Modules\Actions;
 
 use App\Backend\Modules\AbstractScenarioManagersController;
-use OCFram\HTTPRequest;
+use Entity\Scenario\Action;
+use OCFram\Application;
 use OCFram\RestInterface;
 
 /**
@@ -13,34 +14,16 @@ use OCFram\RestInterface;
 class ActionsController extends AbstractScenarioManagersController implements RestInterface
 {
     /**
-     * @param HTTPRequest $httpRequest
+     * ScenariosController constructor.
+     * @param Application $app
+     * @param string $module
+     * @param string $action
      */
-    public function executeGet($httpRequest)
+    public function __construct(Application $app, string $module, string $action)
     {
-        // TODO: Implement executeGet() method.
-    }
+        parent::__construct($app, $module, $action);
 
-    /**
-     * @param HTTPRequest $httpRequest
-     */
-    public function executePost($httpRequest)
-    {
-        // TODO: Implement exectuePost() method.
-    }
-
-    /**
-     * @param HTTPRequest $httpRequest
-     */
-    public function executePut($httpRequest)
-    {
-        // TODO: Implement executePut() method.
-    }
-
-    /**
-     * @param HTTPRequest $httpRequest
-     */
-    public function executeDelete($httpRequest)
-    {
-        // TODO: Implement executeDelete() method.
+        $this->manager = $this->getActionManager();
+        $this->entity = Action::class;
     }
 }

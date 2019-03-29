@@ -54,10 +54,11 @@ class ManagerPDO extends Manager
 
     /**
      * @param int $id
+     * @return int
      */
     public function delete($id)
     {
-        $this->dao->exec("DELETE FROM $this->tableName WHERE id = " . (int)$id);
+        return $this->dao->exec("DELETE FROM $this->tableName WHERE id = " . (int)$id);
     }
 
     /**

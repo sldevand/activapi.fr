@@ -111,6 +111,18 @@ class ScenariosManagerPDO extends ManagerPDO
     }
 
     /**
+     * @param int $id
+     * @return bool|int
+     * @throws \Exception
+     */
+    public function delete($id)
+    {
+        parent::delete($id);
+
+        return $this->deleteScenarioSequence($id);
+    }
+
+    /**
      * @param Scenario $scenario
      * @return int|mixed
      * @throws \Exception
@@ -150,5 +162,21 @@ class ScenariosManagerPDO extends ManagerPDO
         }
 
         return $sequences;
+    }
+
+    /**
+     * @param int $scenarioId
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteScenarioSequence($scenarioId)
+    {
+        $sql = 'DELETE FROM scenario_sequence
+                WHERE scenarioId = :scenarioId;';
+
+        $q = $this->prepare($sql);
+        $q->bindValue(':scenarioId', $scenarioId);
+
+        return $q->execute();
     }
 }

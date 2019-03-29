@@ -33,10 +33,10 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
         $actionneurManager = $this->getActionneursManager();
         $actionsManager = $this->getActionManager();
         $actionneurs = $actionneurManager->getAll();
-        $action = $this->makeAction($actionneurs[0], 120);
-        $action2 = $this->makeAction($actionneurs[1], 255);
-        $action3 = $this->makeAction($actionneurs[2], 0);
-        $action4 = $this->makeAction($actionneurs[3], 12);
+        $action = $this->makeAction('Test1', $actionneurs[0], 120);
+        $action2 = $this->makeAction('Test2', $actionneurs[1], 255);
+        $action3 = $this->makeAction('Test3', $actionneurs[2], 0);
+        $action4 = $this->makeAction('Test4', $actionneurs[3], 12);
         $actionsManager->save($action);
         $actionsManager->save($action2);
         $actionsManager->save($action3);
@@ -72,10 +72,10 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
         $actionneurs = $this->mockActionneurs();
 
         return [
-            $this->makeAction($actionneurs[0], 120, 1),
-            $this->makeAction($actionneurs[1], 255, 2),
-            $this->makeAction($actionneurs[2], 0, 3),
-            $this->makeAction($actionneurs[3], 12, 4)
+            $this->makeAction('Test1', $actionneurs[0], 120, 1),
+            $this->makeAction('Test2', $actionneurs[1], 255, 2),
+            $this->makeAction('Test3', $actionneurs[2], 0, 3),
+            $this->makeAction('Test4', $actionneurs[3], 12, 4)
         ];
     }
 
@@ -165,16 +165,18 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
     }
 
     /**
+     * @param $nom
      * @param Actionneur $actionneur
      * @param int $etat
      * @param int | null $id
      * @return Action
      */
-    public function makeAction($actionneur, $etat, $id = null)
+    public function makeAction($nom, $actionneur, $etat, $id = null)
     {
         return new Action(
             [
                 'id' => $id,
+                'nom' => $nom,
                 'actionneur' => $actionneur,
                 'etat' => $etat
             ]

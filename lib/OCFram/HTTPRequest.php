@@ -2,12 +2,19 @@
 
 namespace OCFram;
 
+use Exception;
+
 /**
  * Class HTTPRequest
  * @package OCFram
  */
 class HTTPRequest extends ApplicationComponent
 {
+    const POST = 'POST';
+    const PUT = 'PUT';
+    const GET = 'GET';
+    const DELETE = 'DELETE';
+
     /**
      * @param string $key
      * @return null
@@ -80,10 +87,15 @@ class HTTPRequest extends ApplicationComponent
 
     /**
      * @return mixed
+     * @throws Exception
      */
     public function getJsonPost()
     {
-        return $_POST = json_decode(file_get_contents('php://input'), true);
+        if (empty($jsonBody = file_get_contents('php://input'))) {
+            throw new Exception('No JSON body sent from client');
+        }
+
+        return $_POST = json_decode($jsonBody, true);
     }
 
     /**
