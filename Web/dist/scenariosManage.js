@@ -21,6 +21,8 @@ var _scenarioTemplate = require("./templates/scenario-template");
 
 var _sequenceSelectTemplate = require("./templates/sequence-select-template");
 
+var _apiManage = require("../utils/apiManage");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -39,7 +41,7 @@ function () {
     value: function init() {
       var _this = this;
 
-      var scenarioId = document.querySelector('#scenarioid').getAttribute('value');
+      var scenarioId = document.querySelector('#id').getAttribute('value');
       fetch("api/scenarios/" + scenarioId).then(function (data) {
         return data.json();
       }).then(function (scenario) {
@@ -49,9 +51,16 @@ function () {
       }).then(function (data) {
         return data.json();
       }).then(function (sequences) {
+        if (sequences.error) {
+          Materialize.toast(sequences.error, 2000);
+          return;
+        }
+
         _this.sequences = sequences;
 
         _this.initSequenceAddListener();
+
+        _this.initForm();
       }).catch(function (err) {
         return console.log(err);
       });
@@ -120,6 +129,63 @@ function () {
     value: function createScenarioTemplate() {
       return _scenarioTemplate.ScenarioTemplate.render(this.scenario);
     }
+  }, {
+    key: "initForm",
+    value: function initForm() {
+      var _this4 = this;
+
+      var form = document.forms[0];
+      console.log(form);
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var apiManage = new _apiManage.ApiManage(form.getAttribute('method'), form.getAttribute('action'));
+        var formData = new FormData(form);
+        var object = {};
+        formData.forEach(function (value, key) {
+          object[key] = value;
+        });
+        apiManage.sendObject(JSON.stringify(object), function (request) {
+          _this4.responseManagement(request);
+        });
+      });
+    }
+  }, {
+    key: "responseManagement",
+    value: function responseManagement(request) {
+      var jsonResponse = JSON.parse(request.response);
+      this.dispatchResponse(request.status, jsonResponse);
+    }
+  }, {
+    key: "dispatchResponse",
+    value: function dispatchResponse(status, jsonResponse) {
+      var crudOperation = '';
+
+      switch (status) {
+        case 202:
+          crudOperation = "updated";
+          break;
+
+        case 201:
+          crudOperation = "created";
+          break;
+
+        case 204:
+          crudOperation = "deleted";
+          break;
+
+        default:
+          return Materialize.toast(jsonResponse['error'], 2000);
+      }
+
+      return this.makeToast(jsonResponse, crudOperation);
+    }
+  }, {
+    key: "makeToast",
+    value: function makeToast(jsonResponse, crudOperation) {
+      return Materialize.toast(jsonResponse['nom'] + " " + crudOperation, 800, '', function () {
+        window.location.replace('scenarios');
+      });
+    }
   }]);
 
   return Scenarios;
@@ -127,7 +193,7 @@ function () {
 
 exports.Scenarios = Scenarios;
 
-},{"./templates/scenario-template":3,"./templates/sequence-select-template":4}],3:[function(require,module,exports){
+},{"../utils/apiManage":5,"./templates/scenario-template":3,"./templates/sequence-select-template":4}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -151,7 +217,14 @@ function () {
   _createClass(ScenarioTemplate, null, [{
     key: "render",
     value: function render(scenario) {
-      return "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label for=\"scenario-name-".concat(scenario.id, " ?>\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"scenario-name-").concat(scenario.id, " ?>\" value=\"").concat(scenario.nom, "\" required>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div id=\"sequences\" class=\"s12\"></div>\n    </div>\n");
+      if (!scenario || scenario.error) {
+        scenario.id = 0;
+        scenario.nom = '';
+      }
+
+      scenario.id = scenario.id || 0;
+      scenario.nom = scenario.nom || '';
+      return "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label for=\"scenario-name-".concat(scenario.id, "\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"scenario-name-").concat(scenario.id, "\" value=\"").concat(scenario.nom, "\" required>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div id=\"sequences\" class=\"s12\"></div>\n    </div>\n");
     }
   }]);
 
@@ -223,5 +296,66 @@ function () {
 }();
 
 exports.SequenceRowTemplate = SequenceRowTemplate;
+
+},{}],5:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ApiManage = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var ApiManage =
+/*#__PURE__*/
+function () {
+  function ApiManage(method, action) {
+    var jsonHeader = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+    _classCallCheck(this, ApiManage);
+
+    this.request = new XMLHttpRequest();
+    this.method = method;
+    this.action = action;
+    this.jsonHeader = jsonHeader;
+  }
+
+  _createClass(ApiManage, [{
+    key: "setJsonHeader",
+    value: function setJsonHeader() {
+      this.request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    }
+  }, {
+    key: "sendObject",
+    value: function sendObject(object, callback) {
+      var _this = this;
+
+      this.request.onreadystatechange = function () {
+        if (_this.request.readyState !== 4) {
+          return;
+        }
+
+        callback(_this.request);
+      };
+
+      this.request.open(this.method, this.action);
+
+      if (this.jsonHeader) {
+        this.setJsonHeader();
+      }
+
+      this.request.send(object);
+    }
+  }]);
+
+  return ApiManage;
+}();
+
+exports.ApiManage = ApiManage;
 
 },{}]},{},[1]);

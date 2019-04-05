@@ -13199,6 +13199,10 @@ button.picker__today:focus, button.picker__clear:focus, button.picker__close:foc
   bottom: 25px;
   right: 25px; }
 
+.fixed-action-btn {
+  bottom: 52px;
+  right: 25px; }
+
 body {
   background-color: #FFFFFF;
   overflow: visible; }

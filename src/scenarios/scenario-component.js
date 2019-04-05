@@ -1,9 +1,10 @@
 import {ScenarioTemplate} from "./templates/scenario-template";
 import {SequenceRowTemplate} from "./templates/sequence-select-template";
+import {ApiManage} from "../utils/apiManage";
 
 export class Scenarios {
     init() {
-        const scenarioId = document.querySelector('#scenarioid').getAttribute('value');
+        const scenarioId = document.querySelector('#id').getAttribute('value');
         fetch("api/scenarios/" + scenarioId)
             .then((data) => {
                 return data.json();
@@ -17,8 +18,13 @@ export class Scenarios {
                 return data.json();
             })
             .then((sequences) => {
+                if (sequences.error) {
+                    Materialize.toast(sequences.error, 2000);
+                    return;
+                }
                 this.sequences = sequences;
                 this.initSequenceAddListener();
+                this.initForm();
             })
             .catch(err => console.log(err))
     }
@@ -70,5 +76,59 @@ export class Scenarios {
 
     createScenarioTemplate() {
         return ScenarioTemplate.render(this.scenario);
+    }
+
+    initForm() {
+        let form = document.forms[0];
+        console.log(form);
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let apiManage = new ApiManage(form.getAttribute('method'), form.getAttribute('action'));
+
+            let formData = new FormData(form);
+            let object = {};
+            formData.forEach((value, key) => {
+                object[key] = value
+            });
+
+            apiManage.sendObject(JSON.stringify(object), (request) => {
+                this.responseManagement(request)
+            });
+        });
+    }
+
+    responseManagement(request) {
+        let jsonResponse = JSON.parse(request.response);
+        this.dispatchResponse(request.status, jsonResponse);
+    }
+
+    dispatchResponse(status, jsonResponse) {
+        let crudOperation = '';
+        switch (status) {
+            case 202:
+                crudOperation = "updated";
+                break;
+            case 201:
+                crudOperation = "created";
+                break;
+            case 204:
+                crudOperation = "deleted";
+                break;
+            default :
+                return Materialize.toast(jsonResponse['error'], 2000);
+        }
+
+        return this.makeToast(jsonResponse, crudOperation);
+    }
+
+    makeToast(jsonResponse, crudOperation) {
+        return Materialize.toast(
+            jsonResponse['nom'] + " " + crudOperation,
+            800,
+            '',
+            () => {
+                window.location.replace('scenarios');
+            }
+        );
     }
 }

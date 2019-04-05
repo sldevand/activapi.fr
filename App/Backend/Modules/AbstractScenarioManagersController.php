@@ -65,6 +65,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
             $entity = new $this->entity($jsonPost);
             $entityId = $this->manager->save($entity);
             $persisted = $this->manager->getUnique($entityId);
+            http_response_code(201);
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
@@ -85,6 +86,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
             $entity = new $this->entity($jsonPost);
             $entityId = $this->manager->save($entity);
             $persisted = $this->manager->getUnique($entityId);
+            http_response_code(202);
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
@@ -103,6 +105,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
             $this->checkNotJsonBodyId($jsonPost);
             $entity = $this->manager->getUnique($jsonPost['id']);
             $deleted = $this->manager->delete($jsonPost['id']);
+            http_response_code(202);
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }

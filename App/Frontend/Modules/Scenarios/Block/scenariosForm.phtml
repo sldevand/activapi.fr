@@ -11,14 +11,17 @@ $addButton = new \Materialize\FloatingActionButton([
 ]);
 $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
 
+$method = ($scId) ? 'put' : 'post';
+$action = ($scId) ? 'api/scenarios/update' : 'api/scenarios/add';
+
 ?>
-<form class="row" action="" method="post">
+<form class="row" action="<?= $action ?>" method="<?= $method ?>">
     <div id="scenario-content">
         <div class="center-align">
             <?= $spinner->getHtml(); ?>
         </div>
     </div>
-    <input type="text" name="scenarioid" id="scenarioid" value="<?= $scId ?>" hidden readonly required/>
+    <input type="text" name="id" id="id" value="<?= $scId ?>" hidden readonly required/>
     <?= $submit->getHtml(); ?>
     <?= $addButton->getHtml() ?>
 </form>

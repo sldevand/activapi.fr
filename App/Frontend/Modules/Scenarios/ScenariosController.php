@@ -48,10 +48,26 @@ class ScenariosController extends ScenariosBackController
     public function makeScenariosWidget($scenarios)
     {
         $domId = 'Scenarios';
-
         $scenarios = json_decode(json_encode($scenarios), true);
-        $scenariosData = [];
+        $card = WidgetFactory::makeCard($domId, $domId);
+        if (!$scenarios) {
+            $card->addContent('Pas de scenarios');
+            return $card;
+        }
+        $table = $this->createScenariosTable($scenarios, 'scenarios-table');
+        $card->addContent($table->getHtml());
 
+        return $card;
+    }
+
+    /**
+     * @param array $scenarios
+     * @param string $domId
+     * @return \Materialize\Table
+     */
+    public function createScenariosTable($scenarios, $domId)
+    {
+        $scenariosData = [];
         foreach ($scenarios as $scenario) {
             $linkEdit = new Link(
                 '',
@@ -72,19 +88,16 @@ class ScenariosController extends ScenariosBackController
 
         $hideColumns = ['data', 'sequences'];
 
-        $table = WidgetFactory::makeTable($domId, $scenariosData, true, $hideColumns);
-        $card = WidgetFactory::makeCard($domId, $domId);
-        $card->addContent($table->getHtml());
-
-        return $card;
+        return WidgetFactory::makeTable($domId, $scenariosData, true, $hideColumns);
     }
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeDelete($request)
     {
-        $manager = $this->managers->getManagerOf('Scenario/Scenarios');
+        $manager = $this->getScenariosManager();
 
         $domId = 'Suppression';
         if ($request->method() == 'POST') {
@@ -118,12 +131,13 @@ class ScenariosController extends ScenariosBackController
      */
     public function executeEdit(HTTPRequest $request)
     {
+        $domId = 'Edition';
         if (!$id = $request->getData('id')) {
-            return $this->app->httpResponse()->redirect('../activapi.fr/scenarios');
+            $domId = 'Ajout';
         }
 
-        $this->page->addVar('title', "Edition du Scénario");
-        $domId = 'Edition';
+        $this->page->addVar('title', "$domId du Scénario");
+
         $link = new Link(
             $domId,
             "../activapi.fr/scenarios",
