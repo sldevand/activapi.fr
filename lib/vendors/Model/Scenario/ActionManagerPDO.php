@@ -39,7 +39,9 @@ class ActionManagerPDO extends ManagerPDO
      */
     public function save($action, $ignoreProperties = [])
     {
-        return parent::save($action, ['actionneur']);
+        parent::save($action, ['actionneur']);
+
+        return $this->getActionId($action);
     }
 
     /**
