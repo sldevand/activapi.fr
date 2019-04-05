@@ -174,7 +174,7 @@ class Card extends Widget
     }
 
     /**
-     * @param array $content
+     * @param string $content
      * @return Card
      */
     public function addContent($content)

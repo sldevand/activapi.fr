@@ -1,56 +1,42 @@
-import {SequenceRowTemplate} from './sequenceRow';
+import {ScenarioTemplate} from "./templates/scenario-template";
+import {SequenceRowTemplate} from "./templates/sequence-select-template";
 
 export class Scenarios {
-
     init() {
-        fetch('api/actionneurs/')
+        const scenarioId = document.querySelector('#scenarioid').getAttribute('value');
+        fetch("api/scenarios/" + scenarioId)
             .then((data) => {
                 return data.json();
             })
-            .then((actionneurs) => {
-                this.actionneurs = actionneurs;
-
-                const scenario = document.querySelector('#scenarioid');
-                const scenarioid = scenario.getAttribute('value');
-
-                return fetch('api/scenarios/' + scenarioid);
+            .then((scenario) => {
+                this.scenario = scenario;
+                document.querySelector('#scenario-content').innerHTML = this.createScenarioTemplate();
+                return fetch('api/sequences/');
             })
             .then((data) => {
                 return data.json();
             })
-            .then((scenarios) => {
-                console.log(scenarios);
-                this.scenarios = scenarios;
-                //  this.addRows();
+            .then((sequences) => {
+                this.sequences = sequences;
                 this.initSequenceAddListener();
-                const deleteButtons = document.getElementsByClassName('delete');
-                for (let deleteButton of deleteButtons) {
-                    this.initRemoveButton(deleteButton);
-                }
             })
             .catch(err => console.log(err))
     }
 
-    addRows() {
-        for (let scenario in this.scenarios) {
-            this.addRow(scenario);
-        }
-    }
-
-    addRow(scenario=null) {
+    addRow() {
         const sequences = document.querySelector('#sequences');
         const elt = document.createElement('div');
         elt.classList.add('row');
         elt.id = 'delete-button';
-        elt.innerHTML = this.createRow(scenario);
+        let row = SequenceRowTemplate.render(this.scenario, this.sequences);
+        if (!row) {
+            return;
+        }
+        elt.innerHTML = row;
         sequences.appendChild(elt);
         $('select').material_select();
 
         this.initRemoveButton(elt.id);
-    }
-
-    createRow(scenario=null) {
-        return SequenceRowTemplate.render(this.actionneurs, scenario);
     }
 
     removeRow(target) {
@@ -64,22 +50,25 @@ export class Scenarios {
         elt.setAttribute('name', 'actionneurs[deleteId][]');
         elt.hidden = true;
         sequences.appendChild(elt);
-
-
     }
 
     initSequenceAddListener() {
         const sequenceAdd = document.querySelector('#sequence-add');
         sequenceAdd.addEventListener('click', (e) => {
+            e.preventDefault();
             this.addRow();
         });
     }
 
     initRemoveButton(deleteButton) {
-
         deleteButton.addEventListener('click', (e) => {
+            e.preventDefault();
             this.removeRow(e.target.parentNode);
             this.addDeletionInput(e.target.parentNode.dataset.sequenceid);
         });
+    }
+
+    createScenarioTemplate() {
+        return ScenarioTemplate.render(this.scenario);
     }
 }

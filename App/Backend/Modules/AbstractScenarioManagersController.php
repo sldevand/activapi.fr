@@ -31,6 +31,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
 
     /**
      * @param HTTPRequest $httpRequest
+     * @return \Entity\Scenario\Scenario[] | \Entity\Scenario\Scenario
      * @throws Exception
      */
     public function executeGet($httpRequest)
@@ -38,12 +39,17 @@ abstract class AbstractScenarioManagersController extends BackController impleme
         try {
             $this->checkMethod($httpRequest, HTTPRequest::GET);
             $id = $httpRequest->getData('id');
-            $entities = $this->manager->getAll($id);
+            if ($id) {
+                $entities = $this->manager->getUnique($id);
+            } else {
+                $entities = $this->manager->getAll($id);
+            }
         } catch (Exception $e) {
             return $this->page()->addVar('data', ["error" => $e->getMessage()]);
         }
 
-        return $this->page()->addVar('data', $entities);
+        $this->page()->addVar('data', $entities);
+        return $entities;
     }
 
     /**

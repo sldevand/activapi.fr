@@ -4,15 +4,10 @@ namespace App\Frontend\Modules\Scenarios;
 
 use App\Backend\Modules\Scenarios\ScenariosController as ScenariosBackController;
 use App\Frontend\Modules\FormView;
-use Entity\Actionneur;
-use Entity\Scenario;
-use FormBuilder\ScenariosFormBuilder;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\Link;
 use Materialize\WidgetFactory;
-use Model\ScenariosManagerPDO;
-use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 
 /**
@@ -29,7 +24,7 @@ class ScenariosController extends ScenariosBackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $scenarios = parent::executeIndex($request);
+        $scenarios = parent::executeGet($request);
 
         $this->page->addVar('title', 'Gestion des scenarios');
 
@@ -60,13 +55,13 @@ class ScenariosController extends ScenariosBackController
         foreach ($scenarios as $scenario) {
             $linkEdit = new Link(
                 '',
-                "../activapi.fr/scenarios-edit-" . $scenario["scenarioid"],
+                "../activapi.fr/scenarios-edit-" . $scenario["id"],
                 'edit',
                 'primaryTextColor'
             );
             $linkDelete = new Link(
                 '',
-                "../activapi.fr/scenarios-delete-" . $scenario["scenarioid"],
+                "../activapi.fr/scenarios-delete-" . $scenario["id"],
                 'delete',
                 'secondaryTextColor'
             );
@@ -75,7 +70,7 @@ class ScenariosController extends ScenariosBackController
             $scenariosData[] = $scenario;
         }
 
-        $hideColumns = ['data'];
+        $hideColumns = ['data', 'sequences'];
 
         $table = WidgetFactory::makeTable($domId, $scenariosData, true, $hideColumns);
         $card = WidgetFactory::makeCard($domId, $domId);
@@ -87,9 +82,9 @@ class ScenariosController extends ScenariosBackController
     /**
      * @param HTTPRequest $request
      */
-    public function executeDelete(HTTPRequest $request)
+    public function executeDelete($request)
     {
-        $manager = $this->managers->getManagerOf('Scenarios');
+        $manager = $this->managers->getManagerOf('Scenario/Scenarios');
 
         $domId = 'Suppression';
         if ($request->method() == 'POST') {
@@ -123,71 +118,12 @@ class ScenariosController extends ScenariosBackController
      */
     public function executeEdit(HTTPRequest $request)
     {
-        /** @var ScenariosManagerPDO $manager */
-        $manager = $this->managers->getManagerOf('Scenarios');
-        $actionneursManager = $this->managers->getManagerOf('Actionneurs');
-        $actionneursList = $actionneursManager->getList();
+        if (!$id = $request->getData('id')) {
+            return $this->app->httpResponse()->redirect('../activapi.fr/scenarios');
+        }
+
+        $this->page->addVar('title', "Edition du Scénario");
         $domId = 'Edition';
-        $deletedActionneurIds = [];
-        if ($request->method() == 'POST') {
-            $item = new Scenario(
-                [
-                    'nom' => $request->postData('nom'),
-                    'scenarioid' => $request->postData('scenarioid')
-                ]
-            );
-
-            $actionneurs = $request->postData('actionneurs');
-
-            if ($request->getExists('scenarioid')) {
-                $id = $request->getData('scenarioid');
-                $item->setId($id);
-                $item->sequence = $manager->getSequence($id);
-            }
-            foreach ($actionneurs as $key => $actionneur) {
-                foreach ($actionneur as $num => $elt) {
-                    $radioId = $elt;
-                    $etat = $actionneurs['etat'][$num];
-                    $actionneurid = $actionneurs['actionneurid'][$num];
-                    if (!empty($actionneurs['deleteId'][$num])) {
-                        $deletedActionneurIds[] = $actionneurs['deleteId'][$num];
-                    }
-                    $item->addActionneur(new Actionneur(
-                        [
-                            'id' => $actionneurid,
-                            'etat' => $etat,
-                            'radioid' => $radioId
-                        ]
-                    ));
-                }
-                break;
-            }
-        } else {
-            if ($request->getExists('scenarioid')) {
-                $id = $request->getData("scenarioid");
-                $item = $manager->getScenario($id);
-                $item->sequence = $manager->getSequence($id);
-            } else {
-                $domId = 'Ajout';
-                $item = new Scenario();
-                $item->sequence = $manager->getSequence();
-            }
-        }
-
-        $item->actionneursList = $actionneursList;
-
-        $cards = [];
-        $tmfb = new ScenariosFormBuilder($item);
-        $form = $tmfb->form();
-
-        $fh = new FormHandler($form, $manager, $request);
-        if ($fh->process()) {
-            foreach ($deletedActionneurIds as $actionneurId) {
-                $manager->deleteItem($actionneurId);
-            }
-            $this->app->httpResponse()->redirect('../activapi.fr/scenarios');
-        }
-
         $link = new Link(
             $domId,
             "../activapi.fr/scenarios",
@@ -195,11 +131,6 @@ class ScenariosController extends ScenariosBackController
             "white-text",
             "white-text"
         );
-
-        $cardTitle = $link->getHtml();
-
-        $card = WidgetFactory::makeCard($domId, $cardTitle);
-
         $submitButton = new FlatButton(
             [
                 'id' => 'submit',
@@ -210,17 +141,13 @@ class ScenariosController extends ScenariosBackController
                 'wrapper' => 'col s12'
             ]
         );
-
-        $sequences = '';
-        foreach ($form->entity()->sequence as $sequence) {
-            $sequences .= $this->getBlock(__DIR__ . '/Block/sequenceBlock.phtml', $form->entity(), $item->actionneursList, $sequence);
-        }
-
-        $formBlock = $this->getBlock(__DIR__ . '/Block/scenariosForm.phtml', $form, $submitButton, $sequences);
+        $cardTitle = $link->getHtml();
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $formBlock = $this->getBlock(__DIR__ . '/Block/scenariosForm.phtml', $id, $submitButton);
         $card->addContent($formBlock);
+        $cards = [];
         $cards[] = $card;
 
-        $this->page->addVar('title', "Edition du Scénario");
-        $this->page->addVar('cards', $cards);
+        return $this->page->addVar('cards', $cards);
     }
 }

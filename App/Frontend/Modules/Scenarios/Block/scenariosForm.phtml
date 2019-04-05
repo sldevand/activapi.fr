@@ -1,43 +1,24 @@
 <?php
-/** @var \OCFram\Form $form */
-$form = $args[0];
-
+$scId = $args[0];
 /** @var \Materialize\Button\FlatButton $submit */
 $submit = $args[1];
-$sequences = $args[2];
-
-/** @var \Entity\Scenario $entity */
-$entity = $form->entity();
-$entId = $entity->id();
-$scId = $entity->scenarioid();
-$scNom = $entity->nom();
-
 $addButton = new \Materialize\FloatingActionButton([
     'id' => 'sequence-add',
     'icon' => 'add',
     'wrapper' => 'col s6',
     'href' => '#',
     'fixed' => true
-
 ]);
-
+$spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
 
 ?>
 <form class="row" action="" method="post">
-    <div class="col s4">
-        <label for="scenario-<?= $entId ?>" class="active">Id</label>
-        <input type="text" name="scenarioid" id="scenarioid" value="<?= $scId ?>" readonly required/>
+    <div id="scenario-content">
+        <div class="center-align">
+            <?= $spinner->getHtml(); ?>
+        </div>
     </div>
-
-    <div class="col s8">
-        <label for="scenario-name-<?= $entId ?>" class="active">Nom</label>
-        <input type="text" name="nom" id="scenario-name-<?= $entId ?>" value="<?= $scNom ?>" required>
-    </div>
-
-    <div id="sequences">
-        <?= $sequences ?>
-    </div>
-
+    <input type="text" name="scenarioid" id="scenarioid" value="<?= $scId ?>" hidden readonly required/>
     <?= $submit->getHtml(); ?>
     <?= $addButton->getHtml() ?>
 </form>

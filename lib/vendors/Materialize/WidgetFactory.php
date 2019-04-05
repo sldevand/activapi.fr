@@ -3,6 +3,7 @@
 namespace Materialize;
 
 use Materialize\Card\Card;
+use Materialize\Spinner\Spinner;
 
 /**
  * Class WidgetFactory
@@ -58,5 +59,18 @@ class WidgetFactory
             'headers' => $headers,
             'hideColumns' => $hideColumns
         ]);
+    }
+
+    /**
+     * @param $domId
+     * @return Spinner
+     */
+    public static function makeSpinner($domId)
+    {
+        return new Spinner(
+            [
+                'id' => $domId
+            ]
+        );
     }
 }

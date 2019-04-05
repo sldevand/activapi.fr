@@ -35,7 +35,7 @@
     <route url="\/activapi.fr\/scenarios-add" module="Scenarios" action="edit"/>
     <route url="\/activapi.fr\/scenarios-delete-([0-9]+)" module="Scenarios" action="delete"  vars="id"  />
     <route url="\/activapi.fr\/scenarios-delete-item" module="Scenarios" action="deleteitem"  />
-    <route url="\/activapi.fr\/scenarios-edit-([0-9]+)" module="Scenarios" action="edit" vars="scenarioid"  />
+    <route url="\/activapi.fr\/scenarios-edit-([0-9]+)" module="Scenarios" action="edit" vars="id"  />
     <route url="\/activapi.fr\/scenarios-edit-item" module="Scenarios" action="edititem"  />
 
     <route url="\/activapi.fr\/console" module="Console" action="index"/>

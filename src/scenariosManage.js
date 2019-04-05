@@ -1,4 +1,4 @@
-import {Scenarios} from './scenarios/scenarios';
+import {Scenarios} from './scenarios/scenario-component';
 
 $(document).ready(function () {
     $('select').material_select();
@@ -6,7 +6,3 @@ $(document).ready(function () {
 
 let scenarios = new Scenarios();
 scenarios.init();
-
-;
-
-
