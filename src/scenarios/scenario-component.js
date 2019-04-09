@@ -80,9 +80,9 @@ export class Scenarios {
 
     initForm() {
         let form = document.forms[0];
-        console.log(form);
         form.addEventListener('submit', (e) => {
             e.preventDefault();
+            document.getElementById('submit').disabled = true;
             let apiManage = new ApiManage(form.getAttribute('method'), form.getAttribute('action'));
 
             let formData = new FormData(form);
@@ -95,6 +95,7 @@ export class Scenarios {
                 this.responseManagement(request)
             });
         });
+
     }
 
     responseManagement(request) {
@@ -124,7 +125,7 @@ export class Scenarios {
     makeToast(jsonResponse, crudOperation) {
         return Materialize.toast(
             jsonResponse['nom'] + " " + crudOperation,
-            800,
+            700,
             '',
             () => {
                 window.location.replace('scenarios');
