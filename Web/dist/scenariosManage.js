@@ -30,6 +30,7 @@ function () {
     value: function init() {
       var _this = this;
 
+      this.selectRowsCount = 0;
       var scenarioId = document.querySelector('#id').getAttribute('value');
       fetch("api/scenarios/" + scenarioId).then(function (data) {
         return data.json();
@@ -46,6 +47,30 @@ function () {
         }
 
         _this.sequences = sequences;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = _this.scenario.sequences[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var sequence = _step.value;
+
+            _this.addRow(sequence.id);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
 
         _this.initSequenceAddListener();
 
@@ -57,12 +82,14 @@ function () {
   }, {
     key: "addRow",
     value: function addRow() {
+      var idSelected = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      this.selectRowsCount++;
       var sequences = document.querySelector('#sequences');
       var elt = document.createElement('div');
       elt.classList.add('row');
       elt.id = 'delete-button';
 
-      var row = _sequenceSelectTemplate.SequenceRowTemplate.render(this.scenario, this.sequences);
+      var row = _sequenceSelectTemplate.SequenceRowTemplate.render(this.scenario, this.sequences, this.selectRowsCount, idSelected);
 
       if (!row) {
         return;
@@ -102,9 +129,10 @@ function () {
     }
   }, {
     key: "initRemoveButton",
-    value: function initRemoveButton(deleteButton) {
+    value: function initRemoveButton(domId) {
       var _this3 = this;
 
+      var deleteButton = document.querySelector('#' + domId);
       deleteButton.addEventListener('click', function (e) {
         e.preventDefault();
 
@@ -130,8 +158,15 @@ function () {
         var apiManage = new _apiManage.ApiManage(form.getAttribute('method'), form.getAttribute('action'));
         var formData = new FormData(form);
         var object = {};
+        object.sequences = [];
         formData.forEach(function (value, key) {
-          object[key] = value;
+          if (key.startsWith('sequence-')) {
+            object.sequences.push({
+              "id": value
+            });
+          } else {
+            object[key] = value;
+          }
         });
         apiManage.sendObject(JSON.stringify(object), function (request) {
           _this4.responseManagement(request);
@@ -171,7 +206,7 @@ function () {
   }, {
     key: "makeToast",
     value: function makeToast(jsonResponse, crudOperation) {
-      return Materialize.toast(jsonResponse['nom'] + " " + crudOperation, 700, '', function () {
+      return Materialize.toast(jsonResponse.nom + " " + crudOperation, 700, '', function () {
         window.location.replace('scenarios');
       });
     }
@@ -245,13 +280,14 @@ function () {
 
   _createClass(SequenceRowTemplate, null, [{
     key: "render",
-    value: function render(scenario, sequences) {
+    value: function render(scenario, sequences, index) {
+      var idSelected = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
       if (!scenario || !sequences) {
         return;
       }
 
-      console.log(scenario, sequences);
-      var template = "\n<div class=\"col s6\">\n    <label for=\"sequence-select-\">Sequence</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"sequences[sequenceid][]\" id=\"sequence-select-\">";
+      var template = "\n<div class=\"col s6\">\n    <label for=\"sequence-select-".concat(index, "\">Sequence</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"sequence-").concat(index, "\" id=\"sequence-select-").concat(index, "\">");
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -259,7 +295,13 @@ function () {
       try {
         for (var _iterator = sequences[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var sequence = _step.value;
-          template += "<option value=\"".concat(sequence.id, "\" >").concat(sequence.nom, "</option>");
+          var selected = '';
+
+          if (sequence.id === idSelected) {
+            selected = 'selected';
+          }
+
+          template += "<option value=\"".concat(sequence.id, "\" ").concat(selected, ">").concat(sequence.nom, "</option>");
         }
       } catch (err) {
         _didIteratorError = true;

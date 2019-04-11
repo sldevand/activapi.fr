@@ -1,16 +1,19 @@
 export class SequenceRowTemplate {
-    static render(scenario, sequences) {
+    static render(scenario, sequences, index, idSelected = null) {
         if (!scenario || !sequences) {
             return;
         }
-        console.log(scenario,sequences);
         let template = `
 <div class="col s6">
-    <label for="sequence-select-">Sequence</label>
+    <label for="sequence-select-${index}">Sequence</label>
     <div class="select-wrapper"><span class="caret">▼</span>
-        <select name="sequences[sequenceid][]" id="sequence-select-">`;
+        <select name="sequence-${index}" id="sequence-select-${index}">`;
         for (let sequence of sequences) {
-            template += `<option value="${sequence.id}" >${sequence.nom}</option>`
+            let selected = '';
+            if (sequence.id === idSelected) {
+                selected = 'selected';
+            }
+            template += `<option value="${sequence.id}" ${selected}>${sequence.nom}</option>`
         }
         template += `</select>
     </div>

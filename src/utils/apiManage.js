@@ -13,13 +13,12 @@ export class ApiManage {
     }
 
     sendObject(object, callback) {
-
         this.request.onreadystatechange = () => {
             if (this.request.readyState !== 4) {
                 return;
             }
            callback(this.request);
-        }
+        };
 
         this.request.open(this.method, this.action);
         if (this.jsonHeader) {

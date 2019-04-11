@@ -4,6 +4,7 @@ import {ApiManage} from "../utils/apiManage";
 
 export class Scenarios {
     init() {
+        this.selectRowsCount = 0;
         const scenarioId = document.querySelector('#id').getAttribute('value');
         fetch("api/scenarios/" + scenarioId)
             .then((data) => {
@@ -23,18 +24,22 @@ export class Scenarios {
                     return;
                 }
                 this.sequences = sequences;
+                for (let sequence of this.scenario.sequences) {
+                    this.addRow(sequence.id);
+                }
                 this.initSequenceAddListener();
                 this.initForm();
             })
             .catch(err => console.log(err))
     }
 
-    addRow() {
+    addRow(idSelected = null) {
+        this.selectRowsCount++;
         const sequences = document.querySelector('#sequences');
         const elt = document.createElement('div');
         elt.classList.add('row');
         elt.id = 'delete-button';
-        let row = SequenceRowTemplate.render(this.scenario, this.sequences);
+        let row = SequenceRowTemplate.render(this.scenario, this.sequences, this.selectRowsCount, idSelected);
         if (!row) {
             return;
         }
@@ -66,7 +71,8 @@ export class Scenarios {
         });
     }
 
-    initRemoveButton(deleteButton) {
+    initRemoveButton(domId) {
+        const deleteButton = document.querySelector('#' + domId);
         deleteButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.removeRow(e.target.parentNode);
@@ -87,15 +93,19 @@ export class Scenarios {
 
             let formData = new FormData(form);
             let object = {};
+            object.sequences = [];
             formData.forEach((value, key) => {
-                object[key] = value
+                if (key.startsWith('sequence-')) {
+                    object.sequences.push({"id": value});
+                } else {
+                    object[key] = value
+                }
             });
 
             apiManage.sendObject(JSON.stringify(object), (request) => {
                 this.responseManagement(request)
             });
         });
-
     }
 
     responseManagement(request) {
@@ -124,7 +134,7 @@ export class Scenarios {
 
     makeToast(jsonResponse, crudOperation) {
         return Materialize.toast(
-            jsonResponse['nom'] + " " + crudOperation,
+            jsonResponse.nom + " " + crudOperation,
             700,
             '',
             () => {
