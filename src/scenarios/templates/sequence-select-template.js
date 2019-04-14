@@ -1,13 +1,13 @@
 export class SequenceRowTemplate {
-    static render(scenario, sequences, index, idSelected = null) {
+    static render(scenario, sequences, scenarioSequenceId, idSelected = null) {
         if (!scenario || !sequences) {
             return;
         }
         let template = `
 <div class="col s6">
-    <label for="sequence-select-${index}">Sequence</label>
+    <label for="sequence-select-${scenarioSequenceId}">Sequence</label>
     <div class="select-wrapper"><span class="caret">▼</span>
-        <select name="sequence-${index}" id="sequence-select-${index}">`;
+        <select name="sequence-${scenarioSequenceId}" id="sequence-select-${scenarioSequenceId}">`;
         for (let sequence of sequences) {
             let selected = '';
             if (sequence.id === idSelected) {
@@ -19,8 +19,7 @@ export class SequenceRowTemplate {
     </div>
 </div>
 
-<label class="active" for="scenario-sequence-delete">*</label>
-<i id="scenario-sequence-delete" class="material-icons secondaryTextColor col s2 delete">delete</i>
+<i id="scenario-sequence-delete" data-id="${scenarioSequenceId}" class="material-icons secondaryTextColor col s2 delete">delete</i>
 `;
         return template;
     }

@@ -4,7 +4,6 @@ import {ApiManage} from "../utils/apiManage";
 
 export class Scenarios {
     init() {
-        this.selectRowsCount = 0;
         const scenarioId = document.querySelector('#id').getAttribute('value');
         fetch("api/scenarios/" + scenarioId)
             .then((data) => {
@@ -24,8 +23,9 @@ export class Scenarios {
                     return;
                 }
                 this.sequences = sequences;
-                for (let sequence of this.scenario.sequences) {
-                    this.addRow(sequence.id);
+                for (let scenarioSequenceId in this.scenario.sequences) {
+                    let sequenceId = this.scenario.sequences[scenarioSequenceId].id;
+                    this.addRow(scenarioSequenceId, sequenceId);
                 }
                 this.initSequenceAddListener();
                 this.initForm();
@@ -33,20 +33,18 @@ export class Scenarios {
             .catch(err => console.log(err))
     }
 
-    addRow(idSelected = null) {
-        this.selectRowsCount++;
+    addRow(scenarioSequenceId = null, selectedSequenceId = null) {
         const sequences = document.querySelector('#sequences');
         const elt = document.createElement('div');
         elt.classList.add('row');
-        elt.id = 'delete-button';
-        let row = SequenceRowTemplate.render(this.scenario, this.sequences, this.selectRowsCount, idSelected);
+        elt.id = 'sequence-row-' + scenarioSequenceId;
+        let row = SequenceRowTemplate.render(this.scenario, this.sequences, scenarioSequenceId, selectedSequenceId);
         if (!row) {
             return;
         }
         elt.innerHTML = row;
         sequences.appendChild(elt);
         $('select').material_select();
-
         this.initRemoveButton(elt.id);
     }
 
@@ -58,7 +56,7 @@ export class Scenarios {
         const sequences = document.querySelector('#sequences');
         const elt = document.createElement('input');
         elt.setAttribute('value', itemId);
-        elt.setAttribute('name', 'actionneurs[deleteId][]');
+        elt.setAttribute('name', 'deleted-scenarioSequence-' + itemId);
         elt.hidden = true;
         sequences.appendChild(elt);
     }
@@ -76,7 +74,7 @@ export class Scenarios {
         deleteButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.removeRow(e.target.parentNode);
-            this.addDeletionInput(e.target.parentNode.dataset.sequenceid);
+            this.addDeletionInput(e.target.dataset.id);
         });
     }
 
@@ -93,15 +91,17 @@ export class Scenarios {
 
             let formData = new FormData(form);
             let object = {};
-            object.sequences = [];
+            object.scenarioSequences = [];
             formData.forEach((value, key) => {
                 if (key.startsWith('sequence-')) {
-                    object.sequences.push({"id": value});
+                    let scenarioSequenceId = key.split('-')[1];
+                    object.scenarioSequences.push({"id": scenarioSequenceId, "sequenceId": value});
                 } else {
                     object[key] = value
                 }
             });
 
+            console.log(object);
             apiManage.sendObject(JSON.stringify(object), (request) => {
                 this.responseManagement(request)
             });

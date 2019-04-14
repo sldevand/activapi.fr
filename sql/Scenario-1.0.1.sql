@@ -38,8 +38,3 @@ CREATE TABLE IF NOT EXISTS scenario_sequence
   FOREIGN KEY (scenarioId) REFERENCES "scenario" (id),
   FOREIGN KEY (sequenceId) REFERENCES "sequence" (id)
 );
-
-CREATE UNIQUE INDEX sequence_action_unique_index
-  ON sequence_action (sequenceId, actionId);
-CREATE UNIQUE INDEX scenario_sequence_unique_index
-  ON scenario_sequence (scenarioId, sequenceId);

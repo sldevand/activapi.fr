@@ -26,6 +26,7 @@ class ScenarioSequence extends Entity
     public function jsonSerialize()
     {
         return [
+            'id' => $this->id(),
             'scenarioId' => $this->getScenarioId(),
             'sequenceId' => $this->getSequenceId()
         ];

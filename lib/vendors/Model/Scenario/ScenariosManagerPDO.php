@@ -3,7 +3,6 @@
 namespace Model\Scenario;
 
 use Entity\Scenario\Scenario;
-use Entity\Scenario\ScenarioSequence;
 use Entity\Scenario\Sequence;
 use Model\ManagerPDO;
 
@@ -47,21 +46,12 @@ class ScenariosManagerPDO extends ManagerPDO
     {
         parent::save($scenario, ['sequences']);
         $scenarioId = $this->getScenarioId($scenario);
-        if (!$sequences = $scenario->getSequences()) {
+        if (!$scenarioSequences = $scenario->getScenarioSequences()) {
             return $scenarioId;
         }
 
-        foreach ($sequences as $sequence) {
-            $sequenceId = $sequence->id();
-
-            if (empty($sequenceId)) {
-                continue;
-            }
-
-            $this->scenarioSequenceManagerPDO->save(new ScenarioSequence([
-                'sequenceId' => $sequenceId,
-                'scenarioId' => $scenarioId
-            ]));
+        foreach ($scenarioSequences as $scenarioSequence) {
+            $this->scenarioSequenceManagerPDO->save($scenarioSequence);
         }
 
         return $scenarioId;
@@ -82,6 +72,7 @@ class ScenariosManagerPDO extends ManagerPDO
 
         /** @var Sequence[] $sequences */
         $sequences = $this->getScenarioSequences($id);
+
         $scenario->setSequences($sequences);
 
         return $scenario;
@@ -158,7 +149,7 @@ class ScenariosManagerPDO extends ManagerPDO
 
         $sequences = [];
         foreach ($rows as $row) {
-            $sequences[] = $this->sequencesManagerPDO->getUnique($row['sequenceId']);
+            $sequences[$row[0]] = $this->sequencesManagerPDO->getUnique($row['sequenceId']);
         }
 
         return $sequences;

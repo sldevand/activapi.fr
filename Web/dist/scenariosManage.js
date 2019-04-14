@@ -1,6 +1,17 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
+var _scenarioComponent = require("./scenarios/scenario-component");
+
+$(document).ready(function () {
+  $('select').material_select();
+});
+var scenarios = new _scenarioComponent.Scenarios();
+scenarios.init();
+
+},{"./scenarios/scenario-component":2}],2:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -30,7 +41,6 @@ function () {
     value: function init() {
       var _this = this;
 
-      this.selectRowsCount = 0;
       var scenarioId = document.querySelector('#id').getAttribute('value');
       fetch("api/scenarios/" + scenarioId).then(function (data) {
         return data.json();
@@ -47,29 +57,11 @@ function () {
         }
 
         _this.sequences = sequences;
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
 
-        try {
-          for (var _iterator = _this.scenario.sequences[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var sequence = _step.value;
+        for (var scenarioSequenceId in _this.scenario.sequences) {
+          var sequenceId = _this.scenario.sequences[scenarioSequenceId].id;
 
-            _this.addRow(sequence.id);
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          _this.addRow(scenarioSequenceId, sequenceId);
         }
 
         _this.initSequenceAddListener();
@@ -82,14 +74,14 @@ function () {
   }, {
     key: "addRow",
     value: function addRow() {
-      var idSelected = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      this.selectRowsCount++;
+      var scenarioSequenceId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var selectedSequenceId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
       var sequences = document.querySelector('#sequences');
       var elt = document.createElement('div');
       elt.classList.add('row');
-      elt.id = 'delete-button';
+      elt.id = 'sequence-row-' + scenarioSequenceId;
 
-      var row = _sequenceSelectTemplate.SequenceRowTemplate.render(this.scenario, this.sequences, this.selectRowsCount, idSelected);
+      var row = _sequenceSelectTemplate.SequenceRowTemplate.render(this.scenario, this.sequences, scenarioSequenceId, selectedSequenceId);
 
       if (!row) {
         return;
@@ -111,7 +103,7 @@ function () {
       var sequences = document.querySelector('#sequences');
       var elt = document.createElement('input');
       elt.setAttribute('value', itemId);
-      elt.setAttribute('name', 'actionneurs[deleteId][]');
+      elt.setAttribute('name', 'deleted-scenarioSequence-' + itemId);
       elt.hidden = true;
       sequences.appendChild(elt);
     }
@@ -138,7 +130,7 @@ function () {
 
         _this3.removeRow(e.target.parentNode);
 
-        _this3.addDeletionInput(e.target.parentNode.dataset.sequenceid);
+        _this3.addDeletionInput(e.target.dataset.id);
       });
     }
   }, {
@@ -158,16 +150,19 @@ function () {
         var apiManage = new _apiManage.ApiManage(form.getAttribute('method'), form.getAttribute('action'));
         var formData = new FormData(form);
         var object = {};
-        object.sequences = [];
+        object.scenarioSequences = [];
         formData.forEach(function (value, key) {
           if (key.startsWith('sequence-')) {
-            object.sequences.push({
-              "id": value
+            var scenarioSequenceId = key.split('-')[1];
+            object.scenarioSequences.push({
+              "id": scenarioSequenceId,
+              "sequenceId": value
             });
           } else {
             object[key] = value;
           }
         });
+        console.log(object);
         apiManage.sendObject(JSON.stringify(object), function (request) {
           _this4.responseManagement(request);
         });
@@ -217,7 +212,7 @@ function () {
 
 exports.Scenarios = Scenarios;
 
-},{"../utils/apiManage":5,"./templates/scenario-template":2,"./templates/sequence-select-template":3}],2:[function(require,module,exports){
+},{"../utils/apiManage":5,"./templates/scenario-template":3,"./templates/sequence-select-template":4}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -257,7 +252,7 @@ function () {
 
 exports.ScenarioTemplate = ScenarioTemplate;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -280,14 +275,14 @@ function () {
 
   _createClass(SequenceRowTemplate, null, [{
     key: "render",
-    value: function render(scenario, sequences, index) {
+    value: function render(scenario, sequences, scenarioSequenceId) {
       var idSelected = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
 
       if (!scenario || !sequences) {
         return;
       }
 
-      var template = "\n<div class=\"col s6\">\n    <label for=\"sequence-select-".concat(index, "\">Sequence</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"sequence-").concat(index, "\" id=\"sequence-select-").concat(index, "\">");
+      var template = "\n<div class=\"col s6\">\n    <label for=\"sequence-select-".concat(scenarioSequenceId, "\">Sequence</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"sequence-").concat(scenarioSequenceId, "\" id=\"sequence-select-").concat(scenarioSequenceId, "\">");
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -318,7 +313,7 @@ function () {
         }
       }
 
-      template += "</select>\n    </div>\n</div>\n\n<label class=\"active\" for=\"scenario-sequence-delete\">*</label>\n<i id=\"scenario-sequence-delete\" class=\"material-icons secondaryTextColor col s2 delete\">delete</i>\n";
+      template += "</select>\n    </div>\n</div>\n\n<i id=\"scenario-sequence-delete\" data-id=\"".concat(scenarioSequenceId, "\" class=\"material-icons secondaryTextColor col s2 delete\">delete</i>\n");
       return template;
     }
   }]);
@@ -328,18 +323,7 @@ function () {
 
 exports.SequenceRowTemplate = SequenceRowTemplate;
 
-},{}],4:[function(require,module,exports){
-"use strict";
-
-var _scenarioComponent = require("./scenarios/scenario-component");
-
-$(document).ready(function () {
-  $('select').material_select();
-});
-var scenarios = new _scenarioComponent.Scenarios();
-scenarios.init();
-
-},{"./scenarios/scenario-component":1}],5:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -400,4 +384,4 @@ function () {
 
 exports.ApiManage = ApiManage;
 
-},{}]},{},[4]);
+},{}]},{},[1]);

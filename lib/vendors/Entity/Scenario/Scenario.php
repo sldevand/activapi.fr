@@ -16,6 +16,11 @@ class Scenario extends Entity
     protected $nom;
 
     /**
+     * @var ScenarioSequence[] $scenarioSequences
+     */
+    protected $scenarioSequences;
+
+    /**
      * @var Sequence[] $sequences
      */
     protected $sequences;
@@ -88,6 +93,25 @@ class Scenario extends Entity
     public function removeSequence($nom)
     {
         unset($this->sequences[$nom]);
+
+        return $this;
+    }
+
+    /**
+     * @return ScenarioSequence[]
+     */
+    public function getScenarioSequences()
+    {
+        return $this->scenarioSequences;
+    }
+
+    /**
+     * @param ScenarioSequence[] $scenarioSequences
+     * @return Scenario
+     */
+    public function setScenarioSequences($scenarioSequences)
+    {
+        $this->scenarioSequences = $scenarioSequences;
 
         return $this;
     }
