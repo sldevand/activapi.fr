@@ -4,6 +4,7 @@ namespace App\Backend\Modules\Scenarios;
 
 use App\Backend\Modules\AbstractScenarioManagersController;
 use Entity\Scenario\Scenario;
+use Entity\Scenario\ScenarioSequence;
 use Exception;
 use OCFram\Application;
 use OCFram\HTTPRequest;
@@ -83,7 +84,14 @@ class ScenariosController extends AbstractScenarioManagersController
         $scenarioSequences = [];
         if ($jsonPost['scenarioSequences']) {
             foreach ($jsonPost['scenarioSequences'] as $scenarioSequence) {
-                $scenarioSequences[] = $this->getScenarioSequenceManager()->getUnique($scenarioSequence['id']);
+                if (!empty($scenarioSequence['id']) && $scenarioSequence['id'] !== 'null') {
+                    $scenarioSequences[] = $this->getScenarioSequenceManager()->getUnique($scenarioSequence['id']);
+                } else {
+                    $scenarioSequences[] = new ScenarioSequence([
+                        'scenarioId' => $jsonPost['id'],
+                        'sequenceId' => $scenarioSequence['sequenceId']
+                    ]);
+                }
             }
         }
 
