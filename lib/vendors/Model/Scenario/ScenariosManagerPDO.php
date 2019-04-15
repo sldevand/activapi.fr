@@ -110,7 +110,7 @@ class ScenariosManagerPDO extends ManagerPDO
     {
         parent::delete($id);
 
-        return $this->deleteScenarioSequence($id);
+        return $this->deleteScenarioSequences($id);
     }
 
     /**
@@ -160,7 +160,7 @@ class ScenariosManagerPDO extends ManagerPDO
      * @return bool
      * @throws \Exception
      */
-    public function deleteScenarioSequence($scenarioId)
+    public function deleteScenarioSequences($scenarioId)
     {
         $sql = 'DELETE FROM scenario_sequence
                 WHERE scenarioId = :scenarioId;';

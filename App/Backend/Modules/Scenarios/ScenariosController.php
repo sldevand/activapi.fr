@@ -41,7 +41,7 @@ class ScenariosController extends AbstractScenarioManagersController
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkJsonBodyId($jsonPost);
             $entity = new $this->entity($jsonPost);
-            $entity->setScenarioSequences($this->fetchScenarioSequences($jsonPost));
+            $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
             $entityId = $this->manager->save($entity);
             $persisted = $this->manager->getUnique($entityId);
             http_response_code(201);
@@ -63,7 +63,7 @@ class ScenariosController extends AbstractScenarioManagersController
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkNotJsonBodyId($jsonPost);
             $entity = new $this->entity($jsonPost);
-            $entity->setScenarioSequences($this->fetchScenarioSequences($jsonPost));
+            $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
             $entityId = $this->manager->save($entity);
             $persisted = $this->manager->getUnique($entityId);
             http_response_code(202);
@@ -76,23 +76,22 @@ class ScenariosController extends AbstractScenarioManagersController
 
     /**
      * @param array $jsonPost
-     * @return array
+     * @return array|bool
      * @throws Exception
      */
-    protected function fetchScenarioSequences($jsonPost)
+    protected function getScenarioSequences($jsonPost)
     {
+        if (empty($jsonPost['scenarioSequences'])) {
+            return false;
+        }
+
         $scenarioSequences = [];
-        if ($jsonPost['scenarioSequences']) {
-            foreach ($jsonPost['scenarioSequences'] as $scenarioSequence) {
-                if (!empty($scenarioSequence['id']) && $scenarioSequence['id'] !== 'null') {
-                    $scenarioSequences[] = $this->getScenarioSequenceManager()->getUnique($scenarioSequence['id']);
-                } else {
-                    $scenarioSequences[] = new ScenarioSequence([
-                        'scenarioId' => $jsonPost['id'],
-                        'sequenceId' => $scenarioSequence['sequenceId']
-                    ]);
-                }
-            }
+        foreach ($jsonPost['scenarioSequences'] as $scenarioSequence) {
+            $scenarioSequences[] = new ScenarioSequence([
+                'id' => $scenarioSequence['id'],
+                'scenarioId' => $jsonPost['id'],
+                'sequenceId' => $scenarioSequence['sequenceId']
+            ]);
         }
 
         return $scenarioSequences;
