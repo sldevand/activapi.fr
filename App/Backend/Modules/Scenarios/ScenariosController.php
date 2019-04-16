@@ -63,6 +63,7 @@ class ScenariosController extends AbstractScenarioManagersController
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkNotJsonBodyId($jsonPost);
             $entity = new $this->entity($jsonPost);
+            $this->deleteScenarioSequences($jsonPost);
             $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
             $entityId = $this->manager->save($entity);
             $persisted = $this->manager->getUnique($entityId);
@@ -92,6 +93,25 @@ class ScenariosController extends AbstractScenarioManagersController
                 'scenarioId' => $jsonPost['id'],
                 'sequenceId' => $scenarioSequence['sequenceId']
             ]);
+        }
+
+        return $scenarioSequences;
+    }
+
+    /**
+     * @param array $jsonPost
+     * @return array|bool
+     * @throws Exception
+     */
+    protected function deleteScenarioSequences($jsonPost)
+    {
+        if (empty($jsonPost['deletedScenarioSequences'])) {
+            return false;
+        }
+
+        $scenarioSequences = [];
+        foreach ($jsonPost['deletedScenarioSequences'] as $deletedScenarioSequence) {
+            $this->getScenarioSequenceManager()->delete($deletedScenarioSequence);
         }
 
         return $scenarioSequences;

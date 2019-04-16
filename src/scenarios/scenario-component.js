@@ -74,7 +74,9 @@ export class Scenarios {
         deleteButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.removeRow(e.target.parentNode);
-            this.addDeletionInput(e.target.dataset.id);
+            if (e.target.dataset.id !== 'null') {
+                this.addDeletionInput(e.target.dataset.id);
+            }
         });
     }
 
@@ -92,16 +94,17 @@ export class Scenarios {
             let formData = new FormData(form);
             let object = {};
             object.scenarioSequences = [];
+            object.deletedScenarioSequences = [];
             formData.forEach((value, key) => {
                 if (key.startsWith('sequence-')) {
                     let scenarioSequenceId = key.split('-')[1];
                     object.scenarioSequences.push({"id": scenarioSequenceId, "sequenceId": value});
+                } else if (key.startsWith('deleted-scenarioSequence-')) {
+                    object.deletedScenarioSequences.push(value);
                 } else {
-                    object[key] = value
+                    object[key] = value;
                 }
             });
-
-            console.log(object);
             apiManage.sendObject(JSON.stringify(object), (request) => {
                 this.responseManagement(request)
             });
