@@ -35,7 +35,7 @@ export class Sequences {
     }
 
     addRow(sequenceActionId = null, selectedActionId = null) {
-        const actions = document.querySelector('#actions');
+        const actions = document.querySelector('#sequence-content #actions');
         const elt = document.createElement('div');
         elt.classList.add('row');
         elt.id = 'action-row-' + sequenceActionId;
@@ -54,7 +54,7 @@ export class Sequences {
     }
 
     addDeletionInput(itemId) {
-        const actions = document.querySelector('#actions');
+        const actions = document.querySelector('#sequence-content #actions');
         const elt = document.createElement('input');
         elt.setAttribute('value', itemId);
         elt.setAttribute('name', 'deleted-sequenceAction-' + itemId);

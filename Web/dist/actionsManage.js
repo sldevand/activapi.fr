@@ -57,9 +57,8 @@ function () {
         }
 
         _this.actionneurs = actionneurs;
-        var actionneurId = _this.action.actionneurId;
 
-        _this.addRow(actionneurId);
+        _this.addRow(_this.action.actionneurId);
 
         _this.initForm();
       }).catch(function (err) {
@@ -102,17 +101,8 @@ function () {
         var apiManage = new _apiManage.ApiManage(form.getAttribute('method'), form.getAttribute('action'));
         var formData = new FormData(form);
         var object = {};
-        object.sequenceActions = [];
         formData.forEach(function (value, key) {
-          if (key.startsWith('action-')) {
-            var sequenceActionId = key.split('-')[1];
-            object.sequenceActions.push({
-              "id": sequenceActionId,
-              "actionId": value
-            });
-          } else {
-            object[key] = value;
-          }
+          object[key] = value;
         });
         apiManage.sendObject(JSON.stringify(object), function (request) {
           _this2.responseManagement(request);
@@ -153,7 +143,7 @@ function () {
     key: "makeToast",
     value: function makeToast(jsonResponse, crudOperation) {
       return Materialize.toast(jsonResponse.nom + " " + crudOperation, 700, '', function () {
-        window.location.replace('sequences');
+        window.location.replace('actions');
       });
     }
   }]);
@@ -194,7 +184,7 @@ function () {
 
       action.id = action.id || 0;
       action.nom = action.nom || '';
-      return "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label for=\"action-name-".concat(action.id, "\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"action-name-").concat(action.id, "\" value=\"").concat(action.nom, "\" required>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div id=\"actionneur\" class=\"s12\"></div>\n    </div>\n");
+      return "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label for=\"action-name-".concat(action.id, "\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"action-name-").concat(action.id, "\" value=\"").concat(action.nom, "\" required>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div id=\"actionneur\" class=\"col s8\"></div>\n         <div class=\"col s4\">\n            <label for=\"etat\" class=\"active\">Etat</label>\n            <input type=\"number\" name=\"etat\" id=\"etat\" value=\"").concat(action.etat, "\" required>\n        </div>\n    </div>\n");
     }
   }]);
 
@@ -233,7 +223,7 @@ function () {
         return;
       }
 
-      var template = "\n<div class=\"col s6\">\n    <label for=\"action-select\">Actionneur</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"actionneur\" id=\"actionneur-select\">";
+      var template = "\n<div class=\"col s12\">\n    <label for=\"action-select\">Actionneur</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"actionneurId\" id=\"actionneur-select\">";
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;

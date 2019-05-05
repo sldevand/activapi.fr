@@ -23,10 +23,7 @@ export class Actions {
                     return;
                 }
                 this.actionneurs = actionneurs;
-                let actionneurId = this.action.actionneurId;
-
-                this.addRow(actionneurId);
-
+                this.addRow(this.action.actionneurId);
                 this.initForm();
             })
             .catch(err => console.log(err))
@@ -59,15 +56,8 @@ export class Actions {
 
             let formData = new FormData(form);
             let object = {};
-            object.sequenceActions = [];
-
             formData.forEach((value, key) => {
-                if (key.startsWith('action-')) {
-                    let sequenceActionId = key.split('-')[1];
-                    object.sequenceActions.push({"id": sequenceActionId, "actionId": value});
-                } else {
-                    object[key] = value;
-                }
+                object[key] = value;
             });
             apiManage.sendObject(JSON.stringify(object), (request) => {
                 this.responseManagement(request)
@@ -105,7 +95,7 @@ export class Actions {
             700,
             '',
             () => {
-                window.location.replace('sequences');
+                window.location.replace('actions');
             }
         );
     }

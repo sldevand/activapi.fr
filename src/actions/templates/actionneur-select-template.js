@@ -4,10 +4,10 @@ export class ActionneurRowTemplate {
             return;
         }
         let template = `
-<div class="col s6">
+<div class="col s12">
     <label for="action-select">Actionneur</label>
     <div class="select-wrapper"><span class="caret">▼</span>
-        <select name="actionneur" id="actionneur-select">`;
+        <select name="actionneurId" id="actionneur-select">`;
         for (let actionneur of actionneurs) {
             let selected = '';
             if (actionneur.id === idSelected) {

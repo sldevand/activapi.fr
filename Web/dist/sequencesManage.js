@@ -77,7 +77,7 @@ function () {
     value: function addRow() {
       var sequenceActionId = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var selectedActionId = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var actions = document.querySelector('#actions');
+      var actions = document.querySelector('#sequence-content #actions');
       var elt = document.createElement('div');
       elt.classList.add('row');
       elt.id = 'action-row-' + sequenceActionId;
@@ -101,7 +101,7 @@ function () {
   }, {
     key: "addDeletionInput",
     value: function addDeletionInput(itemId) {
-      var actions = document.querySelector('#actions');
+      var actions = document.querySelector('#sequence-content #actions');
       var elt = document.createElement('input');
       elt.setAttribute('value', itemId);
       elt.setAttribute('name', 'deleted-sequenceAction-' + itemId);

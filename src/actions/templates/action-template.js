@@ -15,7 +15,11 @@ export class ActionTemplate {
         </div>
     </div>
     <div class="row">
-        <div id="actionneur" class="s12"></div>
+        <div id="actionneur" class="col s8"></div>
+         <div class="col s4">
+            <label for="etat" class="active">Etat</label>
+            <input type="number" name="etat" id="etat" value="${action.etat}" required>
+        </div>
     </div>
 `;
     }
