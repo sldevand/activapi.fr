@@ -20,7 +20,10 @@
                 <a id="menubutton" data-activates="slide-out" class="button-collapse show-on-large">
                     <i class="material-icons">menu</i>
                 </a>
-                <i id="ioconnection" class="valign material-icons z-depth-1 circle red lighten-3 red-text right">fiber_manual_record</i>
+                <i id="ioconnection"
+                   class="valign material-icons z-depth-1 circle red lighten-3 red-text right">
+                    fiber_manual_record
+                </i>
             </div>
         </div>
     </nav>
@@ -30,7 +33,10 @@
     </ul>
 
     <div id="maincontent" class="container-light">
-        <?php if ($user->hasFlash()) echo '<p style="text-align: center;">', $user->getFlash(), '</p>'; ?>
+        <?php if ($user->hasFlash()) {
+            echo '<p style="text-align: center;">', $user->getFlash(), '</p>';
+        }
+        ?>
         <?= $content ?>
     </div>
 
