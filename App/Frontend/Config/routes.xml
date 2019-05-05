@@ -34,16 +34,17 @@
     <route url="\/activapi.fr\/scenarios-?([0-9]*)?\/?" module="Scenarios" action="index" vars="id" />
     <route url="\/activapi.fr\/scenarios-add" module="Scenarios" action="edit"/>
     <route url="\/activapi.fr\/scenarios-delete-([0-9]+)" module="Scenarios" action="delete"  vars="id"  />
-    <route url="\/activapi.fr\/scenarios-delete-item" module="Scenarios" action="deleteitem"  />
     <route url="\/activapi.fr\/scenarios-edit-([0-9]+)" module="Scenarios" action="edit" vars="id"  />
-    <route url="\/activapi.fr\/scenarios-edit-item" module="Scenarios" action="edititem"  />
 
     <route url="\/activapi.fr\/sequences-?([0-9]*)?\/?" module="Sequences" action="index" vars="id" />
     <route url="\/activapi.fr\/sequences-add" module="Sequences" action="edit"/>
     <route url="\/activapi.fr\/sequences-delete-([0-9]+)" module="Sequences" action="delete"  vars="id"  />
-    <route url="\/activapi.fr\/sequences-delete-item" module="Sequences" action="deleteitem"  />
     <route url="\/activapi.fr\/sequences-edit-([0-9]+)" module="Sequences" action="edit" vars="id"  />
-    <route url="\/activapi.fr\/sequences-edit-item" module="Sequences" action="edititem"  />
+
+    <route url="\/activapi.fr\/actions-?([0-9]*)?\/?" module="Actions" action="index" vars="id" />
+    <route url="\/activapi.fr\/actions-add" module="Actions" action="edit"/>
+    <route url="\/activapi.fr\/actions-delete-([0-9]+)" module="Actions" action="delete"  vars="id"  />
+    <route url="\/activapi.fr\/actions-edit-([0-9]+)" module="Actions" action="edit" vars="id"  />
 
     <route url="\/activapi.fr\/console" module="Console" action="index"/>
 </routes>

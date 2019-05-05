@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Frontend\Modules\Sequences;
+namespace App\Frontend\Modules\Actions;
 
-use App\Backend\Modules\Sequences\SequencesController as SequencesBackController;
+use App\Backend\Modules\Actions\ActionsController as ActionsBackController;
 use App\Frontend\Modules\FormView;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
@@ -11,10 +11,10 @@ use Materialize\WidgetFactory;
 use OCFram\HTTPRequest;
 
 /**
- * Class SequencesController
- * @package App\Frontend\Modules\Sequences
+ * Class ActionsController
+ * @package App\Frontend\Modules\Actions
  */
-class SequencesController extends SequencesBackController
+class ActionsController extends ActionsBackController
 {
     use FormView;
 
@@ -24,71 +24,71 @@ class SequencesController extends SequencesBackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $sequences = parent::executeGet($request);
+        $actions = parent::executeGet($request);
 
-        $this->page->addVar('title', 'Gestion des sequences');
+        $this->page->addVar('title', 'Gestion des actions');
 
         $cards = [];
-        $cards[] = $this->makeSequencesWidget($sequences);
-        $addSequenceFab = new FloatingActionButton([
-            'id' => "addSequenceFab",
+        $cards[] = $this->makeActionsWidget($actions);
+        $addActionFab = new FloatingActionButton([
+            'id' => "addActionFab",
             'fixed' => true,
             'icon' => "add",
-            'href' => "../activapi.fr/sequences-add"
+            'href' => "../activapi.fr/actions-add"
         ]);
 
         $this->page->addVar('cards', $cards);
-        $this->page->addVar('addSequenceFab', $addSequenceFab);
+        $this->page->addVar('addActionFab', $addActionFab);
     }
 
     /**
-     * @param array $sequences
+     * @param array $actions
      * @return \Materialize\Card\Card
      */
-    public function makeSequencesWidget($sequences)
+    public function makeActionsWidget($actions)
     {
-        $domId = 'Sequences';
-        $sequences = json_decode(json_encode($sequences), true);
+        $domId = 'Actions';
+        $actions = json_decode(json_encode($actions), true);
         $card = WidgetFactory::makeCard($domId, $domId);
-        if (!$sequences) {
-            $card->addContent('Pas de sequences');
+        if (!$actions) {
+            $card->addContent("Pas d'actions");
             return $card;
         }
-        $table = $this->createSequencesTable($sequences, 'sequences-table');
+        $table = $this->createActionsTable($actions, 'actions-table');
         $card->addContent($table->getHtml());
 
         return $card;
     }
 
     /**
-     * @param array $sequences
+     * @param array $actions
      * @param string $domId
      * @return \Materialize\Table
      */
-    public function createSequencesTable($sequences, $domId)
+    public function createActionsTable($actions, $domId)
     {
-        $sequencesData = [];
-        foreach ($sequences as $sequence) {
+        $actionsData = [];
+        foreach ($actions as $action) {
             $linkEdit = new Link(
                 '',
-                "../activapi.fr/sequences-edit-" . $sequence["id"],
+                "../activapi.fr/actions-edit-" . $action["id"],
                 'edit',
                 'primaryTextColor'
             );
             $linkDelete = new Link(
                 '',
-                "../activapi.fr/sequences-delete-" . $sequence["id"],
+                "../activapi.fr/actions-delete-" . $action["id"],
                 'delete',
                 'secondaryTextColor'
             );
-            $sequence["editer"] = $linkEdit->getHtmlForTable();
-            $sequence["supprimer"] = $linkDelete->getHtmlForTable();
-            $sequencesData[] = $sequence;
+            $action["editer"] = $linkEdit->getHtmlForTable();
+            $action["supprimer"] = $linkDelete->getHtmlForTable();
+            $actionsData[] = $action;
         }
 
-        $hideColumns = ['data', 'actions'];
+        $hideColumns = ['data','actionneurId','actionneur','etat'];
 
-        return WidgetFactory::makeTable($domId, $sequencesData, true, $hideColumns);
+        return WidgetFactory::makeTable($domId, $actionsData, true, $hideColumns);
     }
 
     /**
@@ -97,20 +97,20 @@ class SequencesController extends SequencesBackController
      */
     public function executeDelete($request)
     {
-        $manager = $this->getSequencesManager();
+        $manager = $this->getActionManager();
 
         $domId = 'Suppression';
         if ($request->method() == 'POST') {
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/sequences');
+                $this->app->httpResponse()->redirect('../activapi.fr/actions');
             }
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/sequences",
+            "../activapi.fr/actions",
             "arrow_back",
             "white-text",
             "white-text"
@@ -121,7 +121,7 @@ class SequencesController extends SequencesBackController
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->deleteFormView());
 
-        $this->page->addVar('title', "Suppression de la Séquence");
+        $this->page->addVar('title', "Suppression de l'Action");
         $this->page->addVar('card', $card);
     }
 
@@ -136,11 +136,11 @@ class SequencesController extends SequencesBackController
             $domId = 'Ajout';
         }
 
-        $this->page->addVar('title', "$domId de la Séquence");
+        $this->page->addVar('title', "$domId de l'Action");
 
         $link = new Link(
             $domId,
-            "../activapi.fr/sequences",
+            "../activapi.fr/actions",
             "arrow_back",
             "white-text",
             "white-text"
@@ -157,7 +157,7 @@ class SequencesController extends SequencesBackController
         );
         $cardTitle = $link->getHtml();
         $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $formBlock = $this->getBlock(__DIR__ . '/Block/sequencesForm.phtml', $id, $submitButton);
+        $formBlock = $this->getBlock(__DIR__ . '/Block/actionsForm.phtml', $id, $submitButton);
         $card->addContent($formBlock);
         $cards = [];
         $cards[] = $card;
