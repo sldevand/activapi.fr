@@ -46,7 +46,7 @@ function () {
         return data.json();
       }).then(function (sequence) {
         _this.sequence = sequence;
-        document.querySelector('#sequence-content').innerHTML = _this.createScenarioTemplate();
+        document.querySelector('#sequence-content').innerHTML = _this.createSequenceTemplate();
         return fetch('api/actions/');
       }).then(function (data) {
         return data.json();
@@ -100,12 +100,12 @@ function () {
   }, {
     key: "addDeletionInput",
     value: function addDeletionInput(itemId) {
-      var sequences = document.querySelector('#sequences');
+      var actions = document.querySelector('#actions');
       var elt = document.createElement('input');
       elt.setAttribute('value', itemId);
-      elt.setAttribute('name', 'deleted-scenarioSequence-' + itemId);
+      elt.setAttribute('name', 'deleted-sequenceAction-' + itemId);
       elt.hidden = true;
-      sequences.appendChild(elt);
+      actions.appendChild(elt);
     }
   }, {
     key: "initActionAddListener",
@@ -136,8 +136,8 @@ function () {
       });
     }
   }, {
-    key: "createScenarioTemplate",
-    value: function createScenarioTemplate() {
+    key: "createSequenceTemplate",
+    value: function createSequenceTemplate() {
       return _sequenceTemplate.SequenceTemplate.render(this.sequence);
     }
   }, {
@@ -152,17 +152,17 @@ function () {
         var apiManage = new _apiManage.ApiManage(form.getAttribute('method'), form.getAttribute('action'));
         var formData = new FormData(form);
         var object = {};
-        object.scenarioSequences = [];
-        object.deletedScenarioSequences = [];
+        object.sequenceActions = [];
+        object.deletedSequenceActions = [];
         formData.forEach(function (value, key) {
-          if (key.startsWith('sequence-')) {
-            var scenarioSequenceId = key.split('-')[1];
-            object.scenarioSequences.push({
-              "id": scenarioSequenceId,
-              "sequenceId": value
+          if (key.startsWith('action-')) {
+            var sequenceActionId = key.split('-')[1];
+            object.sequenceActions.push({
+              "id": sequenceActionId,
+              "actionId": value
             });
-          } else if (key.startsWith('deleted-scenarioSequence-')) {
-            object.deletedScenarioSequences.push(value);
+          } else if (key.startsWith('deleted-sequenceAction-')) {
+            object.deletedSequenceActions.push(value);
           } else {
             object[key] = value;
           }
@@ -205,8 +205,7 @@ function () {
   }, {
     key: "makeToast",
     value: function makeToast(jsonResponse, crudOperation) {
-      return Materialize.toast(jsonResponse.nom + " " + crudOperation, 700, '', function () {
-        window.location.replace('sequences');
+      return Materialize.toast(jsonResponse.nom + " " + crudOperation, 700, '', function () {//window.location.replace('sequences');
       });
     }
   }]);

@@ -16,6 +16,11 @@ class Sequence extends Entity
     protected $nom;
 
     /**
+     * @var SequenceAction[] $sequenceActions
+     */
+    protected $sequenceActions;
+
+    /**
      * @var Action[] $actions
      */
     protected $actions;
@@ -48,6 +53,24 @@ class Sequence extends Entity
     {
         $this->nom = $nom;
 
+        return $this;
+    }
+
+    /**
+     * @return SequenceAction[]
+     */
+    public function getSequenceActions()
+    {
+        return $this->sequenceActions;
+    }
+
+    /**
+     * @param SequenceAction[] $sequenceActions
+     * @return Sequence
+     */
+    public function setSequenceActions($sequenceActions)
+    {
+        $this->sequenceActions = $sequenceActions;
         return $this;
     }
 

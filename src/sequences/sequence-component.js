@@ -11,7 +11,7 @@ export class Sequences {
             })
             .then((sequence) => {
                 this.sequence = sequence;
-                document.querySelector('#sequence-content').innerHTML = this.createScenarioTemplate();
+                document.querySelector('#sequence-content').innerHTML = this.createSequenceTemplate();
                 return fetch('api/actions/');
             })
             .then((data) => {
@@ -25,6 +25,7 @@ export class Sequences {
                 this.actions = actions;
                 for (let sequenceActionId in this.sequence.actions) {
                     let actionId = this.sequence.actions[sequenceActionId].id;
+
                     this.addRow(sequenceActionId, actionId);
                 }
                 this.initActionAddListener();
@@ -53,12 +54,12 @@ export class Sequences {
     }
 
     addDeletionInput(itemId) {
-        const sequences = document.querySelector('#sequences');
+        const actions = document.querySelector('#actions');
         const elt = document.createElement('input');
         elt.setAttribute('value', itemId);
-        elt.setAttribute('name', 'deleted-scenarioSequence-' + itemId);
+        elt.setAttribute('name', 'deleted-sequenceAction-' + itemId);
         elt.hidden = true;
-        sequences.appendChild(elt);
+        actions.appendChild(elt);
     }
 
     initActionAddListener() {
@@ -80,7 +81,7 @@ export class Sequences {
         });
     }
 
-    createScenarioTemplate() {
+    createSequenceTemplate() {
         return SequenceTemplate.render(this.sequence);
     }
 
@@ -93,14 +94,14 @@ export class Sequences {
 
             let formData = new FormData(form);
             let object = {};
-            object.scenarioSequences = [];
-            object.deletedScenarioSequences = [];
+            object.sequenceActions = [];
+            object.deletedSequenceActions = [];
             formData.forEach((value, key) => {
-                if (key.startsWith('sequence-')) {
-                    let scenarioSequenceId = key.split('-')[1];
-                    object.scenarioSequences.push({"id": scenarioSequenceId, "sequenceId": value});
-                } else if (key.startsWith('deleted-scenarioSequence-')) {
-                    object.deletedScenarioSequences.push(value);
+                if (key.startsWith('action-')) {
+                    let sequenceActionId = key.split('-')[1];
+                    object.sequenceActions.push({"id": sequenceActionId, "actionId": value});
+                } else if (key.startsWith('deleted-sequenceAction-')) {
+                    object.deletedSequenceActions.push(value);
                 } else {
                     object[key] = value;
                 }
@@ -141,7 +142,7 @@ export class Sequences {
             700,
             '',
             () => {
-                window.location.replace('sequences');
+                //window.location.replace('sequences');
             }
         );
     }

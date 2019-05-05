@@ -34,7 +34,7 @@ export class Scenarios {
     }
 
     addRow(scenarioSequenceId = null, selectedSequenceId = null) {
-        const sequences = document.querySelector('#sequences');
+        const sequences = document.querySelector('#scenario-content #sequences');
         const elt = document.createElement('div');
         elt.classList.add('row');
         elt.id = 'sequence-row-' + scenarioSequenceId;
@@ -53,7 +53,7 @@ export class Scenarios {
     }
 
     addDeletionInput(itemId) {
-        const sequences = document.querySelector('#sequences');
+        const sequences = document.querySelector('#scenario-content #sequences');
         const elt = document.createElement('input');
         elt.setAttribute('value', itemId);
         elt.setAttribute('name', 'deleted-scenarioSequence-' + itemId);
