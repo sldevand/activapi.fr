@@ -121,7 +121,7 @@ class SequencesController extends SequencesBackController
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->deleteFormView());
 
-        $this->page->addVar('title', "Suppression du Sequence");
+        $this->page->addVar('title', "Suppression de la Séquence");
         $this->page->addVar('card', $card);
     }
 

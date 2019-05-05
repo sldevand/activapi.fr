@@ -4,7 +4,6 @@ namespace Model\Scenario;
 
 use Entity\Scenario\Action;
 use Entity\Scenario\Sequence;
-use Entity\Scenario\SequenceAction;
 use Model\ManagerPDO;
 
 /**
@@ -45,18 +44,16 @@ class SequencesManagerPDO extends ManagerPDO
      */
     public function save($sequence, $ignoreProperties = [])
     {
-        parent::save($sequence, ['actions','sequenceActions']);
+
+        parent::save($sequence, ['actions', 'sequenceActions']);
         $sequenceId = $this->getSequenceId($sequence);
-        if (!$actions = $sequence->getActions()) {
+
+        if (!$sequenceActions = $sequence->getSequenceActions()) {
             return $sequenceId;
         }
 
-        foreach ($actions as $action) {
-            $actionId = $this->actionManagerPDO->getActionId($action);
-            $this->sequenceActionManagerPDO->save(new SequenceAction([
-                'sequenceId' => $sequenceId,
-                'actionId' => $actionId
-            ]));
+        foreach ($sequenceActions as $sequenceAction) {
+            $this->sequenceActionManagerPDO->save($sequenceAction);
         }
 
         return $sequenceId;
@@ -138,16 +135,15 @@ class SequencesManagerPDO extends ManagerPDO
 
         $q = $this->prepare($sql);
         $q->bindValue(':sequenceId', $sequenceId);
-
         $q->execute();
 
-        $actions = [];
-        $rows = $q->fetchAll();
+        if (!$rows = $q->fetchAll()) {
+            return [];
+        }
 
-        if ($rows) {
-            foreach ($rows as $row) {
-                $actions[] = $this->actionManagerPDO->getUnique($row['actionId']);
-            }
+        $actions = [];
+        foreach ($rows as $row) {
+            $actions[$row[0]] = $this->actionManagerPDO->getUnique($row['actionId']);
         }
 
         return $actions;

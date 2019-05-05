@@ -26,6 +26,7 @@ class SequenceAction extends Entity
     public function jsonSerialize()
     {
         return [
+            'id' => $this->id(),
             'actionId' => $this->getActionId(),
             'sequenceId' => $this->getSequenceId()
         ];

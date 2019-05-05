@@ -25,7 +25,7 @@ export class Sequences {
                 this.actions = actions;
                 for (let sequenceActionId in this.sequence.actions) {
                     let actionId = this.sequence.actions[sequenceActionId].id;
-
+                    console.log(this.sequence.actions);
                     this.addRow(sequenceActionId, actionId);
                 }
                 this.initActionAddListener();
@@ -142,7 +142,7 @@ export class Sequences {
             700,
             '',
             () => {
-                //window.location.replace('sequences');
+                window.location.replace('sequences');
             }
         );
     }

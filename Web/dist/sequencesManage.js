@@ -60,6 +60,7 @@ function () {
 
         for (var sequenceActionId in _this.sequence.actions) {
           var actionId = _this.sequence.actions[sequenceActionId].id;
+          console.log(_this.sequence.actions);
 
           _this.addRow(sequenceActionId, actionId);
         }
@@ -205,7 +206,8 @@ function () {
   }, {
     key: "makeToast",
     value: function makeToast(jsonResponse, crudOperation) {
-      return Materialize.toast(jsonResponse.nom + " " + crudOperation, 700, '', function () {//window.location.replace('sequences');
+      return Materialize.toast(jsonResponse.nom + " " + crudOperation, 700, '', function () {
+        window.location.replace('sequences');
       });
     }
   }]);
