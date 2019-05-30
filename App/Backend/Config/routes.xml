@@ -8,7 +8,7 @@
 	<route url="\/activapi.fr\/api\/mesures\/get-(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])" module="Mesures" action="sensorStruct" vars="radioid" />
 	<route url="\/activapi.fr\/api\/mesures\/get-sensors(?:\/)?(thermo|thermostat|teleinfo)?" module="Mesures" action="sensors" vars="categorie"/>
 
-	<route url="\/activapi.fr\/api\/actionneurs\/(inter|dimmer|multiplug|thermostat)?" module="Actionneurs" action="index" vars="categorie"/>
+	<route url="\/activapi.fr\/api\/actionneurs\/?(inter|dimmer|multiplug|thermostat)?" module="Actionneurs" action="index" vars="categorie"/>
 	<route url="\/activapi.fr\/api\/actionneurs\/add" module="Actionneurs" action="insert" />
 	<route url="\/activapi.fr\/api\/actionneurs\/update" module="Actionneurs" action="update" />
 
@@ -28,7 +28,7 @@
 	<route url="\/activapi.fr\/api\/actions\/update" module="Actions" action="put" />
 
 
-	<route url="\/activapi.fr\/api\/thermostat" module="Thermostat" action="index" />
+	<route url="\/activapi.fr\/api\/thermostat\/?" module="Thermostat" action="index" />
 	<route url="\/activapi.fr\/api\/thermostat\/update" module="Thermostat" action="update" />
 	<route url="\/activapi.fr\/api\/thermostat\/log\/([0-9]{4}-[0-9]{2}-[0-9]{2})?-?([0-9]{4}-[0-9]{2}-[0-9]{2})?" module="Thermostat" action="log" vars="dateMin,dateMax"/>
 	<route url="\/activapi.fr\/api\/thermostat\/log\/refresh" module="Thermostat" action="refreshLog"/>

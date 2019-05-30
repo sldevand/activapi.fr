@@ -167,9 +167,12 @@ class MesuresManagerPDO extends ManagerPDO
         }
 
         $q = $this->prepare($sql);
-        $q->bindValue(':valeur1', $sensorEntity->valeur1());
-        $q->bindValue(':valeur2', $sensorEntity->valeur2());
-        $q->bindParam(':actif', $actif);
+
+        if ($actif) {
+            $q->bindValue(':valeur1', $sensorEntity->valeur1());
+            $q->bindValue(':valeur2', $sensorEntity->valeur2());
+        }
+        $q->bindValue(':actif', $actif);
         $q->bindValue(':radioid', $sensorEntity->radioid());
         $success = $q->execute();
         $q->closeCursor();
