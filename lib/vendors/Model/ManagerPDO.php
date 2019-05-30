@@ -152,6 +152,16 @@ class ManagerPDO extends Manager
     }
 
     /**
+     * @param null $id
+     * @return array
+     * @throws Exception
+     */
+    public function getList($id = null)
+    {
+        return $this->getAll($id);
+    }
+
+    /**
      * @param string $table
      * @return mixed
      * @throws \Exception
