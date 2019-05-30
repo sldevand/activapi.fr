@@ -26,7 +26,7 @@ class ThermostatModesController extends BackController
         $this->page->addVar('title', 'Gestion des Modes');
         $manager = $this->managers->getManagerOf('ThermostatModes');
 
-        $modes = json_decode(json_encode($manager->getList()), TRUE);
+        $modes = json_decode(json_encode($manager->getAll()), true);
         $modesData = [];
         $domId = "Modes";
         $hideColumns = ['id'];
@@ -60,10 +60,10 @@ class ThermostatModesController extends BackController
 
         $cardTitle = $this->syncCardTitleView();
 
-        $cardSyncModes =  WidgetFactory::makeCard('sync-mode-card', $cardTitle);
+        $cardSyncModes = WidgetFactory::makeCard('sync-mode-card', $cardTitle);
 
         /** @var \Materialize\Spinner\Spinner $spinner */
-        $spinner = new Spinner(['id'=>'spinner']);
+        $spinner = new Spinner(['id' => 'spinner']);
         $cardSyncModes->addContent($spinner->getHtml());
 
         $cards[] = $cardModes;
@@ -79,8 +79,7 @@ class ThermostatModesController extends BackController
         $manager = $this->managers->getManagerOf('ThermostatModes');
 
         $domId = 'Suppression';
-        if ($request->method() == 'POST') {
-
+        if ($request->method() === 'POST') {
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
@@ -111,10 +110,8 @@ class ThermostatModesController extends BackController
     public function executeEdit(HTTPRequest $request)
     {
         $manager = $this->managers->getManagerOf('ThermostatModes');
-        $modes = $manager->getList();
         $domId = 'Edition';
         if ($request->method() == 'POST') {
-
             $item = new ThermostatMode([
                 'nom' => $request->postData('nom'),
                 'consigne' => $request->postData('consigne'),
@@ -125,7 +122,6 @@ class ThermostatModesController extends BackController
                 $id = $request->getData('id');
                 $item->setId($id);
             }
-
         } else {
             if ($request->getExists('id')) {
                 $id = $request->getData("id");
@@ -133,10 +129,8 @@ class ThermostatModesController extends BackController
             } else {
                 $domId = 'Ajout';
                 $item = new ThermostatMode();
-
             }
         }
-
         $cards = [];
 
         $tmfb = new ThermostatModesFormBuilder($item);
@@ -149,11 +143,13 @@ class ThermostatModesController extends BackController
             $this->app->httpResponse()->redirect('../activapi.fr/thermostat-modes');
         }
 
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/thermostat-modes",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 
@@ -171,22 +167,5 @@ class ThermostatModesController extends BackController
     public function syncCardTitleView()
     {
         return $this->getBlock(MODULES . '/ThermostatModes/Block/syncCardTitleView.phtml');
-    }
-
-    /**
-     * @return false|string
-     */
-    public function deleteFormView()
-    {
-        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
-    }
-
-    /**
-     * @param $form
-     * @return false|string
-     */
-    public function editFormView($form)
-    {
-        return $this->getBlock(BLOCK . '/editFormView.phtml', $form);
     }
 }

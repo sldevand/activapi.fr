@@ -1,45 +1,108 @@
 <?php
+
 namespace OCFram;
 
+use Exception;
+
+/**
+ * Class HTTPRequest
+ * @package OCFram
+ */
 class HTTPRequest extends ApplicationComponent
 {
-  public function cookieData($key)
-  {
-    return isset($_COOKIE[$key]) ? $_COOKIE[$key] : null;
-  }
+    const POST = 'POST';
+    const PUT = 'PUT';
+    const GET = 'GET';
+    const DELETE = 'DELETE';
 
-  public function cookieExists($key)
-  {
-    return isset($_COOKIE[$key]);
-  }
+    /**
+     * @param string $key
+     * @return null
+     */
+    public function cookieData($key)
+    {
+        return isset($_COOKIE[$key]) ? $_COOKIE[$key] : null;
+    }
 
-  public function getData($key)
-  {
-    return isset($_GET[$key]) ? $_GET[$key] : null;
-  }
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function cookieExists($key)
+    {
+        return isset($_COOKIE[$key]);
+    }
 
-  public function getExists($key)
-  {
-    return isset($_GET[$key]);
-  }
+    /**
+     * @param string $key
+     * @return null
+     */
+    public function getData($key)
+    {
+        return isset($_GET[$key]) ? $_GET[$key] : null;
+    }
 
-  public function method()
-  {
-    return $_SERVER['REQUEST_METHOD'];
-  }
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function getExists($key)
+    {
+        return isset($_GET[$key]);
+    }
 
-  public function postData($key)
-  {
-    return isset($_POST[$key]) ? $_POST[$key] : null;
-  }
+    /**
+     * @return mixed
+     */
+    public function method()
+    {
+        return $_SERVER['REQUEST_METHOD'];
+    }
 
-  public function postExists($key)
-  {
-    return isset($_POST[$key]);
-  }
+    /**
+     * @param string $key
+     * @return null
+     */
+    public function postData($key)
+    {
+        return isset($_POST[$key]) ? $_POST[$key] : null;
+    }
 
-  public function requestURI()
-  {
-    return $_SERVER['REQUEST_URI'];
-  }
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function postExists($key)
+    {
+        return isset($_POST[$key]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function postsExist()
+    {
+        return !empty($_POST);
+    }
+
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function getJsonPost()
+    {
+        if (empty($jsonBody = file_get_contents('php://input'))) {
+            throw new Exception('No JSON body sent from client');
+        }
+
+        return $_POST = json_decode($jsonBody, true);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function requestURI()
+    {
+        return $_SERVER['REQUEST_URI'];
+    }
 }

@@ -1,111 +1,119 @@
 <?php
+
 namespace App\Backend\Modules\Scenarios;
 
-use \OCFram\BackController;
-use \OCFram\HTTPRequest;
-use \Entity\Scenario;
-use \Entity\Actionneur;
+use App\Backend\Modules\AbstractScenarioManagersController;
+use Entity\Scenario\Scenario;
+use Entity\Scenario\ScenarioSequence;
+use Exception;
+use OCFram\Application;
+use OCFram\HTTPRequest;
 
-class ScenariosController extends BackController
+/**
+ * Class ScenariosController
+ * @package App\Backend\Modules\Scenarios
+ */
+class ScenariosController extends AbstractScenarioManagersController
 {
+    /**
+     * ScenariosController constructor.
+     * @param Application $app
+     * @param string $module
+     * @param string $action
+     */
+    public function __construct(Application $app, string $module, string $action)
+    {
+        parent::__construct($app, $module, $action);
 
-  public function executeDelete(HTTPRequest $request)
-  {
-    $id = $request->postData('id');
-    $this->managers->getManagerOf('Scenarios')->delete($id);
-    $this->page->addVar('result', 'Scenario '.$id.'Supprimé');
-  }
+        $this->manager = $this->getScenariosManager();
 
-  public function executeDeleteitem(HTTPRequest $request)
-  {
-    $id = $request->postData('id');
-    $this->managers->getManagerOf('Scenarios')->deleteItem($id);
-    $this->page->addVar('result', 'Item '.$id.'Supprimé');
-  }
+        $this->entity = Scenario::class;
+    }
 
+    /**
+     * @param \OCFram\HTTPRequest $httpRequest
+     * @throws Exception
+     */
+    public function executePost($httpRequest)
+    {
+        try {
+            $this->checkMethod($httpRequest, HTTPRequest::POST);
+            $jsonPost = $httpRequest->getJsonPost();
+            $this->checkJsonBodyId($jsonPost);
+            $entity = new $this->entity($jsonPost);
+            $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
+            $entityId = $this->manager->save($entity);
+            $persisted = $this->manager->getUnique($entityId);
+            http_response_code(201);
+        } catch (Exception $e) {
+            return $this->page->addVar('data', ['error' => $e->getMessage()]);
+        }
 
-  public function executeIndex(HTTPRequest $request)
-  {
-	 
-	$id=$request->getData("id");  	 
-	
-	$scenarioManager = $this->managers->getManagerOf('Scenarios');
-	$actionneursManager = $this->managers->getManagerOf('Actionneurs');
-	
-	if(empty($id)){ $listeScenarios = $scenarioManager->getList();}
-	else{$listeScenarios = $scenarioManager->getScenario($id);}
-	
-	$scenariosTab=[];
+        return $this->page->addVar('data', $persisted);
+    }
 
-	foreach($listeScenarios as $key=>$scenario){
-		$actionneur = $actionneursManager->getUnique($scenario->actionneurid());
-		$listeScenarios[$key]->setActionneur($actionneur);
-		$actionneur->setEtat($listeScenarios[$key]->etat());
-		$scenariosTab[$scenario->scenarioid()]["nom"]=$listeScenarios[$key]->nom();	
-		$scenariosTab[$scenario->scenarioid()]["scenarioid"]=$scenario->scenarioid();
+    /**
+     * @param HTTPRequest $httpRequest
+     * @throws Exception
+     */
+    public function executePut($httpRequest)
+    {
+        try {
+            $this->checkMethod($httpRequest, HTTPRequest::PUT);
+            $jsonPost = $httpRequest->getJsonPost();
+            $this->checkNotJsonBodyId($jsonPost);
+            $entity = new $this->entity($jsonPost);
+            $this->deleteScenarioSequences($jsonPost);
+            $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
+            $entityId = $this->manager->save($entity);
+            $persisted = $this->manager->getUnique($entityId);
+            http_response_code(202);
+        } catch (Exception $e) {
+            return $this->page->addVar('data', ['error' => $e->getMessage()]);
+        }
 
-		$tempActionneur = $listeScenarios[$key]->actionneur();		
-		$scenariosTab[$scenario->scenarioid()]["data"][$scenario->id()]=$tempActionneur;
+        return $this->page->addVar('data', $persisted);
+    }
 
-	}
+    /**
+     * @param array $jsonPost
+     * @return array|bool
+     * @throws Exception
+     */
+    protected function getScenarioSequences($jsonPost)
+    {
+        if (empty($jsonPost['scenarioSequences'])) {
+            return false;
+        }
 
-	$this->page->addVar('scenarios', $scenariosTab);	
-}
+        $scenarioSequences = [];
+        foreach ($jsonPost['scenarioSequences'] as $scenarioSequence) {
+            $scenarioSequences[] = new ScenarioSequence([
+                'id' => $scenarioSequence['id'],
+                'scenarioId' => $jsonPost['id'],
+                'sequenceId' => $scenarioSequence['sequenceId']
+            ]);
+        }
 
-  public function executeInsert(HTTPRequest $request)
-  {
-    	$manager = $this->managers->getManagerOf('Scenarios');
-		
-		$scenario = new Scenario(
-		[
-			'nom'=>$request->postData('nom'),
-			'actionneurid'=>$request->postData('actionneurid'),
-			'etat'=>$request->postData('etat')
-		
-		]);
-		
-		
-	$add=$manager->add($scenario);
+        return $scenarioSequences;
+    }
 
-	$this->page->addVar('result', $add);	
-  }
+    /**
+     * @param array $jsonPost
+     * @return array|bool
+     * @throws Exception
+     */
+    protected function deleteScenarioSequences($jsonPost)
+    {
+        if (empty($jsonPost['deletedScenarioSequences'])) {
+            return false;
+        }
 
+        $scenarioSequences = [];
+        foreach ($jsonPost['deletedScenarioSequences'] as $deletedScenarioSequence) {
+            $this->getScenarioSequenceManager()->delete($deletedScenarioSequence);
+        }
 
-
-  public function executeUpdate(HTTPRequest $request)
-  {
-      
-	$manager = $this->managers->getManagerOf('Scenarios');
-
-	$scenario = new Scenario(
-	[	
-		'id'=>$request->postData('id'),
-		'nom'=>$request->postData('nom'),
-		'scenarioid'=>'',
-		'actionneurid'=>'',
-		'etat'=>''
-	]);
-    
-    $this->page->addVar('result',$manager->update($scenario));
-  }
-
-  public function executeUpdateitem(HTTPRequest $request)
-  {
-
-  	$manager = $this->managers->getManagerOf('Scenarios');
-
-	$scenario = new Scenario(
-	[	
-		'id'=>$request->postData('id'),
-		'nom'=>$request->postData('nom'),
-		'scenarioid'=>$request->postData('scenarioid'),
-		'actionneurid'=>$request->postData('actionneurid'),
-		'etat'=>$request->postData('etat')
-	]);
-    
-     $this->page->addVar('result',$manager->updateItem($scenario));
-  }
-
-
-
+        return $scenarioSequences;
+    }
 }

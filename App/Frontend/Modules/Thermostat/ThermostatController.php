@@ -2,18 +2,9 @@
 
 namespace App\Frontend\Modules\Thermostat;
 
-use Entity\ThermostatMode;
-use Entity\ThermostatPlanif;
-use FormBuilder\ThermostatModesFormBuilder;
-use FormBuilder\ThermostatPlanifFormBuilder;
-use FormBuilder\ThermostatPlanifNameFormBuilder;
-use Materialize\FloatingActionButton;
-use Materialize\Link;
 use Materialize\Table;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
-use OCFram\DateFactory;
-use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 
 /**
@@ -44,7 +35,9 @@ class ThermostatController extends BackController
         $sensorTemoin = null;
 
         foreach ($sensorsTemoin as $key => $sensor) {
-            if ($sensor['id'] == $thermostats[0]['sensorid']) $sensorTemoin = $sensor;
+            if ($sensor['id'] == $thermostats[0]['sensorid']) {
+                $sensorTemoin = $sensor;
+            }
         }
         $cards = [];
 
@@ -72,7 +65,7 @@ class ThermostatController extends BackController
      */
     public function makeThermostatWidget($thermostats, $planifs)
     {
-        $thermostats = json_decode(json_encode($thermostats), TRUE);
+        $thermostats = json_decode(json_encode($thermostats), true);
 
         $domId = 'Thermostat';
         $tableThermostatDatas = [];

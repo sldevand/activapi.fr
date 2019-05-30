@@ -1,56 +1,218 @@
 <?php
+
 namespace Entity;
 
-use \OCFram\Entity;
-use \Entity\Actionneur;
+use OCFram\Entity;
 
-class Scenario extends Entity{
-	
-	protected $nom;
-	protected $actionneur;
-	protected $scenarioid;
-	protected $actionneurid;
-	protected $etat;
+/**
+ * Class Scenario
+ * @package Entity
+ */
+class Scenario extends Entity
+{
+    /**
+     * @var string $nom
+     */
+    protected $nom;
 
+    /**
+     * @var Actionneur $actionneur
+     */
+    protected $actionneur;
 
-	//GETTERS
-	public function nom(){return $this->nom;}
-	public function actionneur(){return $this->actionneur;}	
-	public function scenarioid(){return $this->scenarioid;}
-	public function actionneurid(){return $this->actionneurid;}	
-	public function etat(){return $this->etat;}
+    /**
+     * @var int $scenarioid
+     */
+    protected $scenarioid;
 
+    /**
+     * @var int $actionneurid
+     */
+    protected $actionneurid;
 
-	//SETTERS
+    /**
+     * @var int $etat
+     */
+    protected $etat;
 
-	public function setNom($nom){
-		$this->nom=$nom;		
-	}
-	
-	public function setActionneur(Actionneur $actionneur){		
-		$this->actionneur=$actionneur;
-	}
+    /**
+     * @var Actionneur[] $actionneurs
+     */
+    protected $actionneurs;
 
-	public function setScenarioid($scenarioid){
-		$this->scenarioid=$scenarioid;		
-	}
+    /**
+     * @param $ignoreProperties
+     * @return bool
+     */
+    public function isValid($ignoreProperties = [])
+    {
+        $properties = get_object_vars($this);
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs"
+                && !isset($property)
+                && $key !== 'actionneur'
+                && $key !== 'id'
+                && $key !== 'actionneurid'
+                && $key !== 'etat'
 
-	public function setActionneurid($actionneurid){
-		$this->actionneurid=$actionneurid;
-	}
+            ) {
+                $objClass = new \ReflectionObject($this);
+                $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is not set";
+                return false;
+            }
+        }
 
-	public function setEtat($etat){
-		$this->etat=$etat;
-	}
-	
-	public function jsonSerialize(){
+        return true;
+    }
 
-		return array(	
-			'id' => $this->id,			
-			'nom' => $this->nom,		
-			'actionneur' => $this->actionneur,			
-			'scenarioid' => $this->scenarioid,
-			'etat'=>$this->etat
-		);
-	}
+    /**
+     * @return string
+     */
+    public function nom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * @return Actionneur
+     */
+    public function actionneur()
+    {
+        return $this->actionneur;
+    }
+
+    /**
+     * @return Actionneur[]
+     */
+    public function actionneurs()
+    {
+        return $this->actionneurs;
+    }
+
+    /**
+     * @return int
+     */
+    public function scenarioid()
+    {
+        return $this->scenarioid;
+    }
+
+    /**
+     * @return int
+     */
+    public function actionneurid()
+    {
+        return $this->actionneurid;
+    }
+
+    /**
+     * @return int
+     */
+    public function etat()
+    {
+        return $this->etat;
+    }
+
+    /**
+     * @param string $nom
+     * @return Scenario
+     */
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * @param Actionneur $actionneur
+     * @return Scenario
+     */
+    public function setActionneur(Actionneur $actionneur)
+    {
+        $this->actionneur = $actionneur;
+
+        return $this;
+    }
+
+    /**
+     * @param int $scenarioid
+     * @return Scenario
+     */
+    public function setScenarioid($scenarioid)
+    {
+        $this->scenarioid = $scenarioid;
+
+        return $this;
+    }
+
+    /**
+     * @param int $actionneurid
+     * @return Scenario
+     */
+    public function setActionneurid($actionneurid)
+    {
+        $this->actionneurid = $actionneurid;
+
+        return $this;
+    }
+
+    /**
+     * @param $etat
+     * @return Scenario
+     */
+    public function setEtat($etat)
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    /**
+     * @param Actionneur $actionneur
+     */
+    public function addActionneur($actionneur)
+    {
+        $this->actionneurs[$actionneur->id()] = $actionneur;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function removeActionneur($id)
+    {
+        if (!empty($this->actionneurs[$id])) {
+            unset($this->actionneurs[$id]);
+        }
+    }
+
+    /**
+     * @return Actionneur[]
+     */
+    public function getActionneurs()
+    {
+        return $this->actionneurs;
+    }
+
+    /**
+     * @param Actionneur[] actionneurs
+     */
+    public function setActionneurs($actionneurs)
+    {
+        $this->actionneurs = $actionneurs;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return array(
+            'id' => $this->id,
+            'nom' => $this->nom,
+            'actionneur' => $this->actionneur,
+            'scenarioid' => $this->scenarioid,
+            'etat' => $this->etat
+        );
+    }
 }

@@ -23,12 +23,8 @@ class SensorsController extends BackController
     public function executeIndex(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Gestion des sensors');
-
         $manager = $this->managers->getManagerOf('Sensors');
-
         $cards = [];
-
-        //Sensors
         $listeSensors = $manager->getList();
         $cards[] = $this->makeSensorsWidget($listeSensors);
         $addSensorsFab = new FloatingActionButton([
@@ -40,7 +36,6 @@ class SensorsController extends BackController
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('addSensorsFab', $addSensorsFab);
-
     }
 
     /**
@@ -49,25 +44,25 @@ class SensorsController extends BackController
     public function executeDelete(HTTPRequest $request)
     {
         $manager = $this->managers->getManagerOf('Sensors');
-
         $domId = 'Suppression';
         if ($request->method() === 'POST' && $request->getExists('id')) {
             $id = $request->getData('id');
             $manager->delete($id);
             $this->app->httpResponse()->redirect('../activapi.fr/sensors');
+            return;
         }
 
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/sensors",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
-
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->deleteFormView());
-
         $this->page->addVar('title', "Suppression du Sensor");
         $this->page->addVar('card', $card);
     }
@@ -81,7 +76,6 @@ class SensorsController extends BackController
         $domId = 'Edition';
 
         if ($request->method() === 'POST') {
-
             $item = new Sensor([
                 'radioid' => $request->postData('radioid'),
                 'nom' => $request->postData('nom'),
@@ -103,7 +97,6 @@ class SensorsController extends BackController
                 $item->setValeur1($prevItem->valeur1());
                 $item->setValeur2($prevItem->valeur2());
             }
-
         } else {
             if ($request->getExists('id')) {
                 $id = $request->getData("id");
@@ -126,11 +119,13 @@ class SensorsController extends BackController
             $this->app->httpResponse()->redirect('../activapi.fr/sensors');
         }
 
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/sensors",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 
@@ -150,14 +145,23 @@ class SensorsController extends BackController
     public function makeSensorsWidget($sensors)
     {
         $domId = 'Sensors';
-
-        $sensors = json_decode(json_encode($sensors), TRUE);
+        $sensors = json_decode(json_encode($sensors), true);
         $sensorsData = [];
 
         foreach ($sensors as $sensor) {
             //DATA PREPARE FOR TABLE
-            $linkEdit = new Link('', "../activapi.fr/sensors-edit-" . $sensor["id"], 'edit', 'primaryTextColor');
-            $linkDelete = new Link('', "../activapi.fr/sensors-delete-" . $sensor["id"], 'delete', 'secondaryTextColor');
+            $linkEdit = new Link(
+                '',
+                "../activapi.fr/sensors-edit-" . $sensor["id"],
+                'edit',
+                'primaryTextColor'
+            );
+            $linkDelete = new Link(
+                '',
+                "../activapi.fr/sensors-delete-" . $sensor["id"],
+                'delete',
+                'secondaryTextColor'
+            );
             $sensor["editer"] = $linkEdit->getHtmlForTable();
             $sensor["supprimer"] = $linkDelete->getHtmlForTable();
             $sensorsData[] = $sensor;
@@ -167,22 +171,5 @@ class SensorsController extends BackController
         $card->addContent($table->getHtml());
 
         return $card;
-    }
-
-    /**
-     * @return false|string
-     */
-    public function deleteFormView()
-    {
-        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
-    }
-
-    /**
-     * @param $form
-     * @return false|string
-     */
-    public function editFormView($form)
-    {
-        return $this->getBlock(BLOCK . '/editFormView.phtml', $form);
     }
 }

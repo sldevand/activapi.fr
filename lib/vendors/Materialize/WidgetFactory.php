@@ -3,6 +3,7 @@
 namespace Materialize;
 
 use Materialize\Card\Card;
+use Materialize\Spinner\Spinner;
 
 /**
  * Class WidgetFactory
@@ -17,7 +18,6 @@ class WidgetFactory
      */
     public static function makeCard($domId, $cardTitle)
     {
-
         $cardOpt = [
             'id' => $domId,
             'bgColor' => 'primaryLightColor',
@@ -36,11 +36,14 @@ class WidgetFactory
      */
     public static function makeTable($domId, $rawDatas, $jsonencode = true, $hideColumns = [])
     {
-
         $datas = $jsonencode ? json_decode(json_encode($rawDatas), true) : (array)$rawDatas;
 
         $tableDatas = [];
         $headers = [];
+
+        if (empty($datas[0])) {
+            return new Table([]);
+        }
 
         foreach ($datas[0] as $key => $data) {
             $headers[] = $key;
@@ -56,5 +59,18 @@ class WidgetFactory
             'headers' => $headers,
             'hideColumns' => $hideColumns
         ]);
+    }
+
+    /**
+     * @param $domId
+     * @return Spinner
+     */
+    public static function makeSpinner($domId)
+    {
+        return new Spinner(
+            [
+                'id' => $domId
+            ]
+        );
     }
 }

@@ -9,52 +9,55 @@ namespace Materialize;
 abstract class Button extends Widget
 {
     /**
-     * @var string
+     * @var string $title
      */
     protected $title = null;
+
     /**
-     * @var string
+     * @var string $icon
      */
     protected $icon = null;
+
     /**
-     * @var string
+     * @var string $align
      */
     protected $align = 'left';
+
     /**
-     * @var string
+     * @var string $href
      */
     protected $href = '';
+
     /**
-     * @var string
+     * @var string $type
      */
     protected $type = '';
+
     /**
-     * @var string
+     * @var string $color
      */
     protected $color = '';
 
-    /**
-     * @return null
-     */
-    public function title()
-    {
-        return $this->title;
-    }
 
     /**
-     * @return null
+     * @return string
      */
-    public function icon()
+    public function getIconHtml()
     {
-        return $this->icon;
+        $icon = '';
+        if (!is_null($this->icon())) {
+            $icon = '<i class="material-icons ' . $this->align() . ' ' . $this->color() . '">' . $this->icon() . '</i>';
+        }
+
+        return $icon;
     }
 
     /**
      * @return string
      */
-    public function align()
+    public function title()
     {
-        return $this->align;
+        return $this->title;
     }
 
     /**
@@ -73,6 +76,23 @@ abstract class Button extends Widget
         return $this->type;
     }
 
+
+    /**
+     * @return string
+     */
+    public function icon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @return string
+     */
+    public function align()
+    {
+        return $this->align;
+    }
+
     /**
      * @return string
      */
@@ -82,68 +102,72 @@ abstract class Button extends Widget
     }
 
     /**
-     * @param $title
+     * @param string $title
+     * @return Button
      */
     public function setTitle($title)
     {
         $this->title = $title;
+
+        return $this;
     }
 
     /**
-     * @param $icon
+     * @param string $icon
+     * @return Button
      */
     public function setIcon($icon)
     {
         $this->icon = $icon;
+
+        return $this;
     }
 
     /**
-     * @param $align
+     * @param string $align
+     * @return Button
      */
     public function setAlign($align)
     {
-
-        if ($align == 'right') {
+        if ($align === 'right') {
             $this->align = $align;
         } else {
             $this->align = 'left';
         }
+
+        return $this;
     }
 
     /**
-     * @param $href
+     * @param string $href
+     * @return Button
      */
     public function setHref($href)
     {
         $this->href = $href;
+
+        return $this;
     }
 
     /**
-     * @param $type
+     * @param string $type
+     * @return Button
      */
     public function setType($type)
     {
         $this->type = $type;
+
+        return $this;
     }
 
     /**
-     * @param $color
+     * @param string $color
+     * @return Button
      */
     public function setColor($color)
     {
         $this->color = $color;
-    }
 
-    /**
-     * @return string
-     */
-    public function getIconHtml()
-    {
-        $icon = '';
-        if (!is_null($this->icon())) {
-            $icon = '<i class="material-icons ' . $this->align() . ' ' . $this->color() . '">' . $this->icon() . '</i>';
-        }
-
-        return $icon;
+        return $this;
     }
 }

@@ -2145,7 +2145,7 @@ module.exports = {
 			animation.currentStep = (animation.currentStep || 0) + count;
 			animation.currentStep = Math.min(animation.currentStep, animation.numSteps);
 
-			helpers.callback(animation.render, [chart, animation], chart);
+			helpers.callback(SequenceRowTemplate.render, [chart, animation], chart);
 			helpers.callback(animation.onAnimationProgress, [animation], chart);
 
 			if (animation.currentStep >= animation.numSteps) {
@@ -19065,7 +19065,7 @@ function GraphsManage(id) {
     getDatasFromAPI: function getDatasFromAPI(fullURL) {
       graphsManage.m_pending_gets++;
       $.get(fullURL, function (sensor) {
-        var sensorJSON = JSON.parse(sensor);
+        var sensorJSON = sensor;
         var label = sensorJSON.nom;
         var datas = sensorJSON.data;
         graphsManage.m_nom = sensorJSON.nom;

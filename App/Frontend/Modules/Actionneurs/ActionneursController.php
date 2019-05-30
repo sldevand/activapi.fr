@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Modules\Actionneurs;
 
+use App\Frontend\Modules\FormView;
 use Entity\Actionneur;
 use FormBuilder\ActionneursFormBuilder;
 use Materialize\FloatingActionButton;
@@ -17,6 +18,8 @@ use OCFram\HTTPRequest;
  */
 class ActionneursController extends BackController
 {
+    use FormView;
+
     /**
      * @param HTTPRequest $request
      */
@@ -40,7 +43,6 @@ class ActionneursController extends BackController
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('addActionneurFab', $addActionneurFab);
-
     }
 
     /**
@@ -51,13 +53,23 @@ class ActionneursController extends BackController
     {
         $domId = 'Actionneurs';
 
-        $actionneurs = json_decode(json_encode($actionneurs), TRUE);
+        $actionneurs = json_decode(json_encode($actionneurs), true);
         $actionneursData = [];
 
         foreach ($actionneurs as $actionneur) {
             //DATA PREPARE FOR TABLE
-            $linkEdit = new Link('', "../activapi.fr/actionneurs-edit-" . $actionneur["id"], 'edit', 'primaryTextColor');
-            $linkDelete = new Link('', "../activapi.fr/actionneurs-delete-" . $actionneur["id"], 'delete', 'secondaryTextColor');
+            $linkEdit = new Link(
+                '',
+                "../activapi.fr/actionneurs-edit-" . $actionneur["id"],
+                'edit',
+                'primaryTextColor'
+            );
+            $linkDelete = new Link(
+                '',
+                "../activapi.fr/actionneurs-delete-" . $actionneur["id"],
+                'delete',
+                'secondaryTextColor'
+            );
             $actionneur["editer"] = $linkEdit->getHtmlForTable();
             $actionneur["supprimer"] = $linkDelete->getHtmlForTable();
             $actionneursData[] = $actionneur;
@@ -78,8 +90,7 @@ class ActionneursController extends BackController
         $manager = $this->managers->getManagerOf('Actionneurs');
 
         $domId = 'Suppression';
-        if ($request->method() == 'POST') {
-
+        if ($request->method() === 'POST') {
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
@@ -102,7 +113,6 @@ class ActionneursController extends BackController
 
         $this->page->addVar('title', "Suppression de l'Actionneur");
         $this->page->addVar('card', $card);
-
     }
 
     /**
@@ -114,8 +124,7 @@ class ActionneursController extends BackController
         $actionneurs = $manager->getList();
         $domId = 'Edition';
 
-        if ($request->method() == 'POST') {
-
+        if ($request->method() === 'POST') {
             $item = new Actionneur([
                 'nom' => $request->postData('nom'),
                 'module' => $request->postData('module'),
@@ -131,7 +140,6 @@ class ActionneursController extends BackController
                 $id = $request->getData('id');
                 $item->setId($id);
             }
-
         } else {
             if ($request->getExists('id')) {
                 $id = $request->getData("id");
@@ -139,7 +147,6 @@ class ActionneursController extends BackController
             } else {
                 $domId = 'Ajout';
                 $item = new Actionneur();
-
             }
         }
 
@@ -155,11 +162,13 @@ class ActionneursController extends BackController
             $this->app->httpResponse()->redirect('../activapi.fr/actionneurs');
         }
 
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/actionneurs",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 
@@ -169,22 +178,5 @@ class ActionneursController extends BackController
 
         $this->page->addVar('title', "Edition de l'actionneur");
         $this->page->addVar('cards', $cards);
-    }
-
-    /**
-     * @return false|string
-     */
-    public function deleteFormView()
-    {
-        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
-    }
-
-    /**
-     * @param $form
-     * @return false|string
-     */
-    public function editFormView($form)
-    {
-        return $this->getBlock(BLOCK. '/editFormView.phtml', $form);
     }
 }

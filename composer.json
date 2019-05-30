@@ -1,26 +1,36 @@
 {
-  "name": "sebastien/activapi.fr",
-  "authors": [
-    {
-      "name": "Sébastien Lorrain",
-      "email": "sldeveloperand@gmail.com"
+    "name": "sebastien/activapi.fr",
+    "authors": [
+        {
+            "name": "Sébastien Lorrain",
+            "email": "sldeveloperand@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "App/",
+            "OCFram\\": "lib/OCFram",
+            "SFram\\": "lib/SFram",
+            "Debug\\": "lib/vendors/Debug",
+            "Entity\\": "lib/vendors/Entity",
+            "FormBuilder\\": "lib/vendors/FormBuilder",
+            "Materialize\\": "lib/vendors/Materialize",
+            "Model\\": "lib/vendors/Model",
+            "OSDetector\\": "lib/vendors/OSDetector",
+            "Tests\\": "Tests"
+        }
+    },
+    "require": {
+        "ext-pdo": "*",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-curl": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.4",
+        "phpunit/phpunit": "^7"
+    },
+    "scripts": {
+        "tests": "php vendor/phpunit/phpunit/phpunit -c \"Tests/phpunit.xml\""
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "App\\": "App/",
-      "OCFram\\": "lib/OCFram",
-      "SFram\\": "lib/SFram",
-      "Debug\\": "lib/vendors/Debug",
-      "Entity\\": "lib/vendors/Entity",
-      "FormBuilder\\": "lib/vendors/FormBuilder",
-      "Materialize\\": "lib/vendors/Materialize",
-      "Model\\": "lib/vendors/Model",
-      "OSDetector\\": "lib/vendors/OSDetector"
-
-    }
-  },
-  "require": {
-    "ext-dom": "*"
-  }
 }

@@ -1,52 +1,57 @@
 <?php
+
 namespace OCFram;
 
+use \RuntimeException;
+
+/**
+ * Class Router
+ * @package OCFram
+ */
 class Router
 {
-  protected $routes = [];
+    const NO_ROUTE = 1;
 
-  const NO_ROUTE = 1;
+    /**
+     * @var array $routes
+     */
+    protected $routes = [];
 
-  public function addRoute(Route $route)
-  {
-    if (!in_array($route, $this->routes))
+    /**
+     * @param Route $route
+     */
+    public function addRoute(Route $route)
     {
-      $this->routes[] = $route;
+        if (!in_array($route, $this->routes)) {
+            $this->routes[] = $route;
+        }
     }
-  }
 
-  public function getRoute($url)
-  {
-    foreach ($this->routes as $route)
+    /**
+     * @param string $url
+     * @return Route
+     * @throws RuntimeException
+     */
+    public function getRoute($url)
     {
-      // Si la route correspond à l'URL
-      if (($varsValues = $route->match($url)) !== false)
-      {
-        // Si elle a des variables
-        if ($route->hasVars())
-        {
-          $varsNames = $route->varsNames();
-          $listVars = [];
+        foreach ($this->routes as $route) {
+            if (($varsValues = $route->match($url)) !== false) {
+                if ($route->hasVars()) {
+                    $varsNames = $route->varsNames();
+                    $listVars = [];
+                    foreach ($varsValues as $key => $match) {
+                        if ($key !== 0) {
+                            $listVars[$varsNames[$key - 1]] = $match;
+                        }
+                    }
 
-          // On crée un nouveau tableau clé/valeur
-          // (clé = nom de la variable, valeur = sa valeur)
-          foreach ($varsValues as $key => $match)
-          {
-            // La première valeur contient entièrement la chaine capturée (voir la doc sur preg_match)
-            if ($key !== 0)
-            {
-              $listVars[$varsNames[$key - 1]] = $match;
+                    $route->setVars($listVars);
+                }
+
+                return $route;
             }
-          }
-
-          // On assigne ce tableau de variables � la route
-          $route->setVars($listVars);
         }
 
-        return $route;
-      }
+        throw new \RuntimeException('Aucune route ne correspond à l\'URL', self::NO_ROUTE);
     }
-
-    throw new \RuntimeException('Aucune route ne correspond à l\'URL', self::NO_ROUTE);
-  }
 }

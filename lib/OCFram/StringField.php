@@ -1,50 +1,88 @@
 <?php
+
 namespace OCFram;
 
+/**
+ * Class StringField
+ * @package OCFram
+ */
 class StringField extends Field
 {
-  protected $maxLength;
-  
-  public function buildWidget()
-  {
-    $widget = '';
-    
-    if (!empty($this->errorMessage))
+    /**
+     * @var int $maxLength
+     */
+    protected $maxLength;
+
+    /**
+     * @var string $readonly
+     */
+    protected $readonly;
+
+    /**
+     * @return mixed|string
+     */
+    public function buildWidget()
     {
-      $widget .= $this->errorMessage.'<br />';
-    }
-    
-    $widget .= '<label>'.$this->label.'</label><input type="text" name="'.$this->name.'"';
-    
-    if (isset($this->value))
-    {
-      $widget .= ' value="'.htmlspecialchars($this->value).'"';
-    }
-    
-    if (!empty($this->maxLength))
-    {
-      $widget .= ' maxlength="'.$this->maxLength.'"';
+        $widget = '';
+
+        if (!empty($this->errorMessage)) {
+            $widget .= $this->errorMessage . '<br />';
+        }
+
+        if (!empty($this->label)) {
+            $widget .= '<label for="' . $this->id . '">' . $this->label . '</label>';
+        }
+
+        $widget .= '<input type="text" name="' . $this->name . '" id="' . $this->id . '"';
+
+        if (isset($this->value)) {
+            $widget .= ' value="' . htmlspecialchars($this->value) . '"';
+        }
+
+        if (!empty($this->maxLength)) {
+            $widget .= ' maxlength="' . $this->maxLength . '"';
+        }
+
+        if (!empty($this->readonly)) {
+            $widget .= 'readonly ';
+        }
+
+        if (!empty($this->hidden)) {
+            $widget .= 'hidden ';
+        }
+
+        if (!empty($this->required)) {
+            $widget .= 'required';
+        }
+
+        return $widget .= ' />';
     }
 
-    if (!empty($this->required)){
-       $widget .= 'required';
+    /**
+     * @param int $maxLength
+     * @return StringField
+     */
+    public function setMaxLength($maxLength)
+    {
+        $maxLength = (int)$maxLength;
 
+        if ($maxLength > 0) {
+            $this->maxLength = $maxLength;
+        } else {
+            throw new \RuntimeException('La longueur maximale doit être un nombre supérieur à 0');
+        }
+
+        return $this;
     }
-    
-    return $widget .= ' />';
-  }
-  
-  public function setMaxLength($maxLength)
-  {
-    $maxLength = (int) $maxLength;
-    
-    if ($maxLength > 0)
+
+    /**
+     * @param string $readonly
+     * @return StringField
+     */
+    public function setReadonly($readonly)
     {
-      $this->maxLength = $maxLength;
+        $this->readonly = $readonly;
+
+        return $this;
     }
-    else
-    {
-      throw new \RuntimeException('La longueur maximale doit être un nombre supérieur à 0');
-    }
-  }
 }

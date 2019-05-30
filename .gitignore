@@ -3,3 +3,8 @@
 /node_modules/
 
 /vendor/
+
+\.phpunit\.result\.cache
+
+Tests/database/activhome-test\.db
+.phpunit.result.cache

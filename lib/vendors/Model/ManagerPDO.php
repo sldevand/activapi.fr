@@ -2,163 +2,322 @@
 
 namespace Model;
 
-use \OCFram\Manager;
-use \OCFram\Entity;
-use \Debug\Log;
+use Exception;
+use OCFram\Entity;
+use OCFram\Manager;
+
+/**
+ * Class ManagerPDO
+ * @package Model
+ */
+class ManagerPDO extends Manager
+{
+    /**
+     * @var string $tableName
+     */
+    protected $tableName;
+
+    /**
+     * @var Entity $entity
+     */
+    protected $entity;
+
+    /**
+     * @param Entity $entity
+     * @param array $ignoreProperties
+     * @return bool
+     * @throws Exception
+     */
+    public function save($entity, $ignoreProperties = [])
+    {
+        if (!$entity->isValid($ignoreProperties)) {
+            throw new \RuntimeException($entity->erreurs()["notValid"]);
+        }
+
+        return $entity->isNew() ? $this->add($entity, $ignoreProperties) : $this->update($entity, $ignoreProperties);
+    }
+
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function count()
+    {
+        $sql = "SELECT COUNT(*) FROM $this->tableName";
+        $q = $this->prepare($sql);
+        $q->execute();
+        $result = $q->fetchColumn();
+        $q->closeCursor();
+
+        return $result;
+    }
+
+    /**
+     * @param int $id
+     * @return int
+     */
+    public function delete($id)
+    {
+        return $this->dao->exec("DELETE FROM $this->tableName WHERE id = " . (int)$id);
+    }
+
+    /**
+     * @param Entity $entity
+     * @param $ignoreProperties
+     * @return bool
+     * @throws Exception
+     */
+    public function update($entity, $ignoreProperties = null)
+    {
+        $sql = "UPDATE $this->tableName SET ";
+        $properties = $this->ignoreProperties($entity, $ignoreProperties);
+        $sql = $this->addProperties($sql, $properties);
+        $sql .= "WHERE id = :id";
+        $q = $this->prepare($sql);
+        $this->bindProperties($q, $properties);
+        $success = $q->execute();
+        $q->closeCursor();
+
+        return $success;
+    }
+
+    /**
+     * @param Entity $entity
+     * @param array $ignoreProperties
+     * @return bool
+     * @throws Exception
+     */
+    public function add($entity, $ignoreProperties = [])
+    {
+        $properties = $this->ignoreProperties($entity, $ignoreProperties);
+        $sql = "INSERT INTO $this->tableName (";
+        $sql .= $this->addInsertProperties($properties);
+        $sql .= ") VALUES (";
+        $sql .= $this->addInsertProperties($properties, true);
+        $sql .= ");";
+        $q = $this->prepare($sql);
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs" && $key !== 'id') {
+                $q->bindValue(":$key", $property);
+            }
+        }
+
+        $success = $q->execute();
+        $q->closeCursor();
+
+        return $success;
+    }
+
+    /**
+     * @param int $id
+     * @return Entity|null
+     * @throws Exception
+     */
+    public function getUnique($id)
+    {
+        $sql = "SELECT * FROM $this->tableName WHERE id = :id";
+        $q = $this->prepare($sql);
+        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
+        $entity = $q->fetch();
+        $q->closeCursor();
+
+        return $entity;
+    }
+
+    /**
+     * @param int | null $id
+     * @return array
+     * @throws Exception
+     */
+    public function getAll($id = null)
+    {
+        $sql = "SELECT * FROM $this->tableName";
+        if (!empty($id)) {
+            $sql .= ' WHERE id=:id';
+        }
+
+        $q = $this->prepare($sql);
+        if (!empty($id)) {
+            $q->bindValue(':id', $id);
+        }
+
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
+        $entity = $q->fetchAll();
+        $q->closeCursor();
+
+        return $entity;
+    }
+
+    /**
+     * @param string $table
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getLastInserted($table)
+    {
+        $sql = 'SELECT seq FROM sqlite_sequence WHERE name="' . $table . '"';
+        $q = $this->query($sql);
+        $q->execute();
+        $res = $q->fetchColumn();
+
+        return $res;
+    }
+
+    /**
+     * @param Entity $entity
+     * @param null $ignoreProperties
+     * @return array
+     */
+    protected function ignoreProperties(Entity $entity, $ignoreProperties = null)
+    {
+        if (empty($ignoreProperties)) {
+            return $entity->properties();
+        }
+
+        $properties = [];
+        foreach ($entity->properties() as $key => $property) {
+            if (!in_array($key, $ignoreProperties)) {
+                $properties[$key] = $property;
+            }
+        }
+
+        return $properties;
+    }
 
 
-class ManagerPDO extends Manager{
+    /**
+     * @return null|string
+     */
+    public function getEntityName()
+    {
+        return get_class($this->entity);
+    }
 
-	//Just override the $tableName in inherited class.
-	protected $tableName;
-	protected $entity;
+    /**
+     * @return string
+     */
+    public function tableName()
+    {
+        return $this->tableName;
+    }
 
-	public function save(Entity $entity){       
-		if ($entity->isValid()) {     
-		  $entity->isNew() ? $this->add($entity) : $this->update($entity);
-		} else {
+    /**
+     * @param string $tableName
+     * @return ManagerPDO
+     * @throws Exception
+     */
+    public function setTableName($tableName)
+    {
+        if (empty($tableName) || !is_string($tableName)) {
+            throw new Exception("$tableName is not a string or is empty");
+        }
+        $this->tableName = $tableName;
 
-		  throw new \RuntimeException($entity->erreurs()["notValid"]);
-		}
-	}
+        return $this;
+    }
 
-	public function count(){
+    /**
+     * @param string $sql
+     * @return \PDOStatement
+     * @throws Exception
+     */
+    public function prepare($sql)
+    {
+        $query = $this->dao->prepare($sql);
+        if (!$query) {
+            throw new Exception(implode(" ", $this->dao->errorInfo()));
+        }
 
-		$sql = "SELECT COUNT(*) FROM $this->tableName";
+        return $query;
+    }
 
-		$q = $this->dao->prepare($sql);
-        if(!is_bool($q)){
-            $q->execute();
-            $result = $q->fetchColumn();
-            $q->closeCursor();
-            return $result;
-        }else{
-             throw new \RuntimeException("PDO error : cannot count $this->tableName elements");
-        }    	
-  	}
+    /**
+     * @param string $sql
+     * @return \PDOStatement
+     * @throws Exception
+     */
+    public function query($sql)
+    {
+        $query = $this->dao->query($sql);
+        if (!$query) {
+            throw new Exception(implode(" ", $this->dao->errorInfo()));
+        }
 
-	public function delete($id){
-		$this->dao->exec("DELETE FROM $this->tableName WHERE id = ".(int) $id);
-	}
+        return $query;
+    }
 
-	public function update(Entity $entity){
+    /**
+     * @param string $sql
+     * @param array $properties
+     * @return string
+     */
+    public function addProperties($sql, $properties)
+    {
+        $count = count($properties) - 2;
+        $i = 1;
+        foreach ($properties as $key => $property) {
+            if ($key !== "id" && $key !== "erreurs") {
+                $sql .= $key . " = :" . $key;
+                if ($i < $count) {
+                    $sql .= ",";
+                }
+                $sql .= " ";
+            }
+            $i++;
+        }
 
-		$sql = "UPDATE $this->tableName SET ";
-		$properties = $entity->properties();
-		$count = count($properties)-2;
-		$i=1;
+        return $sql;
+    }
 
-		foreach ($properties as $key => $property) {
-		 	if($key!="id" && $key!="erreurs"){
+    /**
+     * @param array $properties
+     * @param bool $isValue
+     * @return string
+     */
+    public function addInsertProperties($properties, $isValue = false)
+    {
+        $count = count($properties) - 2;
+        $i = 1;
+        $sql = '';
+        foreach ($properties as $key => $property) {
+            if ($key !== "id" && $key !== "erreurs") {
+                if ($isValue) {
+                    $sql .= ':';
+                }
+                $sql .= $key;
+                if ($i < $count) {
+                    $sql .= ",";
+                }
+//                $sql .= " ";
+            }
+            $i++;
+        }
 
-		 		$sql .= $key." = :".$key;
-		 		if($i<$count) $sql.=",";
-		 		$sql.=" ";
-		 	}
-		 	$i++;
-		} 
-
-		$sql .= "WHERE id = :id"; 
-
-		$q = $this->dao->prepare($sql);
-	    if(!is_bool($q)){
-			foreach ($properties as $key => $property) {
-			
-				if($key!="erreurs"){		
-					$q->bindValue(':'.$key,$property);
-				}
-			}
-
-		  	$q->execute();
-		  	$q->closeCursor();   
-		}else{
-
-			throw new \RuntimeException("PDO error : cannot update $entity");
-		}
-	}
-
-	public function add(Entity $entity){
+        return $sql;
+    }
 
 
-		$sql = "INSERT INTO $this->tableName (";
-	  	$properties = $entity->properties();
-	  	$count = count($properties)-2;
-	  	$i=1;
+    /**
+     * @param \PDOStatement $query
+     * @param $properties
+     * @return \PDOStatement
+     * @throws Exception
+     */
+    public function bindProperties($query, $properties)
+    {
+        if (!$query) {
+            throw new Exception($this->dao->errorInfo());
+        }
 
-	  	foreach ($properties as $key => $property) {
-	  	 	if($key!="id" && $key!="erreurs"){
-	  	 		$sql .= $key;
-	  	 		if($i<$count) $sql.=",";
-	  	 		$sql.=" ";
-	  	 	}
-	  	 	$i++;
-	  	} 
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs") {
+                $query->bindValue(':' . $key, $property);
+            }
+        }
 
-	  	$i=1;
-	  	$sql .= ") VALUES (";
-		foreach ($properties as $key => $property) {
-	  	 	if($key!="id" && $key!="erreurs"){
-	  	 		$sql .= ":".$key;
-	  	 		if($i<$count) $sql.=",";
-	  	 		$sql.=" ";
-	  	 	}
-	  	 	$i++;
-	  	} 
-		$sql .= ")";
-	 
-		$q = $this->dao->prepare($sql);
-
-		if(!is_bool($q)){  
-			foreach ($properties as $key => $property) {
-			
-				if($key!="erreurs" && $key!="id"){		
-					$q->bindValue(':'.$key,$property);
-				}
-			}
-			$success = $q->execute();
-			$q->closeCursor();
-		}else{
-			throw new \RuntimeException("PDO error : cannot add $entity");
-		}
-	
-	}
-
-	public function getUnique($id)
-	 {
-
-	 	$entityName = "\\Entity\\".ucfirst(substr($this->tableName, 0, -1));  
-		
-	 	$sql="SELECT * FROM $this->tableName WHERE id = :id"; 
-
-		$q = $this->dao->prepare($sql);
-		$q->bindValue(':id', (int) $id, \PDO::PARAM_INT);
-		$q->execute();		
-
-		$q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $entityName);
-
-		if ($this->entity = $q->fetch()){
-		  $q->closeCursor();
-		  return $this->entity;
-		}else{
-
-			throw new \Exception("PDO error : cannot fetch unique $entity at $id");
-		}
-
-		$q->closeCursor();
-		return null;
-	 }
-
- 	
-  	//GETTERS
-	public function tableName(){return $this->tableName;}	
-
-	//SETTERS
-	public function setTableName($tableName){
-		if(!empty($tableName) && is_string($tableName)){
-			$this->tableName=$tableName;
-		}else{
-			throw new Exception("$tableName is not a string or is empty");
-		}
-	}
-
+        return $query;
+    }
 }

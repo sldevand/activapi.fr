@@ -10,7 +10,6 @@ use Materialize\Widget;
  */
 class Spinner extends Widget
 {
-
     /**
      * @return string
      */

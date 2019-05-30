@@ -2,10 +2,10 @@
 
 namespace App\Frontend\Modules\ThermostatPlanif;
 
+use App\Frontend\Modules\FormView;
 use Entity\ThermostatPlanif;
 use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
-use Materialize\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\Link;
 use Materialize\WidgetFactory;
@@ -20,6 +20,8 @@ use OCFram\HTTPRequest;
  */
 class ThermostatPlanifController extends BackController
 {
+    use FormView;
+
     /**
      * @param HTTPRequest $request
      */
@@ -33,7 +35,6 @@ class ThermostatPlanifController extends BackController
         $cards = [];
 
         foreach ($thermostatPlanningsContainer as $thermostatPlannings) {
-
             $thermostatDatas = [];
             foreach ($thermostatPlannings as $thermostatPlanningObj) {
                 $thermostatPlanning = json_decode(json_encode($thermostatPlanningObj), true);
@@ -77,7 +78,7 @@ class ThermostatPlanifController extends BackController
     /**
      * @param HTTPRequest $request
      */
-    function executeAdd(HTTPRequest $request)
+    public function executeAdd(HTTPRequest $request)
     {
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
         $domId = 'Ajout';
@@ -128,7 +129,6 @@ class ThermostatPlanifController extends BackController
         $modes = $manager->getModes();
 
         if ($request->method() == 'POST') {
-
             $item = new ThermostatPlanif([
                 'jour' => $request->postData('jour'),
                 'modeid' => $request->postData('modeid'),
@@ -144,10 +144,8 @@ class ThermostatPlanifController extends BackController
                 $id = $request->getData('id');
                 $item->setId($id);
             }
-
         } else {
             if ($request->getExists('id')) {
-
                 $id = $request->getData("id");
                 $item = $manager->getUnique($id);
             }
@@ -167,11 +165,13 @@ class ThermostatPlanifController extends BackController
             $this->app->httpResponse()->redirect('../activapi.fr/thermostat-planif');
         }
 
-        $link = new Link("Edition",
+        $link = new Link(
+            "Edition",
             "../activapi.fr/thermostat-planif",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 
@@ -181,7 +181,6 @@ class ThermostatPlanifController extends BackController
 
         $this->page->addVar('title', 'Edition du Planning');
         $this->page->addVar('cards', $cards);
-
     }
 
     /**
@@ -206,11 +205,13 @@ class ThermostatPlanifController extends BackController
             }
         }
 
-        $link = new Link($domId,
+        $link = new Link(
+            $domId,
             "../activapi.fr/thermostat-planif",
             "arrow_back",
             "white-text",
-            "white-text");
+            "white-text"
+        );
 
         $cardTitle = $link->getHtml();
 
@@ -219,22 +220,5 @@ class ThermostatPlanifController extends BackController
 
         $this->page->addVar('title', 'Suppression du Planning');
         $this->page->addVar('card', $card);
-    }
-
-    /**
-     * @return false|string
-     */
-    public function deleteFormView()
-    {
-        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
-    }
-
-    /**
-     * @param $form
-     * @return false|string
-     */
-    public function editFormView($form)
-    {
-        return $this->getBlock(BLOCK . '/editFormView.phtml', $form);
     }
 }

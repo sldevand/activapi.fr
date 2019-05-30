@@ -18378,7 +18378,7 @@ Vel = jQuery ? jQuery.Velocity : $ ? $.Velocity : Velocity, Materialize.Vel = Ve
             n = new Date(e.year, e.month, e.date + t);
         i.set("highlight", n, {
           interval: t
-        }), this.render();
+        }), SequenceRowTemplate.render();
       }
     }, t.on("render", function () {
       t.$root.find("." + e.klass.selectMonth).on("change", function () {

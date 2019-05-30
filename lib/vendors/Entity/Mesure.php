@@ -1,66 +1,162 @@
 <?php
+
 namespace Entity;
 
-use \OCFram\Entity;
-use \Entity\Sensor;
+use Exception;
+use OCFram\Entity;
 
-class Mesure extends Entity{
-	protected $id_sensor;
-	protected $nom;
-	protected $temperature;
-	protected $hygrometrie=0.0;
-	protected $horodatage;
+/**
+ * Class Mesure
+ * @package Entity
+ */
+class Mesure extends Entity
+{
+    /**
+     * @var int $id_sensor
+     */
+    protected $id_sensor;
 
-	//GETTERS
-	public function id_sensor(){return $this->id_sensor;}
-	public function nom(){return $this->nom;}
-	public function temperature(){return $this->temperature;}
-	public function hygrometrie(){return $this->hygrometrie;}
-	public function horodatage(){return $this->horodatage;}
+    /**
+     * @var string $nom
+     */
+    protected $nom;
 
-	//SETTERS
-	public function setId_sensor($id_sensor){
+    /**
+     * @var float $temperature
+     */
+    protected $temperature;
 
-		if(!empty($id_sensor) && is_string($id_sensor)){
-			$this->id_sensor=$id_sensor;
-		}else{
-			throw new Exception('idSensor invalide!');
-		}
-	}
+    /**
+     * @var float $hygrometrie
+     */
+    protected $hygrometrie = 0.0;
 
-	public function setNom($nom){
-		if(!empty($nom) && is_string($nom)){
-			$this->$nom=$nom;
-		}else{
-			throw new Exception('nom invalide!');
-		}
-	}
+    /**
+     * @var string $horodatage
+     */
+    protected $horodatage;
 
-	public function setTemperature($temperature){
-		$this->temperature=$temperature;
-	}
 
-	public function setHygrometrie($hygrometrie){
-		$this->hygrometrie=$hygrometrie;
-	}
+    /**
+     * @return int
+     */
+    public function id_sensor()
+    {
+        return $this->id_sensor;
+    }
 
-	public function setHorodatage($horodatage){
+    /**
+     * @return string
+     */
+    public function nom()
+    {
+        return $this->nom;
+    }
 
-		if(!empty($horodatage) && is_string($horodatage)){
-			$this->horodatage=$horodatage;
-		}else{
-			throw new Exception('horodatage invalide!');
-		}
-	}
+    /**
+     * @return float
+     */
+    public function temperature()
+    {
+        return $this->temperature;
+    }
 
-	public function jsonSerialize(){
+    /**
+     * @return float
+     */
+    public function hygrometrie()
+    {
+        return $this->hygrometrie;
+    }
 
-		return [
-			'nom' => $this->nom,
-			'radioid' => $this->id_sensor,	
-			'temperature' => $this->temperature,
-			'hygrometrie' => $this->hygrometrie,
-			'horodatage' => $this->horodatage			
-		];
-	}
+    /**
+     * @return string
+     */
+    public function horodatage()
+    {
+        return $this->horodatage;
+    }
+
+    /**
+     * @param int $id_sensor
+     * @return Mesure
+     * @throws Exception
+     */
+    public function setId_sensor($id_sensor)
+    {
+        if (empty($id_sensor) || !is_string($id_sensor)) {
+            throw new Exception('idSensor invalide!');
+        }
+
+        $this->id_sensor = $id_sensor;
+
+        return $this;
+    }
+
+    /**
+     * @param string $nom
+     * @return Mesure
+     * @throws Exception
+     */
+    public function setNom($nom)
+    {
+        if (empty($nom) || !is_string($nom)) {
+            throw new Exception('nom invalide!');
+        }
+
+        $this->$nom = $nom;
+
+        return $this;
+    }
+
+    /**
+     * @param float $temperature
+     * @return Mesure
+     */
+    public function setTemperature($temperature)
+    {
+        $this->temperature = $temperature;
+
+        return $this;
+    }
+
+    /**
+     * @param float $hygrometrie
+     * @return Mesure
+     */
+    public function setHygrometrie($hygrometrie)
+    {
+        $this->hygrometrie = $hygrometrie;
+
+        return $this;
+    }
+
+    /**
+     * @param string $horodatage
+     * @return Mesure
+     * @throws Exception
+     */
+    public function setHorodatage($horodatage)
+    {
+        if (empty($horodatage) || !is_string($horodatage)) {
+            throw new Exception('horodatage invalide!');
+        }
+        $this->horodatage = $horodatage;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'nom' => $this->nom,
+            'radioid' => $this->id_sensor,
+            'temperature' => $this->temperature,
+            'hygrometrie' => $this->hygrometrie,
+            'horodatage' => $this->horodatage
+        ];
+    }
 }

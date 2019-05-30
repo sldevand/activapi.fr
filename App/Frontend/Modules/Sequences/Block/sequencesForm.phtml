@@ -1,0 +1,27 @@
+<?php
+$seqId = $args[0];
+/** @var \Materialize\Button\FlatButton $submit */
+$submit = $args[1];
+$addButton = new \Materialize\FloatingActionButton([
+    'id' => 'action-add',
+    'icon' => 'add',
+    'wrapper' => 'col s6',
+    'href' => '#',
+    'fixed' => true
+]);
+$spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
+
+$method = ($seqId) ? 'put' : 'post';
+$action = ($seqId) ? 'api/sequences/update' : 'api/sequences/add';
+
+?>
+<form class="row" action="<?= $action ?>" method="<?= $method ?>">
+    <div id="sequence-content">
+        <div class="center-align">
+            <?= $spinner->getHtml(); ?>
+        </div>
+    </div>
+    <input type="text" name="id" id="id" value="<?= $seqId ?>" hidden readonly required/>
+    <?= $submit->getHtml(); ?>
+    <?= $addButton->getHtml() ?>
+</form>

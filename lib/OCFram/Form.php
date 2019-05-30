@@ -1,61 +1,153 @@
 <?php
+
 namespace OCFram;
 
+use Materialize\Widget;
+
+/**
+ * Class Form
+ * @package OCFram
+ */
 class Form
 {
-  protected $entity;
-  protected $fields = [];
-  
-  public function __construct(Entity $entity)
-  {
-    $this->setEntity($entity);
-  }
-  
-  public function add(Field $field)
-  {
-    $attr = $field->name(); // On récupère le nom du champ.
-    $field->setValue($this->entity->$attr()); // On assigne la valeur correspondante au champ.
-    
-    $this->fields[] = $field; // On ajoute le champ passé en argument à la liste des champs.
-    return $this;
-  }
-  
-  public function createView()
-  {
-    $view = '';
-    
-    // On génère un par un les champs du formulaire.
-    foreach ($this->fields as $field)
+    /** @var Entity $entity */
+    protected $entity;
+
+    /** @var array $fields */
+    protected $fields = [];
+
+    /** @var array $fields */
+    protected $widgets = [];
+
+    /**
+     * Form constructor.
+     * @param Entity $entity
+     */
+    public function __construct(Entity $entity)
     {
-      $view .= $field->buildWidget().'<br />';
+        $this->setEntity($entity);
     }
-    
-    return $view;
-  }
-  
-  public function isValid()
-  {
-    $valid = true;
-    
-    // On vérifie que tous les champs sont valides.
-    foreach ($this->fields as $field)
+
+    /**
+     * @param mixed $entity
+     * @return $this
+     */
+    public function setEntity($entity)
     {
-      if (!$field->isValid())
-      {
-        $valid = false;
-      }
+        $this->entity = $entity;
+
+        return $this;
     }
-    
-    return $valid;
-  }
-  
-  public function entity()
-  {
-    return $this->entity;
-  }
-  
-  public function setEntity(Entity $entity)
-  {
-    $this->entity = $entity;
-  }
+
+    /**
+     * @param Field $field
+     * @param null|string $wrapper
+     * @return $this
+     */
+    public function add(Field $field, $wrapper = null)
+    {
+        $field->setWrapper($wrapper);
+        $attr = $field->name();
+
+        if (!method_exists($this->entity, $attr)) {
+            $attr = 'get' . ucfirst($field->name());
+        }
+
+        if (empty($field->getValue()) && method_exists($this->entity, $attr)) {
+            $field->setValue($this->entity->$attr());
+        }
+
+        $this->fields[] = $field;
+        return $this;
+    }
+
+    /**
+     * @param Widget $widget
+     * @param null|string $after
+     * @return $this
+     */
+    public function addWidget(Widget $widget, $after = null)
+    {
+        $this->widgets[$widget->id()] = [
+            'widget' => $widget,
+            'after' => $after
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function createView()
+    {
+        $view = '';
+        /** @var Field $field */
+        foreach ($this->fields as $field) {
+            $view .= '<div class="' . $field->getWrapper() . '">';
+            $view .= $field->buildWidget();
+            $view .= '</div>';
+            $view .= $this->createWidgetView($field);
+        }
+
+
+        return $view;
+    }
+
+    /**
+     * @param Field $field
+     * @return string
+     */
+    public function createWidgetView($field)
+    {
+        $view = '';
+        foreach ($this->widgets as $widget) {
+            if (!empty($widget['after']) && $widget['after'] === $field->id()) {
+                $view .= '<label for="' . $widget['widget']->id() . '">supprimer</label>';
+                $view .= $widget['widget']->getHtml();
+                return $view;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        $valid = true;
+        foreach ($this->fields as $field) {
+            if (!$field->isValid()) {
+                $valid = false;
+            }
+        }
+
+        return $valid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function entity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @return Field[]
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWidgets()
+    {
+        return $this->widgets;
+    }
 }

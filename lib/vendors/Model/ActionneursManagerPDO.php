@@ -1,36 +1,59 @@
 <?php
+
 namespace Model;
 
-use \OCFram\Manager;
-use \Entity\Actionneur;
-use \Debug\Log;
+use Entity\Actionneur;
 
-class ActionneursManagerPDO extends ManagerPDO{
+/**
+ * Class ActionneursManagerPDO
+ * @package Model
+ */
+class ActionneursManagerPDO extends ManagerPDO
+{
+    /**
+     * ActionneursManagerPDO constructor.
+     * @param \PDO $dao
+     */
+    public function __construct(\PDO $dao)
+    {
+        parent::__construct($dao);
+        $this->tableName = 'actionneurs';
+        $this->entity = new Actionneur();
+    }
 
-  protected $tableName="actionneurs";
+    /**
+     * @param string|null $categorie
+     * @param array|null $in
+     * @return Actionneur[]
+     * @throws \Exception
+     */
+    public function getList($categorie = null, $in = null)
+    {
+        $sql = "SELECT * FROM $this->tableName";
 
-  public function getList($categorie=""){
+        if (!empty($categorie)) {
+            $sql .= ' WHERE categorie = :categorie';
+        }
 
-  	$sql = 'SELECT * FROM actionneurs';
+        if (!empty($categorie) && !empty($in)) {
+            $sql .= ' AND';
+        }
 
-  	if($categorie!=""){$sql.=' WHERE categorie = :categorie';}
+        if (!empty($in) && !empty($in['field'])) {
+            $field = $in['field'];
+            $values = $in['values'];
+            $sql .= " $field IN ($values)";
+        }
 
-  	$q = $this->dao->prepare($sql);
+        $q = $this->prepare($sql);
+        if (!empty($categorie)) {
+            $q->bindParam(':categorie', $categorie);
+        }
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Actionneur');
+        $listeActionneur = $q->fetchAll();
+        $q->closeCursor();
 
-  	if($categorie!=""){$q->bindParam(':categorie',$categorie);}
-
-  	$q->execute();
-     	$q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Actionneur');
-
-  	$listeActionneur = $q->fetchAll();
-
-  	$q->closeCursor();
-
-  	return $listeActionneur;
-  }
-
-
-  
+        return $listeActionneur;
+    }
 }
-
-

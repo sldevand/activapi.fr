@@ -1,50 +1,92 @@
 <?php
+
 namespace OCFram;
 
-session_start();
-
+/**
+ * Class User
+ * @package OCFram
+ */
 class User
 {
-  public function getAttribute($attr)
-  {
-    return isset($_SESSION[$attr]) ? $_SESSION[$attr] : null;
-  }
+    /**
+     * @var Application $app
+     */
+    protected $app;
 
-  public function getFlash()
-  {
-    $flash = $_SESSION['flash'];
-    unset($_SESSION['flash']);
-
-    return $flash;
-  }
-
-  public function hasFlash()
-  {
-    return isset($_SESSION['flash']);
-  }
-
-  public function isAuthenticated()
-  {
-    return isset($_SESSION['auth']) && $_SESSION['auth'] === true;
-  }
-
-  public function setAttribute($attr, $value)
-  {
-    $_SESSION[$attr] = $value;
-  }
-
-  public function setAuthenticated($authenticated = true)
-  {
-    if (!is_bool($authenticated))
+    /**
+     * User constructor.
+     * @param Application $app
+     */
+    public function __construct(Application $app)
     {
-      throw new \InvalidArgumentException('La valeur spécifiée à la méthode User::setAuthenticated() doit être un boolean');
+        if (empty($_SESSION)) {
+            session_start();
+        }
+        $this->app = $app;
     }
 
-    $_SESSION['auth'] = $authenticated;
-  }
+    /**
+     * @param string $attr
+     * @return string
+     */
+    public function getAttribute($attr)
+    {
+        return isset($_SESSION[$attr]) ? $_SESSION[$attr] : null;
+    }
 
-  public function setFlash($value)
-  {
-    $_SESSION['flash'] = $value;
-  }
+    /**
+     * @return string
+     */
+    public function getFlash()
+    {
+        $flash = $_SESSION['flash'];
+        unset($_SESSION['flash']);
+
+        return $flash;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFlash()
+    {
+        return isset($_SESSION['flash']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthenticated()
+    {
+        return isset($_SESSION['auth']) && $_SESSION['auth'] === true;
+    }
+
+    /**
+     * @param string $attr
+     * @param string $value
+     */
+    public function setAttribute($attr, $value)
+    {
+        $_SESSION[$attr] = $value;
+    }
+
+    /**
+     * @param bool $authenticated
+     */
+    public function setAuthenticated($authenticated = true)
+    {
+        if (!is_bool($authenticated)) {
+            throw new \InvalidArgumentException('La valeur spécifiée à la méthode User::setAuthenticated() doit être un boolean');
+        }
+
+        $_SESSION['auth'] = $authenticated;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setFlash($value)
+    {
+        $_SESSION['flash'] = $value;
+    }
 }

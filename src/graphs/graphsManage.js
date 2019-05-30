@@ -25,7 +25,7 @@ export function GraphsManage(id) {
         getDatasFromAPI: function (fullURL) {
             graphsManage.m_pending_gets++;
             $.get(fullURL, function (sensor) {
-                var sensorJSON = JSON.parse(sensor);
+                var sensorJSON = sensor;
                 var label = sensorJSON.nom;
                 var datas = sensorJSON.data;
 

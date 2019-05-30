@@ -1,50 +1,123 @@
 <?php
+
 namespace Entity;
 
-use \OCFram\Entity;
+use OCFram\Entity;
+
+/**
+ * Class ThermostatLog
+ * @package Entity
+ */
+class ThermostatLog extends Entity
+{
+    /**
+     * @var \DateTime $horodatage
+     */
+    protected $horodatage;
+
+    /**
+     * @var int $etat
+     */
+    protected $etat;
+
+    /**
+     * @var float $consigne
+     */
+    protected $consigne;
+
+    /**
+     * @var float $delta
+     */
+    protected $delta;
 
 
-class ThermostatLog extends Entity{
+    /**
+     * @return \DateTime
+     */
+    public function horodatage()
+    {
+        return $this->horodatage;
+    }
 
-	protected $horodatage;
-	protected $etat;
-	protected $consigne;
-	protected $delta;
+    /**
+     * @return int
+     */
+    public function etat()
+    {
+        return $this->etat;
+    }
 
-	//GETTERS
-	public function horodatage(){return $this->horodatage;}
-	public function etat(){return $this->etat;}	
-	public function consigne(){return $this->consigne;}
-	public function delta(){return $this->delta;}
+    /**
+     * @return float
+     */
+    public function consigne()
+    {
+        return $this->consigne;
+    }
 
-	//SETTERS
-	public function setHorodatage(\DateTime $horodatage){
+    /**
+     * @return float
+     */
+    public function delta()
+    {
+        return $this->delta;
+    }
 
-		$this->horodatage=$horodatage;
-	}
+    /**
+     * @param \DateTime $horodatage
+     * @return ThermostatLog
+     */
+    public function setHorodatage($horodatage)
+    {
+        $this->horodatage = $horodatage;
 
-	public function setEtat($etat){
-		$this->etat=$etat;
-	}
+        return $this;
+    }
 
-	public function setConsigne($consigne){
-		$this->consigne=$consigne;
-	}
+    /**
+     * @param int $etat
+     * @return ThermostatLog
+     */
+    public function setEtat($etat)
+    {
+        $this->etat = $etat;
 
-	public function setDelta($delta){
-		$this->delta=$delta;
-	}
+        return $this;
+    }
 
-	public function jsonSerialize(){
+    /**
+     * @param float $consigne
+     * @return ThermostatLog
+     */
+    public function setConsigne($consigne)
+    {
+        $this->consigne = $consigne;
 
-		return array(
-			'id' => $this->id(),
-			'horodatage' => $this->horodatage,
-			'etat' => $this->etat,
-			'consigne' => $this->consigne,
-			'delta'=>$this->delta
-		);
-	}
+        return $this;
+    }
 
-	
+    /**
+     * @param float $delta
+     * @return ThermostatLog
+     */
+    public function setDelta($delta)
+    {
+        $this->delta = $delta;
+
+        return $this;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return array(
+            'id' => $this->id(),
+            'horodatage' => $this->horodatage,
+            'etat' => $this->etat,
+            'consigne' => $this->consigne,
+            'delta' => $this->delta
+        );
+    }
 }

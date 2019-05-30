@@ -20,6 +20,9 @@ class FrontendApplication extends Application
         $this->name = 'Frontend';
     }
 
+    /**
+     * @return mixed|void
+     */
     public function run()
     {
         $controller = $this->getController();
