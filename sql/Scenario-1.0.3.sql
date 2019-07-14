@@ -1,0 +1,2 @@
+ALTER TABLE action
+  ADD timeout REAL DEFAULT 0.0;

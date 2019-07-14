@@ -177,6 +177,8 @@ function () {
   _createClass(ActionTemplate, null, [{
     key: "render",
     value: function render(action) {
+      console.log(action);
+
       if (!action || action.error) {
         action.id = 0;
         action.nom = '';
@@ -184,7 +186,7 @@ function () {
 
       action.id = action.id || 0;
       action.nom = action.nom || '';
-      return "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label for=\"action-name-".concat(action.id, "\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"action-name-").concat(action.id, "\" value=\"").concat(action.nom, "\" required>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div id=\"actionneur\" class=\"col s8\"></div>\n         <div class=\"col s4\">\n            <label for=\"etat\" class=\"active\">Etat</label>\n            <input type=\"number\" name=\"etat\" id=\"etat\" value=\"").concat(action.etat, "\" required>\n        </div>\n    </div>\n");
+      return "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label for=\"action-name-".concat(action.id, "\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"action-name-").concat(action.id, "\" value=\"").concat(action.nom, "\" required>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div id=\"actionneur\" class=\"col s6\"></div>\n        <div class=\"col s3\">\n            <label for=\"etat\" class=\"active\">Etat</label>\n            <input type=\"number\" name=\"etat\" id=\"etat\" value=\"").concat(action.etat, "\" required>\n        </div>\n         <div class=\"col s3\">\n            <label for=\"timeout\" class=\"active\">Timeout</label>\n            <input type=\"number\" name=\"timeout\" id=\"timeout\" value=\"").concat(action.timeout, "\" required>\n        </div>\n    </div>\n");
     }
   }]);
 
