@@ -49,7 +49,8 @@ class Action extends Entity
             'nom' => $this->getNom(),
             'actionneurId' => $this->getActionneur()->id(),
             'actionneur' => $this->getActionneur(),
-            'etat' => $this->getEtat()
+            'etat' => $this->getEtat(),
+            'timeout' => $this->getTimeout()
         ];
     }
 
