@@ -35,6 +35,11 @@ class Action extends Entity
     protected $etat;
 
     /**
+     * @var float $timeout
+     */
+    protected $timeout;
+
+    /**
      * @return mixed
      */
     public function jsonSerialize()
@@ -127,5 +132,21 @@ class Action extends Entity
         $this->actionneurId = $actionneurId;
 
         return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * @param float $timeout
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
     }
 }
