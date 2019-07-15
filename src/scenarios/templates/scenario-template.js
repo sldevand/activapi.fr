@@ -6,8 +6,12 @@ export class ScenarioTemplate {
         }
         scenario.id = scenario.id || 0;
         scenario.nom = scenario.nom || '';
+        let statuses = {
+            'stop':'Stop',
+            'play': 'Play'
+        };
 
-        return `
+        let template = `
     <div class="row">
         <div class="col s6">
             <label for="scenario-name-${scenario.id}" class="active">Nom</label>
@@ -16,9 +20,16 @@ export class ScenarioTemplate {
         <div class="col s6">
             <label for=status" class="active">Statut</label>
             <div class="select-wrapper"><span class="caret">▼</span>
-                <select name="status" id="status">               
-                   <option value="play" selected>Play</option>
-                   <option value="stop" selected>Stop</option>                   
+                <select name="status" id="status">`;
+                for(let statusKey in statuses)
+                {
+                    let selected='';
+                    if(statusKey === scenario.status){
+                        selected = 'selected';
+                    }
+                    template += `<option value="${statusKey}" ${selected}>${statuses[statusKey]}</option>`;
+                }
+                template += `
                 </select>
             </div>
         </div>        
@@ -27,5 +38,6 @@ export class ScenarioTemplate {
         <div id="sequences" class="s12"></div>
     </div>
 `;
+        return template;
     }
 }
