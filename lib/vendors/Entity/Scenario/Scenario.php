@@ -26,6 +26,11 @@ class Scenario extends Entity
     protected $sequences;
 
     /**
+     * @var string $status
+     */
+    protected $status;
+
+    /**
      * @return mixed
      */
     public function jsonSerialize()
@@ -33,7 +38,8 @@ class Scenario extends Entity
         return [
             'id' => $this->id(),
             'nom' => $this->getNom(),
-            'sequences' => $this->getSequences()
+            'sequences' => $this->getSequences(),
+            'status' => $this->getStatus()
         ];
     }
 
@@ -114,5 +120,21 @@ class Scenario extends Entity
         $this->scenarioSequences = $scenarioSequences;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }
