@@ -247,7 +247,7 @@ function () {
 
       scenario.id = scenario.id || 0;
       scenario.nom = scenario.nom || '';
-      return "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label for=\"scenario-name-".concat(scenario.id, "\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"scenario-name-").concat(scenario.id, "\" value=\"").concat(scenario.nom, "\" required>\n        </div>\n    </div>\n    <div class=\"row\">\n        <div id=\"sequences\" class=\"s12\"></div>\n    </div>\n");
+      return "\n    <div class=\"row\">\n        <div class=\"col s6\">\n            <label for=\"scenario-name-".concat(scenario.id, "\" class=\"active\">Nom</label>\n            <input type=\"text\" name=\"nom\" id=\"scenario-name-").concat(scenario.id, "\" value=\"").concat(scenario.nom, "\" required>\n        </div>\n        <div class=\"col s6\">\n            <label for=status\" class=\"active\">Statut</label>\n            <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n                <select name=\"status\" id=\"status\">               \n                   <option value=\"play\" selected>Play</option>\n                   <option value=\"stop\" selected>Stop</option>                   \n                </select>\n            </div>\n        </div>        \n    </div>\n    <div class=\"row\">\n        <div id=\"sequences\" class=\"s12\"></div>\n    </div>\n");
     }
   }]);
 
