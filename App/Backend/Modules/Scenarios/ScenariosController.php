@@ -76,6 +76,22 @@ class ScenariosController extends AbstractScenarioManagersController
     }
 
     /**
+     * @param HTTPRequest $httpRequest
+     * @throws Exception
+     */
+    public function executeReset($httpRequest)
+    {
+        try {
+            $this->manager->resetScenarioStatuses();
+            http_response_code(202);
+        } catch (Exception $e) {
+            return $this->page->addVar('data', ['error' => $e->getMessage()]);
+        }
+
+        $this->page->addVar('data', ['success' => 'Scenarios have been reset to stop value']);
+    }
+
+    /**
      * @param array $jsonPost
      * @return array|bool
      * @throws Exception

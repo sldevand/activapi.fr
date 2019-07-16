@@ -170,4 +170,13 @@ class ScenariosManagerPDO extends ManagerPDO
 
         return $q->execute();
     }
+
+    public function resetScenarioStatuses()
+    {
+        $sql = "UPDATE scenario SET status = 'stop';";
+
+        $q = $this->prepare($sql);
+
+        return $q->execute();
+    }
 }
