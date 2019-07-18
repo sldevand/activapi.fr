@@ -152,6 +152,7 @@ function fromByteArray (uint8) {
 }
 
 },{}],2:[function(require,module,exports){
+(function (Buffer){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -1930,7 +1931,8 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":1,"ieee754":3}],3:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"base64-js":1,"buffer":2,"ieee754":3}],3:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -2031,16 +2033,23 @@ var h,f,l,d=String.fromCharCode;t.exports={version:"2.1.2",encode:a,decode:u}},f
 },{"buffer":2}],5:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
 var _socketioManage = require("./utils/socketioManage");
 
 var _socket = _interopRequireDefault(require("socket.io-client/dist/socket.io"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var address = '192.168.1.52';
+var address = 'localhost';
 var port = 5901;
 var socketIOManage = new _socketioManage.SocketIOManage(_socket.default, address, port);
 socketIOManage.connect().run();
+var _default = socketIOManage;
+exports.default = _default;
 
 },{"./utils/socketioManage":6,"socket.io-client/dist/socket.io":4}],6:[function(require,module,exports){
 "use strict";
