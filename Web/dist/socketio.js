@@ -2044,7 +2044,7 @@ var _socket = _interopRequireDefault(require("socket.io-client/dist/socket.io"))
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var address = 'localhost';
+var address = '192.168.1.52';
 var port = 5901;
 var socketIOManage = new _socketioManage.SocketIOManage(_socket.default, address, port);
 socketIOManage.connect().run();

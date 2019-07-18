@@ -28,7 +28,7 @@ class ConsoleController extends BackController
             'type' => 'button'
         ]);
 
-        $address = 'localhost';
+        $address = '192.168.1.52';
         $port = 5901;
 
         $url = "http://$address/dashboard/resultat.php?log";
