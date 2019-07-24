@@ -5,6 +5,6 @@
   <define var="pdoWinAddress" value="sqlite:E:\xampp\htdocs\html\database\releves.db" />
   <define var="pdoLinAddress" value="sqlite:/var/www/html/database/releves.db" />
   <define var="apiWinBaseAddress" value="http://localhost/activapi.fr/" />
-  <define var="apiLinBaseAddress" value="http://localhost/activapi.fr/" />
-   <define var="apiBaseAddress" value="http://localhost/activapi.fr/" />
+  <define var="apiLinBaseAddress" value="http://192.168.1.52/activapi.fr/" />
+  <define var="apiBaseAddress" value="http://192.168.1.52/activapi.fr/" />
 </definitions>

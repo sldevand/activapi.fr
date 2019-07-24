@@ -8,7 +8,7 @@
 <script>
     var graphs = new GraphsManage(graphId);
 
-    if (sensorid == '') {
+    if (sensorid === '') {
         var i = 0;
         sensorids.forEach(function (radioid) {
 
