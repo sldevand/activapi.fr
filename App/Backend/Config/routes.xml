@@ -36,6 +36,6 @@
 	<route url="\/activapi.fr\/api\/thermostat\/planifname\/([0-9]*)?" module="ThermostatPlanif" action="name" vars="id"/>
 	<route url="\/activapi.fr\/api\/thermostat\/mode\/([0-9]*)?" module="ThermostatModes" action="index" vars="id"/>
 
-	<route url="\/activapi.fr\/api\/node\/toggle\/(on|off)$" module="Command" action="toggle" vars="status"/>
-	<route url="\/activapi.fr\/api\/node\/status\/?$" module="Command" action="getStatus" />
+	<route url="\/activapi.fr\/api\/node\/toggle\/(on|off)$" module="Node" action="toggle" vars="status"/>
+	<route url="\/activapi.fr\/api\/node\/status\/?$" module="Node" action="getStatus" />
 </routes>

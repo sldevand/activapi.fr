@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Backend\Modules\Command;
+namespace App\Backend\Modules\Node;
 
 use Entity\Actionneur;
 use Model\Scenario\ActionManagerPDO;
@@ -10,10 +10,10 @@ use OCFram\HTTPRequest;
 use SFram\Commands\NodeActivator;
 
 /**
- * Class CommandController
- * @package App\Backend\Modules\Command
+ * Class NodeController
+ * @package App\Backend\Modules\Node
  */
-class CommandController extends BackController
+class NodeController extends BackController
 {
     /** @var NodeActivator $nodeActivator */
     protected $nodeActivator;
