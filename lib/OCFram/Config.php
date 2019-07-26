@@ -38,4 +38,12 @@ class Config extends ApplicationComponent
 
         return null;
     }
+
+    /**
+     * @return array
+     */
+    public function getVars()
+    {
+        return $this->vars;
+    }
 }

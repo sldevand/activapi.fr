@@ -27,12 +27,8 @@ class ConsoleController extends BackController
             'color' => 'primaryTextColor',
             'type' => 'button'
         ]);
-
-        $address = '192.168.1.52';
-        $port = 5901;
-
-        $url = "http://$address/dashboard/resultat.php?log";
-
+        $commandDomainAddress = $this->app()->config()->get("commandDomainAddress");
+        $url = $commandDomainAddress.'log';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);

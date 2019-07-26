@@ -6,4 +6,7 @@
   <define var="cacheExpiration" value="3600 seconds" />
   <define var="pdoWinAddress" value="sqlite:E:\xampp\htdocs\html\database\releves.db" />
   <define var="pdoLinAddress" value="sqlite:/var/www/html/database/releves.db" />
+  <define var="toggleOnCommand" value="sudo /home/pi/activServer/activServerLauncher > /dev/null 2>&amp;1 &amp;" />
+  <define var="toggleOffCommand" value="sudo killall node" />
+  <define var="getStatusCommand" value="ps -U root | grep -o node" />
 </definitions>
