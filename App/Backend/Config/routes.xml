@@ -27,7 +27,6 @@
 	<route url="\/activapi.fr\/api\/actions\/delete" module="Actions" action="delete" />
 	<route url="\/activapi.fr\/api\/actions\/update" module="Actions" action="put" />
 
-
 	<route url="\/activapi.fr\/api\/thermostat\/?" module="Thermostat" action="index" />
 	<route url="\/activapi.fr\/api\/thermostat\/update" module="Thermostat" action="update" />
 	<route url="\/activapi.fr\/api\/thermostat\/log\/([0-9]{4}-[0-9]{2}-[0-9]{2})?-?([0-9]{4}-[0-9]{2}-[0-9]{2})?" module="Thermostat" action="log" vars="dateMin,dateMax"/>
@@ -36,4 +35,8 @@
 	<route url="\/activapi.fr\/api\/thermostat\/planif\/update" module="ThermostatPlanif" action="update"/>
 	<route url="\/activapi.fr\/api\/thermostat\/planifname\/([0-9]*)?" module="ThermostatPlanif" action="name" vars="id"/>
 	<route url="\/activapi.fr\/api\/thermostat\/mode\/([0-9]*)?" module="ThermostatModes" action="index" vars="id"/>
+
+	<route url="\/activapi.fr\/api\/node\/toggle\/(on|off)$" module="Node" action="toggle" vars="status"/>
+	<route url="\/activapi.fr\/api\/node\/status\/?$" module="Node" action="getStatus" />
+	<route url="\/activapi.fr\/api\/node\/log\/?$" module="Node" action="log" />
 </routes>
