@@ -7,6 +7,6 @@
   <define var="apiWinBaseAddress" value="http://localhost/activapi.fr/" />
   <define var="apiLinBaseAddress" value="http://192.168.1.52/activapi.fr/" />
   <define var="apiBaseAddress" value="http://192.168.1.52/activapi.fr/" />
-  <define var="commandDomainAddress" value="http://192.168.1.52/dashboard/resultat.php?" />
+  <define var="commandDomainAddress" value="http://192.168.1.52/activapi.fr/api/node" />
   <define var="nodePort" value="5901" />
 </definitions>

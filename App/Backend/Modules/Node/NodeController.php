@@ -32,10 +32,11 @@ class NodeController extends BackController
     {
         $status = $request->getData('status');
         if (empty($status)) {
-            return $this->page()->addVar('output', ['error'=>'No status found']);
+            return $this->page()->addVar('output', ['error' => 'No status found']);
         }
         $output = $this->nodeActivator->toggle($status);
-        $this->page()->addVar('output', $output);
+
+        return $this->page()->addVar('output', $output);
     }
 
     /**
@@ -45,5 +46,28 @@ class NodeController extends BackController
     {
         $output = $this->nodeActivator->getStatus();
         $this->page()->addVar('output', $output);
+    }
+
+    /**
+     * @param HTTPRequest $request
+     */
+    public function executeLog(HTTPRequest $request)
+    {
+        $file = $this->app()->config()->get('nodeServerLogPath');
+        if (!file_exists($file)) {
+            return $this->page()->addVar('output', ['error' => 'No log file found']);
+        }
+        $read = '';
+        $lines = file($file);
+        $last = count($lines) - 1;
+        for ($i = $last; $i >= 0; $i--) {
+            $read .= $lines[$i] . '<br>';
+        }
+
+        $output = [
+            'message' => $read
+        ];
+
+        return $this->page()->addVar('output', $output);
     }
 }

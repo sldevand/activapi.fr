@@ -9,4 +9,5 @@
   <define var="toggleOnCommand" value="sudo /home/pi/activServer/activServerLauncher > /dev/null 2>&amp;1 &amp;" />
   <define var="toggleOffCommand" value="sudo killall node" />
   <define var="getStatusCommand" value="ps -U root | grep -o node" />
+  <define var="nodeServerLogPath" value="/home/pi/activServer/log.txt" />
 </definitions>

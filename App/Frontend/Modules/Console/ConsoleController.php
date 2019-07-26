@@ -28,24 +28,21 @@ class ConsoleController extends BackController
             'type' => 'button'
         ]);
         $commandDomainAddress = $this->app()->config()->get("commandDomainAddress");
-        $url = $commandDomainAddress.'log';
+        $url = $commandDomainAddress.'/log';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $log = curl_exec($ch);
+        $log = json_decode(curl_exec($ch),true);
 
         $card = WidgetFactory::makeCard('console-card', 'Console');
         $card->addContent($this->commandView($sendButton));
-        $card->addContent($this->displayView($log));
-
-
+        $card->addContent($this->displayView($log['message']));
         $cards = [];
         $cards[] = $card;
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('sendButton', $sendButton);
-        $this->page->addVar('log', $log);
     }
 
     /**
