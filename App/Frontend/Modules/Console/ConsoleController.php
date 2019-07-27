@@ -3,6 +3,7 @@
 namespace App\Frontend\Modules\Console;
 
 use Materialize\Button\FlatButton;
+use Materialize\Button\SwitchButton;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
@@ -20,22 +21,31 @@ class ConsoleController extends BackController
     {
         $this->page->addVar('title', 'Console DomusBox');
 
-        $sendButton = new FlatButton([
-            'id' => 'send-command',
-            'title' => 'Envoyer',
-            'icon' => 'send',
-            'color' => 'primaryTextColor',
-            'type' => 'button'
-        ]);
+        $sendButton = new FlatButton(
+            [
+                'id' => 'send-command',
+                'title' => 'Envoyer',
+                'icon' => 'send',
+                'color' => 'primaryTextColor',
+                'type' => 'button'
+            ]);
+
+        $switchButton = new SwitchButton(
+            [
+                'id' => 'node',
+                'title' => 'Node Server'
+            ]);
+
         $commandDomainAddress = $this->app()->config()->get("commandDomainAddress");
-        $url = $commandDomainAddress.'/log';
+        $url = $commandDomainAddress . '/log';
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $log = json_decode(curl_exec($ch),true);
+        $log = json_decode(curl_exec($ch), true);
 
         $card = WidgetFactory::makeCard('console-card', 'Console');
+        $card->addContent($this->nodeView($switchButton));
         $card->addContent($this->commandView($sendButton));
         $card->addContent($this->displayView($log['message']));
         $cards = [];
@@ -43,6 +53,15 @@ class ConsoleController extends BackController
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('sendButton', $sendButton);
+    }
+
+    /**
+     * @param $switchButton
+     * @return false|string
+     */
+    public function nodeView($switchButton)
+    {
+        return $this->getBlock(MODULES . '/Console/Block/nodeView.phtml', $switchButton);
     }
 
     /**

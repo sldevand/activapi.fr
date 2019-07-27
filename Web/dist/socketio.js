@@ -2036,22 +2036,62 @@ var h,f,l,d=String.fromCharCode;t.exports={version:"2.1.2",encode:a,decode:u}},f
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Config = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Config =
+/*#__PURE__*/
+function () {
+  function Config() {
+    _classCallCheck(this, Config);
+  }
+
+  _createClass(Config, null, [{
+    key: "getConfig",
+    value: function getConfig() {
+      return {
+        'ip': '192.168.1.52',
+        'port': '5901'
+      };
+    }
+  }]);
+
+  return Config;
+}();
+
+exports.Config = Config;
+
+},{}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.default = void 0;
 
 var _socketioManage = require("./utils/socketioManage");
 
 var _socket = _interopRequireDefault(require("socket.io-client/dist/socket.io"));
 
+var _config = require("./config/config");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var address = '192.168.1.52';
-var port = 5901;
-var socketIOManage = new _socketioManage.SocketIOManage(_socket.default, address, port);
+var ip = _config.Config.getConfig().ip;
+
+var port = _config.Config.getConfig().port;
+
+var socketIOManage = new _socketioManage.SocketIOManage(_socket.default, ip, port);
 socketIOManage.connect().run();
 var _default = socketIOManage;
 exports.default = _default;
 
-},{"./utils/socketioManage":6,"socket.io-client/dist/socket.io":4}],6:[function(require,module,exports){
+},{"./config/config":5,"./utils/socketioManage":7,"socket.io-client/dist/socket.io":4}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2133,4 +2173,4 @@ function () {
 
 exports.SocketIOManage = SocketIOManage;
 
-},{}]},{},[5]);
+},{}]},{},[6]);

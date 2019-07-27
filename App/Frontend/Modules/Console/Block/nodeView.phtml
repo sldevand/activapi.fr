@@ -1,0 +1,9 @@
+<?php $switch = $args[0]; ?>
+
+<div class="row">
+    <div class="col l3 m6 s12">
+        <label for="node-command">Node</label>
+        <?= $switch->getHtml(); ?>
+    </div>
+</div>
+<script src="<?= DIST . '/nodeManage.js' ?>"></script>
