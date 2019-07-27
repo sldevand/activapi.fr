@@ -15,6 +15,7 @@
         "babelifyScenarios": "./node_modules/.bin/watchify  ./src/scenariosManage.js -t [babelify] -o ./Web/dist/scenariosManage.js",
         "babelifySequences": "./node_modules/.bin/watchify  ./src/sequencesManage.js -t [babelify] -o ./Web/dist/sequencesManage.js",
         "babelifyActions": "./node_modules/.bin/watchify  ./src/actionsManage.js -t [babelify] -o ./Web/dist/actionsManage.js",
+        "babelifyNode": "./node_modules/.bin/watchify  ./src/nodeManage.js -t [babelify] -o ./Web/dist/nodeManage.js",
         "sassify": "./node_modules/.bin/node-sass --watch ./src/index.scss ./Web/dist/index.css",
         "sync": "./node_modules/.bin/browser-sync start --server --files \"./Web/dist/index.*\""
     },
