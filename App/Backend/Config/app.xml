@@ -10,4 +10,6 @@
   <define var="toggleOffCommand" value="sudo killall node" />
   <define var="getStatusCommand" value="ps -U root | grep -o node" />
   <define var="nodeServerLogPath" value="/home/pi/activServer/log.txt" />
+  <define var="nodeIP" value="192.168.1.52" />
+  <define var="nodePort" value="5901" />
 </definitions>

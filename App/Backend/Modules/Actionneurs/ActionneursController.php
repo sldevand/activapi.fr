@@ -3,9 +3,12 @@
 namespace App\Backend\Modules\Actionneurs;
 
 use Entity\Actionneur;
+use Exception;
+use Model\ActionneursManagerPDO;
 use Model\Scenario\ActionManagerPDO;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
+use Psinetron\SocketIO;
 
 
 /**
@@ -38,7 +41,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
-     * @throws \Exception
+     * @throws Exception
      */
     public function executeInsert(HTTPRequest $request)
     {
@@ -83,5 +86,45 @@ class ActionneursController extends BackController
         );
 
         $manager->save($actionneur);
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @throws Exception
+     */
+    public function executeCommand(HTTPRequest $request)
+    {
+        $id = $request->getData('id');
+        $etat = $request->getData('etat');
+
+        if (empty($id) || empty($etat)) {
+            return $this->page->addVar('output', ['error' => 'No id or etat given']);
+        }
+
+        /** @var ActionneursManagerPDO $manager */
+        $manager = $this->managers->getManagerOf('Actionneurs');
+        /** @var Actionneur $actionneur */
+        $actionneur = $manager->getUnique($id);
+        if (empty($actionneur)) {
+            return $this->page->addVar('output', ['error' => 'No actionneur on id ' . $id]);
+        }
+
+        $actionneur->setEtat($etat);
+        $action = 'update' . ucfirst($actionneur->getCategorie());
+        if ($actionneur->getCategorie() == "dimmer") {
+            $action .= "Persist";
+        }
+        $dataJSON = json_encode($actionneur);
+
+        $ip = $this->app()->config()->get('nodeIP');
+        $port = $this->app()->config()->get('nodePort');
+
+        /** @var SocketIO $socketio */
+        $socketio = new SocketIO();
+        if (!$socketio->send($ip, $port, $action, $dataJSON)) {
+            return $this->page->addVar('output', ['error' => 'Node error']);
+        }
+
+        return $this->page->addVar('output', ['message' => 'Ok']);
     }
 }
