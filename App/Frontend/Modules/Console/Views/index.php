@@ -1,4 +1,4 @@
-<?php foreach ($cards as $card): ?>
+<?php foreach ($cards as $card) : ?>
     <div class="row">
         <div class="col s12">
             <?php echo $card->getHtml(); ?>
