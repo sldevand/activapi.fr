@@ -8,6 +8,7 @@ use Entity\Scenario\ScenarioSequence;
 use Exception;
 use OCFram\Application;
 use OCFram\HTTPRequest;
+use Psinetron\SocketIO;
 
 /**
  * Class ScenariosController
@@ -31,7 +32,7 @@ class ScenariosController extends AbstractScenarioManagersController
     }
 
     /**
-     * @param \OCFram\HTTPRequest $httpRequest
+     * @param HTTPRequest $httpRequest
      * @throws Exception
      */
     public function executePost($httpRequest)
@@ -131,5 +132,36 @@ class ScenariosController extends AbstractScenarioManagersController
         }
 
         return $scenarioSequences;
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @throws Exception
+     */
+    public function executeCommand(HTTPRequest $request)
+    {
+        $id = $request->getData('id');
+
+        if (empty($id)) {
+            return $this->page->addVar('output', ['error' => 'No id given']);
+        }
+
+        /** @var Scenario $scenario */
+        $scenario = $this->manager->getUnique($id);
+        if (empty($scenario)) {
+            return $this->page->addVar('output', ['error' => 'No scenario on id ' . $id]);
+        }
+
+        $ip = $this->app()->config()->get('nodeIP');
+        $port = $this->app()->config()->get('nodePort');
+        $action = 'updateScenario';
+        $dataJSON = json_encode($scenario);
+
+        $socketio = new SocketIO();
+        if (!$socketio->send($ip, $port, $action, $dataJSON)) {
+            return $this->page->addVar('output', ['error' => 'Node error']);
+        }
+
+        return $this->page->addVar('output', ['message' => 'Ok']);
     }
 }

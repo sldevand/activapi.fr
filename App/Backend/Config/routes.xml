@@ -17,6 +17,7 @@
 	<route url="\/activapi.fr\/api\/scenarios\/delete" module="Scenarios" action="delete"  />
 	<route url="\/activapi.fr\/api\/scenarios\/update" module="Scenarios" action="put"  />
 	<route url="\/activapi.fr\/api\/scenarios\/reset" module="Scenarios" action="reset"  />
+	<route url="\/activapi.fr\/api\/scenarios\/command\/([1-9]|[1-9][0-9]*)\/?$" module="Scenarios" action="command" vars="id"/>
 
 	<route url="\/activapi.fr\/api\/sequences\/?([0-9]*)?" module="Sequences" action="get" vars="id" />
 	<route url="\/activapi.fr\/api\/sequences\/add" module="Sequences" action="post" />

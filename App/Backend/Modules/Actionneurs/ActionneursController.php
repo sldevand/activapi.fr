@@ -5,11 +5,10 @@ namespace App\Backend\Modules\Actionneurs;
 use Entity\Actionneur;
 use Exception;
 use Model\ActionneursManagerPDO;
-use Model\Scenario\ActionManagerPDO;
+use OCFram\Application;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 use Psinetron\SocketIO;
-
 
 /**
  * Class ActionneursController
@@ -17,6 +16,21 @@ use Psinetron\SocketIO;
  */
 class ActionneursController extends BackController
 {
+    /** @var ActionneursManagerPDO $manager */
+    protected $manager;
+
+    /**
+     * ActionneursController constructor.
+     * @param Application $app
+     * @param string $module
+     * @param string $action
+     */
+    public function __construct(Application $app, $module, $action)
+    {
+        parent::__construct($app, $module, $action);
+        $this->manager = $this->managers->getManagerOf('Actionneurs');
+    }
+
     /**
      * @param HTTPRequest $request
      */
@@ -30,13 +44,12 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
         $categorie = $request->getData('categorie');
-
-        $manager = $this->managers->getManagerOf('Actionneurs');
-        $this->page->addVar('actionneurs', $manager->getList($categorie));
+        $this->page->addVar('actionneurs', $this->manager->getList($categorie));
     }
 
     /**
@@ -45,9 +58,6 @@ class ActionneursController extends BackController
      */
     public function executeInsert(HTTPRequest $request)
     {
-        /** @var ActionManagerPDO $manager */
-        $manager = $this->managers->getManagerOf('Actionneurs');
-
         $actionneur = new Actionneur(
             [
                 'nom' => $request->postData('nom'),
@@ -61,16 +71,15 @@ class ActionneursController extends BackController
             ]
         );
 
-        $manager->save($actionneur);
+        $this->manager->save($actionneur);
     }
 
     /**
      * @param HTTPRequest $request
+     * @throws Exception
      */
     public function executeUpdate(HTTPRequest $request)
     {
-        $manager = $this->managers->getManagerOf('Actionneurs');
-
         $actionneur = new Actionneur(
             [
                 'id' => $request->postData('id'),
@@ -85,7 +94,7 @@ class ActionneursController extends BackController
             ]
         );
 
-        $manager->save($actionneur);
+        $this->manager->save($actionneur);
     }
 
     /**
@@ -97,14 +106,12 @@ class ActionneursController extends BackController
         $id = $request->getData('id');
         $etat = $request->getData('etat');
 
-        if (empty($id) || empty($etat)) {
+        if (empty($id) || !isset($etat)) {
             return $this->page->addVar('output', ['error' => 'No id or etat given']);
         }
 
-        /** @var ActionneursManagerPDO $manager */
-        $manager = $this->managers->getManagerOf('Actionneurs');
         /** @var Actionneur $actionneur */
-        $actionneur = $manager->getUnique($id);
+        $actionneur = $this->manager->getUnique($id);
         if (empty($actionneur)) {
             return $this->page->addVar('output', ['error' => 'No actionneur on id ' . $id]);
         }
