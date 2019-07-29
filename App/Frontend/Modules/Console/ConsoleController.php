@@ -28,13 +28,15 @@ class ConsoleController extends BackController
                 'icon' => 'send',
                 'color' => 'primaryTextColor',
                 'type' => 'button'
-            ]);
+            ]
+        );
 
         $switchButton = new SwitchButton(
             [
                 'id' => 'node',
                 'title' => 'Node Server'
-            ]);
+            ]
+        );
 
         $commandDomainAddress = $this->app()->config()->get("commandDomainAddress");
         $url = $commandDomainAddress . '/log';
