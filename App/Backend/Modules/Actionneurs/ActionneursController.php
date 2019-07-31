@@ -71,7 +71,12 @@ class ActionneursController extends BackController
             ]
         );
 
-        $this->manager->save($actionneur);
+        try {
+            $this->manager->save($actionneur);
+            return $this->page->addVar('output', ['message' => 'Ok']);
+        } catch (Exception $e) {
+            return $this->page->addVar('output', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -94,7 +99,12 @@ class ActionneursController extends BackController
             ]
         );
 
-        $this->manager->save($actionneur);
+        try {
+            $this->manager->save($actionneur);
+            return $this->page->addVar('output', ['message' => 'Ok']);
+        } catch (Exception $e) {
+            return $this->page->addVar('output', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
