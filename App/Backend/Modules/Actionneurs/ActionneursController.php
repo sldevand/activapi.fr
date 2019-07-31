@@ -85,19 +85,36 @@ class ActionneursController extends BackController
      */
     public function executeUpdate(HTTPRequest $request)
     {
-        $actionneur = new Actionneur(
-            [
-                'id' => $request->postData('id'),
-                'nom' => $request->postData('nom'),
-                'module' => $request->postData('module'),
-                'protocole' => $request->postData('protocole'),
-                'adresse' => $request->postData('adresse'),
-                'type' => $request->postData('type'),
-                'radioid' => $request->postData('radioid'),
-                'etat' => $request->postData('etat'),
-                'categorie' => $request->postData('categorie'),
-            ]
-        );
+        try {
+            $jsonPost = $request->getJsonPost();
+            $actionneur = new Actionneur(
+                [
+                    'id' => $jsonPost['id'],
+                    'nom' => $jsonPost['nom'],
+                    'module' => $jsonPost['module'],
+                    'protocole' => $jsonPost['protocole'],
+                    'adresse' => $jsonPost['adresse'],
+                    'type' => $jsonPost['type'],
+                    'radioid' => $jsonPost['radioid'],
+                    'etat' => $jsonPost['etat'],
+                    'categorie' => $jsonPost['categorie'],
+                ]
+            );
+        } catch (Exception $e) {
+            $actionneur = new Actionneur(
+                [
+                    'id' => $request->postData('id'),
+                    'nom' => $request->postData('nom'),
+                    'module' => $request->postData('module'),
+                    'protocole' => $request->postData('protocole'),
+                    'adresse' => $request->postData('adresse'),
+                    'type' => $request->postData('type'),
+                    'radioid' => $request->postData('radioid'),
+                    'etat' => $request->postData('etat'),
+                    'categorie' => $request->postData('categorie'),
+                ]
+            );
+        }
 
         try {
             $this->manager->save($actionneur);
