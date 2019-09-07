@@ -23,4 +23,30 @@ class LogManagerPDO extends ManagerPDO
         $this->tableName = 'log';
         $this->entity = new Log();
     }
+
+    /**
+     * @param int | null $id
+     * @return array
+     * @throws Exception
+     */
+    public function getAll($id = null)
+    {
+        $sql = "SELECT * FROM $this->tableName";
+        if (!empty($id)) {
+            $sql .= ' WHERE id=:id';
+        }
+        $sql.=' ORDER BY createdAt DESC;';
+
+        $q = $this->prepare($sql);
+        if (!empty($id)) {
+            $q->bindValue(':id', $id);
+        }
+
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
+        $entity = $q->fetchAll();
+        $q->closeCursor();
+
+        return $entity;
+    }
 }

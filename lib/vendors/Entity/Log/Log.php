@@ -2,7 +2,6 @@
 
 namespace Entity\Log;
 
-use DateTime;
 use OCFram\Entity;
 
 /**
@@ -14,7 +13,7 @@ class Log extends Entity
     /** @var string */
     protected $content;
 
-    /** @var DateTime $createdAt */
+    /** @var int $createdAt */
     protected $createdAt;
 
     /**
@@ -49,7 +48,7 @@ class Log extends Entity
     }
 
     /**
-     * @return DateTime
+     * @return int
      */
     public function getCreatedAt()
     {
@@ -57,7 +56,7 @@ class Log extends Entity
     }
 
     /**
-     * @param DateTime $createdAt
+     * @param int $createdAt
      * @return Log
      */
     public function setCreatedAt($createdAt)

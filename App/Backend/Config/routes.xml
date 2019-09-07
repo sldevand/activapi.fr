@@ -41,4 +41,5 @@
 	<route url="\/activapi.fr\/api\/node\/toggle\/(on|off)$" module="Node" action="toggle" vars="status"/>
 	<route url="\/activapi.fr\/api\/node\/status\/?$" module="Node" action="getStatus" />
 	<route url="\/activapi.fr\/api\/node\/log\/?$" module="Node" action="log" />
+	<route url="\/activapi.fr\/api\/node\/log\/add?$" module="Node" action="postLog" />
 </routes>
