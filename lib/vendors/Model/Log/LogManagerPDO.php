@@ -35,7 +35,7 @@ class LogManagerPDO extends ManagerPDO
         if (!empty($id)) {
             $sql .= ' WHERE id=:id';
         }
-        $sql.=' ORDER BY createdAt DESC;';
+        $sql.=' ORDER BY createdAt DESC LIMIT 1000;';
 
         $q = $this->prepare($sql);
         if (!empty($id)) {
