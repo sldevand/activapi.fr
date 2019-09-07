@@ -44,12 +44,11 @@ class ConsoleController extends BackController
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $log = json_decode(curl_exec($ch), true);
-
+        $logs = json_decode(curl_exec($ch), true);
         $card = WidgetFactory::makeCard('console-card', 'Console');
         $card->addContent($this->nodeView($switchButton));
         $card->addContent($this->commandView($sendButton));
-        $card->addContent($this->displayView($log['message']));
+        $card->addContent($this->displayView($logs['messages']));
         $cards = [];
         $cards[] = $card;
 
@@ -79,8 +78,8 @@ class ConsoleController extends BackController
      * @param $log
      * @return false|string
      */
-    public function displayView($log)
+    public function displayView($logs)
     {
-        return $this->getBlock(MODULES . '/Console/Block/displayView.phtml', $log);
+        return $this->getBlock(MODULES . '/Console/Block/displayView.phtml', $logs);
     }
 }

@@ -2,7 +2,12 @@
 
 namespace App\Backend\Modules\Node;
 
+use DateTime;
+use DateTimeZone;
 use Entity\Actionneur;
+use Entity\Log\Log;
+use Exception;
+use Model\Log\LogManagerPDO;
 use Model\Scenario\ActionManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
@@ -18,11 +23,15 @@ class NodeController extends BackController
     /** @var NodeActivator $nodeActivator */
     protected $nodeActivator;
 
+    /** @var LogManagerPDO $logManager */
+    protected $logManager;
+
     public function __construct(Application $app, $module, $action)
     {
         parent::__construct($app, $module, $action);
         $config = $this->app()->config()->getVars();
         $this->nodeActivator = new NodeActivator($config);
+        $this->logManager =  $this->managers->getManagerOf('Log\Log');
     }
 
     /**
@@ -50,24 +59,36 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return void
+     * @throws Exception
      */
     public function executeLog(HTTPRequest $request)
     {
-        $file = $this->app()->config()->get('nodeServerLogPath');
-        if (!file_exists($file)) {
-            return $this->page()->addVar('output', ['error' => 'No log file found']);
-        }
-        $read = '';
-        $lines = file($file);
-        $last = count($lines) - 1;
-        for ($i = $last; $i >= 0; $i--) {
-            $read .= $lines[$i] . '<br>';
-        }
-
-        $output = [
-            'message' => $read
-        ];
+        $output = ['messages' => $this->logManager->getAll()];
 
         return $this->page()->addVar('output', $output);
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @return void
+     * @throws Exception
+     */
+    public function executePostLog(HTTPRequest $request)
+    {
+        try {
+            $this->checkMethod($request, HTTPRequest::POST);
+            $jsonPost = $request->getJsonPost();
+            $this->checkJsonBodyId($jsonPost);
+            $log = new Log($jsonPost);
+            $this->logManager->save($log);
+            $id = $this->logManager->getLastInserted('log');
+            $log->setId($id);
+            http_response_code(201);
+        } catch (Exception $e) {
+            return $this->page->addVar('data', ['error' => $e->getMessage()]);
+        }
+
+        return $this->page()->addVar('data', $log);
     }
 }

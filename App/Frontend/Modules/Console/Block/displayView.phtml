@@ -1,9 +1,17 @@
-<?php $log = $args[0]; ?>
+<?php $logs = $args[0]; ?>
 <div class="row">
     <div class="col s12">
         <label for="console-display">Affichage</label>
         <div id="console-display">
-            <?= $log ?>
+            <?php foreach ($logs as $log) : ?>
+                <?php
+                $epoch = $log['createdAt'];
+                $dt = new DateTime("@$epoch");
+                $dt->setTimezone(new DateTimezone("Europe/Paris"));
+                echo $dt->format('H:i:s');
+                ?> <?= $log['content'] ?>
+                <br>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>

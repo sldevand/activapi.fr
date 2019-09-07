@@ -177,46 +177,4 @@ abstract class AbstractScenarioManagersController extends BackController impleme
     {
         return $this->managers->getManagerOf('Scenario\ScenarioSequence');
     }
-
-    /**
-     * @param HTTPRequest $httpRequest
-     * @param string $method
-     * @throws Exception
-     */
-    public function checkMethod($httpRequest, $method)
-    {
-        if ($httpRequest->method() !== $method) {
-            throw new Exception(
-                'Wrong method : '
-                . $httpRequest->method()
-                . ', use '
-                . $method
-                . ' method instead'
-            );
-        }
-    }
-
-    /**
-     * @param array $jsonPost
-     * @return void
-     * @throws Exception
-     */
-    public function checkJsonBodyId($jsonPost)
-    {
-        if (!empty($jsonPost['id'])) {
-            throw new Exception('JSON body contains an id');
-        }
-    }
-
-    /**
-     * @param array $jsonPost
-     * @return void
-     * @throws Exception
-     */
-    public function checkNotJsonBodyId($jsonPost)
-    {
-        if (empty($jsonPost['id'])) {
-            throw new Exception('JSON body must contain an id');
-        }
-    }
 }

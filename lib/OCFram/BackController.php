@@ -2,6 +2,7 @@
 
 namespace OCFram;
 
+use Exception;
 use Materialize\Button\FlatButton;
 use SFram\OSDetectorFactory;
 
@@ -252,6 +253,48 @@ abstract class BackController extends ApplicationComponent
             ]
         );
         return $this->getBlock(BLOCK . '/editFormView.phtml', $form, $submitButton);
+    }
+
+    /**
+     * @param HTTPRequest $httpRequest
+     * @param string $method
+     * @throws Exception
+     */
+    public function checkMethod($httpRequest, $method)
+    {
+        if ($httpRequest->method() !== $method) {
+            throw new Exception(
+                'Wrong method : '
+                . $httpRequest->method()
+                . ', use '
+                . $method
+                . ' method instead'
+            );
+        }
+    }
+
+    /**
+     * @param array $jsonPost
+     * @return void
+     * @throws Exception
+     */
+    public function checkJsonBodyId($jsonPost)
+    {
+        if (!empty($jsonPost['id'])) {
+            throw new Exception('JSON body contains an id');
+        }
+    }
+
+    /**
+     * @param array $jsonPost
+     * @return void
+     * @throws Exception
+     */
+    public function checkNotJsonBodyId($jsonPost)
+    {
+        if (empty($jsonPost['id'])) {
+            throw new Exception('JSON body must contain an id');
+        }
     }
 
     /**
