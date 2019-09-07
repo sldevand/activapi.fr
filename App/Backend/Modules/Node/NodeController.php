@@ -3,6 +3,8 @@
 namespace App\Backend\Modules\Node;
 
 use Entity\Actionneur;
+use Exception;
+use Model\Log\LogManagerPDO;
 use Model\Scenario\ActionManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
@@ -50,23 +52,14 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return void
+     * @throws Exception
      */
     public function executeLog(HTTPRequest $request)
     {
-        $file = $this->app()->config()->get('nodeServerLogPath');
-        if (!file_exists($file)) {
-            return $this->page()->addVar('output', ['error' => 'No log file found']);
-        }
-        $read = '';
-        $lines = file($file);
-        $last = count($lines) - 1;
-        for ($i = $last; $i >= 0; $i--) {
-            $read .= $lines[$i] . '<br>';
-        }
-
-        $output = [
-            'message' => $read
-        ];
+        /** @var LogManagerPDO $logManager */
+        $logManager = $this->managers->getManagerOf('Log\Log');
+        $output = ['messages' => $logManager->getAll()];
 
         return $this->page()->addVar('output', $output);
     }
