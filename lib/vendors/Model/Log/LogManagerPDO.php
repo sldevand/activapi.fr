@@ -36,12 +36,11 @@ class LogManagerPDO extends ManagerPDO
 
         $sql = $this->where('createdAt', $from, $sql, 'from', '>');
         $sql = $this->where('createdAt', $to, $sql, 'to', '<');
-        $sql = $this->orderBy('createdAt', $sql, true);
+        $sql = $this->orderBy('id', $sql, true);
         $sql .= ';';
 
         $q = $this->prepare($sql);
         $this->bindProperties($q, [ 'from' => $from, 'to' => $to]);
-
 
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
