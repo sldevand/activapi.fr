@@ -1,17 +1,8 @@
-<?php $logs = $args[0]; ?>
 <div class="row">
     <div class="col s12">
         <label for="console-display">Affichage</label>
-        <div id="console-display">
-            <?php foreach ($logs as $log) : ?>
-                <?php
-                $epoch = $log['createdAt'];
-                $dt = new DateTime("@$epoch");
-                $dt->setTimezone(new DateTimezone("Europe/Paris"));
-                echo $dt->format('H:i:s');
-                ?> <?= $log['content'] ?>
-                <br>
-            <?php endforeach; ?>
-        </div>
+        <div id="console-display"></div>
     </div>
+    <input class="hiddendiv" id="period" value ="<?= $args[0] ?>"/>
 </div>
+<script src="<?= DIST . '/console.js' ?>"></script>

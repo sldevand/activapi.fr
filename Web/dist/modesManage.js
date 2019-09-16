@@ -2033,16 +2033,40 @@ var h,f,l,d=String.fromCharCode;t.exports={version:"2.1.2",encode:a,decode:u}},f
 },{"buffer":2}],5:[function(require,module,exports){
 "use strict";
 
-var _modes = require("./modes/modes");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Config = void 0;
 
-var modes = new _modes.Modes();
-modes.init();
-setTimeout(function () {
-  modes.askThermostat();
-  modes.checkState();
-}, 200);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-},{"./modes/modes":6}],6:[function(require,module,exports){
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Config =
+/*#__PURE__*/
+function () {
+  function Config() {
+    _classCallCheck(this, Config);
+  }
+
+  _createClass(Config, null, [{
+    key: "getConfig",
+    value: function getConfig() {
+      return {
+        'ip': '192.168.1.52',
+        'port': '5901'
+      };
+    }
+  }]);
+
+  return Config;
+}();
+
+exports.Config = Config;
+
+},{}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2264,7 +2288,19 @@ function () {
 
 exports.Modes = Modes;
 
-},{"../socketio.js":7}],7:[function(require,module,exports){
+},{"../socketio.js":8}],7:[function(require,module,exports){
+"use strict";
+
+var _modes = require("./modes/modes");
+
+var modes = new _modes.Modes();
+modes.init();
+setTimeout(function () {
+  modes.askThermostat();
+  modes.checkState();
+}, 200);
+
+},{"./modes/modes":6}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2276,16 +2312,20 @@ var _socketioManage = require("./utils/socketioManage");
 
 var _socket = _interopRequireDefault(require("socket.io-client/dist/socket.io"));
 
+var _config = require("./config/config");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var address = 'localhost';
-var port = 5901;
-var socketIOManage = new _socketioManage.SocketIOManage(_socket.default, address, port);
+var ip = _config.Config.getConfig().ip;
+
+var port = _config.Config.getConfig().port;
+
+var socketIOManage = new _socketioManage.SocketIOManage(_socket.default, ip, port);
 socketIOManage.connect().run();
 var _default = socketIOManage;
 exports.default = _default;
 
-},{"./utils/socketioManage":8,"socket.io-client/dist/socket.io":4}],8:[function(require,module,exports){
+},{"./config/config":5,"./utils/socketioManage":9,"socket.io-client/dist/socket.io":4}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2367,4 +2407,4 @@ function () {
 
 exports.SocketIOManage = SocketIOManage;
 
-},{}]},{},[5]);
+},{}]},{},[7]);

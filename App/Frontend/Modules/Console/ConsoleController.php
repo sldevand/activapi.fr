@@ -38,18 +38,12 @@ class ConsoleController extends BackController
             ]
         );
 
-        $commandDomainAddress = $this->app()->config()->get("commandDomainAddress");
         $period = $request->getData('period');
-        $url = $commandDomainAddress . "/log/$period";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $logs = json_decode(curl_exec($ch), true);
+
         $card = WidgetFactory::makeCard('console-card', 'Console');
         $card->addContent($this->nodeView($switchButton));
         $card->addContent($this->commandView($sendButton));
-        $card->addContent($this->displayView($logs['messages']));
+        $card->addContent($this->displayView($period));
         $cards = [];
         $cards[] = $card;
 
@@ -76,11 +70,11 @@ class ConsoleController extends BackController
     }
 
     /**
-     * @param $log
+     * @param string $period
      * @return false|string
      */
-    public function displayView($logs)
+    public function displayView($period)
     {
-        return $this->getBlock(MODULES . '/Console/Block/displayView.phtml', $logs);
+        return $this->getBlock(MODULES . '/Console/Block/displayView.phtml', $period);
     }
 }

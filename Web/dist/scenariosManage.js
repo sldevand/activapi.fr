@@ -1,17 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
-var _scenarioComponent = require("./scenarios/scenario-component");
-
-$(document).ready(function () {
-  $('select').material_select();
-});
-var scenarios = new _scenarioComponent.Scenarios();
-scenarios.init();
-
-},{"./scenarios/scenario-component":2}],2:[function(require,module,exports){
-"use strict";
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -216,7 +205,7 @@ function () {
 
 exports.Scenarios = Scenarios;
 
-},{"../utils/apiManage":5,"./templates/scenario-template":3,"./templates/sequence-select-template":4}],3:[function(require,module,exports){
+},{"../utils/apiManage":5,"./templates/scenario-template":2,"./templates/sequence-select-template":3}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -273,7 +262,7 @@ function () {
 
 exports.ScenarioTemplate = ScenarioTemplate;
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -344,7 +333,18 @@ function () {
 
 exports.SequenceRowTemplate = SequenceRowTemplate;
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+"use strict";
+
+var _scenarioComponent = require("./scenarios/scenario-component");
+
+$(document).ready(function () {
+  $('select').material_select();
+});
+var scenarios = new _scenarioComponent.Scenarios();
+scenarios.init();
+
+},{"./scenarios/scenario-component":1}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -405,4 +405,4 @@ function () {
 
 exports.ApiManage = ApiManage;
 
-},{}]},{},[1]);
+},{}]},{},[4]);
