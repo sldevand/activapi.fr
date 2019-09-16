@@ -25,22 +25,23 @@ class LogManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param int | null $id
+     * @param null|int $from
+     * @param null|int $to
      * @return array
      * @throws Exception
      */
-    public function getAll($id = null)
+    public function getAll($from = null, $to = null)
     {
         $sql = "SELECT * FROM $this->tableName";
-        if (!empty($id)) {
-            $sql .= ' WHERE id=:id';
-        }
-        $sql.=' ORDER BY createdAt DESC LIMIT 1000;';
+
+        $sql = $this->where('createdAt', $from, $sql, 'from', '>');
+        $sql = $this->where('createdAt', $to, $sql, 'to', '<');
+        $sql = $this->orderBy('createdAt', $sql, true);
+        $sql .= ';';
 
         $q = $this->prepare($sql);
-        if (!empty($id)) {
-            $q->bindValue(':id', $id);
-        }
+        $this->bindProperties($q, [ 'from' => $from, 'to' => $to]);
+
 
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());

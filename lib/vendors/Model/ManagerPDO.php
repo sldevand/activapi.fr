@@ -322,12 +322,57 @@ class ManagerPDO extends Manager
             throw new Exception($this->dao->errorInfo());
         }
 
-        foreach ($properties as $key => $property) {
-            if ($key !== "erreurs") {
-                $query->bindValue(':' . $key, $property);
+        foreach ($properties as $key => $value) {
+            if ($key !== "erreurs" && $value !== null) {
+                $query->bindValue(':' . $key, $value);
             }
         }
 
         return $query;
+    }
+
+    /**
+     * @param string $field
+     * @param string $value
+     * @param string $sql
+     * @param string|null $bind
+     * @param string $operator
+     * @return string
+     */
+    protected function where($field, $value, $sql, $bind = null, $operator = '=')
+    {
+        if (empty($value)) {
+            return $sql;
+        }
+
+        $where = 'WHERE';
+        if (strstr($sql, 'WHERE') !== false) {
+            $where = 'AND';
+        }
+
+        if (empty($bind)) {
+            $bind = $field;
+        }
+
+        return <<<SQL
+$sql
+$where $field $operator :$bind
+SQL;
+    }
+
+    /**
+     * @param string $field
+     * @param string $sql
+     * @param bool $desc
+     * @return string
+     */
+    protected function orderBy($field, $sql, $desc = false)
+    {
+        $order = ($desc) ? 'DESC' : '';
+
+        return <<<SQL
+$sql
+ORDER BY $field $order
+SQL;
     }
 }

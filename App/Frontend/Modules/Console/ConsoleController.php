@@ -39,7 +39,8 @@ class ConsoleController extends BackController
         );
 
         $commandDomainAddress = $this->app()->config()->get("commandDomainAddress");
-        $url = $commandDomainAddress . '/log';
+        $period = $request->getData('period');
+        $url = $commandDomainAddress . "/log/$period";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, 0);

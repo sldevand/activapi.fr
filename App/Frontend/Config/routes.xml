@@ -46,5 +46,5 @@
     <route url="\/activapi.fr\/actions-delete-([0-9]+)" module="Actions" action="delete"  vars="id"  />
     <route url="\/activapi.fr\/actions-edit-([0-9]+)" module="Actions" action="edit" vars="id"  />
 
-    <route url="\/activapi.fr\/console" module="Console" action="index"/>
+    <route url="\/activapi.fr\/console\/?(yesterday)?" module="Console" action="index" vars="period"/>
 </routes>

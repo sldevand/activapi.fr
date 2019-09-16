@@ -31,7 +31,7 @@ class NodeController extends BackController
         parent::__construct($app, $module, $action);
         $config = $this->app()->config()->getVars();
         $this->nodeActivator = new NodeActivator($config);
-        $this->logManager =  $this->managers->getManagerOf('Log\Log');
+        $this->logManager = $this->managers->getManagerOf('Log\Log');
     }
 
     /**
@@ -64,9 +64,36 @@ class NodeController extends BackController
      */
     public function executeLog(HTTPRequest $request)
     {
-        $output = ['messages' => $this->logManager->getAll()];
+        $period = $request->getData('period') ? $request->getData('period') : '';
+        list($from, $to) = $this->getPeriod($period);
+        $output = ['messages' => $this->logManager->getAll($from, $to)];
 
         return $this->page()->addVar('output', $output);
+    }
+
+    /**
+     * @param string $period
+     * @return array
+     * @throws Exception
+     */
+    protected function getPeriod($period)
+    {
+        $date = new DateTime();
+        $now = $date->getTimestamp();
+
+        $beginOfDay = strtotime("midnight", $now);
+        $endOfDay   = strtotime("tomorrow", $beginOfDay) - 1;
+        $beginOfyesterday = strtotime('-1 day', $beginOfDay);
+        $endOfYesterday   = $beginOfDay - 1;
+
+        switch ($period) {
+            case 'yesterday':
+                return [$beginOfyesterday, $endOfYesterday];
+            case 'week':
+                return [$beginOfyesterday, $now];
+            default:
+                return [$beginOfDay, $endOfDay];
+        }
     }
 
     /**
