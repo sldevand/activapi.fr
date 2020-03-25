@@ -26,6 +26,12 @@ class NodeController extends BackController
     /** @var LogManagerPDO $logManager */
     protected $logManager;
 
+    /**
+     * NodeController constructor.
+     * @param Application $app
+     * @param $module
+     * @param $action
+     */
     public function __construct(Application $app, $module, $action)
     {
         parent::__construct($app, $module, $action);

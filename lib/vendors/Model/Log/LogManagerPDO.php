@@ -40,7 +40,7 @@ class LogManagerPDO extends ManagerPDO
         $sql .= ';';
 
         $q = $this->prepare($sql);
-        $this->bindProperties($q, [ 'from' => $from, 'to' => $to]);
+        $this->bindProperties($q, ['from' => $from, 'to' => $to]);
 
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
@@ -48,5 +48,13 @@ class LogManagerPDO extends ManagerPDO
         $q->closeCursor();
 
         return $entity;
+    }
+
+    /**
+     * @return int
+     */
+    public function truncate()
+    {
+        return $this->dao->exec("DELETE FROM $this->tableName;");
     }
 }
