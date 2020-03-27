@@ -11,7 +11,6 @@
             "App\\": "App/",
             "OCFram\\": "lib/OCFram",
             "SFram\\": "lib/SFram",
-            "Sldevand\\": "lib/Sldevand",
             "Debug\\": "lib/vendors/Debug",
             "Entity\\": "lib/vendors/Entity",
             "FormBuilder\\": "lib/vendors/FormBuilder",
@@ -22,12 +21,19 @@
             "Tests\\": "Tests"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:sldevand/cron.git"
+        }
+    ],
     "require": {
         "ext-pdo": "*",
         "ext-dom": "*",
         "ext-json": "*",
         "ext-curl": "*",
-        "dragonmantank/cron-expression": "^3.0"
+        "dragonmantank/cron-expression": "^3.0",
+        "sldevand/cron": "^1.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",

@@ -5,8 +5,6 @@ use SFram\OSDetectorFactory;
 
 include __DIR__ . '/../vendor/autoload.php';
 
-
-
 OSDetectorFactory::begin();
 
 $app = new \App\Backend\BackendApplication();
@@ -16,7 +14,7 @@ PDOFactory::setPdoAddress($app->config()->get($key));
 
 $crontab = [
     'purge_old_node_log_rows' => [
-        'expression' => '56 13 * * *',
+        'expression' => '10 0 * * *',
         'executor' => '\App\Backend\Modules\Node\Log\Cron\PurgeOldExecutor'
     ]
 ];

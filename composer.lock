@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "122ad0ebcbf34969dcbf4a7d960dd72a",
+    "content-hash": "a21f7ab4c8264d0bb292002a96fca9c3",
     "packages": [
         {
             "name": "dragonmantank/cron-expression",
@@ -53,6 +53,41 @@
                 "schedule"
             ],
             "time": "2020-03-25T18:33:19+00:00"
+        },
+        {
+            "name": "sldevand/cron",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sldevand/cron.git",
+                "reference": "e0d7f72e3cbda3ca83e8e49de25472b557069978"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sldevand/cron/zipball/e0d7f72e3cbda3ca83e8e49de25472b557069978",
+                "reference": "e0d7f72e3cbda3ca83e8e49de25472b557069978",
+                "shasum": ""
+            },
+            "require": {
+                "dragonmantank/cron-expression": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sldevand\\Cron\\": "src"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Sébastien Lorrain",
+                    "email": "sldeveloperand@gmail.com"
+                }
+            ],
+            "support": {
+                "source": "https://github.com/sldevand/cron/tree/1.0.0",
+                "issues": "https://github.com/sldevand/cron/issues"
+            },
+            "time": "2020-03-27T21:20:23+00:00"
         }
     ],
     "packages-dev": [
