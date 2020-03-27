@@ -1,22 +1,22 @@
 <?php
 
-namespace SFram\Cron\Node\Log;
+namespace App\Backend\Modules\Node\Log\Cron;
 
 use DateTime;
 use Model\Log\LogManagerPDO;
 use OCFram\Managers;
 use OCFram\PDOFactory;
-use SFram\Cron\ExecutorInterface;
+use Sldevand\Cron\ExecutorInterface;
 
 /**
  * Class PurgeOldExecutor
- * @package SFram\Cron\Node\Log
+ * @package App\Backend\Modules\Node\Log\Cron
  */
 class PurgeOldExecutor implements ExecutorInterface
 {
-    /**
-     * @var Managers
-     */
+    const MAX_NUMBER_OF_ROWS = 30000;
+
+    /** @var Managers */
     protected $managers;
 
     /**
@@ -35,11 +35,12 @@ class PurgeOldExecutor implements ExecutorInterface
      */
     public function execute()
     {
-        echo "Delete the node logs older than three days" . PHP_EOL;
+        echo $this->getDescription();
+
         /** @var LogManagerPDO $logManager */
         $logManager = $this->managers->getManagerOf('Log\Log');
 
-        if ($logManager->count() > 30000) {
+        if ($logManager->count() > self::MAX_NUMBER_OF_ROWS) {
             echo 'The number of rows is too important, so we truncate the log table';
             $logManager->truncate();
             return true;
@@ -81,5 +82,10 @@ class PurgeOldExecutor implements ExecutorInterface
 
         $beginOfDay = strtotime("midnight", $now);
         return strtotime('-3 days', $beginOfDay);
+    }
+
+    public function getDescription()
+    {
+        return "Delete the node logs older than three days" . PHP_EOL;
     }
 }
