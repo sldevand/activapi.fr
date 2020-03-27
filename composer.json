@@ -11,6 +11,7 @@
             "App\\": "App/",
             "OCFram\\": "lib/OCFram",
             "SFram\\": "lib/SFram",
+            "Sldevand\\": "lib/Sldevand",
             "Debug\\": "lib/vendors/Debug",
             "Entity\\": "lib/vendors/Entity",
             "FormBuilder\\": "lib/vendors/FormBuilder",
@@ -25,7 +26,8 @@
         "ext-pdo": "*",
         "ext-dom": "*",
         "ext-json": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "dragonmantank/cron-expression": "^3.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.4",
