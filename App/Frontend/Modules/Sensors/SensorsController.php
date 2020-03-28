@@ -7,6 +7,7 @@ use FormBuilder\SensorsFormBuilder;
 use Materialize\FloatingActionButton;
 use Materialize\Link;
 use Materialize\WidgetFactory;
+use OCFram\Application;
 use OCFram\BackController;
 use OCFram\FormHandler;
 use OCFram\HTTPRequest;
@@ -31,7 +32,7 @@ class SensorsController extends BackController
             'id' => "addSensorsFab",
             'fixed' => true,
             'icon' => "add",
-            'href' => "../activapi.fr/sensors-add"
+            'href' => $this->baseAddress . "sensors-add"
         ]);
 
         $this->page->addVar('cards', $cards);
@@ -48,13 +49,13 @@ class SensorsController extends BackController
         if ($request->method() === 'POST' && $request->getExists('id')) {
             $id = $request->getData('id');
             $manager->delete($id);
-            $this->app->httpResponse()->redirect('../activapi.fr/sensors');
+            $this->app->httpResponse()->redirect($this->baseAddress . 'sensors');
             return;
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/sensors",
+            $this->baseAddress . "sensors",
             "arrow_back",
             "white-text",
             "white-text"
@@ -116,12 +117,12 @@ class SensorsController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
-            $this->app->httpResponse()->redirect('../activapi.fr/sensors');
+            $this->app->httpResponse()->redirect($this->baseAddress . 'sensors');
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/sensors",
+            $this->baseAddress . "sensors",
             "arrow_back",
             "white-text",
             "white-text"
@@ -152,13 +153,13 @@ class SensorsController extends BackController
             //DATA PREPARE FOR TABLE
             $linkEdit = new Link(
                 '',
-                "../activapi.fr/sensors-edit-" . $sensor["id"],
+                $this->baseAddress . "sensors-edit-" . $sensor["id"],
                 'edit',
                 'primaryTextColor'
             );
             $linkDelete = new Link(
                 '',
-                "../activapi.fr/sensors-delete-" . $sensor["id"],
+                $this->baseAddress . "sensors-delete-" . $sensor["id"],
                 'delete',
                 'secondaryTextColor'
             );

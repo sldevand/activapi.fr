@@ -29,7 +29,7 @@
     </nav>
 
     <ul id="slide-out" class="side-nav">
-        <?php include("sideNav/sideNavMainPart.html"); ?>
+        <?php include("sideNav/sideNavMainPart.phtml"); ?>
     </ul>
 
     <div id="maincontent" class="container-light">

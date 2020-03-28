@@ -28,17 +28,15 @@ class ActionneursController extends BackController
         $this->page->addVar('title', 'Gestion des actionneurs');
 
         $manager = $this->managers->getManagerOf('Actionneurs');
-
         $cards = [];
 
-        //Actionneurs
         $listeActionneurs = $manager->getList();
         $cards[] = $this->makeActionneursWidget($listeActionneurs);
         $addActionneurFab = new FloatingActionButton([
             'id' => "addActionneurFab",
             'fixed' => true,
             'icon' => "add",
-            'href' => "../activapi.fr/actionneurs-add"
+            'href' => $this->baseAddress . "actionneurs-add"
         ]);
 
         $this->page->addVar('cards', $cards);
@@ -60,13 +58,13 @@ class ActionneursController extends BackController
             //DATA PREPARE FOR TABLE
             $linkEdit = new Link(
                 '',
-                "../activapi.fr/actionneurs-edit-" . $actionneur["id"],
+                $this->baseAddress . "actionneurs-edit-" . $actionneur["id"],
                 'edit',
                 'primaryTextColor'
             );
             $linkDelete = new Link(
                 '',
-                "../activapi.fr/actionneurs-delete-" . $actionneur["id"],
+                $this->baseAddress . "actionneurs-delete-" . $actionneur["id"],
                 'delete',
                 'secondaryTextColor'
             );
@@ -94,13 +92,13 @@ class ActionneursController extends BackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/actionneurs');
+                $this->app->httpResponse()->redirect($this->baseAddress . 'actionneurs');
             }
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/actionneurs",
+            $this->baseAddress . 'actionneurs',
             "arrow_back",
             "white-text",
             "white-text"
@@ -159,12 +157,12 @@ class ActionneursController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
-            $this->app->httpResponse()->redirect('../activapi.fr/actionneurs');
+            $this->app->httpResponse()->redirect($this->baseAddress . 'actionneurs');
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/actionneurs",
+            $this->baseAddress . "actionneurs",
             "arrow_back",
             "white-text",
             "white-text"

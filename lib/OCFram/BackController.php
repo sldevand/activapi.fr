@@ -47,6 +47,9 @@ abstract class BackController extends ApplicationComponent
      */
     protected $cache = null;
 
+    /** @var string */
+    protected $baseAddress;
+
     /**
      * BackController constructor.
      * @param Application $app
@@ -64,6 +67,7 @@ abstract class BackController extends ApplicationComponent
         $this->setAction($action);
         $this->setView($action);
         $this->cache = new Cache($this->app());
+        $this->baseAddress = $app->config()->get('apiBaseAddress');
     }
 
     /**

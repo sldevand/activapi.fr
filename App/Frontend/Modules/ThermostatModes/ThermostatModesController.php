@@ -33,8 +33,8 @@ class ThermostatModesController extends BackController
 
         foreach ($modes as $mode) {
             //DATA PREPARE FOR TABLE
-            $linkEdit = new Link('', "../activapi.fr/thermostat-modes-edit-" . $mode["id"], 'edit', 'primaryTextColor');
-            $linkDelete = new Link('', "../activapi.fr/thermostat-modes-delete-" . $mode["id"], 'delete', 'secondaryTextColor');
+            $linkEdit = new Link('', $this->baseAddress . "thermostat-modes-edit-" . $mode["id"], 'edit', 'primaryTextColor');
+            $linkDelete = new Link('', $this->baseAddress . "thermostat-modes-delete-" . $mode["id"], 'delete', 'secondaryTextColor');
             $mode["editer"] = $linkEdit->getHtmlForTable();
             $mode["supprimer"] = $linkDelete->getHtmlForTable();
             $modesData[] = $mode;
@@ -50,7 +50,7 @@ class ThermostatModesController extends BackController
                 'id' => "addModeFab",
                 'fixed' => true,
                 'icon' => "add",
-                'href' => "../activapi.fr/thermostat-modes-add"
+                'href' => $this->baseAddress . "thermostat-modes-add"
             ]);
             $cardContent .= $addModeFab->getHtml();
         }
@@ -83,13 +83,13 @@ class ThermostatModesController extends BackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/thermostat-modes');
+                $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-modes');
             }
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/thermostat-modes",
+            $this->baseAddress . "thermostat-modes",
             "arrow_back",
             "white-text",
             "white-text"
@@ -140,12 +140,12 @@ class ThermostatModesController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
-            $this->app->httpResponse()->redirect('../activapi.fr/thermostat-modes');
+            $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-modes');
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/thermostat-modes",
+            $this->baseAddress . "thermostat-modes",
             "arrow_back",
             "white-text",
             "white-text"

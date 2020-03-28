@@ -34,7 +34,7 @@ class ScenariosController extends ScenariosBackController
             'id' => "addScenarioFab",
             'fixed' => true,
             'icon' => "add",
-            'href' => "../activapi.fr/scenarios-add"
+            'href' => $this->baseAddress . "scenarios-add"
         ]);
 
         $this->page->addVar('cards', $cards);
@@ -71,13 +71,13 @@ class ScenariosController extends ScenariosBackController
         foreach ($scenarios as $scenario) {
             $linkEdit = new Link(
                 '',
-                "../activapi.fr/scenarios-edit-" . $scenario["id"],
+                $this->baseAddress . "scenarios-edit-" . $scenario["id"],
                 'edit',
                 'primaryTextColor'
             );
             $linkDelete = new Link(
                 '',
-                "../activapi.fr/scenarios-delete-" . $scenario["id"],
+                $this->baseAddress . "scenarios-delete-" . $scenario["id"],
                 'delete',
                 'secondaryTextColor'
             );
@@ -104,13 +104,13 @@ class ScenariosController extends ScenariosBackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/scenarios');
+                $this->app->httpResponse()->redirect($this->baseAddress . 'scenarios');
             }
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/scenarios",
+            $this->baseAddress . "scenarios",
             "arrow_back",
             "white-text",
             "white-text"
@@ -140,7 +140,7 @@ class ScenariosController extends ScenariosBackController
 
         $link = new Link(
             $domId,
-            "../activapi.fr/scenarios",
+            $this->baseAddress . "scenarios",
             "arrow_back",
             "white-text",
             "white-text"

@@ -3,9 +3,9 @@
 include_once __DIR__ . '/vendor/autoload.php';
 
 ini_set('memory_limit', '2048M');
-ini_set('display_errors', 1);
-const ROOT = '/activapi.fr';
-const SITE = ROOT . '/Web/';
+//ini_set('display_errors', 1);
+const ROOT = '/activapi';
+const SITE = ROOT . '/';
 const CSS = SITE . 'css';
 const JS = SITE . 'js';
 const NODE_MODULES = SITE . 'node_modules';
