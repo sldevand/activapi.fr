@@ -34,7 +34,7 @@ class SequencesController extends SequencesBackController
             'id' => "addSequenceFab",
             'fixed' => true,
             'icon' => "add",
-            'href' => "../activapi.fr/sequences-add"
+            'href' => $this->baseAddress . "sequences-add"
         ]);
 
         $this->page->addVar('cards', $cards);
@@ -71,13 +71,13 @@ class SequencesController extends SequencesBackController
         foreach ($sequences as $sequence) {
             $linkEdit = new Link(
                 '',
-                "../activapi.fr/sequences-edit-" . $sequence["id"],
+                $this->baseAddress . "sequences-edit-" . $sequence["id"],
                 'edit',
                 'primaryTextColor'
             );
             $linkDelete = new Link(
                 '',
-                "../activapi.fr/sequences-delete-" . $sequence["id"],
+                $this->baseAddress . "sequences-delete-" . $sequence["id"],
                 'delete',
                 'secondaryTextColor'
             );
@@ -104,13 +104,13 @@ class SequencesController extends SequencesBackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/sequences');
+                $this->app->httpResponse()->redirect($this->baseAddress . 'sequences');
             }
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/sequences",
+            $this->baseAddress . "sequences",
             "arrow_back",
             "white-text",
             "white-text"
@@ -140,7 +140,7 @@ class SequencesController extends SequencesBackController
 
         $link = new Link(
             $domId,
-            "../activapi.fr/sequences",
+            $this->baseAddress . "sequences",
             "arrow_back",
             "white-text",
             "white-text"

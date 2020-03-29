@@ -44,7 +44,7 @@ class ThermostatPlanifController extends BackController
                 $thermostatPlanning["jour"] = DateFactory::toStrDay($thermostatPlanning['jour']);
                 $thermostatPlanning["mode"] = $thermostatPlanning["mode"]["nom"];
                 $thermostatPlanning["defaultMode"] = $thermostatPlanning["defaultMode"]["nom"];
-                $linkEdit = new Link('', "../activapi.fr/thermostat-planif-edit-" . $thermostatPlanning["id"], 'edit', 'primaryTextColor');
+                $linkEdit = new Link('', $this->baseAddress . "thermostat-planif-edit-" . $thermostatPlanning["id"], 'edit', 'primaryTextColor');
                 $thermostatPlanning["editer"] = $linkEdit->getHtmlForTable();
                 $domId = $thermostatPlanning["nom"]["nom"];
                 $thermostatDatas[] = $thermostatPlanning;
@@ -53,7 +53,7 @@ class ThermostatPlanifController extends BackController
             $table = WidgetFactory::makeTable($domId, $thermostatDatas, true, $hideColumns);
 
             $cardTitle = 'Thermostat : Planning  ' . $domId;
-            $linkDelete = new Link('Supprimer ce Planning', "../activapi.fr/thermostat-planif-delete-" . $thermostatPlanning["nomid"], 'delete', 'secondaryTextColor');
+            $linkDelete = new Link('Supprimer ce Planning', $this->baseAddress . "thermostat-planif-delete-" . $thermostatPlanning["nomid"], 'delete', 'secondaryTextColor');
 
             $cardContent = $linkDelete->getHtml();
             $cardContent .= $table->getHtml();
@@ -68,7 +68,7 @@ class ThermostatPlanifController extends BackController
             'id' => "addPlanifFab",
             'fixed' => true,
             'icon' => "add",
-            'href' => "../activapi.fr/thermostat-planif-add"
+            'href' => $this->baseAddress . "thermostat-planif-add"
         ]);
 
         $this->page->addVar('cards', $cards);
@@ -111,7 +111,7 @@ class ThermostatPlanifController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
-            $this->app->httpResponse()->redirect('../activapi.fr/thermostat-planif');
+            $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-planif');
         }
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($message);
@@ -162,12 +162,12 @@ class ThermostatPlanifController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
-            $this->app->httpResponse()->redirect('../activapi.fr/thermostat-planif');
+            $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-planif');
         }
 
         $link = new Link(
             "Edition",
-            "../activapi.fr/thermostat-planif",
+            $this->baseAddress . "thermostat-planif",
             "arrow_back",
             "white-text",
             "white-text"
@@ -196,7 +196,7 @@ class ThermostatPlanifController extends BackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/thermostat-planif');
+                $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-planif');
             }
         } else {
             if ($request->getExists('id')) {
@@ -207,7 +207,7 @@ class ThermostatPlanifController extends BackController
 
         $link = new Link(
             $domId,
-            "../activapi.fr/thermostat-planif",
+            $this->baseAddress . "thermostat-planif",
             "arrow_back",
             "white-text",
             "white-text"

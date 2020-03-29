@@ -34,7 +34,7 @@ class ActionsController extends ActionsBackController
             'id' => "addActionFab",
             'fixed' => true,
             'icon' => "add",
-            'href' => "../activapi.fr/actions-add"
+            'href' => $this->baseAddress . "actions-add"
         ]);
 
         $this->page->addVar('cards', $cards);
@@ -71,13 +71,13 @@ class ActionsController extends ActionsBackController
         foreach ($actions as $action) {
             $linkEdit = new Link(
                 '',
-                "../activapi.fr/actions-edit-" . $action["id"],
+                $this->baseAddress . "actions-edit-" . $action["id"],
                 'edit',
                 'primaryTextColor'
             );
             $linkDelete = new Link(
                 '',
-                "../activapi.fr/actions-delete-" . $action["id"],
+                $this->baseAddress . "actions-delete-" . $action["id"],
                 'delete',
                 'secondaryTextColor'
             );
@@ -104,13 +104,13 @@ class ActionsController extends ActionsBackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
-                $this->app->httpResponse()->redirect('../activapi.fr/actions');
+                $this->app->httpResponse()->redirect($this->baseAddress . 'actions');
             }
         }
 
         $link = new Link(
             $domId,
-            "../activapi.fr/actions",
+            $this->baseAddress . "actions",
             "arrow_back",
             "white-text",
             "white-text"
@@ -140,7 +140,7 @@ class ActionsController extends ActionsBackController
 
         $link = new Link(
             $domId,
-            "../activapi.fr/actions",
+            $this->baseAddress . "actions",
             "arrow_back",
             "white-text",
             "white-text"

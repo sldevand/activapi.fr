@@ -12,9 +12,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Config =
-/*#__PURE__*/
-function () {
+var Config = /*#__PURE__*/function () {
   function Config() {
     _classCallCheck(this, Config);
   }
@@ -24,6 +22,7 @@ function () {
     value: function getConfig() {
       return {
         'ip': '192.168.1.52',
+        'apiEndpoint': 'activapi/api',
         'port': '5901'
       };
     }
@@ -43,7 +42,9 @@ var _config = require("./config/config");
 
 var ip = _config.Config.getConfig().ip;
 
-var nodeServer = new _nodeServer.NodeServer('http://' + ip + '/activapi.fr/api');
+var apiEndpoint = _config.Config.getConfig().apiEndpoint;
+
+var nodeServer = new _nodeServer.NodeServer('http://' + ip + '/' + apiEndpoint);
 nodeServer.init();
 
 },{"./config/config":1,"./utils/nodeServer":3}],3:[function(require,module,exports){
@@ -60,9 +61,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var NodeServer =
-/*#__PURE__*/
-function () {
+var NodeServer = /*#__PURE__*/function () {
   function NodeServer(address) {
     _classCallCheck(this, NodeServer);
 
@@ -75,8 +74,8 @@ function () {
     value: function init() {
       var _this = this;
 
-      this.switch = document.getElementById('node');
-      this.switch.addEventListener('click', function (event) {
+      this["switch"] = document.getElementById('node');
+      this["switch"].addEventListener('click', function (event) {
         var status = _this.getSwitchStatus(event);
 
         _this.toggle(status);
@@ -93,7 +92,7 @@ function () {
         return res.json();
       }).then(function (status) {
         console.log(status);
-      }).catch(function (err) {
+      })["catch"](function (err) {
         console.error(err);
       });
     }
@@ -106,7 +105,7 @@ function () {
         return res.json();
       }).then(function (status) {
         _this2.setSwitchStatus(status);
-      }).catch(function (err) {
+      })["catch"](function (err) {
         console.error(err);
       });
     }
@@ -118,7 +117,7 @@ function () {
   }, {
     key: "setSwitchStatus",
     value: function setSwitchStatus(status) {
-      this.switch.checked = status === 'on' ? this.switch.checked = true : this.switch.checked = false;
+      this["switch"].checked = status === 'on' ? this["switch"].checked = true : this["switch"].checked = false;
     }
   }]);
 

@@ -2,7 +2,7 @@
 
 namespace OCFram;
 
-use \RuntimeException;
+use RuntimeException;
 
 /**
  * Class Router
