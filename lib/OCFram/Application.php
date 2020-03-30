@@ -64,6 +64,9 @@ abstract class Application
         $root = $xml->getElementsByTagName('root')->item(0);
         $rootUrl = $root->getAttribute('url');
 
+        $rootUrl = str_replace('\/', '/', $rootUrl);
+        $this->router->setRoot($rootUrl);
+
         foreach ($routes as $route) {
             $vars = [];
 

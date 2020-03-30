@@ -18,6 +18,11 @@ class Router
     protected $routes = [];
 
     /**
+     * @var string
+     */
+    protected $root;
+
+    /**
      * @param Route $route
      */
     public function addRoute(Route $route)
@@ -53,5 +58,23 @@ class Router
         }
 
         throw new \RuntimeException('Aucune route ne correspond à l\'URL', self::NO_ROUTE);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoot(): string
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param string $root
+     * @return Router
+     */
+    public function setRoot(string $root): Router
+    {
+        $this->root = $root;
+        return $this;
     }
 }

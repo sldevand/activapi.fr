@@ -105,4 +105,14 @@ class HTTPRequest extends ApplicationComponent
     {
         return $_SERVER['REQUEST_URI'];
     }
+
+    /**
+     * @return mixed
+     */
+    public function baseUrl()
+    {
+        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
+
+        return $protocol . $_SERVER['SERVER_NAME'];
+    }
 }

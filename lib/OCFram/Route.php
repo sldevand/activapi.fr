@@ -49,6 +49,14 @@ class Route
     }
 
     /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
      * @param string $url
      */
     public function setUrl($url)

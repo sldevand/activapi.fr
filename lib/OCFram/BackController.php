@@ -51,6 +51,11 @@ abstract class BackController extends ApplicationComponent
     protected $baseAddress;
 
     /**
+     * @var bool
+     */
+    protected $restricted = false;
+
+    /**
      * BackController constructor.
      * @param Application $app
      * @param string $module
@@ -326,5 +331,13 @@ abstract class BackController extends ApplicationComponent
     public function setViewId($viewId)
     {
         $this->viewId = $viewId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRestricted(): bool
+    {
+        return $this->restricted;
     }
 }
