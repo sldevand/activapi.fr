@@ -1,10 +1,10 @@
 <?php
 
-namespace Sldevand\User\Helper;
+namespace Sldevand\Framework\Api;
 
 /**
  * Trait Hydrator
- * @package Sldevand\User\Helper
+ * @package Sldevand\Framework\Api
  */
 trait Hydrator
 {

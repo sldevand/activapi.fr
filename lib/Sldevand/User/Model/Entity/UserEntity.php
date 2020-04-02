@@ -2,13 +2,14 @@
 
 namespace Sldevand\User\Model\Entity;
 
-use Sldevand\User\Helper\Hydrator;
+use Framework\Model\Entity\AbstractEntity;
+use Sldevand\Framework\Api\Hydrator;
 
 /**
  * Class User
  * @package Sldevand\User\Model\Entity
  */
-class UserEntity
+class UserEntity extends AbstractEntity
 {
     use Hydrator;
 
@@ -47,24 +48,6 @@ class UserEntity
         array $data = []
     ) {
         $this->hydrate($data);
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return UserEntity
-     */
-    public function setId(int $id): UserEntity
-    {
-        $this->id = $id;
-        return $this;
     }
 
     /**
