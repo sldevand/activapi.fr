@@ -2,4 +2,5 @@
 <modules>
     <module name="Scenario" version="1.0.4" />
     <module name="Log" version="1.0.2" />
+    <module name="User" version="1.0.1" />
 </modules>
