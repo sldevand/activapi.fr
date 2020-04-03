@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Entity\Scenario;
 
 use Entity\Actionneur;
