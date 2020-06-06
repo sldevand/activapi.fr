@@ -4,6 +4,6 @@
     <module name="Sensor" version="1.0.1" />
     <module name="Thermostat" version="1.0.1" />
     <module name="Mesure" version="1.0.1" />
-    <module name="Scenario" version="1.0.4" />
-    <module name="Log" version="1.0.2" />
+    <module name="Scenario" version="1.0.1" />
+    <module name="Log" version="1.0.1" />
 </modules>

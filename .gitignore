@@ -8,3 +8,4 @@
 
 Tests/database/activhome-test\.db
 .phpunit.result.cache
+/.env

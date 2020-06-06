@@ -5,11 +5,11 @@
     <define var="cache" value="/var/www/activapi.fr/tmp/cache/"/>
     <define var="cacheExpiration" value="3600 seconds"/>
     <define var="pdoWinAddress" value="sqlite:E:\xampp\htdocs\html\database\releves.db"/>
-    <define var="pdoLinAddress" value="sqlite:/var/www/html/database/releves.db"/>
+    <define var="pdoLinAddress" value="sqlite:/var/www/activapi.fr/var/db/releves.db"/>
     <define var="toggleOnCommand" value="sudo /home/pi/activServer/activServerLauncher > /dev/null 2>&amp;1 &amp;"/>
     <define var="toggleOffCommand" value="sudo killall node"/>
     <define var="getStatusCommand" value="ps -U root | grep -o node"/>
     <define var="nodeServerLogPath" value="/home/pi/activServer/log.txt"/>
-    <define var="nodeIP" value="192.168.1.52"/>
+    <define var="nodeIP" value="localhost"/>
     <define var="nodePort" value="5901"/>
 </definitions>

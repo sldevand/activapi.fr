@@ -3,11 +3,11 @@
     <define var="login" value="admin"/>
     <define var="pass" value="mdp"/>
     <define var="pdoWinAddress" value="sqlite:E:\xampp\htdocs\html\database\releves.db"/>
-    <define var="pdoLinAddress" value="sqlite:/var/www/html/database/releves.db"/>
+    <define var="pdoLinAddress" value="sqlite:/var/www/activapi.fr/var/db/releves.db"/>
     <define var="apiWinBaseAddress" value="http://localhost/activapi/"/>
-    <define var="apiLinBaseAddress" value="http://192.168.1.52/activapi/"/>
-    <define var="apiBaseAddress" value="http://192.168.1.52/activapi/"/>
-    <define var="commandDomainAddress" value="http://192.168.1.52/activapi/api/node"/>
-    <define var="nodeIP" value="192.168.1.52"/>
+    <define var="apiLinBaseAddress" value="http://localhost/activapi/"/>
+    <define var="apiBaseAddress" value="http://localhost/activapi/"/>
+    <define var="commandDomainAddress" value="http://localhost/activapi/api/node"/>
+    <define var="nodeIP" value="localhost"/>
     <define var="nodePort" value="5901"/>
 </definitions>

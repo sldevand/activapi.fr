@@ -1,1 +1,0 @@
-CREATE INDEX log_created_at ON log (createdAt);

@@ -21,7 +21,7 @@ var Config = /*#__PURE__*/function () {
     key: "getConfig",
     value: function getConfig() {
       return {
-        'ip': '192.168.1.52',
+        'ip': 'localhost',
         'apiEndpoint': 'activapi/api',
         'port': '5901'
       };

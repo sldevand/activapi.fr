@@ -6,3 +6,5 @@ CREATE TABLE IF NOT EXISTS log
     content TEXT NOT NULL,
     createdAt INTEGER NOT NULL
 );
+
+CREATE INDEX log_created_at ON log (createdAt);

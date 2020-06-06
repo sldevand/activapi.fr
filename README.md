@@ -12,6 +12,15 @@ The front-end is made with
 
 A modern responsive front-end framework based on Material Design
 
+
+## Installation
+```bash
+composer install
+npm install
+php bin/sqlSetup.php
+```
+
+
 ## License 
 * see [LICENSE](https://github.com/sldevand/activapi.fr/blob/master/LICENSE.md) file
 

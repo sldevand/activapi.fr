@@ -13268,7 +13268,7 @@ require("./utils/materialize.min");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 },{"./utils/leaked-jQuery":6,"./utils/materialize.min":7,"hammerjs/hammer.min":2}],6:[function(require,module,exports){
 "use strict";
@@ -13276,14 +13276,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 var _jquerySlim = require("jquery/dist/jquery.slim.min");
 
 window.$ = _jquerySlim.$;
 window.jQuery = _jquerySlim.jQuery;
 var _default = _jquerySlim.$;
-exports.default = _default;
+exports["default"] = _default;
 
 },{"jquery/dist/jquery.slim.min":4}],7:[function(require,module,exports){
 "use strict";
@@ -15717,7 +15717,7 @@ var _createClass = function () {
   }(e.Manager.prototype.emit);
 }), function (t) {
   t.Package ? Materialize = {} : t.Materialize = {};
-}(window), "undefined" == typeof exports || exports.nodeType || ("undefined" != typeof module && !module.nodeType && module.exports && (exports = module.exports = Materialize), exports.default = Materialize), function (t) {
+}(window), "undefined" == typeof exports || exports.nodeType || ("undefined" != typeof module && !module.nodeType && module.exports && (exports = module.exports = Materialize), exports["default"] = Materialize), function (t) {
   for (var e = 0, i = ["webkit", "moz"], n = t.requestAnimationFrame, o = t.cancelAnimationFrame, a = i.length; --a >= 0 && !n;) {
     n = t[i[a] + "RequestAnimationFrame"], o = t[i[a] + "CancelRequestAnimationFrame"];
   }
@@ -19157,7 +19157,7 @@ Vel = jQuery ? jQuery.Velocity : $ ? $.Velocity : Velocity, Materialize.Vel = Ve
       C = ['<div class="clockpicker picker">', '<div class="picker__holder">', '<div class="picker__frame">', '<div class="picker__wrap">', '<div class="picker__box">', '<div class="picker__date-display">', '<div class="clockpicker-display">', '<div class="clockpicker-display-column">', '<span class="clockpicker-span-hours text-primary"></span>', ":", '<span class="clockpicker-span-minutes"></span>', "</div>", '<div class="clockpicker-display-column clockpicker-display-am-pm">', '<div class="clockpicker-span-am-pm"></div>', "</div>", "</div>", "</div>", '<div class="picker__container__wrapper">', '<div class="picker__calendar-container">', '<div class="clockpicker-plate">', '<div class="clockpicker-canvas"></div>', '<div class="clockpicker-dial clockpicker-hours"></div>', '<div class="clockpicker-dial clockpicker-minutes clockpicker-dial-out"></div>', "</div>", '<div class="clockpicker-am-pm-block">', "</div>", "</div>", '<div class="picker__footer">', "</div>", "</div>", "</div>", "</div>", "</div>", "</div>", "</div>"].join("");
 
   o.DEFAULTS = {
-    default: "",
+    "default": "",
     fromnow: 0,
     donetext: "Ok",
     cleartext: "Clear",
@@ -19181,7 +19181,7 @@ Vel = jQuery ? jQuery.Velocity : $ ? $.Velocity : Velocity, Materialize.Vel = Ve
       });
       var n = this;
       this.input.blur(), this.popover.addClass("picker--opened"), this.input.addClass("picker__input picker__input--active"), t(document.body).css("overflow", "hidden");
-      var o = ((this.input.prop("value") || this.options.default || "") + "").split(":");
+      var o = ((this.input.prop("value") || this.options["default"] || "") + "").split(":");
 
       if (this.options.twelvehour && void 0 !== o[1] && (o[1].indexOf("AM") > 0 ? this.amOrPm = "AM" : this.amOrPm = "PM", o[1] = o[1].replace("AM", "").replace("PM", "")), "now" === o[0]) {
         var l = new Date(+new Date() + this.options.fromnow);
