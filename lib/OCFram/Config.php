@@ -40,6 +40,20 @@ class Config extends ApplicationComponent
     }
 
     /**
+     * @param string $key
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getEnv(string $key)
+    {
+        if (!isset($_ENV[$key])) {
+            throw new \Exception("$key environment variable does not exist");
+        }
+
+        return $_ENV[$key];
+    }
+
+    /**
      * @return array
      */
     public function getVars()

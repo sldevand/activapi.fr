@@ -22,8 +22,7 @@ class AbstractPDOTestCase extends TestCase
     {
         parent::setUpBeforeClass();
 
-        $dsn = "sqlite:" . TEST_DB_PATH;
-        PDOFactory::setPdoAddress($dsn);
+        PDOFactory::setPdoAddress(TEST_DB_PATH);
         self::$db = PDOFactory::getSqliteConnexion();
         self::$managers = new Managers('PDO', self::$db);
 
