@@ -159,13 +159,8 @@ class SchemaUpdater
         $comparableModuleVersion = $this->getComparableVersionNumber($moduleVersion->getVersionNumber());
         $comparableConfigVersion = $this->getComparableVersionNumber($configVersion);
 
-        if ($moduleVersion->getModuleName() === $configName
-            && $comparableModuleVersion < $comparableConfigVersion
-        ) {
-            return true;
-        }
-
-        return false;
+        return $moduleVersion->getModuleName() === $configName
+            && $comparableModuleVersion < $comparableConfigVersion;
     }
 
     /**
