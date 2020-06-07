@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS actionneurs;
-
 create table actionneurs
 (
 	id INTEGER not null primary key autoincrement,

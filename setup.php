@@ -2,8 +2,9 @@
 
 include_once __DIR__ . '/vendor/autoload.php';
 
+use Symfony\Component\Dotenv\Dotenv;
+
 ini_set('memory_limit', '2048M');
-//ini_set('display_errors', 1);
 const ROOT = '/activapi';
 const SITE = ROOT . '/';
 const CSS = SITE . 'css';
@@ -22,3 +23,7 @@ const FRONTEND = __DIR__ . '/App/Frontend';
 const MODULES = FRONTEND . '/Modules';
 const TEMPLATES = FRONTEND . '/Templates';
 const BLOCK = TEMPLATES . '/Block';
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__ . '/.env');
+ini_set('display_errors', $_ENV['DEBUG']);

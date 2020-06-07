@@ -71,6 +71,13 @@ class ThermostatPlanifController extends BackController
             'href' => $this->baseAddress . "thermostat-planif-add"
         ]);
 
+        if (empty($cards)) {
+            $table = WidgetFactory::makeTable('no-data', []);
+            $card = WidgetFactory::makeCard('card-no-data', 'Planification');
+            $card->addContent($table->getHtml());
+            $cards [] = $card;
+        }
+
         $this->page->addVar('cards', $cards);
         $this->page->addVar('addPlanifFab', $addPlanifFab);
     }

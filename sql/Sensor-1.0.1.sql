@@ -1,4 +1,4 @@
-CREATE TABLE 'sensors' (
+CREATE TABLE IF NOT EXISTS 'sensors' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     'radioid' TEXT,
     'releve' DATETIME,

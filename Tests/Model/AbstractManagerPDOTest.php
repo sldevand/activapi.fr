@@ -108,7 +108,8 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
             [
                 'id' => $id,
                 'nom' => $nom,
-                'sequences' => $sequences
+                'sequences' => $sequences,
+                'status' => 0
             ]
         );
     }
@@ -178,7 +179,8 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
                 'id' => $id,
                 'nom' => $nom,
                 'actionneur' => $actionneur,
-                'etat' => $etat
+                'etat' => $etat,
+                'timeout' => 0
             ]
         );
     }

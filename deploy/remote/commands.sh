@@ -35,6 +35,9 @@ cd $REMOTE_APP_PATH &&
 sudo $REMOTE_COMPOSER install --no-dev &&
 sudo rm -rfv $REMOTE_APP_PATH/composer.* &&
 
+myEcho "Remote : Add .env file" &&
+sudo cp $REMOTE_ENV_FILE $REMOTE_APP_PATH &&
+
 myEcho "Remote : Install database" &&
 sudo chmod +x $REMOTE_APP_PATH/bin/sqlSetup.php &&
 sudo php -f $REMOTE_APP_PATH/bin/sqlSetup.php &&

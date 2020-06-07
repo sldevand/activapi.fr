@@ -2,20 +2,22 @@
 
 namespace SFram\Commands;
 
+use OCFram\Config;
+
 /**
  * Class NodeActivator
  * @package SFram\Commands
  */
 class NodeActivator
 {
-    /** @var array $config */
+    /** @var Config $config */
     protected $config;
 
     /**
      * NodeActivator constructor.
-     * @param array $config
+     * @param Config $config
      */
-    public function __construct($config)
+    public function __construct(Config $config)
     {
         $this->config = $config;
     }
@@ -23,6 +25,7 @@ class NodeActivator
     /**
      * @param string $status
      * @return string
+     * @throws \Exception
      */
     public function toggle($status)
     {
@@ -39,15 +42,16 @@ class NodeActivator
     /**
      * @param string $status
      * @return string
+     * @throws \Exception
      */
     protected function selectStatusCommand($status)
     {
         if ($status === "on") {
-            return $this->config['toggleOnCommand'];
+            return $this->config->getEnv('NODE_START_COMMAND');
         }
 
         if ($status === "off") {
-            return $this->config['toggleOffCommand'];
+            return $this->config->getEnv('NODE_STOP_COMMAND');
         }
 
         return "";
@@ -55,10 +59,11 @@ class NodeActivator
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function getStatus()
     {
-        exec($this->config['getStatusCommand'], $output, $returnVar);
+        exec($this->config->getEnv('NODE_STATUS_COMMAND'), $output, $returnVar);
         if (isset($output) && !$returnVar && strpos($output[0], 'node') !== false) {
             return 'on';
         }
