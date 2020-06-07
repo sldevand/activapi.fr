@@ -1,4 +1,4 @@
-CREATE TABLE 'thermostat' (
+CREATE TABLE IF NOT EXISTS 'thermostat' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     'nom' TEXT,
     'modeid' INTEGER,
@@ -13,12 +13,12 @@ CREATE TABLE 'thermostat' (
 );
 
 
-CREATE TABLE 'thermostat_corresp' (
+CREATE TABLE IF NOT EXISTS 'thermostat_corresp' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     'nom' TEXT
 );
 
-CREATE TABLE 'thermostat_log' (
+CREATE TABLE IF NOT EXISTS 'thermostat_log' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     'etat' INTEGER DEFAULT 0,
     'horodatage' DATETIME,
@@ -28,14 +28,14 @@ CREATE TABLE 'thermostat_log' (
 
 CREATE INDEX thermostat_log_horodatage ON thermostat_log (horodatage);
 
-CREATE TABLE 'thermostat_modes' (
+CREATE TABLE IF NOT EXISTS 'thermostat_modes' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     'nom' TEXT,
     'consigne' INTEGER,
     'delta' INTEGER
 );
 
-CREATE TABLE 'thermostat_planif' (
+CREATE TABLE IF NOT EXISTS 'thermostat_planif' (
     'id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     'jour' INTEGER,
     'modeid' INTEGER,

@@ -18,7 +18,7 @@ LOCAL_REPO_PATH=$LOCAL_APP_PATH/build/$LOCAL_APP_NAME
 
 #Git vars
 GIT_PATH=https://github.com/sldevand/activapi.fr.git
-GIT_BRANCH=master
+GIT_BRANCH=feature/config-with-dotenv
 
 #Remote vars
 REMOTE_HOST=pi@domusbox
