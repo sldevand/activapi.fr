@@ -24,6 +24,7 @@ class ActionneursController extends BackController
      * @param Application $app
      * @param string $module
      * @param string $action
+     * @throws Exception
      */
     public function __construct(Application $app, $module, $action)
     {
@@ -150,8 +151,8 @@ class ActionneursController extends BackController
         }
         $dataJSON = json_encode($actionneur);
 
-        $ip = $this->app()->config()->get('nodeIP');
-        $port = $this->app()->config()->get('nodePort');
+        $ip = $this->app()->config()->getEnv('NODE_IP');
+        $port = $this->app()->config()->getEnv('NODE_PORT');
 
         /** @var SocketIO $socketio */
         $socketio = new SocketIO();

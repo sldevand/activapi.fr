@@ -152,8 +152,8 @@ class ScenariosController extends AbstractScenarioManagersController
             return $this->page->addVar('output', ['error' => 'No scenario on id ' . $id]);
         }
 
-        $ip = $this->app()->config()->get('nodeIP');
-        $port = $this->app()->config()->get('nodePort');
+        $ip = $this->app()->config()->getEnv('NODE_IP');
+        $port = $this->app()->config()->getEnv('NODE_PORT');
         $action = 'updateScenario';
         $dataJSON = json_encode($scenario);
 
