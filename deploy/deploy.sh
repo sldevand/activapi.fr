@@ -37,6 +37,17 @@ myEcho "Local : Git clone $GIT_BRANCH branch"
 cd $LOCAL_BUILD_PATH
 git clone --single-branch --branch $GIT_BRANCH $GIT_PATH
 
+myEcho "Sassify scss files"
+npm run sass-compile
+myEcho "Babelify all js files"
+npm run babelAll
+
+cd $LOCAL_APP_PATH
+cp $LOCAL_APP_PATH/Web/dist/*.css $LOCAL_REPO_PATH/Web/dist
+cp $LOCAL_APP_PATH/Web/dist/*.js $LOCAL_REPO_PATH/Web/dist
+
+cd $LOCAL_BUILD_PATH
+
 myEcho "Local : Remove unused files for production"
 rm -rfv $LOCAL_REPO_PATH/deploy
 rm -rfv $LOCAL_REPO_PATH/src

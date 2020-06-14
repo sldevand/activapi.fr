@@ -11,3 +11,5 @@ Tests/database/activhome-test\.db
 /.env
 /var/*
 /Web/dist/
+/src/config/config.js
+/build/

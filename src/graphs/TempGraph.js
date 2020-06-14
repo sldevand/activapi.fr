@@ -1,4 +1,4 @@
-import Chart from 'chart.js/src/chart';
+import Chart from 'chart.js/dist/Chart';
 export function TempGraph(id, p_datasets, minY = 0, maxY = 30, p_labels = []) {
 
     var ctx = document.getElementById(id).getContext('2d');

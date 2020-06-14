@@ -29,7 +29,7 @@
         "babelActions": "./node_modules/.bin/browserify ./src/actionsManage.js -t [babelify] -o ./Web/dist/actionsManage.js",
         "babelNode": "./node_modules/.bin/browserify ./src/nodeManage.js -t [babelify] -o ./Web/dist/nodeManage.js",
         "babelConsole": "./node_modules/.bin/browserify ./src/console.js -t [babelify] -o ./Web/dist/console.js",
-        "babelAll": "npm run babelIndex | npm run babelGraph | npm run babelSocketio | npm run babelModes | npm run babelScenarios | npm run babelSequences | npm run babelActions | npm run babelNode | npm run babelConsole"
+        "babelAll": "npm run babelIndex && npm run babelGraphs && npm run babelSocketio && npm run babelModes && npm run babelScenarios && npm run babelSequences && npm run babelActions && npm run babelNode && npm run babelConsole"
     },
     "repository": {
         "type": "git",
