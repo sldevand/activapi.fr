@@ -18,9 +18,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Sequences =
-/*#__PURE__*/
-function () {
+var Sequences = /*#__PURE__*/function () {
   function Sequences() {
     _classCallCheck(this, Sequences);
   }
@@ -57,7 +55,7 @@ function () {
         _this.initActionAddListener();
 
         _this.initForm();
-      }).catch(function (err) {
+      })["catch"](function (err) {
         return console.log(err);
       });
     }
@@ -214,15 +212,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ActionRowTemplate = void 0;
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var ActionRowTemplate =
-/*#__PURE__*/
-function () {
+var ActionRowTemplate = /*#__PURE__*/function () {
   function ActionRowTemplate() {
     _classCallCheck(this, ActionRowTemplate);
   }
@@ -237,12 +239,12 @@ function () {
       }
 
       var template = "\n<div class=\"col s6\">\n    <label for=\"action-select-".concat(sequenceActionId, "\">Action</label>\n    <div class=\"select-wrapper\"><span class=\"caret\">\u25BC</span>\n        <select name=\"action-").concat(sequenceActionId, "\" id=\"action-select-").concat(sequenceActionId, "\">");
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+
+      var _iterator = _createForOfIteratorHelper(actions),
+          _step;
 
       try {
-        for (var _iterator = actions[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var action = _step.value;
           var selected = '';
 
@@ -253,18 +255,9 @@ function () {
           template += "<option value=\"".concat(action.id, "\" ").concat(selected, ">").concat(action.nom, "</option>");
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _iterator.e(err);
       } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
+        _iterator.f();
       }
 
       template += "</select>\n    </div>\n</div>\n\n<i id=\"sequence-action-delete\" data-id=\"".concat(sequenceActionId, "\" class=\"material-icons secondaryTextColor col s2 delete\">delete</i>\n");
@@ -291,9 +284,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var SequenceTemplate =
-/*#__PURE__*/
-function () {
+var SequenceTemplate = /*#__PURE__*/function () {
   function SequenceTemplate() {
     _classCallCheck(this, SequenceTemplate);
   }
@@ -342,9 +333,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var ApiManage =
-/*#__PURE__*/
-function () {
+var ApiManage = /*#__PURE__*/function () {
   function ApiManage(method, action) {
     var jsonHeader = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
