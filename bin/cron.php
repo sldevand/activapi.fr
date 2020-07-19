@@ -1,16 +1,13 @@
 <?php
 
 use OCFram\PDOFactory;
-use SFram\OSDetectorFactory;
 
-include __DIR__ . '/../vendor/autoload.php';
-
-OSDetectorFactory::begin();
+require_once __DIR__ . '/../setup.php';
 
 $app = new \App\Backend\BackendApplication();
 
-$key = OSDetectorFactory::getPdoAddressKey();
-PDOFactory::setPdoAddress($app->config()->get($key));
+PDOFactory::setPdoAddress($_ENV['DB_PATH']);
+$pdo = PDOFactory::getSqliteConnexion();
 
 $crontab = [
     'purge_old_node_log_rows' => [
