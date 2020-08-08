@@ -13,9 +13,10 @@ define('ROOT', $_ENV['ROOT_URI']);
 const SITE = ROOT . '/';
 const CSS = SITE . 'css';
 const JS = SITE . 'js';
+const DIST = SITE . 'dist';
+const IMG = SITE . 'img';
 const NODE_MODULES = SITE . 'node_modules';
 const JS_UTILS = JS . '/utils';
-const DIST = SITE . 'dist';
 const DEFAULT_APP = 'Frontend';
 
 const APP = __DIR__ . '/';
