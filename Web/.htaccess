@@ -1,11 +1,7 @@
 RewriteEngine On
 
-RewriteBase /
-
 RewriteRule ^api/ bootstrap.php?app=Backend [QSA,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-l
 
 RewriteRule ^(.*)$ bootstrap.php?app=Frontend [QSA,L]
