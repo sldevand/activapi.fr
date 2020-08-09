@@ -1,0 +1,5 @@
+<?php /** @var \Materialize\Sidenav\Sidenav $this */ ?>
+
+<?php foreach ($this->getSubHeaders() as $subHeader) : ?>
+    <?= $subHeader->getHtml() ?>
+<?php endforeach; ?>

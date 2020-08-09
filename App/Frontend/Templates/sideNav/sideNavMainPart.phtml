@@ -1,3 +1,124 @@
+<?php
+
+use Materialize\Icon\Icon;
+use Materialize\Sidenav\Link;
+use Materialize\Sidenav\Sidenav;
+use Materialize\Sidenav\Subheader;
+
+$iconNames = [
+    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings'
+];
+
+$icons = [];
+foreach ($iconNames as $name) {
+    $icon = new Icon(['name' => $name]);
+    $icons[$name] = $icon->getHtml();
+}
+
+$icons['table'] = '<i class="valign col s2 mdi mdi-table"></i>';
+$icons['timetable'] = '<i class="valign col s2 mdi mdi-timetable"></i>';
+
+$accueilLink = new Link([
+    'id' => 'accueil',
+    'title' => 'Accueil',
+    'link' => '/',
+    'icon' => $icons['home']
+]);
+
+$sidenav = new Sidenav(
+    [
+        'subHeaders' => [
+            new Subheader(
+                [
+                    'title' => 'Gestion',
+                    'links' => [
+                        new Link([
+                            'id' => 'actionneurs',
+                            'title' => 'Actionneurs',
+                            'link' => '/actionneurs',
+                            'icon' => $icons['settings_power']
+                        ]),
+                        new Link([
+                            'id' => 'sensors',
+                            'title' => 'Sensors',
+                            'link' => '/sensors',
+                            'icon' => $icons['leak_add']
+                        ])
+
+                    ]
+                ]
+            ),
+            new Subheader(
+                [
+                    'title' => 'Mesures',
+                    'links' => [
+                        new Link([
+                            'id' => 'mesures',
+                            'title' => 'Données',
+                            'link' => '/mesures',
+                            'icon' => $icons['list']
+                        ]),
+                        new Link([
+                            'id' => 'graphs',
+                            'title' => 'Graphs',
+                            'link' => '/graphs',
+                            'icon' => $icons['assessment']
+                        ])
+
+                    ]
+                ]
+            ),
+            new Subheader(
+                [
+                    'title' => 'Thermostat',
+                    'links' => [
+                        new Link([
+                            'id' => 'thermostat',
+                            'title' => 'Paramètres',
+                            'link' => '/thermostat',
+                            'icon' => $icons['settings']
+                        ]),
+                        new Link([
+                            'id' => 'thermostat-log',
+                            'title' => 'Log',
+                            'link' => '/thermostat-log',
+                            'icon' => $icons['list']
+                        ]),
+                        new Link([
+                            'id' => 'thermostat-planif',
+                            'title' => 'Planif',
+                            'link' => '/thermostat-planif',
+                            'icon' => $icons['timetable']
+                        ]),
+                        new Link([
+                            'id' => 'thermostat-modes',
+                            'title' => 'Modes',
+                            'link' => '/thermostat-modes',
+                            'icon' => $icons['table']
+                        ])
+
+                    ]
+                ]
+            ),
+            new Subheader(
+                [
+                    'title' => 'Système',
+                    'links' => [
+                        new Link([
+                            'id' => 'console',
+                            'title' => 'Console',
+                            'link' => '/console',
+                            'icon' => $icons['table']
+                        ])
+                    ]
+                ]
+            )
+        ]
+    ]
+);
+
+?>
+
 <li>
     <div class="primaryColor valign-wrapper">
         <a href="<?= ROOT ?>/" class="valign ">
@@ -6,141 +127,5 @@
     </div>
 </li>
 
-<li>
-    <a id="accueil" href="<?= ROOT ?>/" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons">home</i>
-            <div class="valign col s10 flow-text">Accueil</div>
-        </div>
-    </a>
-</li>
-
-<li class="divider"></li>
-
-<li><a class="subheader">Gestion</a></li>
-
-<li>
-    <a id="actionneurs" href="<?= ROOT ?>/actionneurs" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons ">settings_power</i>
-            <div class="valign col s10 flow-text">Actionneurs</div>
-        </div>
-    </a>
-</li>
-
-<li>
-    <a id="sensors" href="<?= ROOT ?>/sensors" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons ">leak_add</i>
-            <div class="valign col s10 flow-text">Sensors</div>
-        </div>
-    </a>
-</li>
-
-<li class="divider"></li>
-
-<li><a class="subheader">Scénarios</a></li>
-
-<li>
-    <a id="scenarios" href="<?= ROOT ?>/scenarios" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons ">play_arrow</i>
-            <div class="valign col s10 flow-text">Scénarios</div>
-        </div>
-    </a>
-</li>
-
-<li>
-    <a id="sequences" href="<?= ROOT ?>/sequences" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons ">local_movies</i>
-            <div class="valign col s10 flow-text">Séquences</div>
-        </div>
-    </a>
-</li>
-
-<li>
-    <a id="actions" href="<?= ROOT ?>/actions" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons ">movies</i>
-            <div class="valign col s10 flow-text">Actions</div>
-        </div>
-    </a>
-</li>
-
-<li class="divider"></li>
-
-<li><a class="subheader">Mesures</a></li>
-
-<li>
-    <a id="mesures" href="<?= ROOT ?>/mesures" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons">list</i>
-            <div class="valign col s10 flow-text">Donnees</div>
-        </div>
-    </a>
-</li>
-
-<li>
-    <a id="graphs" href="<?= ROOT ?>/graphs" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons ">assessment</i>
-            <div class="valign col s10 flow-text">Graphs</div>
-        </div>
-    </a>
-</li>
-
-<li class="divider"></li>
-
-<li><a class="subheader">Thermostat</a></li>
-
-<li>
-    <a id="thermostat" href="<?= ROOT ?>/thermostat" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons">settings</i>
-            <div class="valign col s10 flow-text">Paramètres</div>
-        </div>
-    </a>
-</li>
-
-<li>
-    <a id="thermostat-log" href="<?= ROOT ?>/thermostat-log" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 material-icons">list</i>
-            <div class="valign col s10 flow-text">Log</div>
-        </div>
-    </a>
-</li>
-
-<li>
-    <a id="thermostat-planif" href="<?= ROOT ?>/thermostat-planif" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 mdi mdi-timetable"></i>
-            <div class="valign col s10 flow-text">Planif</div>
-        </div>
-    </a>
-</li>
-
-<li>
-    <a id="thermostat-modes" href="<?= ROOT ?>/thermostat-modes" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 mdi mdi-table"></i>
-            <div class="valign col s10 flow-text">Modes</div>
-        </div>
-    </a>
-</li>
-
-<li class="divider"></li>
-
-<li><a class="subheader">Outils</a></li>
-
-<li>
-    <a id="console" href="<?= ROOT ?>/console" class="waves-effect waves-pink waves-ripple">
-        <div class="valign-wrapper row">
-            <i class="valign col s2 mdi mdi-table"></i>
-            <div class="valign col s10 flow-text">Console</div>
-        </div>
-    </a>
-</li>
-
-<footer style="height: 100px;"></footer>
+<?= $accueilLink->getHtml(); ?>
+<?= $sidenav->getHtml(); ?>

@@ -2,7 +2,7 @@
 
 namespace Materialize\Card;
 
-use Materialize\LinkNavbar;
+use Materialize\SidenavLink;
 use Materialize\Widget;
 
 /**
@@ -37,11 +37,6 @@ class Card extends Widget
     protected $contents = [];
 
     /**
-     * @var array $links
-     */
-    protected $links = [];
-
-    /**
      * @return false|string
      */
     public function getHtml()
@@ -49,16 +44,6 @@ class Card extends Widget
         return $this->getBlock(LIB . '/vendors/Materialize/Card/card.phtml');
     }
 
-    /**
-     * @param LinkNavbar $link
-     * @return Card
-     */
-    public function addLink(LinkNavbar $link)
-    {
-        $this->links[] = $link;
-
-        return $this;
-    }
 
     /**
      * @return string
@@ -98,14 +83,6 @@ class Card extends Widget
     public function contents()
     {
         return $this->contents;
-    }
-
-    /**
-     * @return array
-     */
-    public function links()
-    {
-        return $this->links;
     }
 
     /**

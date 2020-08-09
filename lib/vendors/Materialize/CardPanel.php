@@ -29,11 +29,6 @@ class CardPanel extends Widget
     protected $content = '';
 
     /**
-     * @var LinkNavbar $link
-     */
-    protected $link;
-
-    /**
      * @return string
      */
     public function getHtml()
@@ -84,14 +79,6 @@ class CardPanel extends Widget
     }
 
     /**
-     * @return LinkNavbar
-     */
-    public function link()
-    {
-        return $this->link;
-    }
-
-    /**
      * @param string $bgColor
      * @return CardPanel
      */
@@ -139,17 +126,6 @@ class CardPanel extends Widget
         if (is_string($content) && !empty($content)) {
             $this->content = $content;
         }
-
-        return $this;
-    }
-
-    /**
-     * @param LinkNavBar $link
-     * @return CardPanel
-     */
-    public function setLink(LinkNavBar $link)
-    {
-        $this->link = $link;
 
         return $this;
     }

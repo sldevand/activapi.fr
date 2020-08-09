@@ -1,0 +1,10 @@
+<?php /** @var \Materialize\Sidenav\Link $this */ ?>
+
+<li>
+    <a id="<?= $this->id() ?>" href="<?= ROOT . $this->link() ?>" class="waves-effect waves-pink waves-ripple">
+        <div class="valign-wrapper row">
+            <?= $this->icon() ?>
+            <div class="valign col s10 flow-text"><?= $this->title() ?></div>
+        </div>
+    </a>
+</li>

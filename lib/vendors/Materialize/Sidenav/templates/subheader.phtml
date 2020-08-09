@@ -1,0 +1,9 @@
+<?php /** @var \Materialize\Sidenav\Subheader $this */ ?>
+
+<li class="divider"></li>
+<li><a class="subheader"><?= $this->getTitle() ?></a></li>
+
+<?php foreach ($this->getLinks() as $link) : ?>
+    <?= $link->getHtml() ?>
+
+<?php endforeach; ?>
