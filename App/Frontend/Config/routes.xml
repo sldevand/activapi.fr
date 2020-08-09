@@ -49,4 +49,6 @@
     <route url="\/actions-edit-([0-9]+)" module="Actions" action="edit" vars="id"  />
 
     <route url="\/console\/?(yesterday)?" module="Console" action="index" vars="period"/>
+
+    <route url="\/crontab-?([0-9]*)?\/?" module="Crontab" action="index" vars="id" />
 </routes>
