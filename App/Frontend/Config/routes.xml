@@ -51,4 +51,8 @@
     <route url="\/console\/?(yesterday)?" module="Console" action="index" vars="period"/>
 
     <route url="\/crontab-?([0-9]*)?\/?" module="Crontab" action="index" vars="id" />
+    <route url="\/crontab-add" module="Crontab" action="edit" />
+    <route url="\/crontab-edit-([0-9]+)" module="Crontab" action="edit" vars="id"  />
+    <route url="\/crontab-delete-([0-9]+)" module="Crontab" action="delete" vars="id"  />
+
 </routes>

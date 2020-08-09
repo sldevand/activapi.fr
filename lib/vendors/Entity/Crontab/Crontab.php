@@ -35,7 +35,7 @@ class Crontab extends Entity
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -53,7 +53,7 @@ class Crontab extends Entity
     /**
      * @return bool
      */
-    public function isActive(): bool
+    public function isActive()
     {
         return $this->active;
     }
@@ -71,7 +71,7 @@ class Crontab extends Entity
     /**
      * @return string
      */
-    public function getExpression(): string
+    public function getExpression()
     {
         return $this->expression;
     }
@@ -89,7 +89,7 @@ class Crontab extends Entity
     /**
      * @return string
      */
-    public function getExecutor(): string
+    public function getExecutor()
     {
         return $this->executor;
     }
