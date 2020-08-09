@@ -24,7 +24,6 @@ class CrontabController extends BackController
         $card->addContent($cardContent);
         $cards[] = $card;
 
-
         $this->page->addVar('cards', $cards);
     }
 }

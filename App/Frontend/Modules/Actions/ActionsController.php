@@ -8,6 +8,7 @@ use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\Link;
 use Materialize\WidgetFactory;
+use OCFram\BackController;
 use OCFram\HTTPRequest;
 
 /**

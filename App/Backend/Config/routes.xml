@@ -1,46 +1,59 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <routes>
-	<root url="\/activapi\/api" />
-	<route url="\/mesures\/(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])-(today|yesterday|week|month)" module="Mesures" action="sensor" vars="id_sensor,day" />
-	<route url="\/mesures\/(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])-([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{4}-[0-9]{2}-[0-9]{2})" module="Mesures" action="sensor" vars="id_sensor,dateMin,dateMax" />
-	<route url="\/mesures\/add-(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?" module="Mesures" action="insert" vars="id_sensor,temperature,hygrometrie" />
+    <root url="\/activapi\/api"/>
+    <route url="\/mesures\/(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])-(today|yesterday|week|month)"
+           module="Mesures" action="sensor" vars="id_sensor,day"/>
+    <route url="\/mesures\/(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])-([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{4}-[0-9]{2}-[0-9]{2})"
+           module="Mesures" action="sensor" vars="id_sensor,dateMin,dateMax"/>
+    <route url="\/mesures\/add-(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?"
+           module="Mesures" action="insert" vars="id_sensor,temperature,hygrometrie"/>
 
-	<route url="\/mesures\/get-(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])" module="Mesures" action="sensorStruct" vars="radioid" />
-	<route url="\/mesures\/get-sensors(?:\/)?(thermo|thermostat|teleinfo)?" module="Mesures" action="sensors" vars="categorie"/>
+    <route url="\/mesures\/get-(sensor[0-9]{2}(?:ctn10|dht11|tinfo|therm)id[0-9])" module="Mesures"
+           action="sensorStruct" vars="radioid"/>
+    <route url="\/mesures\/get-sensors(?:\/)?(thermo|thermostat|teleinfo)?" module="Mesures" action="sensors"
+           vars="categorie"/>
 
-	<route url="\/actionneurs\/?(inter|dimmer|multiplug|thermostat)?" module="Actionneurs" action="index" vars="categorie"/>
-	<route url="\/actionneurs\/add" module="Actionneurs" action="insert" />
-	<route url="\/actionneurs\/update" module="Actionneurs" action="update" />
-	<route url="\/actionneurs\/command\/([1-9]|[1-9][0-9]*)\/([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\/?$" module="Actionneurs" action="command" vars="id,etat"/>
+    <route url="\/actionneurs\/?(inter|dimmer|multiplug|thermostat)?" module="Actionneurs" action="index"
+           vars="categorie"/>
+    <route url="\/actionneurs\/add" module="Actionneurs" action="insert"/>
+    <route url="\/actionneurs\/update" module="Actionneurs" action="update"/>
+    <route url="\/actionneurs\/command\/([1-9]|[1-9][0-9]*)\/([0-9]|[0-9][0-9]|[0-2][0-5][0-5])\/?$"
+           module="Actionneurs" action="command" vars="id,etat"/>
 
-	<route url="\/scenarios\/?([0-9]*)?" module="Scenarios" action="get" vars="id" />
-	<route url="\/scenarios\/add" module="Scenarios" action="post"  />
-	<route url="\/scenarios\/delete" module="Scenarios" action="delete"  />
-	<route url="\/scenarios\/update" module="Scenarios" action="put"  />
-	<route url="\/scenarios\/reset" module="Scenarios" action="reset"  />
-	<route url="\/scenarios\/command\/([1-9]|[1-9][0-9]*)\/?$" module="Scenarios" action="command" vars="id"/>
+    <route url="\/scenarios\/?([0-9]*)?" module="Scenarios" action="get" vars="id"/>
+    <route url="\/scenarios\/add" module="Scenarios" action="post"/>
+    <route url="\/scenarios\/delete" module="Scenarios" action="delete"/>
+    <route url="\/scenarios\/update" module="Scenarios" action="put"/>
+    <route url="\/scenarios\/reset" module="Scenarios" action="reset"/>
+    <route url="\/scenarios\/command\/([1-9]|[1-9][0-9]*)\/?$" module="Scenarios" action="command" vars="id"/>
 
-	<route url="\/sequences\/?([0-9]*)?" module="Sequences" action="get" vars="id" />
-	<route url="\/sequences\/add" module="Sequences" action="post" />
-	<route url="\/sequences\/delete" module="Sequences" action="delete" />
-	<route url="\/sequences\/update" module="Sequences" action="put" />
+    <route url="\/sequences\/?([0-9]*)?" module="Sequences" action="get" vars="id"/>
+    <route url="\/sequences\/add" module="Sequences" action="post"/>
+    <route url="\/sequences\/delete" module="Sequences" action="delete"/>
+    <route url="\/sequences\/update" module="Sequences" action="put"/>
 
-	<route url="\/actions\/?([0-9]*)?" module="Actions" action="get" vars="id" />
-	<route url="\/actions\/add" module="Actions" action="post" />
-	<route url="\/actions\/delete" module="Actions" action="delete" />
-	<route url="\/actions\/update" module="Actions" action="put" />
+    <route url="\/actions\/?([0-9]*)?" module="Actions" action="get" vars="id"/>
+    <route url="\/actions\/add" module="Actions" action="post"/>
+    <route url="\/actions\/delete" module="Actions" action="delete"/>
+    <route url="\/actions\/update" module="Actions" action="put"/>
 
-	<route url="\/thermostat\/?" module="Thermostat" action="index" />
-	<route url="\/thermostat\/update" module="Thermostat" action="update" />
-	<route url="\/thermostat\/log\/([0-9]{4}-[0-9]{2}-[0-9]{2})?-?([0-9]{4}-[0-9]{2}-[0-9]{2})?" module="Thermostat" action="log" vars="dateMin,dateMax"/>
-	<route url="\/thermostat\/log\/refresh" module="Thermostat" action="refreshLog"/>
-	<route url="\/thermostat\/planif\/([0-9]*)?" module="ThermostatPlanif" action="index" vars="id"/>
-	<route url="\/thermostat\/planif\/update" module="ThermostatPlanif" action="update"/>
-	<route url="\/thermostat\/planifname\/([0-9]*)?" module="ThermostatPlanif" action="name" vars="id"/>
-	<route url="\/thermostat\/mode\/([0-9]*)?" module="ThermostatModes" action="index" vars="id"/>
+    <route url="\/thermostat\/?" module="Thermostat" action="index"/>
+    <route url="\/thermostat\/update" module="Thermostat" action="update"/>
+    <route url="\/thermostat\/log\/([0-9]{4}-[0-9]{2}-[0-9]{2})?-?([0-9]{4}-[0-9]{2}-[0-9]{2})?" module="Thermostat"
+           action="log" vars="dateMin,dateMax"/>
+    <route url="\/thermostat\/log\/refresh" module="Thermostat" action="refreshLog"/>
+    <route url="\/thermostat\/planif\/([0-9]*)?" module="ThermostatPlanif" action="index" vars="id"/>
+    <route url="\/thermostat\/planif\/update" module="ThermostatPlanif" action="update"/>
+    <route url="\/thermostat\/planifname\/([0-9]*)?" module="ThermostatPlanif" action="name" vars="id"/>
+    <route url="\/thermostat\/mode\/([0-9]*)?" module="ThermostatModes" action="index" vars="id"/>
 
-	<route url="\/node\/toggle\/(on|off)$" module="Node" action="toggle" vars="status"/>
-	<route url="\/node\/status\/?$" module="Node" action="getStatus" />
-	<route url="\/node\/log\/?(yesterday|week)?$" module="Node" action="log" vars="period" />
-	<route url="\/node\/log\/add?$" module="Node" action="postLog" />
+    <route url="\/node\/toggle\/(on|off)$" module="Node" action="toggle" vars="status"/>
+    <route url="\/node\/status\/?$" module="Node" action="getStatus"/>
+    <route url="\/node\/log\/?(yesterday|week)?$" module="Node" action="log" vars="period"/>
+    <route url="\/node\/log\/add?$" module="Node" action="postLog"/>
+
+    <route url="\/crontab\/?([0-9]*)?" module="Crontab" action="get" vars="id"/>
+    <route url="\/crontab\/add" module="Crontab" action="post"/>
+    <route url="\/crontab\/delete" module="Crontab" action="delete"/>
+    <route url="\/crontab\/update" module="Crontab" action="put"/>
 </routes>

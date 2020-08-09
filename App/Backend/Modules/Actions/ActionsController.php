@@ -9,15 +9,16 @@ use OCFram\RestInterface;
 
 /**
  * Class ActionsController
- * @package App\Backend\Modules\Scenarios
+ * @package App\Backend\Modules\Actions
  */
 class ActionsController extends AbstractScenarioManagersController implements RestInterface
 {
-    /**
-     * ScenariosController constructor.
+    /***
+     * ActionsController constructor.
      * @param Application $app
      * @param string $module
      * @param string $action
+     * @throws \Exception
      */
     public function __construct(Application $app, string $module, string $action)
     {

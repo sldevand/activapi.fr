@@ -6,7 +6,7 @@ use Materialize\Sidenav\Sidenav;
 use Materialize\Sidenav\Subheader;
 
 $iconNames = [
-    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings'
+    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies'
 ];
 
 $icons = [];
@@ -50,6 +50,32 @@ $sidenav = new Sidenav(
             ),
             new Subheader(
                 [
+                    'title' => 'Scenarios',
+                    'links' => [
+                        new Link([
+                            'id' => 'scenarios',
+                            'title' => 'Scenarios',
+                            'link' => '/scenarios',
+                            'icon' => $icons['play_arrow']
+                        ]),
+                        new Link([
+                            'id' => 'sequences',
+                            'title' => 'Séquences',
+                            'link' => '/sequences',
+                            'icon' => $icons['local_movies']
+                        ]),
+                        new Link([
+                            'id' => 'actions',
+                            'title' => 'Actions',
+                            'link' => '/actions',
+                            'icon' => $icons['movies']
+                        ])
+
+                    ]
+                ]
+            ),
+            new Subheader(
+                [
                     'title' => 'Mesures',
                     'links' => [
                         new Link([
@@ -64,7 +90,6 @@ $sidenav = new Sidenav(
                             'link' => '/graphs',
                             'icon' => $icons['assessment']
                         ])
-
                     ]
                 ]
             ),
