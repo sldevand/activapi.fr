@@ -34,8 +34,9 @@ class CrontabFormBuilder extends FormBuilder
             )->add(
                 new StringField([
                     'id' => 'expression',
-                    'label' => 'expression',
+                    'label' => 'expression (exemple : * 1 * * *)',
                     'name' => 'expression',
+                    'title' => 'Saisie au format de crontab * * * * *',
                     'required' => 'true'
                 ])
             )->add(

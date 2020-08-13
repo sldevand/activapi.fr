@@ -2,12 +2,14 @@
 
 namespace App\Frontend\Modules\Crontab;
 
+use Cron\CronExpression;
 use Entity\Crontab\Crontab;
 use FormBuilder\CrontabFormBuilder;
 use Materialize\FloatingActionButton;
+use Materialize\Icon\Icon;
+use Materialize\Icon\YesNoIconifier;
 use Materialize\Link;
 use Materialize\WidgetFactory;
-use Model\Crontab\CrontabManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
 use OCFram\FormHandler;
@@ -22,6 +24,16 @@ class CrontabController extends BackController
     /** @var \Model\Crontab\CrontabManagerPDO $manager */
     protected $manager;
 
+    /** @var \Materialize\Icon\YesNoIconifier */
+    protected $iconifier;
+
+    /**
+     * CrontabController constructor.
+     * @param Application $app
+     * @param string $module
+     * @param string $action
+     * @throws \Exception
+     */
     public function __construct(
         Application $app,
         string $module,
@@ -29,6 +41,7 @@ class CrontabController extends BackController
     ) {
         parent::__construct($app, $module, $action);
         $this->manager = $this->managers->getManagerOf('Crontab\Crontab');
+        $this->iconifier = new YesNoIconifier();
     }
 
 
@@ -62,11 +75,14 @@ class CrontabController extends BackController
     public function executeEdit(HTTPRequest $request)
     {
         $domId = 'Edition';
+        $this->page->addVar('title', "Edition de la crontab");
 
         if ($request->method() === 'POST') {
+            $expression = trim($request->postData('expression'));
+            $this->validateCronExpression($expression, $request);
             $item = new Crontab([
                 'name' => $request->postData('name'),
-                'expression' => $request->postData('expression'),
+                'expression' => $expression,
                 'active' => $request->postData('active'),
                 'executor' => $request->postData('executor')
             ]);
@@ -111,7 +127,6 @@ class CrontabController extends BackController
         $card->addContent($this->editFormView($form));
         $cards[] = $card;
 
-        $this->page->addVar('title', "Edition de la crontab");
         $this->page->addVar('cards', $cards);
     }
 
@@ -172,7 +187,7 @@ class CrontabController extends BackController
                 'delete',
                 'secondaryTextColor'
             );
-            $crontab["active"] = $this->iconifyResult($crontab["active"]);
+            $crontab["active"] = $this->iconifier->iconifyResult($crontab["active"]);
             $crontab["editer"] = $linkEdit->getHtmlForTable();
             $crontab["supprimer"] = $linkDelete->getHtmlForTable();
             $crontabListData[] = $crontab;
@@ -185,22 +200,18 @@ class CrontabController extends BackController
         return $card;
     }
 
+
     /**
-     * @param $state
-     * @return string
+     * @param string $cronExpression
+     * @param HTTPRequest $request
      */
-    public function iconifyResult($state)
+    public function validateCronExpression(string $cronExpression, HTTPRequest $request)
     {
-        if ($state == 1) {
-            $icon = "check";
-            $color = "teal-text";
-        } else {
-            $icon = "cancel";
-            $color = "secondaryTextColor";
+        try {
+            CronExpression::factory($cronExpression);
+        } catch (\InvalidArgumentException $exception) {
+            $this->app->user()->setFlash($exception->getMessage());
+            $this->app->httpResponse()->redirect($request->requestURI());
         }
-
-        $html = '<i class="material-icons ' . $color . ' ">' . $icon . '</i>';
-
-        return $html;
     }
 }

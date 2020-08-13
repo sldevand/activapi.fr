@@ -8,15 +8,17 @@ namespace OCFram;
  */
 class StringField extends Field
 {
-    /**
-     * @var int $maxLength
-     */
+    /** @var int */
     protected $maxLength;
 
-    /**
-     * @var string $readonly
-     */
+    /** @var string */
     protected $readonly;
+
+    /** @var string */
+    protected $pattern;
+
+    /** @var string */
+    protected $title;
 
     /**
      * @return mixed|string
@@ -34,6 +36,14 @@ class StringField extends Field
         }
 
         $widget .= '<input type="text" name="' . $this->name . '" id="' . $this->id . '"';
+
+        if (isset($this->pattern)) {
+            $widget .= ' pattern="' . $this->pattern . '"';
+        }
+
+        if (isset($this->title)) {
+            $widget .= ' title="' . $this->title . '"';
+        }
 
         if (isset($this->value)) {
             $widget .= ' value="' . htmlspecialchars($this->value) . '"';
@@ -82,6 +92,28 @@ class StringField extends Field
     public function setReadonly($readonly)
     {
         $this->readonly = $readonly;
+
+        return $this;
+    }
+
+    /**
+     * @param string $pattern
+     * @return StringField
+     */
+    public function setPattern(string $pattern)
+    {
+        $this->pattern = $pattern;
+
+        return $this;
+    }
+
+    /**
+     * @param string $title
+     * @return StringField
+     */
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
 
         return $this;
     }

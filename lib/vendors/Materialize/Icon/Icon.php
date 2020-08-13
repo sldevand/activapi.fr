@@ -13,6 +13,9 @@ class Icon extends Widget
     /** @var string */
     protected $name;
 
+    /** @var string */
+    protected $color;
+
     /**
      * @return string
      */
@@ -36,6 +39,25 @@ class Icon extends Widget
     public function setName(string $name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     * @return Icon
+     */
+    public function setColor(string $color)
+    {
+        $this->color = $color;
 
         return $this;
     }
