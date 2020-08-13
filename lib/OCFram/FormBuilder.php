@@ -13,6 +13,9 @@ abstract class FormBuilder
      */
     protected $form;
 
+    /** @var array */
+    protected $data;
+
     /**
      * FormBuilder constructor.
      * @param Entity $entity
@@ -41,5 +44,41 @@ abstract class FormBuilder
     public function form()
     {
         return $this->form;
+    }
+
+    /**
+     * @param string|null $key
+     * @return array
+     */
+    public function getData($key = null)
+    {
+        if ($key && isset($this->data[$key])) {
+            return $this->data[$key];
+        }
+
+        return $this->data;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $data
+     * @return array
+     */
+    public function addData(string $key, $data)
+    {
+        $this->data[$key] = $data;
+
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     * @return FormBuilder
+     */
+    public function setData(array $data)
+    {
+        $this->data = $data;
+
+        return $this;
     }
 }

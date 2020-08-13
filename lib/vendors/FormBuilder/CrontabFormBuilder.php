@@ -12,7 +12,6 @@ use OCFram\StringField;
  */
 class CrontabFormBuilder extends FormBuilder
 {
-
     /**
      * @return mixed|void
      */
@@ -22,6 +21,13 @@ class CrontabFormBuilder extends FormBuilder
             0 => 'Non',
             1 => 'Oui'
         ];
+
+        $scenarios = $this->getData('scenarios');
+
+        $scenariosOptions = [];
+        foreach ($scenarios as $scenario) {
+            $scenariosOptions[$scenario->id()] = $scenario->getNom();
+        }
 
         $this->form
             ->add(
@@ -48,10 +54,12 @@ class CrontabFormBuilder extends FormBuilder
                     'options' => $yesNo
                 ])
             )->add(
-                new StringField([
+                new SelectField([
                     'id' => 'executor',
                     'label' => 'executor',
                     'name' => 'executor',
+                    'selected' => $this->form()->entity()->getExecutor(),
+                    'options' => $scenariosOptions,
                     'required' => 'true'
                 ])
             );

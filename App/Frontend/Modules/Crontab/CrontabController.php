@@ -10,6 +10,8 @@ use Materialize\Icon\Icon;
 use Materialize\Icon\YesNoIconifier;
 use Materialize\Link;
 use Materialize\WidgetFactory;
+use Model\Scenario\ScenarioManagerPDOFactory;
+use Model\Scenario\ScenariosManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
 use OCFram\FormHandler;
@@ -104,6 +106,12 @@ class CrontabController extends BackController
         $cards = [];
 
         $ctfb = new CrontabFormBuilder($item);
+
+        $scenariosManagerFactory = new ScenarioManagerPDOFactory();
+
+        /** @var ScenariosManagerPDO $scenariosManager */
+        $scenariosManager = $scenariosManagerFactory->getScenariosManager();
+        $ctfb->addData('scenarios', $scenariosManager->getAll());
         $ctfb->build();
         $form = $ctfb->form();
 
