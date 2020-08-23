@@ -5,7 +5,7 @@ namespace App\Frontend\Modules\Sensors;
 use Entity\Sensor;
 use FormBuilder\SensorsFormBuilder;
 use Materialize\FloatingActionButton;
-use Materialize\Link;
+use Materialize\Link\Link;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;

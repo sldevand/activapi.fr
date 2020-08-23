@@ -5,7 +5,7 @@ namespace App\Frontend\Modules\ThermostatModes;
 use Entity\ThermostatMode;
 use FormBuilder\ThermostatModesFormBuilder;
 use Materialize\FloatingActionButton;
-use Materialize\Link;
+use Materialize\Link\Link;
 use Materialize\Spinner\Spinner;
 use Materialize\WidgetFactory;
 use OCFram\BackController;

@@ -6,9 +6,8 @@ use App\Backend\Modules\Actions\ActionsController as ActionsBackController;
 use App\Frontend\Modules\FormView;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
-use Materialize\Link;
+use Materialize\Link\Link;
 use Materialize\WidgetFactory;
-use OCFram\BackController;
 use OCFram\HTTPRequest;
 
 /**

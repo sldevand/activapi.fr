@@ -7,7 +7,7 @@ use Entity\ThermostatPlanif;
 use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
 use Materialize\FloatingActionButton;
-use Materialize\Link;
+use Materialize\Link\Link;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\DateFactory;

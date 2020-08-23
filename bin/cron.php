@@ -13,6 +13,11 @@ $crontab = [
     'purge_old_node_log_rows' => [
         'expression' => '10 0 * * *',
         'executor' => '\App\Backend\Modules\Node\Log\Cron\PurgeOldExecutor'
+    ],
+    'scheduled_scenarios_executor' => [
+        'expression' => '* * * * *',
+        'executor' => '\App\Backend\Modules\Scenarios\Cron\ScenariosExecutor',
+        'args' => ['app' => $app]
     ]
 ];
 
