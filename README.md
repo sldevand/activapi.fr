@@ -20,7 +20,13 @@ npm install
 php bin/sqlSetup.php
 npm run babelAll
 npm run sass-compile
+cp .env.sample .env 
 ```
+
+## Fill the .env file with your own configuration
+
+### Enable Gmail OAUTH 2 for PhpMailer
+[Using Gmail with XOAUTH2](https://github.com/PHPMailer/PHPMailer/wiki/Using-Gmail-with-XOAUTH2)
 
 
 ## License 
