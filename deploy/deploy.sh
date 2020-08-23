@@ -60,6 +60,9 @@ rm -rfv $LOCAL_REPO_PATH/package.json
 rm -rfv $LOCAL_REPO_PATH/package-lock.json
 rm -rfv $LOCAL_REPO_PATH/.babelrc
 rm -rfv $LOCAL_REPO_PATH/.gitignore
+rm -rfv $LOCAL_REPO_PATH/Web/get_oauth_token.php
+rm -rfv $LOCAL_REPO_PATH/.env.sample
+rm -rfv $LOCAL_REPO_PATH/.env
 
 ssh-add ~/.ssh/domusbox_rsa
 
