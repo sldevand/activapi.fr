@@ -2,6 +2,7 @@
 
 namespace FormBuilder;
 
+use FormBuilder\Options\YesNoOptions;
 use OCFram\FormBuilder;
 use OCFram\SelectField;
 use OCFram\StringField;
@@ -17,18 +18,6 @@ class CrontabFormBuilder extends FormBuilder
      */
     public function build()
     {
-        $yesNo = [
-            0 => 'Non',
-            1 => 'Oui'
-        ];
-
-        $scenarios = $this->getData('scenarios');
-
-        $scenariosOptions = [];
-        foreach ($scenarios as $scenario) {
-            $scenariosOptions[$scenario->id()] = $scenario->getNom();
-        }
-
         $this->form
             ->add(
                 new StringField([
@@ -42,7 +31,7 @@ class CrontabFormBuilder extends FormBuilder
                     'id' => 'expression',
                     'label' => 'expression (exemple : * 1 * * *)',
                     'name' => 'expression',
-                    'title' => 'Saisie au format de crontab * * * * *',
+                    'title' => 'Saisie au format expression crontab * * * * *',
                     'required' => 'true'
                 ])
             )->add(
@@ -51,7 +40,7 @@ class CrontabFormBuilder extends FormBuilder
                     'label' => 'active',
                     'name' => 'active',
                     'selected' => $this->form()->entity()->isActive(),
-                    'options' => $yesNo
+                    'options' => YesNoOptions::toArray()
                 ])
             )->add(
                 new SelectField([
@@ -59,7 +48,7 @@ class CrontabFormBuilder extends FormBuilder
                     'label' => 'executor',
                     'name' => 'executor',
                     'selected' => $this->form()->entity()->getExecutor(),
-                    'options' => $scenariosOptions,
+                    'options' =>  $this->getData('scenarios'),
                     'required' => 'true'
                 ])
             );

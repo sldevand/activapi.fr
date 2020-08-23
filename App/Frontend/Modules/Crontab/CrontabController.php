@@ -6,9 +6,10 @@ use Cron\CronExpression;
 use Entity\Crontab\Crontab;
 use FormBuilder\CrontabFormBuilder;
 use Materialize\FloatingActionButton;
-use Materialize\Icon\Icon;
 use Materialize\Icon\YesNoIconifier;
-use Materialize\Link;
+use Materialize\Link\BackLinkFactory;
+use Materialize\Link\DeleteLinkFactory;
+use Materialize\Link\EditLinkFactory;
 use Materialize\WidgetFactory;
 use Model\Scenario\ScenarioManagerPDOFactory;
 use Model\Scenario\ScenariosManagerPDO;
@@ -103,34 +104,21 @@ class CrontabController extends BackController
             }
         }
 
-        $cards = [];
-
-        $ctfb = new CrontabFormBuilder($item);
-
-        $scenariosManagerFactory = new ScenarioManagerPDOFactory();
-
-        /** @var ScenariosManagerPDO $scenariosManager */
-        $scenariosManager = $scenariosManagerFactory->getScenariosManager();
-        $ctfb->addData('scenarios', $scenariosManager->getAll());
+        $ctfb = $this->createCrontabFormBuilder($item);
         $ctfb->build();
         $form = $ctfb->form();
 
         $fh = new FormHandler($form, $this->manager, $request);
 
         if ($fh->process()) {
-            $this->app->httpResponse()->redirect($this->baseAddress . 'crontab');
+            $this->app->httpResponse()->redirect($this->getCrontabIndexUrl());
         }
 
-        $link = new Link(
-            $domId,
-            $this->baseAddress . "crontab",
-            "arrow_back",
-            "white-text",
-            "white-text"
-        );
+        $link = BackLinkFactory::create($domId, $this->getCrontabIndexUrl());
 
         $cardTitle = $link->getHtml();
 
+        $cards = [];
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->editFormView($form));
         $cards[] = $card;
@@ -148,18 +136,11 @@ class CrontabController extends BackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $this->manager->delete($id);
-                $this->app->httpResponse()->redirect($this->baseAddress . 'crontab');
+                $this->app->httpResponse()->redirect($this->getCrontabIndexUrl());
             }
         }
 
-        $link = new Link(
-            $domId,
-            $this->baseAddress . 'crontab',
-            "arrow_back",
-            "white-text",
-            "white-text"
-        );
-
+        $link = BackLinkFactory::create($domId, $this->getCrontabIndexUrl());
         $cardTitle = $link->getHtml();
 
         $card = WidgetFactory::makeCard($domId, $cardTitle);
@@ -182,19 +163,8 @@ class CrontabController extends BackController
         $crontabListData = [];
 
         foreach ($crontabList as $crontab) {
-            //DATA PREPARE FOR TABLE
-            $linkEdit = new Link(
-                '',
-                $this->baseAddress . "crontab-edit-" . $crontab["id"],
-                'edit',
-                'primaryTextColor'
-            );
-            $linkDelete = new Link(
-                '',
-                $this->baseAddress . "crontab-delete-" . $crontab["id"],
-                'delete',
-                'secondaryTextColor'
-            );
+            $linkEdit = EditLinkFactory::create($this->baseAddress . "crontab-edit-" . $crontab["id"]);
+            $linkDelete = DeleteLinkFactory::create($this->baseAddress . "crontab-delete-" . $crontab["id"]);
             $crontab["active"] = $this->iconifier->iconifyResult($crontab["active"]);
             $crontab["editer"] = $linkEdit->getHtmlForTable();
             $crontab["supprimer"] = $linkDelete->getHtmlForTable();
@@ -221,5 +191,36 @@ class CrontabController extends BackController
             $this->app->user()->setFlash($exception->getMessage());
             $this->app->httpResponse()->redirect($request->requestURI());
         }
+    }
+
+    /**
+     * @param Crontab $item
+     * @return CrontabFormBuilder
+     * @throws \Exception
+     */
+    protected function createCrontabFormBuilder(Crontab $item)
+    {
+        $scenariosManagerFactory = new ScenarioManagerPDOFactory();
+
+        /** @var ScenariosManagerPDO $scenariosManager */
+        $scenariosManager = $scenariosManagerFactory->getScenariosManager();
+        $scenarios = $scenariosManager->getAll();
+        $scenariosOptions = [];
+        foreach ($scenarios as $scenario) {
+            $scenariosOptions['scenario-' . $scenario->id()] = $scenario->getNom();
+        }
+
+        $ctfb = new CrontabFormBuilder($item);
+        $ctfb->addData('scenarios', $scenariosOptions);
+
+        return $ctfb;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getCrontabIndexUrl()
+    {
+        return $this->baseAddress . 'crontab';
     }
 }
