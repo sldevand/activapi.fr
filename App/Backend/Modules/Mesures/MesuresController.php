@@ -35,7 +35,8 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
+     * @param \OCFram\HTTPRequest $request
+     * @throws \Exception
      */
     public function executeSensor(HTTPRequest $request)
     {
@@ -76,19 +77,17 @@ class MesuresController extends BackController
             $today = true;
         }
 
+        $listeMesures = [];
         $cacheFile = $sensorID . '-' . $dateMinOnly . '-' . $dateMaxOnly;
-        $listeMesures = $this->cache()->getData($cacheFile);
-
-        $nom = '';
-        $id = '';
-
-        if (!$listeMesures) {
+        if (! $this->cache()->getData($cacheFile)) {
             $listeMesures = $manager->getSensorList($sensorID, $dateMinFull, $dateMaxFull);
             if (!$today) {
                 $this->cache()->saveData($cacheFile, $listeMesures);
             }
         }
 
+        $nom = '';
+        $id = '';
         if ($listeMesures) {
             $nom = $listeMesures[0]->nom();
             $id = $listeMesures[0]->id();

@@ -1,13 +1,13 @@
 <div class="<?= $this->getWrapper() ?>">
     <?php if ($this->type() === 'button') : ?>
         <div id="<?= $this->id() ?>"
-             class="waves-effect waves-light flat-btn <?= $this->color() ?>"
+             class="waves-effect waves-light flat-btn <?= $this->color() ?> <?= $this->size() ?>"
              type="<?= $this->type() ?>">
             <?= $this->getIconHtml() . $this->title() ?>
         </div>
     <?php else : ?>
         <button id="<?= $this->id() ?>"
-                class="waves-effect waves-light btn-flat <?= $this->color() ?>"
+                class="waves-effect waves-light btn-flat <?= $this->color() ?> <?= $this->size() ?>"
                 type="<?= $this->type() ?>">
             <?= $this->getIconHtml() . $this->title() ?>
         </button>

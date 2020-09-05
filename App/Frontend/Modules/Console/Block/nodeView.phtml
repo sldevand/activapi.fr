@@ -1,8 +1,15 @@
 <?php $switch = $args[0]; ?>
+<?php $resetButton = $args[1]; ?>
 <div class="row">
     <div class="col l3 m6 s12">
         <label for="node-command">Node</label>
         <?= $switch->getHtml(); ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col s12">
+        <label for="serialport-reset">Reset Port Serie</label>
+        <?= $resetButton->getHtml(); ?>
     </div>
 </div>
 <script src="<?= DIST . '/nodeManage.js' ?>"></script>
