@@ -10,6 +10,7 @@
     <?php include("Block/favicon.phtml"); ?>
     <link rel="manifest" href="<?= ROOT . '/manifest.json' ?>">
     <script src="<?= DIST . '/index.js' ?>"></script>
+    <script src="<?= DIST . '/socketio.js' ?>"></script>
 </head>
 
 <body>
@@ -39,8 +40,6 @@
         ?>
         <?= $content ?>
     </div>
-
-    <script src="<?= DIST . '/socketio.js' ?>"></script>
     <script>
         $("#menubutton").sideNav({
             closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor
