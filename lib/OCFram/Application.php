@@ -39,6 +39,11 @@ abstract class Application
     protected $router;
 
     /**
+     * @var string
+     */
+    protected $rootUri;
+
+    /**
      * Application constructor.
      */
     public function __construct()
@@ -69,7 +74,7 @@ abstract class Application
                 $vars = explode(',', $route->getAttribute('vars'));
             }
 
-            $fullUrl = ROOT . $route->getAttribute('url');
+            $fullUrl = $this->rootUri . $route->getAttribute('url');
 
             $this->router->addRoute(new Route($fullUrl, $route->getAttribute('module'), $route->getAttribute('action'), $vars));
         }

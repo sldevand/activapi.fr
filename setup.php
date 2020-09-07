@@ -12,6 +12,7 @@ if ($_ENV['DEBUG']) {
 
 ini_set('memory_limit', '2048M');
 define('ROOT', $_ENV['ROOT_URI']);
+define('ROOT_API', $_ENV['ROOT_API_URI']);
 
 const SITE = ROOT . '/';
 const CSS = SITE . 'css';
