@@ -29,7 +29,7 @@ class ThermostatModesFormBuilder extends FormBuilder
                     'label' => 'consigne',
                     'name' => 'consigne',
                     'min' => 9,
-                    'max' => 25,
+                    'max' => 30,
                     'step' => 0.5,
                     'required' => 'true'
                 ])
