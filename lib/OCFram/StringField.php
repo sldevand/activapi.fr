@@ -20,6 +20,9 @@ class StringField extends Field
     /** @var string */
     protected $title;
 
+    /** @var string */
+    protected $type = 'text';
+
     /**
      * @return mixed|string
      */
@@ -35,7 +38,7 @@ class StringField extends Field
             $widget .= '<label for="' . $this->id . '">' . $this->label . '</label>';
         }
 
-        $widget .= '<input type="text" name="' . $this->name . '" id="' . $this->id . '"';
+        $widget .= '<input type="' . $this->type . '" name="' . $this->name . '" id="' . $this->id . '"';
 
         if (isset($this->pattern)) {
             $widget .= ' pattern="' . $this->pattern . '"';

@@ -5,6 +5,10 @@ namespace Model\Crontab;
 use Entity\Crontab\Crontab;
 use Model\ManagerPDO;
 
+/**
+ * Class CrontabManagerPDO
+ * @package Model\Crontab
+ */
 class CrontabManagerPDO extends ManagerPDO
 {
     /**
