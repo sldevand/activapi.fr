@@ -19,7 +19,7 @@
            module="Graphs" action="index" vars="id_sensor,dateMin,dateMax"/>
 
     <route url="\/thermostat" module="Thermostat" action="index"/>
-    <route url="\/thermostat-log-?([0-9]+)?" module="Thermostat" action="log" vars="nbLogs"/>
+    <route url="\/thermostat-log-?([0-9]+)?-?([0-9]+)?" module="Thermostat" action="log" vars="page,logsCount"/>
 
     <route url="\/thermostat-planif" module="ThermostatPlanif" action="index"/>
     <route url="\/thermostat-planif-add" module="ThermostatPlanif" action="add"/>

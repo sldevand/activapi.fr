@@ -12,6 +12,30 @@ use Materialize\Spinner\Spinner;
 class WidgetFactory
 {
     /**
+     * @param array $pages
+     * @param int $logsCount
+     * @param int $page
+     * @param string $baseHref
+     * @param int $pagesCount
+     * @return Pagination\Pagination
+     */
+    public static function makePagination(array $pages, int $logsCount, int $page, string $baseHref, int $pagesCount)
+    {
+        $classPrev = $page <= 1 ? 'disabled' : 'waves-effect';
+        $classNext = $page >= $pagesCount ? 'disabled' : 'waves-effect';
+
+        $paginationData = [
+            'pages'     => $pages,
+            'hrefPrev'  => $baseHref . '-' . 1 . '-' . $logsCount,
+            'classPrev' => $classPrev,
+            'hrefNext'  => $baseHref . '-' . $pagesCount . '-' . $logsCount,
+            'classNext' => $classNext,
+        ];
+
+        return new Pagination\Pagination($paginationData);
+    }
+
+    /**
      * @param $domId
      * @param $cardTitle
      * @return Card

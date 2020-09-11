@@ -4,6 +4,7 @@ namespace App\Frontend\Modules\Thermostat;
 
 use Materialize\Table;
 use Materialize\WidgetFactory;
+use Model\ThermostatManagerPDO;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 
@@ -13,6 +14,9 @@ use OCFram\HTTPRequest;
  */
 class ThermostatController extends BackController
 {
+    const PAGE_OFFSET = 3;
+    const LOGS_COUNT  = 100;
+
     /**
      * @param HTTPRequest $request
      */
@@ -173,24 +177,25 @@ class ThermostatController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeLog(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Thermostat Log');
         $domId = 'Log';
 
-        $nDerniersLogs = 10;
-        if ($request->getExists("nbLogs")) {
-            $nDerniersLogs = $request->getData("nbLogs");
-            if ($nDerniersLogs > 100) {
-                $nDerniersLogs = 100;
-            }
+        $page = $request->getData('page') ?? 1;
+        $logsCount = $request->getData('logsCount') ?? self::LOGS_COUNT;
+
+        if ($logsCount > self::LOGS_COUNT) {
+            $logsCount = self::LOGS_COUNT;
         }
 
-        $cards = [];
-        $manager = $this->managers->getManagerOf('Thermostat');
 
-        $logList = $manager->getLogList(0, $nDerniersLogs);
+        $cards = [];
+        /** @var ThermostatManagerPDO $manager */
+        $manager = $this->managers->getManagerOf('Thermostat');
+        $logList = $manager->getLogList($logsCount * ($page - 1), $logsCount);
         $logListTab = json_decode(json_encode($logList), true);
         $tableDatas = [];
 
@@ -200,13 +205,20 @@ class ThermostatController extends BackController
         }
 
         $nbLogs = $manager->countLogs();
+        $thermotatLogUri = $this->getThermostatLogUri($request);
+        $pagesCount = ceil($nbLogs / $logsCount);
+
+        $pages = $this->getPaginationPages($page, $thermotatLogUri, $logsCount, $pagesCount);
+        $pagination = WidgetFactory::makePagination($pages, $logsCount, $page, $thermotatLogUri, $pagesCount);
+
         $table = WidgetFactory::makeTable($domId, $tableDatas);
         $card = WidgetFactory::makeCard($domId, $domId);
-        $card->addContent($this->logsView($nbLogs, $nDerniersLogs, $table));
+        $card->addContent($pagination->getHtml());
+        $card->addContent($this->logsView($nbLogs, $logsCount, $table));
         $cards[] = $card;
 
         $this->page->addVar('cards', $cards);
-        $this->page->addVar('nDerniersLogs', $nDerniersLogs);
+        $this->page->addVar('nDerniersLogs', $logsCount);
     }
 
     /**
@@ -223,5 +235,53 @@ class ThermostatController extends BackController
             $nbDerniersLogs,
             $table
         );
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @return string
+     */
+    protected function getThermostatLogUri(HTTPRequest $request)
+    {
+        $thermotatLogUri = explode('-', $request->requestURI());
+        while (count($thermotatLogUri) > 2) {
+            array_pop($thermotatLogUri);
+        }
+
+        return implode('-', $thermotatLogUri);
+    }
+
+    /**
+     * @param int $page
+     * @param string $thermotatLogUri
+     * @param int $logsCount
+     * @param int $totalPages
+     * @return array
+     */
+    protected function getPaginationPages(int $page, string $thermotatLogUri, int $logsCount, int $totalPages)
+    {
+        $pages = [];
+
+        $start = $page - self::PAGE_OFFSET;
+        $end = $page + self::PAGE_OFFSET;
+
+        if ($start <= 1) {
+            $start = 1;
+        }
+
+        if ($end >= $totalPages) {
+            $end = $totalPages;
+        }
+
+        for ($i = $start; $i <= $end; $i++) {
+            $class = $i == $page ? 'active' : 'waves-effect';
+            $pages [] = [
+                'name' => $i,
+                'href' => $thermotatLogUri . '-' . $i . '-' . $logsCount,
+                'class' => $class
+            ];
+        }
+
+        return $pages;
     }
 }

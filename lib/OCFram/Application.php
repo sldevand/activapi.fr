@@ -39,11 +39,6 @@ abstract class Application
     protected $router;
 
     /**
-     * @var string
-     */
-    protected $rootUri;
-
-    /**
      * Application constructor.
      */
     public function __construct()
@@ -136,5 +131,13 @@ abstract class Application
     public function user()
     {
         return $this->user;
+    }
+
+    /**
+     * @return Router
+     */
+    public function getRouter(): Router
+    {
+        return $this->router;
     }
 }
