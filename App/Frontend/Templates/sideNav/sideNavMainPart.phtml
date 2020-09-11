@@ -6,7 +6,7 @@ use Materialize\Sidenav\Sidenav;
 use Materialize\Sidenav\Subheader;
 
 $iconNames = [
-    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies'
+    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies','build'
 ];
 
 $icons = [];
@@ -140,7 +140,13 @@ $sidenav = new Sidenav(
                             'title' => 'Crontab',
                             'link' => '/crontab',
                             'icon' => $icons['timetable']
-                        ])
+                        ]),
+                        new Link([
+                            'id' => 'configuration',
+                            'title' => 'Configuration',
+                            'link' => '/configuration',
+                            'icon' => $icons['build']
+                        ]),
                     ]
                 ]
             )
