@@ -61,8 +61,6 @@ abstract class Application
         $xml->load(__DIR__ . '/../../App/' . $this->name . '/Config/routes.xml');
 
         $routes = $xml->getElementsByTagName('route');
-        $root = $xml->getElementsByTagName('root')->item(0);
-        $rootUrl = $root->getAttribute('url');
 
         foreach ($routes as $route) {
             $vars = [];
@@ -71,7 +69,7 @@ abstract class Application
                 $vars = explode(',', $route->getAttribute('vars'));
             }
 
-            $fullUrl = $rootUrl . $route->getAttribute('url');
+            $fullUrl = $this->rootUri . $route->getAttribute('url');
 
             $this->router->addRoute(new Route($fullUrl, $route->getAttribute('module'), $route->getAttribute('action'), $vars));
         }
@@ -133,5 +131,13 @@ abstract class Application
     public function user()
     {
         return $this->user;
+    }
+
+    /**
+     * @return Router
+     */
+    public function getRouter(): Router
+    {
+        return $this->router;
     }
 }

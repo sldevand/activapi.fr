@@ -17,6 +17,7 @@ class BackendApplication extends Application
     {
         parent::__construct();
         $this->name = 'Backend';
+        $this->rootUri = ROOT_API;
     }
 
     /**
