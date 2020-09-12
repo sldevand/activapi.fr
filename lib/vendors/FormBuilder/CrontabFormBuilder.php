@@ -24,7 +24,7 @@ class CrontabFormBuilder extends FormBuilder
                     'id' => 'name',
                     'label' => 'name',
                     'name' => 'name',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
@@ -32,7 +32,7 @@ class CrontabFormBuilder extends FormBuilder
                     'label' => 'expression (exemple : * 1 * * *)',
                     'name' => 'expression',
                     'title' => 'Saisie au format expression crontab * * * * *',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new SelectField([
@@ -49,7 +49,7 @@ class CrontabFormBuilder extends FormBuilder
                     'name' => 'executor',
                     'selected' => $this->form()->entity()->getExecutor(),
                     'options' =>  $this->getData('scenarios'),
-                    'required' => 'true'
+                    'required' => true
                 ])
             );
     }

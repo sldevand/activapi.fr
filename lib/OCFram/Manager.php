@@ -36,4 +36,6 @@ abstract class Manager
     {
         return $this->dao;
     }
+
+    abstract public function save(Entity $entity);
 }

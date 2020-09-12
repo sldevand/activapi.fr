@@ -43,7 +43,7 @@ class SelectField extends Field
         $widget .= '<select ' . $disabled . ' name="' . $this->name . '" id="' . $this->id . '">';
 
         foreach ($this->options as $key => $option) {
-            $widget .= '<option value="' . $key . '"';
+            $widget .= '<option value="' . $key . '" ';
 
             if ($key == $this->selected) {
                 $widget .= 'selected';

@@ -22,37 +22,37 @@ class ActionneursFormBuilder extends FormBuilder
                 new StringField([
                     'label' => 'nom',
                     'name' => 'nom',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'module',
                     'name' => 'module',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'protocole',
                     'name' => 'protocole',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'adresse',
                     'name' => 'adresse',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'type',
                     'name' => 'type',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'radioid',
                     'name' => 'radioid',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new NumberField([
@@ -60,13 +60,13 @@ class ActionneursFormBuilder extends FormBuilder
                     'name' => 'etat',
                     'min' => 0,
                     'max' => 255,
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'categorie',
                     'name' => 'categorie',
-                    'required' => 'true'
+                    'required' => true
                 ])
             );
     }

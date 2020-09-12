@@ -60,8 +60,8 @@ class HTTPRequest extends ApplicationComponent
     }
 
     /**
-     * @param string $key
-     * @return null
+     * @param $key
+     * @return mixed
      */
     public function postData($key)
     {

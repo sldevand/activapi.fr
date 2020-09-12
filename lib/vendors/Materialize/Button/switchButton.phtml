@@ -1,9 +1,27 @@
+<?php
+$checkedStr = $this->checked() ? 'checked' : '';
+?>
+
 <div class="switch">
     <span id="title-<?= $this->id() ?>" class="left textOnBodyColor"><?= $this->title() ?></span>
     <label class="right">
         Off
-        <input  id=<?= $this->id() ?> type="checkbox">
+        <input id="trick-<?= $this->id() ?>" type="hidden" name="<?= $this->name() ?>" value="<?= $this->value() ?>">
+        <input id="<?= $this->id() ?>" name="<?= $this->name() ?>" type="checkbox" value="<?= $this->value() ?>" <?= $checkedStr ?> />
         <span class="lever"></span>
         On
     </label>
 </div>
+<script>
+    var trickSwitch = $("#trick-<?= $this->id() ?>");
+    $("#<?= $this->id() ?>").on('change', function(e) {
+        if(e.target.checked) {
+            e.target.setAttribute('value', 'yes');
+            trickSwitch.removeAttr('name');
+        } else {
+            e.target.setAttribute('value', 'no');
+            trickSwitch.attr('name', '<?= $this->name() ?>');
+            trickSwitch.attr('value', 'no');
+        }
+    } )
+</script>

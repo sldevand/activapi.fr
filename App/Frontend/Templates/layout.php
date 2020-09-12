@@ -33,10 +33,9 @@
     </ul>
 
     <div id="maincontent" class="container-light">
-        <?php if ($user->hasFlash()) {
-            echo '<p style="text-align: center;">', $user->getFlash(), '</p>';
-        }
-        ?>
+        <?php if ($user->hasFlash()) : ?>
+            <script> Materialize.toast("<?= $user->getFlash() ?>", 3000); </script>
+        <?php endif; ?>
         <?= $content ?>
     </div>
 
