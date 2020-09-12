@@ -31,7 +31,7 @@ class EmailConfigurationFormBuilder extends FormBuilder
                     [
                         'label' => 'Email',
                         'name' => 'email',
-                        'required' => 'true',
+                        'required' => true,
                         'type' => 'email',
                         'value' => $this->getData('email')
                     ]

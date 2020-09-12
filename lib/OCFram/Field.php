@@ -53,7 +53,7 @@ abstract class Field
     /**
      * @var string $required
      */
-    protected $required = "false";
+    protected $required = false;
 
     /**
      * @var string $wrapper
@@ -238,14 +238,12 @@ abstract class Field
     }
 
     /**
-     * @param string $required
+     * @param bool $required
      * @return $this
      */
-    public function setRequired($required)
+    public function setRequired(bool $required)
     {
-        if (is_string($required)) {
-            $this->required = $required;
-        }
+        $this->required = $required;
 
         return $this;
     }

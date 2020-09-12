@@ -2,7 +2,7 @@
     $form = $args[0];
     $button = $args[1];
 ?>
-<form action="" method="post" class="row">
+<form action="<?= $form->getAction(); ?>" method="post" class="row">
     <?= $form->createView(); ?>
     <?= $button->getHtml(); ?>
 </form>

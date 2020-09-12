@@ -44,7 +44,7 @@ class ConfigurationController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $this->page->addVar('title', 'Gestion des actions');
+        $this->page->addVar('title', 'Configuration Système');
 
         $cards = [];
         $cards[] = $this->makeEmailCard($request);
@@ -64,7 +64,7 @@ class ConfigurationController extends BackController
         if (!$configuration ) {
             $configuration = new Configuration(
                 [
-                    'configKey' => 'email',
+                    'configKey' => 'email/email',
                     'configValue' => ''
                 ]
             );
@@ -99,6 +99,6 @@ class ConfigurationController extends BackController
      */
     protected function getConfigurationIndexUrl()
     {
-        return $this->baseAddress . '/configuration';
+        return $this->baseAddress . 'configuration';
     }
 }

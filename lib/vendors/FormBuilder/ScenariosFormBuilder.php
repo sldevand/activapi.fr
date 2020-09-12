@@ -37,10 +37,11 @@ class ScenariosFormBuilder extends FormBuilder
                 'col s4'
             )->add(
                 new StringField([
+                    'id' => 'nom',
                     'label' => 'Nom',
                     'name' => 'nom',
                     'value' => $this->form()->entity()->nom(),
-                    'required' => 'true'
+                    'required' => true
                 ]),
                 'col s8'
             );
