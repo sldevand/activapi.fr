@@ -127,6 +127,25 @@ class ManagerPDO extends Manager
     }
 
     /**
+     * @param string $field
+     * @param string $value
+     * @return Entity|null
+     * @throws \Exception
+     */
+    public function getUniqueBy(string $field, string $value)
+    {
+        $sql = "SELECT * FROM $this->tableName WHERE $field = :$field";
+        $q = $this->prepare($sql);
+        $q->bindValue(":$field", $value);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
+        $entity = $q->fetch();
+        $q->closeCursor();
+
+        return $entity;
+    }
+
+    /**
      * @param int | null $id
      * @return array
      * @throws Exception

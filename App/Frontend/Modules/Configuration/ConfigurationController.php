@@ -4,11 +4,11 @@ namespace App\Frontend\Modules\Configuration;
 
 use App\Frontend\Modules\FormView;
 use Entity\Configuration\Configuration;
-use FormBuilder\Configuration\ConfigurationFormBuilder;
+use FormBuilder\Configuration\EmailConfigurationFormBuilder;
+use FormHandler\Configuration\ConfigurationFormHandler;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
-use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 
 /**
@@ -52,20 +52,43 @@ class ConfigurationController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
+     * @param \OCFram\HTTPRequest $request
      * @return \Materialize\Card\Card
+     * @throws \Exception
      */
     protected function makeEmailCard(HTTPRequest $request)
     {
         $card = WidgetFactory::makeCard('configuration-email', 'Email');
+        $configuration = $this->manager->getUniqueBy('configKey', 'email');
 
-        $cfb = new ConfigurationFormBuilder(new Configuration());
+        if (!$configuration ) {
+            $configuration = new Configuration(
+                [
+                    'configKey' => 'email',
+                    'configValue' => ''
+                ]
+            );
+        }
+
+        $cfb = new EmailConfigurationFormBuilder($configuration);
+        $cfb->setData(
+            [
+                'id'    => $configuration->id(),
+                'email' => $configuration->getConfigValue()
+            ]
+        );
         $cfb->build();
         $form = $cfb->form();
-        $fh = new FormHandler($form, $this->manager, $request);
-        if ($fh->process()) {
-            $this->app->httpResponse()->redirect($this->getConfigurationIndexUrl());
+
+        if ($request->postData('email')) {
+            $configuration->setConfigValue($request->postData('email'));
+            $fh = new ConfigurationFormHandler($form, $this->manager, $request, $configuration);
+            if ($fh->process()) {
+                $this->app->httpResponse()->redirect($this->getConfigurationIndexUrl());
+            }
         }
+
+
         $card->addContent($this->editFormView($form));
 
         return $card;
@@ -76,6 +99,6 @@ class ConfigurationController extends BackController
      */
     protected function getConfigurationIndexUrl()
     {
-        return $this->baseAddress . 'configuration';
+        return $this->baseAddress . '/configuration';
     }
 }

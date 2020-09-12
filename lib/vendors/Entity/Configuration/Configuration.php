@@ -11,10 +11,10 @@ use OCFram\Entity;
 class Configuration extends Entity
 {
     /** @var string */
-    protected $key;
+    protected $configKey;
 
     /** @var string */
-    protected $value;
+    protected $configValue;
 
     /**
      * @return array
@@ -22,26 +22,26 @@ class Configuration extends Entity
     public function jsonSerialize()
     {
         return [
-            'key' => $this->getKey(),
-            'value' => $this->getValue()
+            'configKey'   => $this->getConfigKey(),
+            'configValue' => $this->getConfigValue()
         ];
     }
 
     /**
      * @return string
      */
-    public function getKey(): ?string
+    public function getConfigKey(): ?string
     {
-        return $this->key;
+        return $this->configKey;
     }
 
     /**
-     * @param string $key
+     * @param string $configKey
      * @return Configuration
      */
-    public function setKey(string $key): Configuration
+    public function setConfigKey(string $configKey): Configuration
     {
-        $this->key = $key;
+        $this->configKey = $configKey;
 
         return $this;
     }
@@ -49,18 +49,18 @@ class Configuration extends Entity
     /**
      * @return string
      */
-    public function getValue(): ?string
+    public function getConfigValue(): ?string
     {
-        return $this->value;
+        return $this->configValue;
     }
 
     /**
-     * @param string $value
+     * @param string $configValue
      * @return Configuration
      */
-    public function setValue(string $value): Configuration
+    public function setConfigValue(string $configValue): Configuration
     {
-        $this->value = $value;
+        $this->configValue = $configValue;
 
         return $this;
     }

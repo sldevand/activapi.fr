@@ -7,4 +7,5 @@
     <module name="Scenario" version="1.0.1" />
     <module name="Log" version="1.0.1" />
     <module name="Crontab" version="1.0.1" />
+    <module name="Configuration" version="1.0.1" />
 </modules>
