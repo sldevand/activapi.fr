@@ -1,13 +1,13 @@
 <?php
 
-namespace FormBuilder\Configuration;
+namespace  App\Frontend\Modules\Configuration\Form\FormBuilder;
 
 use OCFram\FormBuilder;
 use OCFram\StringField;
 
 /**
  * Class EmailConfigurationFormBuilder
- * @package FormBuilder\Configuration
+ * @package App\Frontend\Modules\Configuration\Form\FormBuilder
  */
 class EmailConfigurationFormBuilder extends FormBuilder
 {

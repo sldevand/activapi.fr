@@ -1,6 +1,6 @@
 <?php
 
-namespace FormHandler\Configuration;
+namespace  App\Frontend\Modules\Configuration\Form\FormHandler;
 
 use OCFram\Entity;
 use OCFram\Form;
@@ -10,7 +10,7 @@ use OCFram\Manager;
 
 /**
  * Class ConfigurationFormHandler
- * @package FormHandler\Configuration
+ * @package App\Frontend\Modules\Configuration\Form\FormHandler
  */
 class ConfigurationFormHandler extends FormHandler
 {

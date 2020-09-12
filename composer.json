@@ -14,7 +14,6 @@
             "Debug\\": "lib/vendors/Debug",
             "Entity\\": "lib/vendors/Entity",
             "FormBuilder\\": "lib/vendors/FormBuilder",
-            "FormHandler\\": "lib/vendors/FormHandler",
             "Mailer\\": "lib/vendors/Mailer",
             "Materialize\\": "lib/vendors/Materialize",
             "Model\\": "lib/vendors/Model",

@@ -2,10 +2,11 @@
 
 namespace App\Frontend\Modules\Configuration;
 
+use App\Frontend\Modules\Configuration\Form\FormBuilder\EmailConfigurationFormBuilder;
+use App\Frontend\Modules\Configuration\Form\FormHandler\ConfigurationFormHandler;
 use App\Frontend\Modules\FormView;
 use Entity\Configuration\Configuration;
-use FormBuilder\Configuration\EmailConfigurationFormBuilder;
-use FormHandler\Configuration\ConfigurationFormHandler;
+use Entity\Configuration\ConfigurationFactory;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
@@ -59,12 +60,12 @@ class ConfigurationController extends BackController
     protected function makeEmailCard(HTTPRequest $request)
     {
         $card = WidgetFactory::makeCard('configuration-email', 'Email');
-        $configuration = $this->manager->getUniqueBy('configKey', 'email');
+        $configuration = $this->manager->getUniqueBy('configKey', 'mailer/alert/email');
 
-        if (!$configuration ) {
-            $configuration = new Configuration(
+        if (!$configuration) {
+            $configuration = ConfigurationFactory::create(
                 [
-                    'configKey' => 'email/email',
+                    'configKey' => 'mailer/alert/email',
                     'configValue' => ''
                 ]
             );
@@ -73,7 +74,7 @@ class ConfigurationController extends BackController
         $cfb = new EmailConfigurationFormBuilder($configuration);
         $cfb->setData(
             [
-                'id'    => $configuration->id(),
+                'id' => $configuration->id(),
                 'email' => $configuration->getConfigValue()
             ]
         );
