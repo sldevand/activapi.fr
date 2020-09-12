@@ -4,10 +4,9 @@ namespace App\Frontend\Modules\Configuration\Action;
 
 use App\Frontend\Modules\Configuration\Form\FormBuilder\EmailConfigurationFormBuilder;
 use App\Frontend\Modules\Configuration\Form\FormHandler\ConfigurationFormHandler;
-use Entity\Configuration\Configuration;
 use Entity\Configuration\ConfigurationFactory;
-use Helper\Configuration\Config;
 use Helper\Configuration\Data;
+use Mailer\Helper\Config;
 use Model\Configuration\ConfigurationManagerPDO;
 use OCFram\Application;
 use OCFram\ApplicationComponent;
@@ -26,21 +25,27 @@ class MailerConfigurationAction extends ApplicationComponent
     /** @var \Helper\Configuration\Data */
     protected $dataHelper;
 
+    /** @var \Mailer\Helper\Config */
+    protected $configHelper;
+
     /**
      * MailerConfigurationAction constructor.
      * @param \OCFram\Application $app
      * @param \Model\Configuration\ConfigurationManagerPDO $manager
      * @param \Helper\Configuration\Data $dataHelper
+     * @param \Mailer\Helper\Config
      */
     public function __construct(
         Application $app,
         ConfigurationManagerPDO $manager,
-        Data $dataHelper
+        Data $dataHelper,
+        Config $configHelper
     ) {
         parent::__construct($app);
 
         $this->manager = $manager;
         $this->dataHelper = $dataHelper;
+        $this->configHelper = $configHelper;
     }
 
     /**
@@ -50,64 +55,64 @@ class MailerConfigurationAction extends ApplicationComponent
      */
     public function execute(HTTPRequest $request)
     {
-        $mailerConfiguration = $this->getMailerConfiguration();
-        $mailerForm = $this->createMailerForm($mailerConfiguration);
-        $this->doMailerPost($mailerConfiguration, $mailerForm, $request);
+
+        $configurations = $this->configHelper->getConfigurations();
+        $mailerForm = $this->createMailerForm($configurations);
+
+        if (
+            $request->method() === 'POST'
+            && $request->postData(EmailConfigurationFormBuilder::NAME) === EmailConfigurationFormBuilder::NAME
+        ) {
+            $this->doPost($configurations, $mailerForm, $request);
+        }
 
         return $mailerForm;
     }
 
     /**
-     * @param \Entity\Configuration\Configuration $configuration
+     *
+     * @param \Entity\Configuration\Configuration[] $configurations
      * @param \OCFram\Form $form
      * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */
-    protected function doMailerPost(Configuration $configuration, Form $form, HTTPRequest $request)
+    protected function doPost(array $configurations, Form $form, HTTPRequest $request)
     {
-        if ($mailerAlertEmail = $request->postData(Config::PATH_MAILER_ALERT_EMAIL)) {
-            $configuration->setConfigValue($mailerAlertEmail);
+        $processed = 0;
+        foreach ($configurations as $key => $configuration) {
+            if (!$requestConfigValue = $request->postData($key)) {
+                $this->app()->user()->setFlash("Missing $key parameter in post");
+                $this->app->httpResponse()->redirect($this->dataHelper->getConfigurationIndexUrl());
+                return;
+            }
+
+            $configuration->setConfigKey($key);
+            $configuration->setConfigValue($requestConfigValue);
+
             $fh = new ConfigurationFormHandler($form, $this->manager, $request, $configuration);
             if ($fh->process()) {
-                $this->app()->user()->setFlash('Mailer configuration have been saved!');
-                $this->app->httpResponse()->redirect($this->dataHelper->getConfigurationIndexUrl());
+                $processed++;
             }
         }
+
+        $message = $processed === count($configurations)
+            ? 'Mailer configuration have been saved!'
+            : 'Mailer configuration could not been saved!';
+
+        $this->app()->user()->setFlash($message);
+        $this->app->httpResponse()->redirect($this->dataHelper->getConfigurationIndexUrl());
     }
 
     /**
      * @param \Entity\Configuration\Configuration $configuration
      * @return \OCFram\Form
      */
-    protected function createMailerForm(Configuration $configuration)
+    protected function createMailerForm(array $configurations)
     {
-        $cfb = new EmailConfigurationFormBuilder($configuration);
-        $cfb->setData(
-            [
-                'id' => $configuration->id(),
-                Config::PATH_MAILER_ALERT_EMAIL => $configuration->getConfigValue()
-            ]
-        );
+        $cfb = new EmailConfigurationFormBuilder(ConfigurationFactory::create());
+        $cfb->setData($configurations);
         $cfb->build();
 
         return $cfb->form();
-    }
-
-    /**
-     * @return \Entity\Configuration\Configuration|null|\OCFram\Entity
-     * @throws \Exception
-     */
-    protected function getMailerConfiguration()
-    {
-        if (!$configuration = $this->manager->getUniqueBy('configKey', Config::PATH_MAILER_ALERT_EMAIL)) {
-            $configuration = ConfigurationFactory::create(
-                [
-                    'configKey' => Config::PATH_MAILER_ALERT_EMAIL,
-                    'configValue' => ''
-                ]
-            );
-        }
-
-        return $configuration;
     }
 }

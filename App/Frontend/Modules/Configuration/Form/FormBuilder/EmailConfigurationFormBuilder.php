@@ -1,10 +1,11 @@
 <?php
 
-namespace  App\Frontend\Modules\Configuration\Form\FormBuilder;
+namespace App\Frontend\Modules\Configuration\Form\FormBuilder;
 
-use Helper\Configuration\Config;
+use Mailer\Helper\Config;
 use OCFram\FormBuilder;
 use OCFram\StringField;
+use OCFram\SwitchField;
 
 /**
  * Class EmailConfigurationFormBuilder
@@ -12,27 +13,28 @@ use OCFram\StringField;
  */
 class EmailConfigurationFormBuilder extends FormBuilder
 {
+    const NAME = 'action-mailer-submit';
+
     /**
      * @return mixed|void
      */
     public function build()
     {
+        /** @var \Entity\Configuration\Configuration $emailFieldConfig */
+        $emailFieldConfig = $this->getData(Config::PATH_MAILER_ALERT_EMAIL);
+        $emailFieldConfigValue = $emailFieldConfig ? $emailFieldConfig->getConfigValue() : '';
+
+        /** @var \Entity\Configuration\Configuration $enableFieldConfig */
+        $enableFieldConfig = $this->getData(Config::PATH_MAILER_ALERT_ENABLE);
+        $enableFieldConfig = $enableFieldConfig ? $enableFieldConfig->getConfigValue() : '';
+
         $this->form
             ->add(
                 new StringField(
                     [
-                        'name' => 'id',
+                        'name' => self::NAME,
                         'type' => 'text',
-                        'value' => $this->getData('id'),
-                        'hidden' => 'hidden'
-                    ]
-                )
-            )->add(
-                new StringField(
-                    [
-                        'name' => 'action-mailer-submit',
-                        'type' => 'text',
-                        'value' => '',
+                        'value' => self::NAME,
                         'hidden' => 'hidden'
                     ]
                 )
@@ -43,9 +45,20 @@ class EmailConfigurationFormBuilder extends FormBuilder
                         'name' => Config::PATH_MAILER_ALERT_EMAIL,
                         'required' => true,
                         'type' => 'email',
-                        'value' => $this->getData(Config::PATH_MAILER_ALERT_EMAIL)
+                        'value' => $emailFieldConfigValue
                     ]
                 )
-            );
+            )->add(
+                new SwitchField(
+                    [
+                        'id' => 'action-mailer-enable',
+                        'title' => 'Enable',
+                        'name' => Config::PATH_MAILER_ALERT_ENABLE,
+                        'required' => true,
+                        'checked' => $enableFieldConfig == 'yes' ? true : false,
+                        'value' => $enableFieldConfig == 'yes' ? 'yes' : 'no'
+                    ]
+                )
+            );;
     }
 }

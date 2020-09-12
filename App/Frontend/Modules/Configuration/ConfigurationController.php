@@ -4,7 +4,9 @@ namespace App\Frontend\Modules\Configuration;
 
 use App\Frontend\Modules\Configuration\Action\MailerConfigurationAction;
 use App\Frontend\Modules\FormView;
+
 use Helper\Configuration\Data;
+use Mailer\Helper\Config;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
@@ -42,7 +44,12 @@ class ConfigurationController extends BackController
         parent::__construct($app, $module, $action);
         $this->manager = $this->managers->getManagerOf('Configuration\Configuration');
         $this->dataHelper = new Data($app);
-        $this->mailerConfigAction = new MailerConfigurationAction($this->app(), $this->manager, $this->dataHelper);
+        $this->mailerConfigAction = new MailerConfigurationAction(
+            $this->app(),
+            $this->manager,
+            $this->dataHelper,
+            new Config($app, $this->manager)
+        );
     }
 
     /**
@@ -51,12 +58,12 @@ class ConfigurationController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $cards = [];
-
-        $mailerForm = $this->mailerConfigAction->execute($request);
-        $cards[] = WidgetFactory::makeCard('configuration-email', 'Email', $this->editFormView($mailerForm));
-
         $this->page->addVar('title', 'Configuration Système');
+
+        $cards = [];
+        $mailerForm = $this->mailerConfigAction->execute($request);
+        $cards[] = WidgetFactory::makeCard('configuration-mailer', 'Mailer', $this->editFormView($mailerForm));
+
         $this->page->addVar('cards', $cards);
     }
 }
