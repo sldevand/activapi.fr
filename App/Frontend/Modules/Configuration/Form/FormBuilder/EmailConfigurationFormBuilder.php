@@ -2,6 +2,7 @@
 
 namespace  App\Frontend\Modules\Configuration\Form\FormBuilder;
 
+use Helper\Configuration\Config;
 use OCFram\FormBuilder;
 use OCFram\StringField;
 
@@ -29,11 +30,20 @@ class EmailConfigurationFormBuilder extends FormBuilder
             )->add(
                 new StringField(
                     [
+                        'name' => 'action-mailer-submit',
+                        'type' => 'text',
+                        'value' => '',
+                        'hidden' => 'hidden'
+                    ]
+                )
+            )->add(
+                new StringField(
+                    [
                         'label' => 'Email',
-                        'name' => 'email',
+                        'name' => Config::PATH_MAILER_ALERT_EMAIL,
                         'required' => true,
                         'type' => 'email',
-                        'value' => $this->getData('email')
+                        'value' => $this->getData(Config::PATH_MAILER_ALERT_EMAIL)
                     ]
                 )
             );

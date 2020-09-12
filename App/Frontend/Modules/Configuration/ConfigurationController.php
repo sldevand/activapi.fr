@@ -2,11 +2,9 @@
 
 namespace App\Frontend\Modules\Configuration;
 
-use App\Frontend\Modules\Configuration\Form\FormBuilder\EmailConfigurationFormBuilder;
-use App\Frontend\Modules\Configuration\Form\FormHandler\ConfigurationFormHandler;
+use App\Frontend\Modules\Configuration\Action\MailerConfigurationAction;
 use App\Frontend\Modules\FormView;
-use Entity\Configuration\Configuration;
-use Entity\Configuration\ConfigurationFactory;
+use Helper\Configuration\Data;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
@@ -23,6 +21,12 @@ class ConfigurationController extends BackController
     /** @var \Model\Configuration\ConfigurationManagerPDO $manager */
     protected $manager;
 
+    /** @var \Helper\Configuration\Data */
+    protected $dataHelper;
+
+    /** @var \App\Frontend\Modules\Configuration\Action\MailerConfigurationAction */
+    protected $mailerConfigAction;
+
     /**
      * CrontabController constructor.
      * @param Application $app
@@ -37,6 +41,8 @@ class ConfigurationController extends BackController
     ) {
         parent::__construct($app, $module, $action);
         $this->manager = $this->managers->getManagerOf('Configuration\Configuration');
+        $this->dataHelper = new Data($app);
+        $this->mailerConfigAction = new MailerConfigurationAction($this->app(), $this->manager, $this->dataHelper);
     }
 
     /**
@@ -45,61 +51,12 @@ class ConfigurationController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $this->page->addVar('title', 'Configuration Système');
-
         $cards = [];
-        $cards[] = $this->makeEmailCard($request);
+
+        $mailerForm = $this->mailerConfigAction->execute($request);
+        $cards[] = WidgetFactory::makeCard('configuration-email', 'Email', $this->editFormView($mailerForm));
+
+        $this->page->addVar('title', 'Configuration Système');
         $this->page->addVar('cards', $cards);
-    }
-
-    /**
-     * @param \OCFram\HTTPRequest $request
-     * @return \Materialize\Card\Card
-     * @throws \Exception
-     */
-    protected function makeEmailCard(HTTPRequest $request)
-    {
-        $card = WidgetFactory::makeCard('configuration-email', 'Email');
-        $configuration = $this->manager->getUniqueBy('configKey', 'mailer/alert/email');
-
-        if (!$configuration) {
-            $configuration = ConfigurationFactory::create(
-                [
-                    'configKey' => 'mailer/alert/email',
-                    'configValue' => ''
-                ]
-            );
-        }
-
-        $cfb = new EmailConfigurationFormBuilder($configuration);
-        $cfb->setData(
-            [
-                'id' => $configuration->id(),
-                'email' => $configuration->getConfigValue()
-            ]
-        );
-        $cfb->build();
-        $form = $cfb->form();
-
-        if ($request->postData('email')) {
-            $configuration->setConfigValue($request->postData('email'));
-            $fh = new ConfigurationFormHandler($form, $this->manager, $request, $configuration);
-            if ($fh->process()) {
-                $this->app->httpResponse()->redirect($this->getConfigurationIndexUrl());
-            }
-        }
-
-
-        $card->addContent($this->editFormView($form));
-
-        return $card;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getConfigurationIndexUrl()
-    {
-        return $this->baseAddress . 'configuration';
     }
 }

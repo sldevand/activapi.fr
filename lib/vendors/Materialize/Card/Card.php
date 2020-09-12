@@ -2,7 +2,6 @@
 
 namespace Materialize\Card;
 
-use Materialize\SidenavLink;
 use Materialize\Widget;
 
 /**

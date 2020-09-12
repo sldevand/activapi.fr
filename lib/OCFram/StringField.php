@@ -129,4 +129,15 @@ class StringField extends Field
 
         return $this;
     }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType(string $type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
 }
