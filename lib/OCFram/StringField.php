@@ -20,6 +20,9 @@ class StringField extends Field
     /** @var string */
     protected $title;
 
+    /** @var string */
+    protected $type = 'text';
+
     /**
      * @return mixed|string
      */
@@ -27,15 +30,24 @@ class StringField extends Field
     {
         $widget = '';
 
+        if (empty($this->id)) {
+            $this->id = $this->name;
+        }
+
         if (!empty($this->errorMessage)) {
             $widget .= $this->errorMessage . '<br />';
         }
 
         if (!empty($this->label)) {
+            if (!empty($this->required)) {
+                $this->label .= '*';
+            }
+
             $widget .= '<label for="' . $this->id . '">' . $this->label . '</label>';
         }
 
-        $widget .= '<input type="text" name="' . $this->name . '" id="' . $this->id . '"';
+
+        $widget .= '<input type="' . $this->type . '" name="' . $this->name . '" id="' . $this->id . '" ';
 
         if (isset($this->pattern)) {
             $widget .= ' pattern="' . $this->pattern . '"';
@@ -114,6 +126,17 @@ class StringField extends Field
     public function setTitle(string $title)
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType(string $type)
+    {
+        $this->type = $type;
 
         return $this;
     }

@@ -242,10 +242,10 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     * @param $form
+     * @param Form $form
      * @return false|string
      */
-    public function editFormView($form)
+    public function editFormView(Form $form)
     {
         $submitButton = new FlatButton(
             [

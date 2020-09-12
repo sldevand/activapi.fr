@@ -53,4 +53,5 @@
     <route url="\/crontab-edit-([0-9]+)" module="Crontab" action="edit" vars="id"  />
     <route url="\/crontab-delete-([0-9]+)" module="Crontab" action="delete" vars="id"  />
 
+    <route url="\/configuration" module="Configuration" action="index" />
 </routes>

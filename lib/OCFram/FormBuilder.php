@@ -48,15 +48,19 @@ abstract class FormBuilder
 
     /**
      * @param string|null $key
-     * @return array
+     * @return mixed|null
      */
-    public function getData($key = null)
+    public function getData(?string $key = null)
     {
-        if ($key && isset($this->data[$key])) {
+        if (!$key) {
+            return $this->data;
+        }
+
+        if (isset($this->data[$key])) {
             return $this->data[$key];
         }
 
-        return $this->data;
+        return null;
     }
 
     /**

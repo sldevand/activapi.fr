@@ -10,7 +10,6 @@
     <?php include("Block/favicon.phtml"); ?>
     <link rel="manifest" href="<?= ROOT . '/manifest.json' ?>">
     <script src="<?= DIST . '/index.js' ?>"></script>
-    <script src="<?= DIST . '/socketio.js' ?>"></script>
 </head>
 
 <body>
@@ -34,12 +33,13 @@
     </ul>
 
     <div id="maincontent" class="container-light">
-        <?php if ($user->hasFlash()) {
-            echo '<p style="text-align: center;">', $user->getFlash(), '</p>';
-        }
-        ?>
+        <?php if ($user->hasFlash()) : ?>
+            <script> Materialize.toast("<?= $user->getFlash() ?>", 3000); </script>
+        <?php endif; ?>
         <?= $content ?>
     </div>
+
+    <script src="<?= DIST . '/socketio.js' ?>"></script>
     <script>
         $("#menubutton").sideNav({
             closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor

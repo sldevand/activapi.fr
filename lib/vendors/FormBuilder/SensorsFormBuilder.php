@@ -21,25 +21,25 @@ class SensorsFormBuilder extends FormBuilder
                 new StringField([
                     'label' => 'radioid',
                     'name' => 'radioid',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'nom',
                     'name' => 'nom',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'categorie',
                     'name' => 'categorie',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new StringField([
                     'label' => 'radioaddress',
                     'name' => 'radioaddress',
-                    'required' => 'true'
+                    'required' => true
                 ])
             );
     }
