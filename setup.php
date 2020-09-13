@@ -35,3 +35,6 @@ const BLOCK = TEMPLATES . '/Block';
 
 const BACKEND = __DIR__ . '/App/Backend';
 const BACKEND_TEMPLATES = BACKEND . '/Templates';
+
+date_default_timezone_set('Europe/Paris');
+setlocale (LC_TIME, 'fr_FR.utf8','fra');

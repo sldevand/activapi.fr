@@ -50,19 +50,19 @@ class StringField extends Field
         $widget .= '<input type="' . $this->type . '" name="' . $this->name . '" id="' . $this->id . '" ';
 
         if (isset($this->pattern)) {
-            $widget .= ' pattern="' . $this->pattern . '"';
+            $widget .= ' pattern="' . $this->pattern . '" ';
         }
 
         if (isset($this->title)) {
-            $widget .= ' title="' . $this->title . '"';
+            $widget .= ' title="' . $this->title . '" ';
         }
 
         if (isset($this->value)) {
-            $widget .= ' value="' . htmlspecialchars($this->value) . '"';
+            $widget .= ' value="' . htmlspecialchars($this->value) . '" ';
         }
 
         if (!empty($this->maxLength)) {
-            $widget .= ' maxlength="' . $this->maxLength . '"';
+            $widget .= ' maxlength="' . $this->maxLength . '" ';
         }
 
         if (!empty($this->readonly)) {
@@ -74,7 +74,7 @@ class StringField extends Field
         }
 
         if (!empty($this->required)) {
-            $widget .= 'required';
+            $widget .= 'required ';
         }
 
         return $widget .= ' />';

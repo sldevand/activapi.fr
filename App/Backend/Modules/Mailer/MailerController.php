@@ -43,16 +43,13 @@ class MailerController extends BackController
     public function executeTest(HTTPRequest $request)
     {
         http_response_code(200);
-        if (!$this->configHelper->getEnabled()) {
+        if ($this->configHelper->getEnabled() !== 'yes') {
             return $this->page->addVar('data', ['error' => 'Mailer module is not enabled']);
         }
 
         if (!$mailAddress = $this->configHelper->getEmail()) {
             return $this->page->addVar('data', ['error' => 'No mail was configured in Mailer module']);
         }
-
-        date_default_timezone_set('Europe/Paris');
-        setlocale (LC_TIME, 'fr_FR.utf8','fra');
 
         $body = file_get_contents(BACKEND_TEMPLATES.'/Mailer/test.html');
         $body = str_replace('%date%', strftime("Envoyé le %A %d %B à %T"), $body);

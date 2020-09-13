@@ -62,7 +62,8 @@ class ConfigurationController extends BackController
 
         $cards = [];
         $mailerForm = $this->mailerConfigAction->execute($request);
-        $mailerTestButton = $this->getBlock(__DIR__ . '/Block/mailerTestButton.phtml');
+        $mailerTestButtonUrl = $this->baseAddress . 'api/mailer/test';
+        $mailerTestButton = $this->getBlock(__DIR__ . '/Block/mailerTestButton.phtml', $mailerTestButtonUrl);
         $mailerCard = WidgetFactory::makeCard('configuration-mailer', 'Mailer', $this->editFormView($mailerForm));
         $mailerCard->addContent($mailerTestButton);
 

@@ -5,7 +5,6 @@ namespace Mailer;
 use League\OAuth2\Client\Provider\Google;
 use PHPMailer\PHPMailer\OAuth;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 
 /**
  * Class MailerFactory
@@ -19,8 +18,6 @@ class MailerFactory
      */
     public static function create()
     {
-        date_default_timezone_set('Etc/UTC');
-
         $mail = new PHPMailer();
         //Server settings
         $mail->isSMTP();
@@ -35,7 +32,6 @@ class MailerFactory
         $clientId = $_ENV['OAUTH_CLIENT_ID'];
         $clientSecret = $_ENV['OAUTH_SECRET'];
         $refreshToken = $_ENV['OAUTH_TOKEN'];
-
 
         $provider = new Google(
             [
