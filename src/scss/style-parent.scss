@@ -60,6 +60,12 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
   line-height: 1;
 }
 
+#authentication {
+  font-size: 30px;
+  height: 30px;
+  line-height: 1;
+}
+
 @media screen and (max-width: 600px) {
 
   .chip {

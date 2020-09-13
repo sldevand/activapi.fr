@@ -24,6 +24,12 @@
                    class="valign material-icons z-depth-1 circle red lighten-3 red-text right">
                     fiber_manual_record
                 </i>
+                <?php if($user->isAuthenticated()) : ?>
+                    <i id="authentication"
+                       class="valign material-icons right">
+                       verified_user
+                    </i>
+                <?php endif; ?>
             </div>
         </div>
     </nav>

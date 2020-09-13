@@ -39,6 +39,11 @@ abstract class Application
     protected $router;
 
     /**
+     * @var string
+     */
+    protected $root;
+
+    /**
      * Application constructor.
      */
     public function __construct()
@@ -54,42 +59,78 @@ abstract class Application
 
     /**
      * @return mixed
+     * @throws \Exception
      */
     public function getController()
     {
-        $xml = new \DOMDocument();
-        $xml->load(__DIR__ . '/../../App/' . $this->name . '/Config/routes.xml');
+        $this->root = $this->name === 'Frontend'
+            ? ROOT
+            : ROOT_API;
 
-        $routes = $xml->getElementsByTagName('route');
-
-        foreach ($routes as $route) {
-            $vars = [];
-
-            if ($route->hasAttribute('vars')) {
-                $vars = explode(',', $route->getAttribute('vars'));
-            }
-
-            $root =  $this->name === 'Frontend'
-                ? ROOT
-                : ROOT_API;
-
-            $fullUrl = $root . $route->getAttribute('url');
-
-            $this->router->addRoute(new Route($fullUrl, $route->getAttribute('module'), $route->getAttribute('action'), $vars));
-        }
-
-        try {
-            $matchedRoute = $this->router->getRoute($this->httpRequest->requestURI());
-        } catch (\RuntimeException $e) {
-            if ($e->getCode() == Router::NO_ROUTE) {
-                $this->httpResponse->redirect404();
-            }
-        }
+        $this->addRoutesToRouter();
+        $matchedRoute = $this->matchRoute();
+        $this->checkRoutePermission($matchedRoute);
 
         $_GET = array_merge($_GET, $matchedRoute->vars());
         $controllerClass = 'App\\' . $this->name . '\\Modules\\' . $matchedRoute->module() . '\\' . $matchedRoute->module() . 'Controller';
 
         return new $controllerClass($this, $matchedRoute->module(), $matchedRoute->action());
+    }
+
+    /**
+     *
+     */
+    protected function addRoutesToRouter()
+    {
+        $xml = new \DOMDocument();
+        $xml->load(__DIR__ . '/../../App/' . $this->name . '/Config/routes.xml');
+
+        $routesXml = $xml->getElementsByTagName('route');
+
+        /** @var \DOMElement $routeXml */
+        foreach ($routesXml as $routeXml) {
+            $vars = [];
+
+            if ($routeXml->hasAttribute('vars')) {
+                $vars = explode(',', $routeXml->getAttribute('vars'));
+            }
+
+            $fullUrl = $this->root . $routeXml->getAttribute('url');
+
+            $scope = Route::SCOPE_PRIVATE;
+            if ($routeXml->hasAttribute('scope')) {
+                $scope = $routeXml->getAttribute('scope');
+            }
+
+            $this->router->addRoute(
+                new Route($fullUrl, $routeXml->getAttribute('module'), $routeXml->getAttribute('action'), $vars, $scope)
+            );
+        }
+    }
+
+    /**
+     * @return \OCFram\Route
+     */
+    protected function matchRoute()
+    {
+        try {
+            $matchedRoute = $this->router->getRoute($this->httpRequest->requestURI());
+        } catch (\RuntimeException $e) {
+            $this->httpResponse->redirect404();
+        }
+
+        return $matchedRoute;
+    }
+
+    /**
+     * @param \OCFram\Route $route
+     */
+    protected function checkRoutePermission(Route $route)
+    {
+        if ($route->getScope() === Route::SCOPE_PRIVATE && !$this->user()->isAuthenticated()) {
+            $this->user()->setFlash('You cannot access this page because you are not logged in!');
+            $this->httpResponse->redirect($this->root);
+        }
     }
 
     /**
@@ -143,5 +184,21 @@ abstract class Application
     public function getRouter(): Router
     {
         return $this->router;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoot(): string
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param string $root
+     */
+    public function setRoot(string $root): void
+    {
+        $this->root = $root;
     }
 }
