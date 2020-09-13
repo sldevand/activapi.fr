@@ -4,9 +4,9 @@ namespace App\Frontend\Modules\Configuration;
 
 use App\Frontend\Modules\Configuration\Action\MailerConfigurationAction;
 use App\Frontend\Modules\FormView;
-
 use Helper\Configuration\Data;
 use Mailer\Helper\Config;
+use Materialize\Button\FlatButton;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
@@ -62,8 +62,11 @@ class ConfigurationController extends BackController
 
         $cards = [];
         $mailerForm = $this->mailerConfigAction->execute($request);
-        $cards[] = WidgetFactory::makeCard('configuration-mailer', 'Mailer', $this->editFormView($mailerForm));
+        $mailerTestButton = $this->getBlock(__DIR__ . '/Block/mailerTestButton.phtml');
+        $mailerCard = WidgetFactory::makeCard('configuration-mailer', 'Mailer', $this->editFormView($mailerForm));
+        $mailerCard->addContent($mailerTestButton);
 
+        $cards[] = $mailerCard;
         $this->page->addVar('cards', $cards);
     }
 }

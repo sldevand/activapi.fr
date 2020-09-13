@@ -5,11 +5,11 @@ $checkedStr = $this->checked() ? 'checked' : '';
 <div class="switch">
     <span id="title-<?= $this->id() ?>" class="left textOnBodyColor"><?= $this->title() ?></span>
     <label class="right">
-        Off
+        <?= $this->leftText() ?>
         <input id="trick-<?= $this->id() ?>" type="hidden" name="<?= $this->name() ?>" value="<?= $this->value() ?>">
         <input id="<?= $this->id() ?>" name="<?= $this->name() ?>" type="checkbox" value="<?= $this->value() ?>" <?= $checkedStr ?> />
         <span class="lever"></span>
-        On
+        <?= $this->rightText() ?>
     </label>
 </div>
 <script>

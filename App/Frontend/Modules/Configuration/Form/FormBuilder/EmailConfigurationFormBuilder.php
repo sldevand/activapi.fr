@@ -39,6 +39,20 @@ class EmailConfigurationFormBuilder extends FormBuilder
                     ]
                 )
             )->add(
+                new SwitchField(
+                    [
+                        'id' => 'action-mailer-enable',
+                        'title' => 'Enable',
+                        'name' => Config::PATH_MAILER_ALERT_ENABLE,
+                        'required' => true,
+                        'checked' => $enableFieldConfig == 'yes' ? true : false,
+                        'value' => $enableFieldConfig == 'yes' ? 'yes' : 'no',
+                        'leftText' => 'No',
+                        'rightText' => 'Yes',
+                        'wrapper' => 'col s10 m6 l4'
+                    ]
+                )
+            )->add(
                 new StringField(
                     [
                         'label' => 'Email',
@@ -48,17 +62,6 @@ class EmailConfigurationFormBuilder extends FormBuilder
                         'value' => $emailFieldConfigValue
                     ]
                 )
-            )->add(
-                new SwitchField(
-                    [
-                        'id' => 'action-mailer-enable',
-                        'title' => 'Enable',
-                        'name' => Config::PATH_MAILER_ALERT_ENABLE,
-                        'required' => true,
-                        'checked' => $enableFieldConfig == 'yes' ? true : false,
-                        'value' => $enableFieldConfig == 'yes' ? 'yes' : 'no'
-                    ]
-                )
-            );;
+            );
     }
 }

@@ -1,0 +1,22 @@
+<?php
+
+use Materialize\Button\FlatButton;
+
+$mailerTestButton = new FlatButton(
+    [
+        'id'    => 'mailer-alert-test-button',
+        'title' => "Envoyer email de test",
+        'href'  => '',
+        'color' => 'secondaryTextColor',
+        'icon'  => 'send'
+    ]
+);
+?>
+<div class="row">
+    <li class="divider"></li>
+</div>
+<div class="row">
+    <div class="col s6 offset-s6">
+        <?= $mailerTestButton->getHtml() ?>
+    </div>
+</div>

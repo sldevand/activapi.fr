@@ -16,22 +16,39 @@ class SwitchField extends Field
     /** @var bool */
     protected $checked = false;
 
+    /** @var string */
+    protected $leftText;
+
+    /** @var string */
+    protected $rightText;
+
+
     /**
      * @return mixed
      */
     public function buildWidget()
     {
+
         $switchButton = new SwitchButton(
             [
                 'id' => $this->id,
                 'title' => $this->title,
                 'checked' => $this->checked,
                 'name' => $this->name,
-                'value' => $this->value
+                'value' => $this->value,
+                'leftText' => $this->leftText,
+                'rightText' => $this->rightText
             ]
         );
 
-        return $switchButton->getHtml();
+        $switchButtonHtml = $switchButton->getHtml();
+
+        return <<<HTML
+        <div class="row">
+            $switchButtonHtml
+        </div>
+HTML;
+
     }
 
     /**
@@ -52,6 +69,28 @@ class SwitchField extends Field
     public function setChecked(bool $checked)
     {
         $this->checked = $checked;
+
+        return $this;
+    }
+
+    /**
+     * @param string $leftText
+     * @return \OCFram\SwitchField
+     */
+    public function setLeftText(string $leftText)
+    {
+        $this->leftText = $leftText;
+
+        return $this;
+    }
+
+    /**
+     * @param string $rightText
+     * @return \OCFram\SwitchField
+     */
+    public function setRightText(string $rightText)
+    {
+        $this->rightText = $rightText;
 
         return $this;
     }
