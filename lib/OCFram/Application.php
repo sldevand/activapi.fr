@@ -62,9 +62,6 @@ abstract class Application
 
         $routes = $xml->getElementsByTagName('route');
 
-        $rootUrl = str_replace('\/', '/', $rootUrl);
-        $this->router->setRoot($rootUrl);
-
         foreach ($routes as $route) {
             $vars = [];
 
@@ -72,7 +69,11 @@ abstract class Application
                 $vars = explode(',', $route->getAttribute('vars'));
             }
 
-            $fullUrl = $this->rootUri . $route->getAttribute('url');
+            $root =  $this->name === 'Frontend'
+                ? ROOT
+                : ROOT_API;
+
+            $fullUrl = $root . $route->getAttribute('url');
 
             $this->router->addRoute(new Route($fullUrl, $route->getAttribute('module'), $route->getAttribute('action'), $vars));
         }
