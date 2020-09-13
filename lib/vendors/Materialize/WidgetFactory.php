@@ -3,6 +3,7 @@
 namespace Materialize;
 
 use Materialize\Card\Card;
+use Materialize\Pagination\Pagination;
 use Materialize\Spinner\Spinner;
 
 /**
@@ -12,29 +13,56 @@ use Materialize\Spinner\Spinner;
 class WidgetFactory
 {
     /**
-     * @param $domId
-     * @param $cardTitle
+     * @param array $pages
+     * @param int $logsCount
+     * @param int $page
+     * @param string $baseHref
+     * @param int $pagesCount
+     * @return Pagination
+     */
+    public static function makePagination(array $pages, int $logsCount, int $page, string $baseHref, int $pagesCount)
+    {
+        $classPrev = $page <= 1 ? 'disabled' : 'waves-effect';
+        $classNext = $page >= $pagesCount ? 'disabled' : 'waves-effect';
+
+        $paginationData = [
+            'pages'     => $pages,
+            'hrefPrev'  => $baseHref . '-' . 1 . '-' . $logsCount,
+            'classPrev' => $classPrev,
+            'hrefNext'  => $baseHref . '-' . $pagesCount . '-' . $logsCount,
+            'classNext' => $classNext,
+        ];
+
+        return new Pagination($paginationData);
+    }
+
+    /**
+     * @param string $domId
+     * @param string $cardTitle
+     * @param string $content
      * @return Card
      */
-    public static function makeCard($domId, $cardTitle)
+    public static function makeCard(string $domId, string $cardTitle, string $content = '')
     {
         $cardOpt = [
-            'id' => $domId,
-            'bgColor' => 'primaryLightColor',
+            'id'        => $domId,
+            'bgColor'   => 'primaryLightColor',
             'textColor' => 'textOnPrimaryColor',
-            'title' => $cardTitle];
+            'title'     => $cardTitle,
+            'contents'  => [$content]
+        ];
 
         return new Card($cardOpt);
     }
 
     /**
-     * @param $domId
-     * @param $rawDatas
+     * @param string $domId
+     * @param array $rawDatas
      * @param bool $jsonencode
      * @param array $hideColumns
      * @return Table
      */
-    public static function makeTable($domId, $rawDatas, $jsonencode = true, $hideColumns = [])
+    public static function makeTable(string $domId, array $rawDatas, bool $jsonencode = true, array $hideColumns = [])
     {
         $datas = $jsonencode ? json_decode(json_encode($rawDatas), true) : (array)$rawDatas;
 
@@ -62,10 +90,10 @@ class WidgetFactory
     }
 
     /**
-     * @param $domId
+     * @param string $domId
      * @return Spinner
      */
-    public static function makeSpinner($domId)
+    public static function makeSpinner(string $domId)
     {
         return new Spinner(
             [

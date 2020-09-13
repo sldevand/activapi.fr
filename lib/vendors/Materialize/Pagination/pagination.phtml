@@ -1,0 +1,7 @@
+<ul class="pagination">
+    <li class="<?= $this->getClassPrev() ?>"><a href="<?= $this->getHrefPrev() ?>"><i class="material-icons">chevron_left</i></a></li>
+    <?php foreach ($this->getPages() as $page) : ?>
+        <li class="<?= $page['class'] ?>"><a href="<?= $page['href'] ?>"><?= $page['name'] ?></a></li>
+    <?php endforeach; ?>
+    <li class="<?= $this->getClassNext() ?>"><a href="<?= $this->getHrefNext() ?>"><i class="material-icons">chevron_right</i></a></li>
+</ul>

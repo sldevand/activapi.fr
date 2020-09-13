@@ -60,6 +60,7 @@ abstract class BackController extends ApplicationComponent
      * @param Application $app
      * @param string $module
      * @param string $action
+     * @throws Exception
      */
     public function __construct(Application $app, $module, $action)
     {
@@ -72,7 +73,7 @@ abstract class BackController extends ApplicationComponent
         $this->setAction($action);
         $this->setView($action);
         $this->cache = new Cache($this->app());
-        $this->baseAddress = $app->config()->get('apiBaseAddress');
+        $this->baseAddress = $app->config()->getEnv('BASE_URL');
     }
 
     /**
@@ -246,10 +247,10 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     * @param $form
+     * @param Form $form
      * @return false|string
      */
-    public function editFormView($form)
+    public function editFormView(Form $form)
     {
         $submitButton = new FlatButton(
             [
@@ -308,11 +309,11 @@ abstract class BackController extends ApplicationComponent
 
     /**
      * @return string
+     * @throws Exception
      */
     public function getApiUrl()
     {
-        $key = OSDetectorFactory::getApiAddressKey();
-        $apiBaseAddress = $this->app()->config()->get($key);
+        $apiBaseAddress = $this->app()->config()->getEnv('BASE_URL');
 
         return $apiBaseAddress . "api/mesures/";
     }

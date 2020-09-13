@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <routes>
-    <root url="\/activapi" />
-
     <route url="\/" module="Accueil" action="index"/>
 
     <route url="\/actionneurs" module="Actionneurs" action="index"/>
@@ -21,7 +19,7 @@
            module="Graphs" action="index" vars="id_sensor,dateMin,dateMax"/>
 
     <route url="\/thermostat" module="Thermostat" action="index"/>
-    <route url="\/thermostat-log-?([0-9]+)?" module="Thermostat" action="log" vars="nbLogs"/>
+    <route url="\/thermostat-log-?([0-9]+)?-?([0-9]+)?" module="Thermostat" action="log" vars="page,logsCount"/>
 
     <route url="\/thermostat-planif" module="ThermostatPlanif" action="index"/>
     <route url="\/thermostat-planif-add" module="ThermostatPlanif" action="add"/>
@@ -49,4 +47,11 @@
     <route url="\/actions-edit-([0-9]+)" module="Actions" action="edit" vars="id"  />
 
     <route url="\/console\/?(yesterday)?" module="Console" action="index" vars="period"/>
+
+    <route url="\/crontab-?([0-9]*)?\/?" module="Crontab" action="index" vars="id" />
+    <route url="\/crontab-add" module="Crontab" action="edit" />
+    <route url="\/crontab-edit-([0-9]+)" module="Crontab" action="edit" vars="id"  />
+    <route url="\/crontab-delete-([0-9]+)" module="Crontab" action="delete" vars="id"  />
+
+    <route url="\/configuration" module="Configuration" action="index" />
 </routes>

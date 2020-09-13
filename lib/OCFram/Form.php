@@ -19,6 +19,9 @@ class Form
     /** @var array $fields */
     protected $widgets = [];
 
+    /** @var string */
+    protected $action = '';
+
     /**
      * Form constructor.
      * @param Entity $entity
@@ -149,5 +152,24 @@ class Form
     public function getWidgets()
     {
         return $this->widgets;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param string $action
+     * @return Form
+     */
+    public function setAction(string $action): Form
+    {
+        $this->action = $action;
+
+        return $this;
     }
 }

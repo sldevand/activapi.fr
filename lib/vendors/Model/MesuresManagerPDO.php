@@ -130,7 +130,7 @@ class MesuresManagerPDO extends ManagerPDO
 
     /**
      * @param $categorie
-     * @return array
+     * @return Sensor[]
      * @throws \Exception
      */
     public function getSensors($categorie)

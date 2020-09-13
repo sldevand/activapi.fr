@@ -17,26 +17,26 @@ class Config extends ApplicationComponent
 
     /**
      * @param $var
-     * @return mixed|null
+     * @return mixed
+     * @throws \Exception
      */
     public function get($var)
     {
-        if (!$this->vars) {
-            $xml = new DOMDocument();
-            $xml->load(__DIR__ . '/../../App/' . $this->app->name() . '/Config/app.xml');
+        return $this->getEnv(strtoupper($var));
+    }
 
-            $elements = $xml->getElementsByTagName('define');
-
-            foreach ($elements as $element) {
-                $this->vars[$element->getAttribute('var')] = $element->getAttribute('value');
-            }
+    /**
+     * @param string $key
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getEnv(string $key)
+    {
+        if (!isset($_ENV[$key])) {
+            throw new \Exception("$key environment variable does not exist");
         }
 
-        if (isset($this->vars[$var])) {
-            return $this->vars[$var];
-        }
-
-        return null;
+        return $_ENV[$key];
     }
 
     /**

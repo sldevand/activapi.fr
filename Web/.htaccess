@@ -3,4 +3,5 @@ RewriteEngine On
 RewriteRule ^api/ bootstrap.php?app=Backend [QSA,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
+
 RewriteRule ^(.*)$ bootstrap.php?app=Frontend [QSA,L]

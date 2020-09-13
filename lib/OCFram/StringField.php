@@ -8,15 +8,20 @@ namespace OCFram;
  */
 class StringField extends Field
 {
-    /**
-     * @var int $maxLength
-     */
+    /** @var int */
     protected $maxLength;
 
-    /**
-     * @var string $readonly
-     */
+    /** @var string */
     protected $readonly;
+
+    /** @var string */
+    protected $pattern;
+
+    /** @var string */
+    protected $title;
+
+    /** @var string */
+    protected $type = 'text';
 
     /**
      * @return mixed|string
@@ -25,22 +30,39 @@ class StringField extends Field
     {
         $widget = '';
 
+        if (empty($this->id)) {
+            $this->id = $this->name;
+        }
+
         if (!empty($this->errorMessage)) {
             $widget .= $this->errorMessage . '<br />';
         }
 
         if (!empty($this->label)) {
+            if (!empty($this->required)) {
+                $this->label .= '*';
+            }
+
             $widget .= '<label for="' . $this->id . '">' . $this->label . '</label>';
         }
 
-        $widget .= '<input type="text" name="' . $this->name . '" id="' . $this->id . '"';
+
+        $widget .= '<input type="' . $this->type . '" name="' . $this->name . '" id="' . $this->id . '" ';
+
+        if (isset($this->pattern)) {
+            $widget .= ' pattern="' . $this->pattern . '" ';
+        }
+
+        if (isset($this->title)) {
+            $widget .= ' title="' . $this->title . '" ';
+        }
 
         if (isset($this->value)) {
-            $widget .= ' value="' . htmlspecialchars($this->value) . '"';
+            $widget .= ' value="' . htmlspecialchars($this->value) . '" ';
         }
 
         if (!empty($this->maxLength)) {
-            $widget .= ' maxlength="' . $this->maxLength . '"';
+            $widget .= ' maxlength="' . $this->maxLength . '" ';
         }
 
         if (!empty($this->readonly)) {
@@ -52,7 +74,7 @@ class StringField extends Field
         }
 
         if (!empty($this->required)) {
-            $widget .= 'required';
+            $widget .= 'required ';
         }
 
         return $widget .= ' />';
@@ -82,6 +104,39 @@ class StringField extends Field
     public function setReadonly($readonly)
     {
         $this->readonly = $readonly;
+
+        return $this;
+    }
+
+    /**
+     * @param string $pattern
+     * @return StringField
+     */
+    public function setPattern(string $pattern)
+    {
+        $this->pattern = $pattern;
+
+        return $this;
+    }
+
+    /**
+     * @param string $title
+     * @return StringField
+     */
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType(string $type)
+    {
+        $this->type = $type;
 
         return $this;
     }

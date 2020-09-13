@@ -8,3 +8,8 @@
 
 Tests/database/activhome-test\.db
 .phpunit.result.cache
+/.env
+/var/*
+/Web/dist/
+/src/config/config.js
+/build/

@@ -2,6 +2,7 @@
 
 namespace OCFram;
 
+use App\Frontend\Modules\Graphs\GraphsController;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
@@ -32,10 +33,17 @@ class Cache extends ApplicationComponent
      */
     protected $datas = [];
 
-    public function makeTimeStamp()
+    /**
+     * @throws \Exception
+     */
+    protected function makeTimeStamp()
     {
+        if (!$this->enabled()) {
+            return;
+        }
+
         $dateTime = new DateTime('NOW', new DateTimeZone('Europe/Paris'));
-        $expiration = $this->app()->config()->get('cacheExpiration');
+        $expiration = $this->app()->config()->get('cache_expiration');
 
         $dateTime->add(DateInterval::createFromDateString($expiration));
         $this->timeStamp = $dateTime->getTimestamp();
@@ -57,9 +65,14 @@ class Cache extends ApplicationComponent
 
     /**
      * @return bool
+     * @throws \Exception
      */
     public function isExpired()
     {
+        if (!$this->enabled()) {
+            return true;
+        }
+
         $dateTime = new DateTime('NOW', new DateTimeZone('Europe/Paris'));
         $now = $dateTime->getTimestamp();
         $this->getTimeStamp();
@@ -70,6 +83,15 @@ class Cache extends ApplicationComponent
         $this->deleteFile();
 
         return true;
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function enabled()
+    {
+        return (bool)$this->app()->config()->get('cache');
     }
 
     /**
@@ -100,9 +122,14 @@ class Cache extends ApplicationComponent
     /**
      * @param string $file
      * @return bool|mixed
+     * @throws \Exception
      */
-    public function getData($file)
+    public function getData(string $file)
     {
+        if (!$this->enabled()) {
+            return false;
+        }
+
         $this->setDataPath($file);
 
         if (!$this->exists()) {
@@ -128,9 +155,14 @@ class Cache extends ApplicationComponent
     /**
      * @param string $file
      * @param array $entities
+     * @throws \Exception
      */
-    public function saveData($file, array $entities)
+    public function saveData(string $file, array $entities)
     {
+        if (!$this->enabled()) {
+            return;
+        }
+
         $this->setDataPath($file);
         $this->makeTimeStamp();
         if (!$this->exists()) {
@@ -142,17 +174,19 @@ class Cache extends ApplicationComponent
 
     /**
      * @param string $file
+     * @throws \Exception
      */
-    public function setDataPath($file)
+    public function setDataPath(string $file)
     {
-        $this->fileName = $this->app()->config()->get('cache') . 'datas' . '/' . $file;
+        $this->fileName = $this->app()->config()->get('cache_dir') . '/datas/' . $file;
     }
 
     /**
-     * @param BackController $controller
-     * @return bool|Page
+     * @param \OCFram\BackController $controller
+     * @return bool|\OCFram\Page
+     * @throws \Exception
      */
-    public function getView($controller)
+    public function getView(BackController $controller)
     {
         $this->setViewPath($controller);
         $content = '';
@@ -184,11 +218,15 @@ class Cache extends ApplicationComponent
     }
 
     /**
-     * @param BackController $controller
-     * @param $html
+     * @param $controller
+     * @param string $html
+     * @throws \Exception
      */
-    public function saveView($controller, $html)
+    public function saveView($controller, string $html)
     {
+        if (!$this->enabled()) {
+            return;
+        }
         $this->setViewPath($controller);
         $this->makeTimeStamp();
         file_put_contents($this->fileName, $this->timeStamp() . PHP_EOL);
@@ -197,10 +235,11 @@ class Cache extends ApplicationComponent
 
     /**
      * @param BackController $controller
+     * @throws \Exception
      */
-    public function setViewPath($controller)
+    public function setViewPath(BackController $controller)
     {
-        $this->fileName = $this->app()->config()->get('cache') . 'views' . '/' .
+        $this->fileName = $this->app()->config()->get('cache_dir') . 'views' . '/' .
             $this->app()->name() . '_' .
             $controller->module() . '_' .
             $controller->action() . '-' .
@@ -240,40 +279,46 @@ class Cache extends ApplicationComponent
     }
 
     /**
-     * @param $timeStamp
+     * @param string $timeStamp
+     * @return $this
      */
-    public function setTimeStamp($timeStamp)
+    public function setTimeStamp(string $timeStamp)
     {
         $this->timeStamp = $timeStamp;
+
+        return $this;
     }
 
     /**
      * @param array $datas
+     * @return $this
      */
     public function setDatas(array $datas)
     {
-        if (!empty($datas) && is_array($datas)) {
-            $this->datas = $datas;
-        }
+        $this->datas = $datas;
+
+        return $this;
     }
 
     /**
-     * @param $fileName
+     * @param string $fileName
+     * @return \OCFram\Cache
      */
-    public function setFileName($fileName)
+    public function setFileName(string $fileName)
     {
-        if (!empty($fileName) && is_string($fileName)) {
-            $this->fileName = $fileName;
-        }
+        $this->fileName = $fileName;
+
+        return $this;
     }
 
     /**
      * @param array $fileArray
+     * @return $this
      */
     public function setFileArray(array $fileArray)
     {
-        if (!empty($fileArray) && is_array($fileArray)) {
-            $this->fileArray = $fileArray;
-        }
+        $this->fileArray = $fileArray;
+
+        return $this;
     }
 }

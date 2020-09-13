@@ -6,9 +6,9 @@ use App\Backend\Modules\AbstractScenarioManagersController;
 use Entity\Scenario\Scenario;
 use Entity\Scenario\ScenarioSequence;
 use Exception;
+use Model\Scenario\ScenarioSocketIoSender;
 use OCFram\Application;
 use OCFram\HTTPRequest;
-use Psinetron\SocketIO;
 
 /**
  * Class ScenariosController
@@ -21,6 +21,7 @@ class ScenariosController extends AbstractScenarioManagersController
      * @param Application $app
      * @param string $module
      * @param string $action
+     * @throws Exception
      */
     public function __construct(Application $app, string $module, string $action)
     {
@@ -33,6 +34,7 @@ class ScenariosController extends AbstractScenarioManagersController
 
     /**
      * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executePost($httpRequest)
@@ -55,6 +57,7 @@ class ScenariosController extends AbstractScenarioManagersController
 
     /**
      * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executePut($httpRequest)
@@ -78,6 +81,7 @@ class ScenariosController extends AbstractScenarioManagersController
 
     /**
      * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeReset($httpRequest)
@@ -89,7 +93,7 @@ class ScenariosController extends AbstractScenarioManagersController
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
 
-        $this->page->addVar('data', ['success' => 'Scenarios have been reset to stop value']);
+        return $this->page->addVar('data', ['success' => 'Scenarios have been reset to stop value']);
     }
 
     /**
@@ -136,6 +140,7 @@ class ScenariosController extends AbstractScenarioManagersController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeCommand(HTTPRequest $request)
@@ -152,13 +157,8 @@ class ScenariosController extends AbstractScenarioManagersController
             return $this->page->addVar('output', ['error' => 'No scenario on id ' . $id]);
         }
 
-        $ip = $this->app()->config()->get('nodeIP');
-        $port = $this->app()->config()->get('nodePort');
-        $action = 'updateScenario';
-        $dataJSON = json_encode($scenario);
-
-        $socketio = new SocketIO();
-        if (!$socketio->send($ip, $port, $action, $dataJSON)) {
+        $socketIoSender = new ScenarioSocketIoSender($this->app());
+        if (!$socketIoSender->send($scenario)) {
             return $this->page->addVar('output', ['error' => 'Node error']);
         }
 

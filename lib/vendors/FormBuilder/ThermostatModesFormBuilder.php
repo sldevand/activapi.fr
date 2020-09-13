@@ -22,16 +22,16 @@ class ThermostatModesFormBuilder extends FormBuilder
                 new StringField([
                     'label' => 'nom',
                     'name' => 'nom',
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new NumberField([
                     'label' => 'consigne',
                     'name' => 'consigne',
                     'min' => 9,
-                    'max' => 25,
+                    'max' => 30,
                     'step' => 0.5,
-                    'required' => 'true'
+                    'required' => true
                 ])
             )->add(
                 new NumberField([
@@ -40,7 +40,7 @@ class ThermostatModesFormBuilder extends FormBuilder
                     'min' => 0.5,
                     'max' => 1.5,
                     'step' => 0.1,
-                    'required' => 'true'
+                    'required' => true
                 ])
             );
     }

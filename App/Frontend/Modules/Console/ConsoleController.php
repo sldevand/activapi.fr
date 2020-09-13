@@ -38,10 +38,20 @@ class ConsoleController extends BackController
             ]
         );
 
+        $serialportResetButton = new FlatButton(
+            [
+                'id'    => 'serialport-reset',
+                'title' => '',
+                'icon'  => 'autorenew',
+                'color' => 'primaryTextColor',
+                'type'  => 'button'
+            ]
+        );
+
         $period = $request->getData('period');
 
         $card = WidgetFactory::makeCard('console-card', 'Console');
-        $card->addContent($this->nodeView($switchButton));
+        $card->addContent($this->nodeView($switchButton, $serialportResetButton));
         $card->addContent($this->commandView($sendButton));
         $card->addContent($this->displayView($period));
         $cards = [];
@@ -52,12 +62,17 @@ class ConsoleController extends BackController
     }
 
     /**
-     * @param $switchButton
+     * @param SwitchButton $switchButton
+     * @param FlatButton $serialportResetButton
      * @return false|string
      */
-    public function nodeView($switchButton)
+    public function nodeView(SwitchButton $switchButton, FlatButton $serialportResetButton)
     {
-        return $this->getBlock(MODULES . '/Console/Block/nodeView.phtml', $switchButton);
+        return $this->getBlock(
+            MODULES . '/Console/Block/nodeView.phtml',
+            $switchButton,
+            $serialportResetButton
+        );
     }
 
     /**

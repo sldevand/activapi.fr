@@ -8,7 +8,8 @@ DROP TABLE IF EXISTS scenario_sequence;
 CREATE TABLE IF NOT EXISTS scenario
 (
   id  INTEGER PRIMARY KEY AUTOINCREMENT,
-  nom VARCHAR(100) NOT NULL UNIQUE
+  nom VARCHAR(100) NOT NULL UNIQUE,
+  status VARCHAR(30) DEFAULT "stop"
 );
 
 CREATE TABLE IF NOT EXISTS sequence
@@ -23,6 +24,7 @@ CREATE TABLE IF NOT EXISTS action
   nom          VARCHAR(100) NOT NULL UNIQUE,
   actionneurId INTEGER NOT NULL,
   etat         INTEGER NOT NULL,
+  timeout      REAL DEFAULT 0.0,
   FOREIGN KEY (actionneurId) REFERENCES actionneurs (id)
 );
 

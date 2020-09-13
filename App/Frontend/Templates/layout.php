@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>
-        <?= isset($title) ? $title : 'ActivAPI'; ?>
-    </title>
+    <title><?= isset($title) ? $title : 'ActivAPI'; ?></title>
 
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="<?= DIST . '/index.css' ?>" type="text/css">
+    <?php include("Block/favicon.phtml"); ?>
+    <link rel="manifest" href="<?= ROOT . '/manifest.json' ?>">
     <script src="<?= DIST . '/index.js' ?>"></script>
 </head>
 
@@ -33,10 +33,9 @@
     </ul>
 
     <div id="maincontent" class="container-light">
-        <?php if ($user->hasFlash()) {
-            echo '<p style="text-align: center;">', $user->getFlash(), '</p>';
-        }
-        ?>
+        <?php if ($user->hasFlash()) : ?>
+            <script> Materialize.toast("<?= $user->getFlash() ?>", 3000); </script>
+        <?php endif; ?>
         <?= $content ?>
     </div>
 

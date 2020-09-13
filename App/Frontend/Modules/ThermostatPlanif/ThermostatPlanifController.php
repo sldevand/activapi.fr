@@ -7,7 +7,7 @@ use Entity\ThermostatPlanif;
 use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
 use Materialize\FloatingActionButton;
-use Materialize\Link;
+use Materialize\Link\Link;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
 use OCFram\DateFactory;
@@ -70,6 +70,13 @@ class ThermostatPlanifController extends BackController
             'icon' => "add",
             'href' => $this->baseAddress . "thermostat-planif-add"
         ]);
+
+        if (empty($cards)) {
+            $table = WidgetFactory::makeTable('no-data', []);
+            $card = WidgetFactory::makeCard('card-no-data', 'Planification');
+            $card->addContent($table->getHtml());
+            $cards [] = $card;
+        }
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('addPlanifFab', $addPlanifFab);

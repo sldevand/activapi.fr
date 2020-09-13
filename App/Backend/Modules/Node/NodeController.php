@@ -31,17 +31,20 @@ class NodeController extends BackController
      * @param Application $app
      * @param $module
      * @param $action
+     * @throws Exception
      */
     public function __construct(Application $app, $module, $action)
     {
         parent::__construct($app, $module, $action);
-        $config = $this->app()->config()->getVars();
+        $config = $this->app()->config();
         $this->nodeActivator = new NodeActivator($config);
         $this->logManager = $this->managers->getManagerOf('Log\Log');
     }
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
+     * @throws Exception
      */
     public function executeToggle(HTTPRequest $request)
     {
@@ -56,6 +59,7 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws Exception
      */
     public function executeGetStatus(HTTPRequest $request)
     {
@@ -65,7 +69,7 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
-     * @return void
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeLog(HTTPRequest $request)
@@ -104,8 +108,7 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
-     * @return void
-     * @throws Exception
+     * @return \OCFram\Page
      */
     public function executePostLog(HTTPRequest $request)
     {

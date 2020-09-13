@@ -38,6 +38,11 @@ abstract class Button extends Widget
      */
     protected $color = '';
 
+    /**
+     * @var string
+     */
+    protected $size = '';
+
 
     /**
      * @return string
@@ -99,6 +104,14 @@ abstract class Button extends Widget
     public function color()
     {
         return $this->color;
+    }
+
+    /**
+     * @return string
+     */
+    public function size(): string
+    {
+        return $this->size;
     }
 
     /**
@@ -167,6 +180,17 @@ abstract class Button extends Widget
     public function setColor($color)
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * @param string $size
+     * @return Button
+     */
+    public function setSize(string $size)
+    {
+        $this->size = $size;
 
         return $this;
     }

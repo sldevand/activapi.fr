@@ -1,17 +1,31 @@
 export class NodeServer {
-    constructor(address) {
+    constructor(address, socket) {
         this.nodeAddress = address + '/node';
         this.toggleAddress = this.nodeAddress + '/toggle';
+        this.switch = document.getElementById('node');
+        this.serialPortReset = document.getElementById('serialport-reset');
+        this.socket = socket;
+        this.isInitialized = false;
     }
 
     init() {
-        this.switch = document.getElementById('node');
+        if (!this.isInitialized) {
+            this.addEvents();
+            this.status();
+            setInterval(() => this.status(), 2000);
+            this.isInitialized = true;
+        }
+    }
+
+    addEvents() {
+        var nodeServer = this;
         this.switch.addEventListener('click', (event) => {
-            let status = this.getSwitchStatus(event);
+            let status = nodeServer.getSwitchStatus(event);
             this.toggle(status);
         });
-        this.status();
-        setInterval(() => this.status(), 2000);
+        this.serialPortReset.addEventListener('click', (event) => {
+            this.resetSerialPort();
+        });
     }
 
     toggle(status) {
@@ -46,5 +60,9 @@ export class NodeServer {
 
     setSwitchStatus(status) {
         this.switch.checked = (status === 'on') ? this.switch.checked = true : this.switch.checked = false;
+    }
+
+    resetSerialPort() {
+        this.socket.emit("serialportReset", '');
     }
 }

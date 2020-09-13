@@ -1,0 +1,39 @@
+<?php
+
+use Materialize\Button\FlatButton;
+
+$mailerTestUrl = $args[0];
+$mailerTestButton = new FlatButton(
+    [
+        'id'      => 'mailer-alert-test-button',
+        'title'   => "Envoyer email de test",
+        'color'   => 'secondaryTextColor',
+        'icon'    => 'send',
+        'wrapper' => 'col s12'
+    ]
+);
+?>
+<div class="row">
+    <ul>
+        <li class="divider"></li>
+    </ul>
+</div>
+<div class="row">
+    <?= $mailerTestButton->getHtml() ?>
+</div>
+
+<script>
+    document.getElementById('mailer-alert-test-button').addEventListener('click', (e) => {
+        fetch("<?= $mailerTestUrl ?>")
+            .then((data) => {
+                return data.json();
+            })
+            .then((json) => {
+                let message = json.data ? json.data : json.error;
+                Materialize.toast(message, 3000);
+            })
+            .catch((err) => {
+                Materialize.toast(err, 3000);
+            })
+    });
+</script>

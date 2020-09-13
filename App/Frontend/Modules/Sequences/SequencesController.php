@@ -6,7 +6,7 @@ use App\Backend\Modules\Sequences\SequencesController as SequencesBackController
 use App\Frontend\Modules\FormView;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
-use Materialize\Link;
+use Materialize\Link\Link;
 use Materialize\WidgetFactory;
 use OCFram\HTTPRequest;
 
