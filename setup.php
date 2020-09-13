@@ -32,3 +32,6 @@ const FRONTEND = __DIR__ . '/App/Frontend';
 const MODULES = FRONTEND . '/Modules';
 const TEMPLATES = FRONTEND . '/Templates';
 const BLOCK = TEMPLATES . '/Block';
+
+const BACKEND = __DIR__ . '/App/Backend';
+const BACKEND_TEMPLATES = BACKEND . '/Templates';

@@ -24,7 +24,7 @@ class MailerFactory
         $mail = new PHPMailer();
         //Server settings
         $mail->isSMTP();
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+        $mail->SMTPDebug = $_ENV['SMTP_DEBUG_ENV'];
         $mail->Host = $_ENV['SMTP_HOST'];
         $mail->Port = $_ENV['SMTP_PORT'];
         $mail->SMTPSecure =  PHPMailer::ENCRYPTION_STARTTLS;
@@ -56,7 +56,7 @@ class MailerFactory
             )
         );
 
-        $mail->setFrom($email, 'First Last');
+        $mail->setFrom($email, 'ActivAPI');
 
         return $mail;
     }

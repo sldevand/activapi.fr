@@ -27,14 +27,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
-     */
-    public function executeIndex(HTTPRequest $request)
-    {
-        $this->page->addVar('title', 'Gestion des mesures');
-    }
-
-    /**
      * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */
@@ -144,12 +136,15 @@ class MesuresController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeInsert(HTTPRequest $request)
     {
         $manager = $this->managers->getManagerOf('Mesures');
 
         $sensorId = $request->getData("id_sensor");
+
+        /** @var \Entity\Sensor $sensorEntity */
         $sensorEntity = $manager->getSensor($sensorId)[0];
         $temperature = $request->getData("temperature");
         $hygrometrie = $request->getData("hygrometrie");
@@ -221,6 +216,8 @@ class MesuresController extends BackController
         }
         $manager = $this->managers->getManagerOf('Mesures');
         $sensors = $manager->getSensors($categorie);
+
+        /** @var \Entity\Sensor $sensor */
         foreach ($sensors as $sensor) {
             $this->checkSensorActivity($sensor->radioid());
         }
@@ -228,20 +225,12 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
-     */
-    public function executeUpdate(HTTPRequest $request)
-    {
-        $this->processForm($request);
-        $this->page->addVar('title', 'Modification d\'une mesure');
-    }
-
-    /**
      * @param string $radioid
      */
-    public function checkSensorActivity($radioid)
+    protected function checkSensorActivity($radioid)
     {
         $manager = $this->managers->getManagerOf('Mesures');
+        /** @var \Entity\Sensor $sensorEntity */
         $sensorEntity = $manager->getSensor($radioid)[0];
         $minutes = DateFactory::diffMinutesFromStr("now", $sensorEntity->releve());
         if ($minutes >= 10) {

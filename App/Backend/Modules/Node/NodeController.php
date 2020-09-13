@@ -43,6 +43,7 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeToggle(HTTPRequest $request)
@@ -68,6 +69,7 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeLog(HTTPRequest $request)
@@ -106,6 +108,7 @@ class NodeController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      */
     public function executePostLog(HTTPRequest $request)
     {
