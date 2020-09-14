@@ -6,7 +6,7 @@ use Materialize\Sidenav\Sidenav;
 use Materialize\Sidenav\Subheader;
 
 $iconNames = [
-    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies','build'
+    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies', 'build'
 ];
 
 $icons = [];
@@ -25,135 +25,6 @@ $accueilLink = new Link([
     'icon' => $icons['home']
 ]);
 
-$sidenav = new Sidenav(
-    [
-        'subHeaders' => [
-            new Subheader(
-                [
-                    'title' => 'Gestion',
-                    'links' => [
-                        new Link([
-                            'id' => 'actionneurs',
-                            'title' => 'Actionneurs',
-                            'link' => '/actionneurs',
-                            'icon' => $icons['settings_power']
-                        ]),
-                        new Link([
-                            'id' => 'sensors',
-                            'title' => 'Sensors',
-                            'link' => '/sensors',
-                            'icon' => $icons['leak_add']
-                        ])
-
-                    ]
-                ]
-            ),
-            new Subheader(
-                [
-                    'title' => 'Scenarios',
-                    'links' => [
-                        new Link([
-                            'id' => 'scenarios',
-                            'title' => 'Scenarios',
-                            'link' => '/scenarios',
-                            'icon' => $icons['play_arrow']
-                        ]),
-                        new Link([
-                            'id' => 'sequences',
-                            'title' => 'Séquences',
-                            'link' => '/sequences',
-                            'icon' => $icons['local_movies']
-                        ]),
-                        new Link([
-                            'id' => 'actions',
-                            'title' => 'Actions',
-                            'link' => '/actions',
-                            'icon' => $icons['movies']
-                        ])
-
-                    ]
-                ]
-            ),
-            new Subheader(
-                [
-                    'title' => 'Mesures',
-                    'links' => [
-                        new Link([
-                            'id' => 'mesures',
-                            'title' => 'Données',
-                            'link' => '/mesures',
-                            'icon' => $icons['list']
-                        ]),
-                        new Link([
-                            'id' => 'graphs',
-                            'title' => 'Graphs',
-                            'link' => '/graphs',
-                            'icon' => $icons['assessment']
-                        ])
-                    ]
-                ]
-            ),
-            new Subheader(
-                [
-                    'title' => 'Thermostat',
-                    'links' => [
-                        new Link([
-                            'id' => 'thermostat',
-                            'title' => 'Paramètres',
-                            'link' => '/thermostat',
-                            'icon' => $icons['settings']
-                        ]),
-                        new Link([
-                            'id' => 'thermostat-log',
-                            'title' => 'Log',
-                            'link' => '/thermostat-log',
-                            'icon' => $icons['list']
-                        ]),
-                        new Link([
-                            'id' => 'thermostat-planif',
-                            'title' => 'Planif',
-                            'link' => '/thermostat-planif',
-                            'icon' => $icons['timetable']
-                        ]),
-                        new Link([
-                            'id' => 'thermostat-modes',
-                            'title' => 'Modes',
-                            'link' => '/thermostat-modes',
-                            'icon' => $icons['table']
-                        ])
-
-                    ]
-                ]
-            ),
-            new Subheader(
-                [
-                    'title' => 'Système',
-                    'links' => [
-                        new Link([
-                            'id' => 'console',
-                            'title' => 'Console',
-                            'link' => '/console',
-                            'icon' => $icons['table']
-                        ]),
-                        new Link([
-                            'id' => 'crontab',
-                            'title' => 'Crontab',
-                            'link' => '/crontab',
-                            'icon' => $icons['timetable']
-                        ]),
-                        new Link([
-                            'id' => 'configuration',
-                            'title' => 'Configuration',
-                            'link' => '/configuration',
-                            'icon' => $icons['build']
-                        ]),
-                    ]
-                ]
-            )
-        ]
-    ]
-);
-
 ?>
 
 <li>
@@ -165,4 +36,143 @@ $sidenav = new Sidenav(
 </li>
 
 <?= $accueilLink->getHtml(); ?>
-<?= $sidenav->getHtml(); ?>
+
+<?php
+
+/** @var \OCFram\User $user */
+if ($user->isAuthenticated()) {
+
+    $sidenav = new Sidenav(
+        [
+            'subHeaders' => [
+                new Subheader(
+                    [
+                        'title' => 'Gestion',
+                        'links' => [
+                            new Link([
+                                'id' => 'actionneurs',
+                                'title' => 'Actionneurs',
+                                'link' => '/actionneurs',
+                                'icon' => $icons['settings_power']
+                            ]),
+                            new Link([
+                                'id' => 'sensors',
+                                'title' => 'Sensors',
+                                'link' => '/sensors',
+                                'icon' => $icons['leak_add']
+                            ])
+
+                        ]
+                    ]
+                ),
+                new Subheader(
+                    [
+                        'title' => 'Scenarios',
+                        'links' => [
+                            new Link([
+                                'id' => 'scenarios',
+                                'title' => 'Scenarios',
+                                'link' => '/scenarios',
+                                'icon' => $icons['play_arrow']
+                            ]),
+                            new Link([
+                                'id' => 'sequences',
+                                'title' => 'Séquences',
+                                'link' => '/sequences',
+                                'icon' => $icons['local_movies']
+                            ]),
+                            new Link([
+                                'id' => 'actions',
+                                'title' => 'Actions',
+                                'link' => '/actions',
+                                'icon' => $icons['movies']
+                            ])
+
+                        ]
+                    ]
+                ),
+                new Subheader(
+                    [
+                        'title' => 'Mesures',
+                        'links' => [
+                            new Link([
+                                'id' => 'mesures',
+                                'title' => 'Données',
+                                'link' => '/mesures',
+                                'icon' => $icons['list']
+                            ]),
+                            new Link([
+                                'id' => 'graphs',
+                                'title' => 'Graphs',
+                                'link' => '/graphs',
+                                'icon' => $icons['assessment']
+                            ])
+                        ]
+                    ]
+                ),
+                new Subheader(
+                    [
+                        'title' => 'Thermostat',
+                        'links' => [
+                            new Link([
+                                'id' => 'thermostat',
+                                'title' => 'Paramètres',
+                                'link' => '/thermostat',
+                                'icon' => $icons['settings']
+                            ]),
+                            new Link([
+                                'id' => 'thermostat-log',
+                                'title' => 'Log',
+                                'link' => '/thermostat-log',
+                                'icon' => $icons['list']
+                            ]),
+                            new Link([
+                                'id' => 'thermostat-planif',
+                                'title' => 'Planif',
+                                'link' => '/thermostat-planif',
+                                'icon' => $icons['timetable']
+                            ]),
+                            new Link([
+                                'id' => 'thermostat-modes',
+                                'title' => 'Modes',
+                                'link' => '/thermostat-modes',
+                                'icon' => $icons['table']
+                            ])
+
+                        ]
+                    ]
+                ),
+                new Subheader(
+                    [
+                        'title' => 'Système',
+                        'links' => [
+                            new Link([
+                                'id' => 'console',
+                                'title' => 'Console',
+                                'link' => '/console',
+                                'icon' => $icons['table']
+                            ]),
+                            new Link([
+                                'id' => 'crontab',
+                                'title' => 'Crontab',
+                                'link' => '/crontab',
+                                'icon' => $icons['timetable']
+                            ]),
+                            new Link([
+                                'id' => 'configuration',
+                                'title' => 'Configuration',
+                                'link' => '/configuration',
+                                'icon' => $icons['build']
+                            ]),
+                        ]
+                    ]
+                )
+            ]
+        ]
+    );
+
+
+    echo $sidenav->getHtml();
+
+}
+?>

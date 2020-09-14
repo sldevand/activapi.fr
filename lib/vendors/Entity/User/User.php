@@ -4,6 +4,7 @@ namespace Entity\User;
 
 use OCFram\Entity;
 use OCFram\Hydrator;
+use SFram\Traits\Entity\EntityTimestampableTrait;
 
 /**
  * Class User
@@ -12,6 +13,7 @@ use OCFram\Hydrator;
 class User extends Entity
 {
     use Hydrator;
+    use EntityTimestampableTrait;
 
     /** @var int */
     protected $id;
@@ -35,8 +37,5 @@ class User extends Entity
     protected $activated;
 
     /** @var string */
-    protected $createdAt;
-
-    /** @var string */
-    protected $updatedAt;
+    protected $role;
 }

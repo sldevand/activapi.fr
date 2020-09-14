@@ -22,6 +22,12 @@ class Form
     /** @var string */
     protected $action = '';
 
+    /** @var string */
+    protected $id = '';
+
+    /** @var bool */
+    protected $ajax = false;
+
     /**
      * Form constructor.
      * @param Entity $entity
@@ -92,7 +98,6 @@ class Form
             $view .= '</div>';
             $view .= $this->createWidgetView($field);
         }
-
 
         return $view;
     }
@@ -169,6 +174,44 @@ class Form
     public function setAction(string $action): Form
     {
         $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     * @return Form
+     */
+    public function setId(string $id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAjax()
+    {
+        return $this->ajax;
+    }
+
+    /**
+     * @param bool $ajax
+     * @return Form
+     */
+    public function setAjax(bool $ajax)
+    {
+        $this->ajax = $ajax;
 
         return $this;
     }

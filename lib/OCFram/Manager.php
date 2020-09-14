@@ -37,5 +37,10 @@ abstract class Manager
         return $this->dao;
     }
 
-    abstract public function save(Entity $entity);
+    /**
+     * @param $entity
+     * @param array $ignoreProperties
+     * @return mixed
+     */
+    abstract public function save($entity, $ignoreProperties = []);
 }

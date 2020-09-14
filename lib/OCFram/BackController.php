@@ -101,11 +101,11 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     * @param $view
+     * @param string $view
      */
-    public function setView($view)
+    public function setView(string $view)
     {
-        if (!is_string($view) || empty($view)) {
+        if (empty($view)) {
             throw new \InvalidArgumentException('La vue doit être une chaine de caractères valide');
         }
 

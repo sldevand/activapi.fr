@@ -17,6 +17,9 @@ class LoginFormBuilder extends FormBuilder
     public function build()
     {
         $this->form
+            ->setAjax(true)
+            ->setId('login-form')
+            ->setAction(ROOT_API . '/user/login')
             ->add(
                 new StringField(
                     [

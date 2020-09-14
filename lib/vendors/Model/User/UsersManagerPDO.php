@@ -4,6 +4,7 @@ namespace Model\User;
 
 use Entity\User\User;
 use Model\ManagerPDO;
+use SFram\Traits\Repository\RepositoryTimestampableTrait;
 
 /**
  * Class UsersManagerPDO
@@ -11,6 +12,8 @@ use Model\ManagerPDO;
  */
 class UsersManagerPDO extends ManagerPDO
 {
+    use RepositoryTimestampableTrait;
+
     /**
      * UsersManagerPDO constructor.
      * @param \PDO $dao
@@ -20,5 +23,14 @@ class UsersManagerPDO extends ManagerPDO
         parent::__construct($dao);
         $this->tableName = 'user';
         $this->entity = new User();
+    }
+
+    /**
+     * @return null|\OCFram\Entity
+     * @throws \Exception
+     */
+    public function getAdminUser()
+    {
+        return $this->getUniqueBy('role', 'admin');
     }
 }

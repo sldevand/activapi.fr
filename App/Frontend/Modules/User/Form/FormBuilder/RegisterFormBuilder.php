@@ -17,42 +17,55 @@ class RegisterFormBuilder extends FormBuilder
      */
     public function build()
     {
-        $this->form->add(
-            new StringField(
-                [
-                    'label' => 'Email',
-                    'name' => 'email',
-                    'required' => true,
-                    'type' => 'email'
-                ]
-            )
-        )->add(
-            new StringField(
-                [
-                    'label' => 'Prénom',
-                    'name' => 'firstName',
-                    'required' => true,
-                    'type' => 'text'
-                ]
-            )
-        )->add(
-            new StringField(
-                [
-                    'label' => 'Nom',
-                    'name' => 'lastName',
-                    'required' => true,
-                    'type' => 'text'
-                ]
-            )
-        )->add(
-            new StringField(
-                [
-                    'label' => 'Mot de passe',
-                    'name' => 'password',
-                    'required' => true,
-                    'type' => 'password'
-                ]
-            )
-        );
+        $this->form
+            ->setAjax(true)
+            ->setId('register-form')
+            ->setAction(ROOT_API . '/user/register')
+            ->add(
+                new StringField(
+                    [
+                        'label' => 'Email',
+                        'name' => 'email',
+                        'required' => true,
+                        'type' => 'email'
+                    ]
+                )
+            )->add(
+                new StringField(
+                    [
+                        'label' => 'Prénom',
+                        'name' => 'firstName',
+                        'required' => true,
+                        'type' => 'text'
+                    ]
+                )
+            )->add(
+                new StringField(
+                    [
+                        'label' => 'Nom',
+                        'name' => 'lastName',
+                        'required' => true,
+                        'type' => 'text'
+                    ]
+                )
+            )->add(
+                new StringField(
+                    [
+                        'label' => 'Mot de passe',
+                        'name' => 'password',
+                        'required' => true,
+                        'type' => 'password'
+                    ]
+                )
+            )->add(
+                new StringField(
+                    [
+                        'label' => 'Répeter Mot de passe',
+                        'name' => 'password-repeat',
+                        'required' => true,
+                        'type' => 'password'
+                    ]
+                )
+            );
     }
 }

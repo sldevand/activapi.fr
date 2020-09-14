@@ -94,11 +94,11 @@ class Page extends ApplicationComponent
     }
 
     /**
-     * @param $contentFile
+     * @param string $contentFile
      */
-    public function setContentFile($contentFile)
+    public function setContentFile(string $contentFile)
     {
-        if (!is_string($contentFile) || empty($contentFile)) {
+        if (empty($contentFile)) {
             throw new \InvalidArgumentException('La vue spécifiée est invalide');
         }
 

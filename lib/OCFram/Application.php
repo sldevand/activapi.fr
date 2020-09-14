@@ -109,17 +109,16 @@ abstract class Application
     }
 
     /**
-     * @return \OCFram\Route
+     * @return Route | null
      */
     protected function matchRoute()
     {
         try {
-            $matchedRoute = $this->router->getRoute($this->httpRequest->requestURI());
+            return $this->router->getRoute($this->httpRequest->requestURI());
         } catch (\RuntimeException $e) {
             $this->httpResponse->redirect404();
+            return null;
         }
-
-        return $matchedRoute;
     }
 
     /**
