@@ -55,7 +55,6 @@ class MailerConfigurationAction extends ApplicationComponent
      */
     public function execute(HTTPRequest $request)
     {
-
         $configurations = $this->configHelper->getConfigurations();
         $mailerForm = $this->createMailerForm($configurations);
 
