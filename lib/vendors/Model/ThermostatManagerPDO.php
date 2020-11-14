@@ -127,18 +127,19 @@ class ThermostatManagerPDO extends ManagerPDO
      */
     public function modify(Thermostat $thermostat)
     {
-        $q = $this->prepare('UPDATE thermostat SET nom = :nom, modeid = :modeid, sensorid = :sensorid, planning = :planning, manuel = :manuel, consigne = :consigne, delta = :delta, interne = :interne, etat = :etat,releve=DateTime("now","localtime")  WHERE id = :id');
+        $q = $this->prepare('UPDATE thermostat SET nom = :nom, modeid = :modeid, sensorid = :sensorid, planning = :planning, manuel = :manuel, consigne = :consigne, delta = :delta, interne = :interne, etat = :etat, releve=DateTime("now","localtime"), pwr = :pwr WHERE id = :id');
 
-        $q->bindParam(':id', $thermostat->id());
-        $q->bindParam(':nom', $thermostat->nom());
-        $q->bindParam(':modeid', $thermostat->modeid());
-        $q->bindParam(':sensorid', $thermostat->sensorid());
-        $q->bindParam(':planning', $thermostat->planning());
-        $q->bindParam(':manuel', $thermostat->manuel());
-        $q->bindParam(':consigne', $thermostat->consigne());
-        $q->bindParam(':delta', $thermostat->delta());
-        $q->bindParam(':interne', $thermostat->interne());
-        $q->bindParam(':etat', $thermostat->etat());
+        $q->bindValue(':id', $thermostat->id());
+        $q->bindValue(':nom', $thermostat->nom());
+        $q->bindValue(':modeid', $thermostat->modeid());
+        $q->bindValue(':sensorid', $thermostat->sensorid());
+        $q->bindValue(':planning', $thermostat->planning());
+        $q->bindValue(':manuel', $thermostat->manuel());
+        $q->bindValue(':consigne', $thermostat->consigne());
+        $q->bindValue(':delta', $thermostat->delta());
+        $q->bindValue(':interne', $thermostat->interne());
+        $q->bindValue(':etat', $thermostat->etat());
+        $q->bindValue(':pwr', $thermostat->pwr());
         $q->execute();
         $q->closeCursor();
     }

@@ -78,8 +78,8 @@ class ThermostatController extends BackController
 
         foreach ($thermostats as $key => $thermostat) {
             $thermostat["mode"] = $thermostat["mode"]["nom"];
-            $thermostat["etat"] = $this->iconifyPower($thermostat["etat"]);
-
+            $thermostat["etat"] = $this->iconifyPower($thermostat["etat"] ?? 0);
+            $thermostat['pwr'] =$this->iconifyPower($thermostat['pwr'] ?? 0);
 
             $tableThermostatDatas[] = $thermostat;
         }
@@ -119,7 +119,7 @@ class ThermostatController extends BackController
             $data["actif"] = $this->iconifyResult($data["actif"]);
             $tableDatas[] = $data;
         }
-        $datasSensorsTemoin["actif"] = $this->iconifyResult($datasSensorsTemoin["actif"]);
+        $datasSensorsTemoin["actif"] = $this->iconifyResult($datasSensorsTemoin["actif"] ?? 0);
         $tableDatasSensorTemoin[] = $datasSensorsTemoin;
 
 

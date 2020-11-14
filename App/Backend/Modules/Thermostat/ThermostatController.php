@@ -56,7 +56,8 @@ class ThermostatController extends BackController
             'consigne' => $request->postData('consigne'),
             'delta' => $request->postData('delta'),
             'interne' => $request->postData('interne'),
-            'etat' => $postEtat
+            'etat' => $postEtat,
+            'pwr' => $request->postData('pwr') ?? 0
         ];
 
         foreach ($hydrate as $key => $value) {

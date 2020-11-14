@@ -21,8 +21,8 @@ REMOTE_APP_LINK_PATH=$REMOTE_WWW_PATH/$REMOTE_APP_LINK
 REMOTE_COMPOSER=/usr/local/bin/composer
 REMOTE_ENV_FILE=/home/pi/deploy/activapi/.env
 
-myEcho "***Remote : kill nodejs server***"
-sudo killall node
+myEcho "***Remote : stop activServer service***"
+sudo service activServer stop
 
 myEcho "***Remote : removing previous symbolic link***"
 sudo rm -rvf $REMOTE_WWW_PATH/$REMOTE_APP_LINK

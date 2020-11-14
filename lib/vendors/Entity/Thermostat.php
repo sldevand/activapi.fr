@@ -86,6 +86,11 @@ class Thermostat extends Entity
     protected $hygrometrie;
 
     /**
+     * @var int
+     */
+    protected $pwr;
+
+    /**
      * @return string
      */
     public function nom()
@@ -179,6 +184,14 @@ class Thermostat extends Entity
     public function hygrometrie()
     {
         return $this->hygrometrie;
+    }
+
+    /**
+     * @return int
+     */
+    public function pwr()
+    {
+        return $this->pwr;
     }
 
     /**
@@ -332,6 +345,17 @@ class Thermostat extends Entity
     }
 
     /**
+     * @param int $pwr
+     * @return Thermostat
+     */
+    public function setPwr($pwr)
+    {
+        $this->pwr = $pwr;
+
+        return $this;
+    }
+
+    /**
      * @param Thermostat $thermostat
      * @return bool
      */
@@ -385,7 +409,8 @@ class Thermostat extends Entity
             'etat' => $this->etat,
             'releve' => $this->releve,
             'temperature' => $this->temperature,
-            'hygrometrie' => $this->hygrometrie
+            'hygrometrie' => $this->hygrometrie,
+            'pwr' => $this->pwr
         );
     }
 }
