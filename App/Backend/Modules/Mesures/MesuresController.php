@@ -5,6 +5,7 @@ namespace App\Backend\Modules\Mesures;
 use DateTime;
 use DateTimeZone;
 use Entity\Mesure;
+use Entity\Sensor;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
@@ -71,7 +72,7 @@ class MesuresController extends BackController
 
         $listeMesures = [];
         $cacheFile = $sensorID . '-' . $dateMinOnly . '-' . $dateMaxOnly;
-        if (! $this->cache()->getData($cacheFile)) {
+        if (!$this->cache()->getData($cacheFile)) {
             $listeMesures = $manager->getSensorList($sensorID, $dateMinFull, $dateMaxFull);
             if (!$today) {
                 $this->cache()->saveData($cacheFile, $listeMesures);
@@ -136,6 +137,7 @@ class MesuresController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws \Exception
      */
     public function executeInsert(HTTPRequest $request)
@@ -145,7 +147,16 @@ class MesuresController extends BackController
         $sensorId = $request->getData("id_sensor");
 
         /** @var \Entity\Sensor $sensorEntity */
-        $sensorEntity = $manager->getSensor($sensorId)[0];
+        $sensorEntity = $manager->getSensor($sensorId);
+
+        if(is_array($sensorEntity)) {
+            $sensorEntity = current($sensorEntity);
+        }
+
+        if (!$sensorEntity instanceof Sensor) {
+            return $this->page->addVar('measure', 'No entity found with id ' . $sensorId);
+        }
+
         $temperature = $request->getData("temperature");
         $hygrometrie = $request->getData("hygrometrie");
 
@@ -163,7 +174,7 @@ class MesuresController extends BackController
 
         if (($temperature < $t_min_lim || $temperature > $t_max_lim)
             && ($hygrometrie < $h_min_lim || $hygrometrie > $h_max_lim)) {
-            $this->page->addVar('ajoutmesure', "limites de mesure dépassées!");
+            $this->page->addVar('measure', "limites de mesure dépassées!");
         }
 
         $derniereValeur1 = $sensorEntity->valeur1();
@@ -173,12 +184,14 @@ class MesuresController extends BackController
         $diff = abs($derniereValeur1 - $temperature);
 
         if ($diff > 0) {
-            $mesure = new Mesure(['id_sensor' => $sensorId,
-                'temperature' => $temperature,
-                'hygrometrie' => $hygrometrie]);
-            $this->page->addVar('ajoutmesure', $manager->addWithSensorId($mesure));
+            $mesure = new Mesure(
+                ['id_sensor' => $sensorId,
+                    'temperature' => $temperature,
+                    'hygrometrie' => $hygrometrie]
+            );
+            $this->page->addVar('measure', $manager->addWithSensorId($mesure));
         } else {
-            $this->page->addVar('ajoutmesure', 0);
+            $this->page->addVar('measure', 0);
         }
 
         $manager->sensorActivityUpdate($sensorEntity, 1);
