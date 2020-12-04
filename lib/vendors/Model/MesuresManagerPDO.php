@@ -112,14 +112,15 @@ class MesuresManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param $radioId
+     * @param mixed $value
+     * @param string $field
      * @return array
      * @throws \Exception
      */
-    public function getSensor($radioId)
+    public function getSensor($value, $field = 'radioid')
     {
-        $q = $this->prepare('SELECT * FROM sensors WHERE radioid = :radioid');
-        $q->bindParam(':radioid', $radioId);
+        $q = $this->prepare("SELECT * FROM sensors WHERE $field = :$field");
+        $q->bindParam(":$field", $value);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Sensor');
         $sensor = $q->fetchAll();

@@ -6,6 +6,7 @@ use DateTime;
 use DateTimeZone;
 use Entity\Mesure;
 use Entity\Sensor;
+use OCFram\Application;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
@@ -16,13 +17,29 @@ use OCFram\HTTPRequest;
  */
 class MesuresController extends BackController
 {
+    /** @var \Model\MesuresManagerPDO */
+    protected $manager;
+
+    /**
+     * MesuresController constructor.
+     * @param \OCFram\Application $app
+     * @param string $module
+     * @param string $action
+     * @throws \Exception
+     */
+    public function __construct(\OCFram\Application $app, string $module, string $action)
+    {
+        parent::__construct($app, $module, $action);
+        $this->manager = $this->managers->getManagerOf('Mesures');
+    }
+
     /**
      * @param HTTPRequest $request
      */
     public function executeDelete(HTTPRequest $request)
     {
         $id = $request->getData('id');
-        $this->managers->getManagerOf('Mesures')->delete($id);
+        $this->manager->delete($id);
         $this->app->user()->setFlash('La mesure a bien été supprimée !');
         $this->app->httpResponse()->redirect('.');
     }
@@ -34,7 +51,6 @@ class MesuresController extends BackController
     public function executeSensor(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Gestion de sensor');
-        $manager = $this->managers->getManagerOf('Mesures');
 
         $sensorID = $request->getData("id_sensor");
 
@@ -73,7 +89,7 @@ class MesuresController extends BackController
         $listeMesures = [];
         $cacheFile = $sensorID . '-' . $dateMinOnly . '-' . $dateMaxOnly;
         if (!$this->cache()->getData($cacheFile)) {
-            $listeMesures = $manager->getSensorList($sensorID, $dateMinFull, $dateMaxFull);
+            $listeMesures = $this->manager->getSensorList($sensorID, $dateMinFull, $dateMaxFull);
             if (!$today) {
                 $this->cache()->saveData($cacheFile, $listeMesures);
             }
@@ -142,14 +158,12 @@ class MesuresController extends BackController
      */
     public function executeInsert(HTTPRequest $request)
     {
-        $manager = $this->managers->getManagerOf('Mesures');
-
         $sensorId = $request->getData("id_sensor");
 
         /** @var \Entity\Sensor $sensorEntity */
-        $sensorEntity = $manager->getSensor($sensorId);
+        $sensorEntity = $this->manager->getSensor($sensorId);
 
-        if(is_array($sensorEntity)) {
+        if (is_array($sensorEntity)) {
             $sensorEntity = current($sensorEntity);
         }
 
@@ -157,8 +171,8 @@ class MesuresController extends BackController
             return $this->page->addVar('measure', 'No entity found with id ' . $sensorId);
         }
 
-        $temperature = $request->getData("temperature");
-        $hygrometrie = $request->getData("hygrometrie");
+        $valeur1 = $request->getData("valeur1");
+        $valeur2 = $request->getData("valeur2");
 
         $t_min_lim = -20;
         $t_max_lim = 50;
@@ -172,29 +186,36 @@ class MesuresController extends BackController
             $h_max_lim = 10000;
         }
 
-        if (($temperature < $t_min_lim || $temperature > $t_max_lim)
-            && ($hygrometrie < $h_min_lim || $hygrometrie > $h_max_lim)) {
-            $this->page->addVar('measure', "limites de mesure dépassées!");
+        if ($sensorEntity->categorie() == "thermo") {
+            $t_min_lim = 0;
+            $t_max_lim = 1000000;
+            $h_min_lim = 0;
+            $h_max_lim = 10000;
+        }
+
+        if (($valeur1 < $t_min_lim || $valeur1 > $t_max_lim)
+            || ($valeur2 < $h_min_lim || $valeur2 > $h_max_lim)) {
+            return $this->page->addVar('measure', ["error" => "limites de mesure dépassées!"]);
         }
 
         $derniereValeur1 = $sensorEntity->valeur1();
-        $sensorEntity->setValeur1($temperature);
-        $sensorEntity->setValeur2($hygrometrie);
+        $sensorEntity->setValeur1($valeur1);
+        $sensorEntity->setValeur2($valeur2);
 
-        $diff = abs($derniereValeur1 - $temperature);
+        $diff = abs($derniereValeur1 - $valeur1);
 
         if ($diff > 0) {
             $mesure = new Mesure(
                 ['id_sensor' => $sensorId,
-                    'temperature' => $temperature,
-                    'hygrometrie' => $hygrometrie]
+                    'temperature' => $valeur1,
+                    'hygrometrie' => $valeur2]
             );
-            $this->page->addVar('measure', $manager->addWithSensorId($mesure));
+            $this->page->addVar('measure', $this->manager->addWithSensorId($mesure));
         } else {
             $this->page->addVar('measure', 0);
         }
 
-        $manager->sensorActivityUpdate($sensorEntity, 1);
+        $this->manager->sensorActivityUpdate($sensorEntity, 1);
 
         $dateMinFull = DateFactory::createDateFromStr("now");
         $dateMaxFull = DateFactory::createDateFromStr("now");
@@ -209,17 +230,89 @@ class MesuresController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
+     * @throws \Exception
+     */
+    public function executeInsertChacon(HTTPRequest $request)
+    {
+        $radioaddress = $request->getData("radioaddress") ?? '';
+        $radioaddress=urldecode($radioaddress);
+
+        /** @var \Entity\Sensor $sensorEntity */
+        $sensorEntity = $this->manager->getSensor($radioaddress, 'radioaddress');
+
+        if (is_array($sensorEntity)) {
+            $sensorEntity = current($sensorEntity);
+        }
+
+        if (!$sensorEntity instanceof Sensor) {
+            return $this->page->addVar('measure', 'No entity found with radioaddress ' . $radioaddress);
+        }
+
+        $valeur1 = $request->getData("valeur1");
+        $valeur2 = $request->getData("valeur2");
+
+
+        if (($valeur1 < 0 || $valeur1 > 1)
+            || ($valeur2 < 0 || $valeur2 > 1)) {
+            return $this->page->addVar('measure', ["error" => "limites de mesure dépassées!"]);
+        }
+
+        $derniereValeur1 = $sensorEntity->valeur1();
+        $sensorEntity->setValeur1($valeur1);
+        $sensorEntity->setValeur2($valeur2);
+
+        $diff = abs($derniereValeur1 - $valeur1);
+
+        if ($diff > 0) {
+            $mesure = new Mesure(
+                [
+                    'id_sensor' => $sensorEntity->id(),
+                    'temperature' => $valeur1,
+                    'hygrometrie' => $valeur2
+                ]
+            );
+
+            $this->page->addVar('measure', $this->manager->addWithSensorId($mesure));
+        } else {
+            $this->page->addVar('measure', false);
+        }
+
+        $this->manager->sensorActivityUpdate($sensorEntity, 1);
+
+        $dateMinFull = DateFactory::createDateFromStr("now");
+        $dateMaxFull = DateFactory::createDateFromStr("now");
+
+        $dateMin = $dateMinFull->format('Y-m-d');
+        $dateMax = $dateMaxFull->format('Y-m-d');
+
+        $file = $sensorEntity->id() . '-' . $dateMin . '-' . $dateMax;
+        $this->cache()->setDataPath($file);
+        $this->cache()->deleteFile();
+    }
+
+
+    /**
+     * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeSensorStruct(HTTPRequest $request)
     {
-        $manager = $this->managers->getManagerOf('Mesures');
-        $radioid = $request->getData("radioid");
-        $sensor = $manager->getSensor($radioid);
+        if ($radioid = $request->getData('radioid')) {
+            $sensor = $this->manager->getSensor($radioid);
+        }
+
+        if ($radioaddress = $request->getData('radioaddress')) {
+            $radioaddress = urldecode($radioaddress);
+            $sensor = $this->manager->getSensor($radioaddress, 'radioaddress');
+        }
+
         $this->page->addVar('sensor', $sensor);
     }
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeSensors(HTTPRequest $request)
     {
@@ -227,11 +320,13 @@ class MesuresController extends BackController
         if ($categorie === null) {
             $categorie = "";
         }
-        $manager = $this->managers->getManagerOf('Mesures');
-        $sensors = $manager->getSensors($categorie);
+        $sensors = $this->manager->getSensors($categorie);
 
         /** @var \Entity\Sensor $sensor */
         foreach ($sensors as $sensor) {
+            if ($sensor->categorie() === 'door') {
+                continue;
+            }
             $this->checkSensorActivity($sensor->radioid());
         }
         $this->page->addVar('sensors', $sensors);
@@ -239,15 +334,15 @@ class MesuresController extends BackController
 
     /**
      * @param string $radioid
+     * @throws \Exception
      */
     protected function checkSensorActivity($radioid)
     {
-        $manager = $this->managers->getManagerOf('Mesures');
         /** @var \Entity\Sensor $sensorEntity */
-        $sensorEntity = $manager->getSensor($radioid)[0];
+        $sensorEntity = $this->manager->getSensor($radioid)[0];
         $minutes = DateFactory::diffMinutesFromStr("now", $sensorEntity->releve());
         if ($minutes >= 10) {
-            $manager->sensorActivityUpdate($sensorEntity, 0);
+            $this->manager->sensorActivityUpdate($sensorEntity, 0);
         }
     }
 }
