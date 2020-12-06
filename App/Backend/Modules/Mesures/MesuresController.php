@@ -245,7 +245,7 @@ class MesuresController extends BackController
             $sensorEntity = current($sensorEntity);
         }
 
-        if (!$sensorEntity instanceof Sensor) {
+        if (!$sensorEntity instanceof Sensor || !$sensorEntity->id()) {
             return $this->page->addVar('measure', 'No entity found with radioaddress ' . $radioaddress);
         }
 
@@ -258,25 +258,19 @@ class MesuresController extends BackController
             return $this->page->addVar('measure', ["error" => "limites de mesure dépassées!"]);
         }
 
-        $derniereValeur1 = $sensorEntity->valeur1();
         $sensorEntity->setValeur1($valeur1);
         $sensorEntity->setValeur2($valeur2);
 
-        $diff = abs($derniereValeur1 - $valeur1);
+        $mesure = new Mesure(
+            [
+                'id_sensor' => $sensorEntity->radioid(),
+                'temperature' => $valeur1,
+                'hygrometrie' => $valeur2
+            ]
+        );
 
-        if ($diff > 0) {
-            $mesure = new Mesure(
-                [
-                    'id_sensor' => $sensorEntity->id(),
-                    'temperature' => $valeur1,
-                    'hygrometrie' => $valeur2
-                ]
-            );
-
-            $this->page->addVar('measure', $this->manager->addWithSensorId($mesure));
-        } else {
-            $this->page->addVar('measure', false);
-        }
+        $res = $this->manager->addWithSensorId($mesure);
+        $this->page->addVar('measure', $res);
 
         $this->manager->sensorActivityUpdate($sensorEntity, 1);
 

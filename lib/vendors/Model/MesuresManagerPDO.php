@@ -35,9 +35,13 @@ class MesuresManagerPDO extends ManagerPDO
         $id = $q->fetchColumn();
         $q->closeCursor();
 
+        if (!$id) {
+            throw new \Exception('In addWithSensorId, sensor not found with radioid :' . $mesure->id_sensor());
+        }
+
         $q = $this->prepare(
             'INSERT INTO mesures (id_sensor, temperature, hygrometrie, horodatage) 
-                       VALUES (:id_sensor,:temperature,:hygrometrie,DateTime("now","localtime"))'
+             VALUES (:id_sensor,:temperature,:hygrometrie,DateTime("now","localtime"))'
         );
         $q->bindValue(':id_sensor', $id);
         $q->bindValue(':temperature', $mesure->temperature());
