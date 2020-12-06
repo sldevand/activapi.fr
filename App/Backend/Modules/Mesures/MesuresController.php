@@ -236,7 +236,7 @@ class MesuresController extends BackController
     public function executeInsertChacon(HTTPRequest $request)
     {
         $radioaddress = $request->getData("radioaddress") ?? '';
-        $radioaddress=urldecode($radioaddress);
+        $radioaddress = urldecode($radioaddress);
 
         /** @var \Entity\Sensor $sensorEntity */
         $sensorEntity = $this->manager->getSensor($radioaddress, 'radioaddress');
@@ -269,8 +269,12 @@ class MesuresController extends BackController
             ]
         );
 
-        $res = $this->manager->addWithSensorId($mesure);
-        $this->page->addVar('measure', $res);
+        if ($res = $this->manager->addWithSensorId($mesure)) {
+            $this->page->addVar('measure', $mesure);
+        } else {
+            return $this->page->addVar('measure', ['error' => 'Could not save the measure']);
+        }
+
 
         $this->manager->sensorActivityUpdate($sensorEntity, 1);
 
