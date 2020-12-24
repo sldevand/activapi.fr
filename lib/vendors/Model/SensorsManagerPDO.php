@@ -30,12 +30,12 @@ class SensorsManagerPDO extends ManagerPDO
     public function getList($categorie = "")
     {
         $sql = "SELECT * FROM $this->tableName";
-        if ($categorie != "") {
+        if ($categorie) {
             $sql .= ' WHERE categorie = :categorie';
         }
 
         $q = $this->prepare($sql);
-        if ($categorie != "") {
+        if ($categorie) {
             $q->bindParam(':categorie', $categorie);
         }
 
