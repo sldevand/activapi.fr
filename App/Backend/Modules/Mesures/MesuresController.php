@@ -6,7 +6,7 @@ use DateTime;
 use DateTimeZone;
 use Entity\Mesure;
 use Entity\Sensor;
-use OCFram\Application;
+use Helper\Mesures\Data;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
@@ -226,6 +226,8 @@ class MesuresController extends BackController
         $file = $sensorId . '-' . $dateMin . '-' . $dateMax;
         $this->cache()->setDataPath($file);
         $this->cache()->deleteFile();
+
+        return $this->page();
     }
 
     /**
@@ -318,28 +320,28 @@ class MesuresController extends BackController
         if ($categorie === null) {
             $categorie = "";
         }
-        $sensors = $this->manager->getSensors($categorie);
 
-        /** @var \Entity\Sensor $sensor */
+        $sensors = $this->manager->getSensors($categorie);
         foreach ($sensors as $sensor) {
-            if ($sensor->categorie() === 'door') {
-                continue;
-            }
-            $this->checkSensorActivity($sensor->radioid());
+            $this->checkSensorActivity($sensor);
         }
         $this->page->addVar('sensors', $sensors);
     }
 
     /**
-     * @param string $radioid
+     * @param \Entity\Sensor $sensor
      * @throws \Exception
      */
-    protected function checkSensorActivity($radioid)
+    protected function checkSensorActivity(Sensor $sensor)
     {
+        if ($sensor->categorie() === 'door') {
+            return;
+        }
+
         /** @var \Entity\Sensor $sensorEntity */
-        $sensorEntity = $this->manager->getSensor($radioid)[0];
+        $sensorEntity = $this->manager->getSensor($sensor->radioid())[0];
         $minutes = DateFactory::diffMinutesFromStr("now", $sensorEntity->releve());
-        if ($minutes >= 10) {
+        if ($minutes >= Data::SENSOR_ACTIVITY_TIME && $sensorEntity->actif() === 1) {
             $this->manager->sensorActivityUpdate($sensorEntity, 0);
         }
     }

@@ -30,20 +30,20 @@ class SensorsManagerPDO extends ManagerPDO
     public function getList($categorie = "")
     {
         $sql = "SELECT * FROM $this->tableName";
-        if ($categorie != "") {
+        if ($categorie) {
             $sql .= ' WHERE categorie = :categorie';
         }
 
         $q = $this->prepare($sql);
-        if ($categorie != "") {
+        if ($categorie) {
             $q->bindParam(':categorie', $categorie);
         }
 
         $q->execute();
         $q->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '\Entity\Sensor');
-        $listeSensor = $q->fetchAll();
+        $sensors = $q->fetchAll();
         $q->closeCursor();
 
-        return $listeSensor;
+        return $sensors;
     }
 }
