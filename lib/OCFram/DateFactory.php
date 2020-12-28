@@ -30,6 +30,7 @@ class DateFactory
      * @param string $dateStr1
      * @param string $dateStr2
      * @return float|int
+     * @throws \Exception
      */
     public static function diffMinutesFromStr($dateStr1, $dateStr2)
     {
@@ -52,6 +53,7 @@ class DateFactory
     /**
      * @param string $dateStr
      * @return DateTime
+     * @throws \Exception
      */
     public static function createDateFromStr($dateStr)
     {
@@ -60,17 +62,35 @@ class DateFactory
 
     /**
      * @return string
+     * @throws \Exception
      */
     public static function todayToString()
     {
-        $now = new DateTime("now", new DateTimeZone('Europe/Paris'));
+        return self::now()->format("Y-m-d");
+    }
 
-        return $now->format("Y-m-d");
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public static function todayFullString()
+    {
+        return self::now()->format('20y-m-d H:i:s');
+    }
+
+    /**
+     * @return \DateTime
+     * @throws \Exception
+     */
+    public static function now()
+    {
+        return new DateTime('now', new DateTimeZone('Europe/Paris'));
     }
 
     /**
      * @param string $dateStr
      * @return string
+     * @throws \Exception
      */
     public static function toFrDate($dateStr)
     {
@@ -95,46 +115,5 @@ class DateFactory
         }
 
         return $strDay[$dayNbr];
-    }
-
-    /**
-     * @param $hourStr
-     * @return string
-     */
-    public function prepareHourFromFile($hourStr)
-    {
-        $hourStr = explode(' ', $hourStr);
-        $timeStr = explode(':', $hourStr[0]);
-
-        $heure = $timeStr[0];
-        $minute = $timeStr[1];
-        $seconde = $timeStr[2];
-
-        if (strlen($heure . ':' . $minute . ':' . $seconde) < 8) {
-            if (strlen($heure) == 1) {
-                $heure = '0' . $heure;
-            }
-            if (strlen($minute) == 1) {
-                $minute = '0' . $minute;
-            }
-            if (strlen($seconde) == 1) {
-                $seconde = '0' . $seconde;
-            }
-        }
-
-        return $heure . ':' . $minute . ':' . $seconde;
-    }
-
-    /**
-     * @param $dateStr
-     * @return false|int|string
-     */
-    public function createDate($dateStr)
-    {
-        $date = date_create_from_format('d-m-Y H:i:s', $dateStr);
-        if (!is_bool($date)) {
-            return date_format($date, '20y-m-d H:i:s');
-        }
-        return -1;
     }
 }

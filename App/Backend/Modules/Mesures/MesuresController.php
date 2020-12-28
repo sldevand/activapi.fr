@@ -205,12 +205,7 @@ class MesuresController extends BackController
         $diff = abs($derniereValeur1 - $valeur1);
 
         if ($diff > 0) {
-            $mesure = new Mesure(
-                ['id_sensor' => $sensorId,
-                    'temperature' => $valeur1,
-                    'hygrometrie' => $valeur2]
-            );
-            $this->page->addVar('measure', $this->manager->addWithSensorId($mesure));
+            $this->page->addVar('measure', $this->manager->addWithSensorId($sensorEntity));
         } else {
             $this->page->addVar('measure', 0);
         }
@@ -271,7 +266,7 @@ class MesuresController extends BackController
             ]
         );
 
-        if ($res = $this->manager->addWithSensorId($mesure)) {
+        if ($res = $this->manager->addWithSensorId($sensorEntity)) {
             $this->page->addVar('measure', $mesure);
         } else {
             return $this->page->addVar('measure', ['error' => 'Could not save the measure']);
@@ -307,7 +302,7 @@ class MesuresController extends BackController
             $sensor = $this->manager->getSensor($radioaddress, 'radioaddress');
         }
 
-        $this->page->addVar('sensor', $sensor);
+        $this->page->addVar('sensor', [$sensor]);
     }
 
     /**
@@ -320,29 +315,12 @@ class MesuresController extends BackController
         if ($categorie === null) {
             $categorie = "";
         }
-
-        $sensors = $this->manager->getSensors($categorie);
+        /** @var \Model\SensorsManagerPDO $sensorsManager */
+        $sensorsManager = $this->managers->getManagerOf('Sensors');
+        $sensors = $sensorsManager->getList($categorie);
         foreach ($sensors as $sensor) {
-            $this->checkSensorActivity($sensor);
+            $sensorsManager->checkSensorActivity($sensor);
         }
         $this->page->addVar('sensors', $sensors);
-    }
-
-    /**
-     * @param \Entity\Sensor $sensor
-     * @throws \Exception
-     */
-    protected function checkSensorActivity(Sensor $sensor)
-    {
-        if ($sensor->categorie() === 'door') {
-            return;
-        }
-
-        /** @var \Entity\Sensor $sensorEntity */
-        $sensorEntity = $this->manager->getSensor($sensor->radioid())[0];
-        $minutes = DateFactory::diffMinutesFromStr("now", $sensorEntity->releve());
-        if ($minutes >= Data::SENSOR_ACTIVITY_TIME && $sensorEntity->actif() === 1) {
-            $this->manager->sensorActivityUpdate($sensorEntity, 0);
-        }
     }
 }

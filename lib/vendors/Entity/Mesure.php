@@ -104,7 +104,7 @@ class Mesure extends Entity
             throw new Exception('nom invalide!');
         }
 
-        $this->$nom = $nom;
+        $this->nom = $nom;
 
         return $this;
     }
