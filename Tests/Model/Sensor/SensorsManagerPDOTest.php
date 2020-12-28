@@ -70,6 +70,33 @@ class SensorsManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInt
     }
 
     /**
+     * @dataProvider getAllProvider
+     * @param Sensor[] $sensors
+     * @param Sensor[] $expected
+     * @throws \Exception
+     */
+    public function testGetList($sensors, $expected)
+    {
+        self::dropAndCreateTables();
+
+        $manager = $this->getManager();
+        foreach ($sensors as $sensor) {
+            $manager->save($sensor);
+        }
+        //Test getList
+        $persisted = $manager->getList();
+        self::assertEquals($expected, $persisted);
+
+        // We remove the non thermo categorie entities
+        unset($expected[3]);
+        $expected = array_values($expected);
+
+        // Test filtered by categorie thermo list
+        $persisted = $manager->getList('thermo');
+        self::assertEquals($expected, $persisted);
+    }
+
+    /**
      * @dataProvider deleteProvider
      * @param Sensor $sensor
      * @param Sensor $expected
@@ -116,16 +143,13 @@ class SensorsManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInt
     public function getAllProvider()
     {
         $sensorsEntities = SensorsMock::getSensors();
-        $expectedSensors = [];
-        $i = 1;
-        foreach ($sensorsEntities as $key => $sensorsEntity) {
-            $expectedSensors[$i - 1] = clone $sensorsEntity;
-            $expectedSensors[$i - 1]->setId($i);
-            $i++;
+        $expectedSensors = unserialize(serialize($sensorsEntities));
+        foreach ($expectedSensors as $key => $expectedSensor) {
+            $expectedSensor->setId($key + 1);
         }
 
         return [
-            "createSensors" => [ $sensorsEntities , $expectedSensors]
+            "createSensors" => [$sensorsEntities, $expectedSensors]
         ];
     }
 
