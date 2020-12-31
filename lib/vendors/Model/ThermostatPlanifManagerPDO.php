@@ -149,6 +149,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
 
     /**
      * @param ThermostatPlanif $thermostatPlanif
+     * @return bool
      * @throws Exception
      */
     public function modify(ThermostatPlanif $thermostatPlanif)
@@ -177,40 +178,12 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         return $result;
     }
 
-
-    /**
-     * @param Entity $thermostatPlanif
-     * @param array $ignoreProperties
-     * @return bool|void
-     * @throws Exception
-     */
-    public function add($thermostatPlanif, $ignoreProperties = [])
-    {
-        $sql = 'INSERT INTO thermostat_planif 
-            (jour,modeid,defaultModeid,heure1Start,heure1Stop,heure2Start,heure2Stop,nomid) 
-            VALUES          
-            (:jour,:modeid,:defaultModeid,:heure1Start,:heure1Stop,:heure2Start,:heure2Stop,:nomid) ';
-
-        $q = $this->prepare($sql);
-        $q->bindValue(':jour', $thermostatPlanif->jour());
-        $q->bindValue(':modeid', $thermostatPlanif->modeid());
-        $q->bindValue(':defaultModeid', $thermostatPlanif->defaultModeid());
-        $q->bindValue(':heure1Start', $thermostatPlanif->heure1Start());
-        $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
-        $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
-        $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
-        $q->bindValue(':nomid', $thermostatPlanif->nomid());
-        $q->execute();
-        $q->closeCursor();
-    }
-
-
     /**
      * @param \Entity\ThermostatPlanifNom $nom
      * @return int
      * @throws Exception
      */
-    public function addPlanifTable($nom)
+    public function addPlanifTable(\Entity\ThermostatPlanifNom $nom)
     {
         $nomId = (int)$this->addNom($nom);
         if ($nomId <= 0) {
@@ -229,7 +202,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
                 "nomid" => $nomId
             ]);
 
-            $this->add($thermostatPlanif);
+            $this->add($thermostatPlanif, $this->getIgnoreProperties());
         }
 
         return $nomId;
@@ -339,5 +312,10 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $q->closeCursor();
 
         return $planifs;
+    }
+
+    protected function getIgnoreProperties()
+    {
+        return ['nom', 'defaultMode', 'mode', 'modes'];
     }
 }
