@@ -36,10 +36,12 @@ class ThermostatController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
+     * @param \OCFram\HTTPRequest $request
+     * @throws \Exception
      */
     public function executeUpdate(HTTPRequest $request)
     {
+        /** @var \Model\ThermostatManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Thermostat');
         $thermostatPDO = $manager->getList();
         $thermostat = $thermostatPDO[0];
@@ -113,7 +115,7 @@ class ThermostatController extends BackController
      */
     public function executeLog(HTTPRequest $request)
     {
-
+        /** @var \Model\ThermostatManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Thermostat');
 
         $dateMin = 'now';

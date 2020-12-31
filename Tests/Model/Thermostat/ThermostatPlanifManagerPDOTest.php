@@ -2,6 +2,7 @@
 
 namespace Tests\Model\Thermostat;
 
+use Entity\ThermostatPlanif;
 use Model\ThermostatModesManagerPDO;
 use Model\ThermostatPlanifManagerPDO;
 use Tests\AbstractPDOTestCase;
@@ -70,6 +71,28 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
     }
 
     /**
+     * @throws \Exception
+     */
+    public function testModify()
+    {
+        $manager = $this->getManager();
+        $thermostatPlanifNom = self::deepCopy(ThermostatPlanifMock::getThermostatPlanifNom());
+        $thermostatPlanifNom->setId('1');
+        $manager->addPlanifTable($thermostatPlanifNom);
+        $thermostatPlanif = $manager->getUnique(1);
+        $thermostatPlanif
+            ->setHeure1Start('10:00:00')
+            ->setHeure1Stop('18:00:00')
+            ->setHeure2Start('18:00:00')
+            ->setHeure2Stop('23:59:00');
+
+        $result = $manager->modify($thermostatPlanif);
+        self::assertTrue($result);
+        $persisted = $manager->getUnique(1);
+        self::assertEquals($thermostatPlanif, $persisted);
+    }
+
+    /**
      * @dataProvider getAllProvider
      * @param \Entity\ThermostatPlanif[] $thermostatPlanifs
      * @param \Entity\ThermostatPlanif[] $expected
@@ -120,9 +143,60 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
         $manager = $this->getManager();
         $manager->save($thermostatPlanif);
         $manager->delete($expected->id());
-        $sensor = $manager->getUnique($expected->id());
-        self::assertFalse($sensor, '');
+        $result = $manager->getUnique($expected->id());
+        self::assertFalse($result);
+
+        $result = $manager->getNom($expected->id());
+        self::assertFalse($result);
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAddNom()
+    {
+        self::dropAndCreateTables();
+        $manager = $this->getManager();
+        $expected = self::deepCopy(ThermostatPlanifMock::getThermostatPlanifNom());
+        $expected->setId('1');
+
+        $nameId = $manager->addNom($expected);
+        self::assertEquals($expected->id(), $nameId);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAddPlanifTable()
+    {
+        self::dropAndCreateTables();
+        $manager = $this->getManager();
+        $expected = self::deepCopy(ThermostatPlanifMock::getThermostatPlanifNom());
+        $expected->setId('1');
+        $thermostatPlanifs = self::deepCopy(ThermostatPlanifMock::getDefaultThermostatPlanifs());
+        $nameId = $manager->addPlanifTable($expected);
+        self::assertEquals($expected->id(), $nameId);
+        $list = $manager->getAll();
+        self::assertEquals($thermostatPlanifs, $list);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testGetNom()
+    {
+        self::dropAndCreateTables();
+        $manager = $this->getManager();
+        $thermostatPlanif = self::deepCopy(ThermostatPlanifMock::getThermostatPlanif()[0]);
+        $savedId = $manager->save($thermostatPlanif);
+        self::assertTrue($savedId === 1);
+
+        $expected = self::deepCopy(ThermostatPlanifMock::getThermostatPlanifNom());
+        $expected->setId('1');
+        $name = $manager->getNom($savedId);
+        self::assertEquals($expected, $name);
+    }
+
 
     /**
      * @return array[]

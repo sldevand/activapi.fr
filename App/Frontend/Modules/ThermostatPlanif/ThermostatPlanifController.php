@@ -24,12 +24,14 @@ class ThermostatPlanifController extends BackController
     use FormView;
 
     /**
-     * @param HTTPRequest $request
+     * @param \OCFram\HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Gestion du Planning');
 
+        /** @var \Model\ThermostatPlanifManagerPDO $manager */
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
         $thermostatPlanningsContainer = $manager->getListArray();
 
@@ -132,11 +134,15 @@ class ThermostatPlanifController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
+        /** @var \Model\ThermostatPlanifManagerPDO $manager */
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $modes = $manager->getModes();
+        /** @var \Model\ThermostatModesManagerPDO $modesManager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
+        $modes = $modesManager->getList();
 
         if ($request->method() == 'POST') {
             $item = new ThermostatPlanif([

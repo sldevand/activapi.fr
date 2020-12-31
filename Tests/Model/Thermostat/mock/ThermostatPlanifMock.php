@@ -52,4 +52,27 @@ class ThermostatPlanifMock
     public static function getThermostatPlanifNom() {
         return new ThermostatPlanifNom(['nom' => 'Test']);
     }
+
+    /**
+     * @return mixed
+     */
+    public static function getDefaultThermostatPlanifs() {
+        for ($day = 1; $day < 8; $day++) {
+            $thermostatPlanifs[] = new ThermostatPlanif(
+                [
+                    "jour" => $day,
+                    "modeid" => "1",
+                    "defaultModeid" => "3",
+                    "heure1Start" => "",
+                    "heure1Stop" => "",
+                    "heure2Start" => "",
+                    "heure2Stop" => "",
+                    "nomid" => '1',
+                    'id' => $day
+                ]
+            );
+        }
+
+        return $thermostatPlanifs;
+    }
 }

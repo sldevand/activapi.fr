@@ -4,7 +4,7 @@ namespace Model;
 
 use Entity\ThermostatPlanif;
 use Exception;
-use OCFram\Entity;
+use OCFram\Managers;
 
 /**
  * Class ThermostatPlanifManagerPDO
@@ -12,6 +12,9 @@ use OCFram\Entity;
  */
 class ThermostatPlanifManagerPDO extends ManagerPDO
 {
+    /** @var \OCFram\Managers */
+    protected $managers;
+
     /**
      * ThermostatPlanifManagerPDO constructor.
      * @param \PDO $dao
@@ -21,14 +24,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         parent::__construct($dao);
         $this->tableName = 'thermostat_planif';
         $this->entity = new ThermostatPlanif();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function countPlanifs()
-    {
-        return $this->dao->query('SELECT COUNT(*) FROM thermostat_corresp')->fetchColumn();
+        $this->managers = new Managers('PDO', $dao);
     }
 
     /**
@@ -79,6 +75,9 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $listeThermostatPlanif = $q->fetchAll();
         $q->closeCursor();
 
+        /** @var \Model\ThermostatModesManagerPDO $manager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
+
         /**
          * @var int $key
          * @var ThermostatPlanif[] $thermostatPlanifs
@@ -86,9 +85,9 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
             $nom = $this->getNom($thermostatPlanif->nomid());
             $thermostatPlanif->setNom($nom);
-            $mode = $this->getMode($thermostatPlanif->modeid());
+            $mode = $modesManager->getUnique($thermostatPlanif->modeid());
             $thermostatPlanif->setMode($mode);
-            $defaultMode = $this->getMode($thermostatPlanif->defaultModeid());
+            $defaultMode = $modesManager->getUnique($thermostatPlanif->defaultModeid());
             $thermostatPlanif->setDefaultMode($defaultMode);
         }
 
@@ -122,10 +121,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         if (empty($thermostatPlanif->defaultModeid())) {
             throw new \RuntimeException('defaultModeid is null!');
         }
-
+        /** @var \Model\ThermostatModesManagerPDO $manager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
         $thermostatPlanif->setNom($this->getNom($thermostatPlanif->getNomid()));
-        $thermostatPlanif->setMode($this->getMode($thermostatPlanif->modeid()));
-        $thermostatPlanif->setDefaultMode($this->getMode($thermostatPlanif->defaultModeid()));
+        $thermostatPlanif->setMode($modesManager->getUnique($thermostatPlanif->modeid()));
+        $thermostatPlanif->setDefaultMode($modesManager->getUnique($thermostatPlanif->defaultModeid()));
 
         return $thermostatPlanif;
     }
@@ -209,46 +209,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param int $id
-     * @return mixed
-     * @throws Exception
-     */
-    public function getMode($id)
-    {
-        $sql = 'SELECT * FROM thermostat_modes WHERE id = :id';
-
-        $q = $this->prepare($sql);
-        $q->bindValue(':id', $id);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-        $mode = $q->fetch();
-        $q->closeCursor();
-
-        return $mode;
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public function getModes()
-    {
-        $sql = 'SELECT * FROM thermostat_modes';
-        $q = $this->prepare($sql);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-        $modes = $q->fetchAll();
-        $q->closeCursor();
-
-        return $modes;
-    }
-
-    /**
      * @param \Entity\ThermostatPlanifNom $name
      * @return string
      * @throws Exception
      */
-    public function addNom($name)
+    public function addNom(\Entity\ThermostatPlanifNom $name)
     {
         $thermostaPlanifNoms = $this->getNoms();
         foreach ($thermostaPlanifNoms as $key => $thermostaPlanifNom) {
