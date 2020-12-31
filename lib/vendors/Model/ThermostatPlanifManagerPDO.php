@@ -79,6 +79,10 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $listeThermostatPlanif = $q->fetchAll();
         $q->closeCursor();
 
+        /**
+         * @var int $key
+         * @var ThermostatPlanif[] $thermostatPlanifs
+         */
         foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
             $nom = $this->getNom($thermostatPlanif->nomid());
             $thermostatPlanif->setNom($nom);
@@ -106,6 +110,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $thermostatPlanif = $q->fetch();
         $q->closeCursor();
 
+        /** @var ThermostatPlanif $thermostatPlanif */
+        if (!$thermostatPlanif) {
+            return false;
+        }
+
         if (empty($thermostatPlanif->modeid())) {
             throw new \RuntimeException('modeid is null!');
         }
@@ -114,6 +123,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
             throw new \RuntimeException('defaultModeid is null!');
         }
 
+        $thermostatPlanif->setNom($this->getNom($thermostatPlanif->getNomid()));
         $thermostatPlanif->setMode($this->getMode($thermostatPlanif->modeid()));
         $thermostatPlanif->setDefaultMode($this->getMode($thermostatPlanif->defaultModeid()));
 
@@ -121,7 +131,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param Entity $thermostatPlanif
+     * @param ThermostatPlanif $thermostatPlanif
      * @param array $ignoreProperties
      * @return bool|int
      * @throws Exception
@@ -133,7 +143,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         }
 
         return $thermostatPlanif->isNew()
-            ? $this->addPlanifTable($thermostatPlanif->nom())
+            ? $this->addPlanifTable($thermostatPlanif->getNom())
             : $this->modify($thermostatPlanif);
     }
 
@@ -161,8 +171,10 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
         $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
         $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
-        $q->execute();
+        $result = $q->execute();
         $q->closeCursor();
+
+        return $result;
     }
 
 
@@ -194,7 +206,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
 
 
     /**
-     * @param string $nom
+     * @param \Entity\ThermostatPlanifNom $nom
      * @return int
      * @throws Exception
      */
@@ -259,22 +271,22 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param stirng $name
+     * @param \Entity\ThermostatPlanifNom $name
      * @return string
      * @throws Exception
      */
     public function addNom($name)
     {
-        $noms = $this->getNoms();
-        foreach ($noms as $key => $nom) {
-            if ($nom->nom() == $name) {
+        $thermostaPlanifNoms = $this->getNoms();
+        foreach ($thermostaPlanifNoms as $key => $thermostaPlanifNom) {
+            if ($thermostaPlanifNom->nom() == $name->nom()) {
                 return "Ce Nom existe déjà!";
             }
         }
 
         $sql = 'INSERT INTO thermostat_corresp (nom) VALUES (:nom)';
         $q = $this->prepare($sql);
-        $q->bindValue(':nom', $name);
+        $q->bindValue(':nom', $name->nom());
         $q->execute();
 
         return $this->dao->lastInsertId();

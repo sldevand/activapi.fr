@@ -67,10 +67,13 @@ abstract class Entity implements \ArrayAccess, \JsonSerializable
 
     /**
      * @param $id
+     * @return \OCFram\Entity
      */
     public function setId($id)
     {
         $this->id = (int)$id;
+
+        return $this;
     }
 
     /**

@@ -11,3 +11,4 @@ define('MODULE_SQL_SCRIPT_DIR',__DIR__ . "/sql/");
 define('SENSOR_SQL_PATH',__DIR__ . "/sql/Sensor-1.0.1.sql");
 define('MESURES_SQL_PATH',__DIR__ . "/sql/Mesures-1.0.1.sql");
 define('THERMOSTAT_MODES_SQL_PATH',__DIR__ . "/sql/ThermostatModes-1.0.1.sql");
+define('THERMOSTAT_PLANIF_SQL_PATH',__DIR__ . "/sql/ThermostatPlanif-1.0.1.sql");

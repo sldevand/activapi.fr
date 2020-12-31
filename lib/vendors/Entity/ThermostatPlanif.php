@@ -14,8 +14,9 @@ class ThermostatPlanif extends Entity
      * @var int $nomid
      */
     protected $nomid;
+
     /**
-     * @var string $nom
+     * @var \Entity\ThermostatPlanifNom  $nom
      */
     protected $nom;
 
@@ -82,7 +83,7 @@ class ThermostatPlanif extends Entity
     }
 
     /**
-     * @return string
+     * @return \Entity\ThermostatPlanifNom
      */
     public function nom()
     {
@@ -180,7 +181,7 @@ class ThermostatPlanif extends Entity
     }
 
     /**
-     * @return string
+     * @return \Entity\ThermostatPlanifNom
      */
     public function getNom()
     {
@@ -188,7 +189,7 @@ class ThermostatPlanif extends Entity
     }
 
     /**
-     * @param string $nom
+     * @param \Entity\ThermostatPlanifNom $nom
      * @return ThermostatPlanif
      */
     public function setNom($nom)
