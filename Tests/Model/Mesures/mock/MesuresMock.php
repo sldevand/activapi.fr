@@ -3,12 +3,10 @@
 namespace Tests\Model\Mesures\mock;
 
 use Entity\Mesure;
-use Tests\Model\Sensor\mock\SensorsMock;
 
 /**
  * Class MesuresMock
  * @package Tests\Model\Mesures\mock
- * @author Synolia <contact@synolia.com>
  */
 class MesuresMock
 {

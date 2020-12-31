@@ -7,7 +7,6 @@ use Entity\Sensor;
 /**
  * Class SensorsMock
  * @package Tests\Model\Sensor\mock
- * @author Synolia <contact@synolia.com>
  */
 class SensorsMock
 {

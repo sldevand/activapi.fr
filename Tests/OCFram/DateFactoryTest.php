@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class DateFactoryTest
  * @package Tests\OCFram
- * @author Synolia <contact@synolia.com>
  */
 class DateFactoryTest extends TestCase
 {

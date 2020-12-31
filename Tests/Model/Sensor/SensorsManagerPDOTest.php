@@ -14,7 +14,6 @@ use Tests\Model\Sensor\mock\SensorsMock;
 /**
  * Class SensorsManagerPDOTest
  * @package Tests\Model\Sensor
- * @author Synolia <contact@synolia.com>
  */
 class SensorsManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInterfaceTest
 {
