@@ -3,7 +3,7 @@
 namespace Model;
 
 use Entity\Sensor;
-use Helper\Mesures\Data;
+use Helper\Sensors\Data;
 use OCFram\DateFactory;
 use PDO;
 
@@ -50,12 +50,12 @@ class SensorsManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param $sensorEntity
-     * @param $actif
+     * @param \Entity\Sensor $sensorEntity
+     * @param int $actif
      * @return bool
      * @throws \Exception
      */
-    public function sensorActivityUpdate($sensorEntity, $actif)
+    public function sensorActivityUpdate(Sensor $sensorEntity, int $actif): bool
     {
         if ($actif) {
             $sql = 'UPDATE sensors SET actif = :actif,  releve=DateTime("now","localtime"), valeur1=:valeur1, valeur2=:valeur2 WHERE radioid = :radioid';
@@ -79,17 +79,20 @@ class SensorsManagerPDO extends ManagerPDO
 
     /**
      * @param \Entity\Sensor $sensor
+     * @return bool
      * @throws \Exception
      */
-    public function checkSensorActivity(Sensor $sensor)
+    public function checkSensorActivity(Sensor $sensor): bool
     {
-        if ($sensor->categorie() === 'door') {
-            return;
+        if ($sensor->categorie() === Data::SENSOR_CATEGORY_DOOR) {
+            return false;
         }
 
         $minutes = DateFactory::diffMinutesFromStr("now", $sensor->releve());
         if ($minutes >= Data::SENSOR_ACTIVITY_TIME && $sensor->actif()) {
-            $this->sensorActivityUpdate($sensor, 0);
+            return $this->sensorActivityUpdate($sensor, 0);
         }
+
+        return false;
     }
 }

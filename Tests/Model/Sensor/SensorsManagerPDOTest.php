@@ -2,8 +2,11 @@
 
 namespace Tests\Model\Sensor;
 
+use DateInterval;
 use Entity\Sensor;
+use Helper\Sensors\Data;
 use Model\SensorsManagerPDO;
+use OCFram\DateFactory;
 use Tests\AbstractPDOTestCase;
 use Tests\Api\ManagerPDOInterfaceTest;
 use Tests\Model\Sensor\mock\SensorsMock;
@@ -110,6 +113,77 @@ class SensorsManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInt
         $manager->delete($expected->id());
         $sensor = $manager->getUnique($expected->id());
         self::assertFalse($sensor, '');
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSensorActivityUpdate()
+    {
+        self::dropAndCreateTables();
+        $manager = $this->getManager();
+        $manager->save(SensorsMock::getSensors()[0]);
+
+        $this->sensorActivityUpdate($manager, 1, 0);
+        $this->sensorActivityUpdate($manager, 1, 1);
+    }
+
+    /**
+     * @param \Model\SensorsManagerPDO $manager
+     * @param int $sensorId
+     * @param int $active
+     * @throws \Exception
+     */
+    protected function sensorActivityUpdate(SensorsManagerPDO $manager, int $sensorId, int $active)
+    {
+        /** @var \Entity\Sensor $sensor */
+        $sensor = $manager->getUnique($sensorId);
+
+        /** @var \Entity\Sensor $expected */
+        $expected = unserialize(serialize($sensor));
+        $expected->setActif($active);
+        if ($active) {
+            $expected->setReleve(DateFactory::todayFullString());
+        }
+
+        $res = $manager->sensorActivityUpdate($sensor, $active);
+        self::assertTrue($res);
+
+        $persisted = $manager->getUnique($sensorId);
+        self::assertEquals($expected, $persisted);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testCheckSensorActivity()
+    {
+        self::dropAndCreateTables();
+        $manager = $this->getManager();
+        $sensor = SensorsMock::getSensors()[0];
+
+        // Make an olderDate than now
+        $now = DateFactory::createDateFromStr('now');
+        $interval = Data::SENSOR_ACTIVITY_TIME + 1;
+        $date = $now->sub(new DateInterval('PT'.$interval.'M'));
+        $oldDate = $date->format('20y-m-d H:i:s');
+
+        $sensor->setReleve($oldDate);
+        $manager->save(SensorsMock::getSensors()[0]);
+
+        /** @var \Entity\Sensor $sensor */
+        $sensor = $manager->getUnique(1);
+
+        // Case when time between two measures > Data::SENSOR_ACTIVITY_TIME
+        $result = $manager->checkSensorActivity($sensor);
+        self::assertTrue($result);
+
+        // activate Sensor
+        $manager->sensorActivityUpdate($sensor, 1);
+        /** @var \Entity\Sensor $sensor */
+        $sensor = $manager->getUnique(1);
+        $result = $manager->checkSensorActivity($sensor);
+        self::assertFalse($result);
     }
 
     /**

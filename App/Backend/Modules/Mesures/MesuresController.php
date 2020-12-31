@@ -6,7 +6,7 @@ use DateTime;
 use DateTimeZone;
 use Entity\Mesure;
 use Entity\Sensor;
-use Helper\Mesures\Data;
+use Helper\Sensors\Data;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
