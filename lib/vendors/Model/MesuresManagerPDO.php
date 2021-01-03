@@ -4,6 +4,10 @@ namespace Model;
 
 use Entity\Mesure;
 use Entity\Sensor;
+use Helper\Sensors\Data;
+use OCFram\DateFactory;
+use OCFram\Managers;
+use OCFram\PDOFactory;
 
 /**
  * Class MesuresManagerPDO
@@ -11,45 +15,59 @@ use Entity\Sensor;
  */
 class MesuresManagerPDO extends ManagerPDO
 {
+    /** @var \OCFram\Managers */
+    protected $managers;
+
     /**
      * MesuresManagerPDO constructor.
      * @param \PDO $dao
+     * @param array $args
      */
-    public function __construct(\PDO $dao)
+    public function __construct(\PDO $dao, $args = [])
     {
-        parent::__construct($dao);
+        parent::__construct($dao, $args);
         $this->tableName = 'mesures';
         $this->entity = new Mesure();
+        $this->managers = new Managers('PDO', PDOFactory::getSqliteConnexion());
     }
 
     /**
-     * @param Mesure $mesure
+     * @param \OCFram\Entity $entity
+     * @param array $ignoreProperties
      * @return bool
      * @throws \Exception
      */
-    public function addWithSensorId(Mesure $mesure)
+    public function save($entity, $ignoreProperties = [])
     {
-        $q = $this->prepare('SELECT id FROM sensors WHERE radioid = :radioid');
-        $q->bindValue(':radioid', $mesure->id_sensor());
-        $q->execute();
-        $id = $q->fetchColumn();
-        $q->closeCursor();
+        $ignoreProperties = array_merge($ignoreProperties, ['nom']);
 
-        if (!$id) {
-            throw new \Exception('In addWithSensorId, sensor not found with radioid :' . $mesure->id_sensor());
+        return parent::save($entity, $ignoreProperties);
+    }
+
+    /**
+     * @param \Entity\Sensor $sensor
+     * @return bool
+     * @throws \Exception
+     */
+    public function addWithSensorId(Sensor $sensor)
+    {
+        if (!$sensor = $this->getSensor($sensor->radioid())) {
+            throw new \Exception('In addWithSensorId, sensor not found with radioid :' . $sensor->radioid());
+        }
+        if (is_array($sensor)) {
+            $sensor = current($sensor);
         }
 
-        $q = $this->prepare(
-            'INSERT INTO mesures (id_sensor, temperature, hygrometrie, horodatage) 
-             VALUES (:id_sensor,:temperature,:hygrometrie,DateTime("now","localtime"))'
+        $mesure = new Mesure(
+            [
+                'id_sensor' => $sensor->id(),
+                'temperature' => $sensor->valeur1(),
+                'hygrometrie' => $sensor->valeur2(),
+                'horodatage' => date("Y-m-d H:i:s")
+            ]
         );
-        $q->bindValue(':id_sensor', $id);
-        $q->bindValue(':temperature', $mesure->temperature());
-        $q->bindValue(':hygrometrie', $mesure->hygrometrie());
-        $success = $q->execute();
-        $q->closeCursor();
 
-        return $success;
+        return $this->add($mesure, ['nom']);
     }
 
     /**
@@ -70,8 +88,7 @@ class MesuresManagerPDO extends ManagerPDO
             $sql .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
         }
 
-        $q = $this->dao->query($sql);
-        if (!$q) {
+        if (!$q = $this->dao->query($sql)) {
             throw new \Exception($this->dao->errorInfo());
         }
 
@@ -83,7 +100,7 @@ class MesuresManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param Sensor $sensor
+     * @param string $sensor
      * @param string $dateMin
      * @param string $dateMax
      * @return array
@@ -118,19 +135,12 @@ class MesuresManagerPDO extends ManagerPDO
     /**
      * @param mixed $value
      * @param string $field
-     * @return array
+     * @return \OCFram\Entity
      * @throws \Exception
      */
     public function getSensor($value, $field = 'radioid')
     {
-        $q = $this->prepare("SELECT * FROM sensors WHERE $field = :$field");
-        $q->bindParam(":$field", $value);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Sensor');
-        $sensor = $q->fetchAll();
-        $q->closeCursor();
-
-        return $sensor;
+        return $this->managers->getManagerOf('Sensors')->getUniqueBy($field, $value);
     }
 
     /**
@@ -155,33 +165,5 @@ class MesuresManagerPDO extends ManagerPDO
         $q->closeCursor();
 
         return $sensors;
-    }
-
-    /**
-     * @param $sensorEntity
-     * @param $actif
-     * @return bool
-     * @throws \Exception
-     */
-    public function sensorActivityUpdate($sensorEntity, $actif)
-    {
-        if ($actif) {
-            $sql = 'UPDATE sensors SET actif = :actif,  releve=DateTime("now","localtime"), valeur1=:valeur1, valeur2=:valeur2 WHERE radioid = :radioid';
-        } else {
-            $sql = 'UPDATE sensors SET actif = :actif WHERE radioid = :radioid';
-        }
-
-        $q = $this->prepare($sql);
-
-        if ($actif) {
-            $q->bindValue(':valeur1', $sensorEntity->valeur1());
-            $q->bindValue(':valeur2', $sensorEntity->valeur2());
-        }
-        $q->bindValue(':actif', $actif);
-        $q->bindValue(':radioid', $sensorEntity->radioid());
-        $success = $q->execute();
-        $q->closeCursor();
-
-        return $success;
     }
 }

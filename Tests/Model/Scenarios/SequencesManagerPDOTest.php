@@ -46,7 +46,6 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
         $expected->setNom('Test2');
         $sequence->setId($sequenceId);
         $sequence->setNom('Test2');
-        self::expectExceptionMessage('SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: sequence_action.sequenceId, sequence_action.actionId');
 
         $manager->save($sequence);
         $persisted = $manager->getUnique($expected->id());
@@ -100,7 +99,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
      */
     public function saveProvider()
     {
-        $actions = $this->mockActions();
+        $actions = [];
 
         return [
             "createSequence" => [
@@ -115,7 +114,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getAllProvider()
     {
-        $actions = $this->mockActions();
+        $actions = [];
 
         return [
             "createSequences" => [
@@ -140,7 +139,7 @@ class SequencesManagerPDOTest extends AbstractManagerPDOTest
      */
     public function deleteProvider()
     {
-        $actions = $this->mockActions();
+        $actions = [];
 
         return [
             "deleteSequence" => [

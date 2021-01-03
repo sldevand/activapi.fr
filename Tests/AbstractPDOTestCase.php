@@ -40,4 +40,13 @@ class AbstractPDOTestCase extends TestCase
             self::$db->exec($sql);
         }
     }
+
+    /**
+     * @param mixed $obj
+     * @return mixed
+     */
+    public static function deepCopy($obj)
+    {
+        return unserialize(serialize($obj));
+    }
 }

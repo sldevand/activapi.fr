@@ -4,6 +4,7 @@ namespace App\Frontend\Modules\ThermostatPlanif;
 
 use App\Frontend\Modules\FormView;
 use Entity\ThermostatPlanif;
+use Entity\ThermostatPlanifNom;
 use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
 use Materialize\FloatingActionButton;
@@ -23,12 +24,14 @@ class ThermostatPlanifController extends BackController
     use FormView;
 
     /**
-     * @param HTTPRequest $request
+     * @param \OCFram\HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Gestion du Planning');
 
+        /** @var \Model\ThermostatPlanifManagerPDO $manager */
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
         $thermostatPlanningsContainer = $manager->getListArray();
 
@@ -99,7 +102,8 @@ class ThermostatPlanifController extends BackController
             }
 
             if (!is_null($name)) {
-                $result = $manager->addPlanifTable($name);
+                $thermostatPlanifNom = new ThermostatPlanifNom(['nom' => $name]);
+                $result = $manager->addPlanifTable($thermostatPlanifNom);
                 if ($result > 0) {
                     $message = '<p class="flow-text">OK</p>';
                 } else {
@@ -110,7 +114,8 @@ class ThermostatPlanifController extends BackController
             }
         }
 
-        $item = new ThermostatPlanif(['nom' => $name]);
+        $thermostatPlanifNom = new ThermostatPlanifNom(['nom' => $name]);
+        $item = new ThermostatPlanif(['nom' => $thermostatPlanifNom]);
         $fb = new ThermostatPlanifNameFormBuilder($item);
         $fb->build();
         $form = $fb->form();
@@ -129,11 +134,15 @@ class ThermostatPlanifController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
+        /** @var \Model\ThermostatPlanifManagerPDO $manager */
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $modes = $manager->getModes();
+        /** @var \Model\ThermostatModesManagerPDO $modesManager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
+        $modes = $modesManager->getList();
 
         if ($request->method() == 'POST') {
             $item = new ThermostatPlanif([
