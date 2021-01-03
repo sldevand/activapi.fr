@@ -318,9 +318,7 @@ class MesuresController extends BackController
         /** @var \Model\SensorsManagerPDO $sensorsManager */
         $sensorsManager = $this->managers->getManagerOf('Sensors');
         $sensors = $sensorsManager->getList($categorie);
-        foreach ($sensors as $sensor) {
-            $sensorsManager->checkSensorActivity($sensor);
-        }
+
         $this->page->addVar('sensors', $sensors);
     }
 }

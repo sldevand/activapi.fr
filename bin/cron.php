@@ -18,6 +18,11 @@ $crontab = [
         'expression' => '* * * * *',
         'executor' => '\App\Backend\Modules\Scenarios\Cron\ScenariosExecutor',
         'args' => ['app' => $app]
+    ],
+    'check_sensors_activity' => [
+        'expression' => '* * * * *',
+        'executor' => '\App\Backend\Modules\Sensors\Cron\CheckSensorActivityExecutor',
+        'args' => ['app' => $app]
     ]
 ];
 
