@@ -42,18 +42,18 @@
     },
     "homepage": "https://github.com/sldevand/activapi.fr#readme",
     "dependencies": {
-        "chart.js": "^2.9.3",
+        "chart.js": "^2.9.4",
         "hammerjs": "^2.0.8",
         "jquery": "^3.5.0",
-        "moment": "^2.24.0",
+        "moment": "^2.29.1",
         "socket.io": "^2.3.0",
-        "socket.io-client": "^2.3.0"
+        "socket.io-client": "^2.3.1"
     },
     "devDependencies": {
-        "@babel/core": "latest",
-        "@babel/preset-env": "^7.9.0",
+        "@babel/core": "^7.12.10",
+        "@babel/preset-env": "^7.12.11",
         "babelify": "latest",
-        "browser-sync": "^2.26.12",
+        "browser-sync": "^2.26.13",
         "node-sass": "latest",
         "watchify": "latest"
     }
