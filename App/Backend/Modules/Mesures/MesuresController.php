@@ -7,6 +7,7 @@ use DateTimeZone;
 use Entity\Mesure;
 use Entity\Sensor;
 use Helper\Sensors\Data;
+use Model\SensorsManagerPDO;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
@@ -210,7 +211,9 @@ class MesuresController extends BackController
             $this->page->addVar('measure', 0);
         }
 
-        $this->manager->sensorActivityUpdate($sensorEntity, 1);
+        /** @var SensorsManagerPDO $sensorManager */
+        $sensorManager = $this->managers->getManagerOf('Sensors');
+        $sensorManager->sensorActivityUpdate($sensorEntity, 1);
 
         $dateMinFull = DateFactory::createDateFromStr("now");
         $dateMaxFull = DateFactory::createDateFromStr("now");
@@ -272,8 +275,9 @@ class MesuresController extends BackController
             return $this->page->addVar('measure', ['error' => 'Could not save the measure']);
         }
 
-
-        $this->manager->sensorActivityUpdate($sensorEntity, 1);
+        /** @var SensorsManagerPDO $sensorManager */
+        $sensorManager = $this->managers->getManagerOf('Sensors');
+        $sensorManager->sensorActivityUpdate($sensorEntity, 1);
 
         $dateMinFull = DateFactory::createDateFromStr("now");
         $dateMaxFull = DateFactory::createDateFromStr("now");
@@ -318,9 +322,7 @@ class MesuresController extends BackController
         /** @var \Model\SensorsManagerPDO $sensorsManager */
         $sensorsManager = $this->managers->getManagerOf('Sensors');
         $sensors = $sensorsManager->getList($categorie);
-        foreach ($sensors as $sensor) {
-            $sensorsManager->checkSensorActivity($sensor);
-        }
+
         $this->page->addVar('sensors', $sensors);
     }
 }
