@@ -60,7 +60,7 @@ class MesuresController extends BackController
             $dateMax = $request->getData("dateMax");
         } else {
             $day = $request->getData("day");
-            $dateLimits = $this->getDateLimits($day);
+            $dateLimits = DateFactory::getDateLimits($day);
 
             $dateMin = $dateLimits['dateMin'];
             $dateMax = $dateLimits['dateMax'];
@@ -107,49 +107,6 @@ class MesuresController extends BackController
         $this->page->addVar('id', $id);
         $this->page->addVar('listeMesures', $listeMesures);
         $this->page->addVar('sensorID', $sensorID);
-    }
-
-    /***
-     * @param string $day
-     * @return array
-     */
-    public function getDateLimits($day)
-    {
-        switch ($day) {
-            case "today":
-                $now = DateFactory::createDateFromStr("now");
-                $dateMin = $now->format("Y-m-d");
-                $dateMax = $now->format("Y-m-d");
-                break;
-            case "yesterday":
-                $yesterday = DateFactory::createDateFromStr("now -1 day");
-                $dateMin = $yesterday->format("Y-m-d");
-                $dateMax = $yesterday->format("Y-m-d");
-                break;
-            case "week":
-                $day = date('w');
-                if ($day == 0) {
-                    $day = 7;
-                }
-                $dateMin = date("Y-m-d", strtotime('-' . ($day - 1) . ' days'));
-                $dateMax = date("Y-m-d", strtotime('+' . (7 - $day) . ' days'));
-                break;
-            case "month":
-                $monthFirst = DateFactory::createDateFromStr("first day of this month");
-                $monthLast = DateFactory::createDateFromStr("last day of this month");
-                $dateMin = $monthFirst->format("Y-m-d");
-                $dateMax = $monthLast->format("Y-m-d");
-                break;
-            default:
-                $now = DateFactory::createDateFromStr("now");
-                $dateMin = $now->format("Y-m-d");
-                $dateMax = $now->format("Y-m-d");
-        }
-
-        return [
-            'dateMin' => $dateMin,
-            'dateMax' => $dateMax
-        ];
     }
 
     /**

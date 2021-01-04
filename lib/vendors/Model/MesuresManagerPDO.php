@@ -108,9 +108,6 @@ class MesuresManagerPDO extends ManagerPDO
      */
     public function getSensorList($sensor, $dateMin, $dateMax)
     {
-        $dateMin .= ' 00:00:00';
-        $dateMax .= ' 00:00:00';
-
         $sql = 'SELECT s.radioid id_sensor,s.nom nom, s.id, m.temperature, m.hygrometrie, m.horodatage
 			FROM sensors s
 			INNER JOIN mesures m
