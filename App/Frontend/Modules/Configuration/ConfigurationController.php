@@ -2,11 +2,11 @@
 
 namespace App\Frontend\Modules\Configuration;
 
-use App\Frontend\Modules\Configuration\Action\MailerConfigurationAction;
 use App\Frontend\Modules\FormView;
+use App\Frontend\Modules\Mailer\Config\Action;
+use App\Frontend\Modules\Mailer\Config\View\CardBuilder;
 use Helper\Configuration\Data;
 use Mailer\Helper\Config;
-use Materialize\Button\FlatButton;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
@@ -26,12 +26,15 @@ class ConfigurationController extends BackController
     /** @var \Helper\Configuration\Data */
     protected $dataHelper;
 
-    /** @var \App\Frontend\Modules\Configuration\Action\MailerConfigurationAction */
+    /** @var \App\Frontend\Modules\Mailer\Config\Action */
     protected $mailerConfigAction;
 
+    /** @var \App\Frontend\Modules\Mailer\Config\View\CardBuilder */
+    protected $cardBuilder;
+
     /**
-     * CrontabController constructor.
-     * @param Application $app
+     * ConfigurationController constructor.
+     * @param \OCFram\Application $app
      * @param string $module
      * @param string $action
      * @throws \Exception
@@ -44,7 +47,8 @@ class ConfigurationController extends BackController
         parent::__construct($app, $module, $action);
         $this->manager = $this->managers->getManagerOf('Configuration\Configuration');
         $this->dataHelper = new Data($app);
-        $this->mailerConfigAction = new MailerConfigurationAction(
+        $this->cardBuilder = new CardBuilder($app);
+        $this->mailerConfigAction = new Action(
             $this->app(),
             $this->manager,
             $this->dataHelper,
@@ -61,13 +65,17 @@ class ConfigurationController extends BackController
         $this->page->addVar('title', 'Configuration Système');
 
         $cards = [];
-        $mailerForm = $this->mailerConfigAction->execute($request);
-        $mailerTestButtonUrl = $this->baseAddress . 'api/mailer/test';
-        $mailerTestButton = $this->getBlock(__DIR__ . '/Block/mailerTestButton.phtml', $mailerTestButtonUrl);
-        $mailerCard = WidgetFactory::makeCard('configuration-mailer', 'Mailer', $this->editFormView($mailerForm));
-        $mailerCard->addContent($mailerTestButton);
+        // foreach modules (Frontend App) check if dir Config
+            // get the card corresponding to config
+            // add it to $cards[]
+        //endforeach
 
-        $cards[] = $mailerCard;
+        //Start Replace this card
+        $mailerForm = $this->mailerConfigAction->execute($request);
+
+        //Start Replace this card
+
+        $cards[] = $this->cardBuilder->build($mailerForm);
         $this->page->addVar('cards', $cards);
     }
 }

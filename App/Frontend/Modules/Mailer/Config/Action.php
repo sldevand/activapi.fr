@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Frontend\Modules\Configuration\Action;
+namespace App\Frontend\Modules\Mailer\Config;
 
 use App\Frontend\Modules\Configuration\Form\FormBuilder\EmailConfigurationFormBuilder;
 use App\Frontend\Modules\Configuration\Form\FormHandler\ConfigurationFormHandler;
@@ -14,10 +14,11 @@ use OCFram\Form;
 use OCFram\HTTPRequest;
 
 /**
- * Class MailerConfigurationAction
- * @package App\Frontend\Modules\Configuration\Action
+ * Class Action
+ * @package App\Frontend\Modules\Mailer\Config
+ * @author Synolia <contact@synolia.com>
  */
-class MailerConfigurationAction extends ApplicationComponent
+class Action extends ApplicationComponent
 {
     /** @var \Model\Configuration\ConfigurationManagerPDO */
     protected $manager;
@@ -29,11 +30,11 @@ class MailerConfigurationAction extends ApplicationComponent
     protected $configHelper;
 
     /**
-     * MailerConfigurationAction constructor.
+     * Action constructor.
      * @param \OCFram\Application $app
      * @param \Model\Configuration\ConfigurationManagerPDO $manager
      * @param \Helper\Configuration\Data $dataHelper
-     * @param \Mailer\Helper\Config
+     * @param \Mailer\Helper\Config $configHelper
      */
     public function __construct(
         Application $app,
@@ -55,7 +56,6 @@ class MailerConfigurationAction extends ApplicationComponent
      */
     public function execute(HTTPRequest $request)
     {
-
         $configurations = $this->configHelper->getConfigurations();
         $mailerForm = $this->createMailerForm($configurations);
 
@@ -70,7 +70,6 @@ class MailerConfigurationAction extends ApplicationComponent
     }
 
     /**
-     *
      * @param \Entity\Configuration\Configuration[] $configurations
      * @param \OCFram\Form $form
      * @param \OCFram\HTTPRequest $request
@@ -104,7 +103,7 @@ class MailerConfigurationAction extends ApplicationComponent
     }
 
     /**
-     * @param \Entity\Configuration\Configuration $configuration
+     * @param array $configurations
      * @return \OCFram\Form
      */
     protected function createMailerForm(array $configurations)
