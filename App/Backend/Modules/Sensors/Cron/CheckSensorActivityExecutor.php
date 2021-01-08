@@ -5,6 +5,7 @@ namespace App\Backend\Modules\Sensors\Cron;
 use Entity\Sensor;
 use Exception;
 use Mailer\Helper\Config;
+use Sensors\Helper\Config as SensorsConfigHelper;
 use Mailer\MailerFactory;
 use Model\SensorsManagerPDO;
 use OCFram\Managers;
@@ -23,6 +24,9 @@ class CheckSensorActivityExecutor implements ExecutorInterface
     /** @var Config */
     protected $configHelper;
 
+    /** @var SensorsConfigHelper */
+    protected $sensorConfigHelper;
+
     /** @var \PHPMailer\PHPMailer\PHPMailer */
     protected $mailer;
 
@@ -36,6 +40,7 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         $managers = new Managers('PDO', PDOFactory::getSqliteConnexion());
         $this->manager = $managers->getManagerOf('Sensors');
         $this->configHelper = new Config($args['app'], $managers->getManagerOf('Configuration\Configuration'));
+        $this->sensorConfigHelper = new SensorsConfigHelper($args['app'], $managers->getManagerOf('Configuration\Configuration'));
         $this->mailer = MailerFactory::create();
     }
 
@@ -44,6 +49,8 @@ class CheckSensorActivityExecutor implements ExecutorInterface
      */
     public function execute()
     {
+
+
         echo $this->getDescription();
         $sensors = $this->manager->getList();
 
@@ -53,6 +60,7 @@ class CheckSensorActivityExecutor implements ExecutorInterface
                 $preparedSensors[] = $this->prepareNotification($sensor->id());
             }
         }
+
 
         if ($preparedSensors) {
             echo $this->sendMail($preparedSensors);
@@ -82,6 +90,10 @@ class CheckSensorActivityExecutor implements ExecutorInterface
 
         if (!$mailAddress = $this->configHelper->getEmail()) {
             return 'No mail was configured in Mailer module';
+        }
+
+        if ($this->sensorConfigHelper->getEnabled() !== 'yes') {
+            return 'Sensors mail alerts are disabled';
         }
 
         $subject = 'Activapi.fr : Check sensors activity';
