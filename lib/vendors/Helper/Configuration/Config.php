@@ -2,6 +2,7 @@
 
 namespace Helper\Configuration;
 
+use Api\Helper\Configuration\ConfigInterface;
 use Entity\Configuration\ConfigurationFactory;
 use Model\Configuration\ConfigurationManagerPDO;
 use OCFram\ApplicationComponent;
@@ -10,7 +11,7 @@ use OCFram\ApplicationComponent;
  * Class Config
  * @package Helper\Configuration
  */
-class Config extends ApplicationComponent
+class Config extends ApplicationComponent implements ConfigInterface
 {
     /** @var \Model\Configuration\ConfigurationManagerPDO */
     protected $manager;
@@ -55,9 +56,9 @@ class Config extends ApplicationComponent
 
     /**
      * @param array $configKeys
-     * @return array|null
+     * @return array
      */
-    protected function getConfigs(array $configKeys)
+    protected function getConfigs(array $configKeys): array
     {
         $configurations = [];
         foreach ($configKeys as $configKey) {

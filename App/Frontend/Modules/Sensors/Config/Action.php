@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Frontend\Modules\Mailer\Config;
+namespace App\Frontend\Modules\Sensors\Config;
 
 use App\Frontend\Modules\Configuration\AbstractAction;
-use App\Frontend\Modules\Mailer\Config\Form\ConfigurationFormBuilder;
-use App\Frontend\Modules\Mailer\Config\View\CardBuilder;
+use App\Frontend\Modules\Sensors\Config\Form\ConfigurationFormBuilder;
+use App\Frontend\Modules\Sensors\Config\View\CardBuilder;
 use Entity\Configuration\ConfigurationFactory;
 use Helper\Configuration\Data;
-use Mailer\Helper\Config;
+use Sensors\Helper\Config;
 use Model\Configuration\ConfigurationManagerPDO;
 use OCFram\Application;
 use OCFram\Form;
@@ -15,7 +15,7 @@ use OCFram\HTTPRequest;
 
 /**
  * Class Action
- * @package App\Frontend\Modules\Mailer\Config
+ * @package App\Frontend\Modules\Sensors\Config
  */
 class Action extends AbstractAction
 {
@@ -39,18 +39,18 @@ class Action extends AbstractAction
     public function execute(HTTPRequest $request)
     {
         $configurations = $this->configHelper->getConfigurations();
-        $mailerForm = $this->createForm($configurations);
+        $form = $this->createForm($configurations);
 
         if (
             $request->method() === HTTPRequest::POST
             && $request->postData(ConfigurationFormBuilder::NAME) === ConfigurationFormBuilder::NAME
         ) {
-            $this->doPost($configurations, $mailerForm, $request);
+            $this->doPost($configurations, $form, $request);
         }
 
         $cardBuilder = new CardBuilder($this->app());
 
-        return  $cardBuilder->build($mailerForm);
+        return $cardBuilder->build($form);
     }
 
     /**

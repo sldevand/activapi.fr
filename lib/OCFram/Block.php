@@ -5,7 +5,6 @@ namespace OCFram;
 /**
  * Class Block
  * @package OCFram
- * @author Synolia <contact@synolia.com>
  */
 class Block extends ApplicationComponent
 {
@@ -14,7 +13,7 @@ class Block extends ApplicationComponent
      * @param mixed ...$args
      * @return false|string
      */
-    public static function getBlock($fileName, ...$args)
+    public static function getTemplate($fileName, ...$args)
     {
         ob_start();
         require $fileName;
