@@ -76,15 +76,12 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
             $configuration->setConfigKey($key);
             $configuration->setConfigValue($requestConfigValue);
 
-            var_dump($request->postData($key));
-            echo '</BR>';
-
             $fh = new ConfigurationFormHandler($form, $this->manager, $request, $configuration);
             if ($fh->process()) {
                 $processed++;
             }
         }
-        die;
+
         $message = $processed === count($configurations)
             ? $this->messages['success']
             : $this->messages['error'];

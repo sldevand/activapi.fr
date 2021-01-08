@@ -11,3 +11,5 @@
         </div>
     </div>
 <?php endforeach; ?>
+
+<script src="<?= DIST . '/materializeTricks.js' ?>"></script>
