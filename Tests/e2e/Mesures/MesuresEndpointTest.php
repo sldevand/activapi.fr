@@ -83,15 +83,15 @@ class MesuresEndpointTest extends TestCase
         $dateMinFull = $dates['dateMin'] . " 00:00:00";
         $dateMaxFull = $dates['dateMax'] . " 23:59:59";
 
-        $mesures = self::$mesuresManager->getSensorList($sensorBefore->id(), $dateMinFull, $dateMaxFull);
+        $mesures = self::$mesuresManager->getSensorList($sensorBefore->radioid(), $dateMinFull, $dateMaxFull);
 
-        self::assertEquals($mesures, ['ee']);
-        $expected = [
+        $expected = json_decode(json_encode([
             'nom' => $sensorBefore->nom(),
             'sensor_id' => $sensorBefore->radioid(),
             'id' => $sensorBefore->id(),
             'data' => $mesures
-        ];
+        ]),true);
+
         self::assertEquals($expected, $body);
 
         self::$sensorsManager->save($sensorBefore);
@@ -118,7 +118,10 @@ class MesuresEndpointTest extends TestCase
      */
     protected function getFullUrl(string $path)
     {
-        return $_ENV['BASE_URL'] . $_ENV['ROOT_API_URI'] . $path;
+        $baseUrl = $_ENV['TEST_BASE_URL'] ?? $_ENV['BASE_URL'];
+        $rootApiUri =  $_ENV['TEST_ROOT_API_URI'] ??  $_ENV['ROOT_API_URI'];
+
+        return $baseUrl . $rootApiUri . $path;
     }
 
     /**
