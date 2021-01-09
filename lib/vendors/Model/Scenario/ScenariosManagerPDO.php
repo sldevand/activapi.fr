@@ -51,6 +51,7 @@ class ScenariosManagerPDO extends ManagerPDO
         }
 
         foreach ($scenarioSequences as $scenarioSequence) {
+            $scenarioSequence->setScenarioId($scenarioId);
             $this->scenarioSequenceManagerPDO->save($scenarioSequence);
         }
 

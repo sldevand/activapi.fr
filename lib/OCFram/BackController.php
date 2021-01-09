@@ -4,7 +4,6 @@ namespace OCFram;
 
 use Exception;
 use Materialize\Button\FlatButton;
-use SFram\OSDetectorFactory;
 
 /**
  * Class BackController

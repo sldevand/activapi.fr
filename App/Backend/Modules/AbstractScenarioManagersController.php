@@ -54,6 +54,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
 
     /**
      * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executePost($httpRequest)
@@ -75,6 +76,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
 
     /**
      * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executePut($httpRequest)
@@ -96,6 +98,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
 
     /**
      * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
      */
     public function executeDelete($httpRequest)
     {
