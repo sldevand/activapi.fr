@@ -14,22 +14,22 @@ class WidgetFactory
 {
     /**
      * @param array $pages
-     * @param int $logsCount
+     * @param int $count
      * @param int $page
      * @param string $baseHref
      * @param int $pagesCount
      * @return Pagination
      */
-    public static function makePagination(array $pages, int $logsCount, int $page, string $baseHref, int $pagesCount)
+    public static function makePagination(array $pages, int $count, int $page, string $baseHref, int $pagesCount)
     {
         $classPrev = $page <= 1 ? 'disabled' : 'waves-effect';
         $classNext = $page >= $pagesCount ? 'disabled' : 'waves-effect';
 
         $paginationData = [
             'pages'     => $pages,
-            'hrefPrev'  => $baseHref . '-' . 1 . '-' . $logsCount,
+            'hrefPrev'  => $baseHref . '-' . 1 . '-' . $count,
             'classPrev' => $classPrev,
-            'hrefNext'  => $baseHref . '-' . $pagesCount . '-' . $logsCount,
+            'hrefNext'  => $baseHref . '-' . $pagesCount . '-' . $count,
             'classNext' => $classNext,
         ];
 

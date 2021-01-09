@@ -2,8 +2,10 @@
 
 namespace App\Frontend\Modules\Mesures;
 
+use Helper\Pagination\Data;
 use Materialize\Table;
 use Materialize\WidgetFactory;
+use Model\MesuresManagerPDO;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 
@@ -13,45 +15,48 @@ use OCFram\HTTPRequest;
  */
 class MesuresController extends BackController
 {
+
+    const PAGE_OFFSET = 3;
+    const MAX_MEASURE_COUNT_PER_PAGE = 100;
+
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
+        /** @var MesuresManagerPDO $managerMesures */
         $managerMesures = $this->managers->getManagerOf('Mesures');
-        $nDernieresMesures = 10;
 
-        if ($request->getExists("nbMesures")) {
-            $nDernieresMesures = $request->getData("nbMesures");
+        $page = $request->getData('page') ?? 1;
+        $nDernieresMesures = $request->getData("nbMesures") ?? self::MAX_MEASURE_COUNT_PER_PAGE;
 
-            if ($nDernieresMesures > 100) {
-                $nDernieresMesures = 100;
-            }
+        if ($nDernieresMesures > self::MAX_MEASURE_COUNT_PER_PAGE) {
+            $nDernieresMesures = self::MAX_MEASURE_COUNT_PER_PAGE;
         }
-
         $cards = [];
-        $listeMesures = $managerMesures->getList(0, $nDernieresMesures);
-        $nombreMesures = $managerMesures->count();
-        $cards[] = $this->makeMesuresWidget($listeMesures, $nombreMesures, $nDernieresMesures);
+        $listeMesures = $managerMesures->getList($nDernieresMesures * ($page - 1), $nDernieresMesures);
+        $nombreMesures = $managerMesures->getListCount();
 
-        $this->page->addVar('title', 'Gestion des mesures');
-        $this->page->addVar('cards', $cards);
-    }
-
-    /**
-     * @param $listeMesures
-     * @param $nbMesures
-     * @param $nDernieresMesures
-     * @return \Materialize\Card\Card
-     */
-    public function makeMesuresWidget($listeMesures, $nbMesures, $nDernieresMesures)
-    {
         $domId = 'Mesures';
         $table = WidgetFactory::makeTable($domId, $listeMesures);
         $card = WidgetFactory::makeCard($domId, $domId);
-        $card->addContent($this->measuresView($nbMesures, $nDernieresMesures, $table));
 
-        return $card;
+        $pagesCount = ceil($nombreMesures / $nDernieresMesures);
+
+        $paginationHelper = new Data($this->app());
+        $uri = $paginationHelper->getUri($request);
+        $pages = $paginationHelper->getPaginationPages($page, $uri, $nDernieresMesures, $pagesCount);
+
+        $pagination = WidgetFactory::makePagination($pages, $nDernieresMesures, $page, $uri, $pagesCount);
+
+        $card->addContent($pagination->getHtml());
+        $card->addContent($this->measuresView($nombreMesures, $nDernieresMesures, $table));
+
+        $cards[] = $card;
+
+        $this->page->addVar('title', 'Gestion des mesures');
+        $this->page->addVar('cards', $cards);
     }
 
     /**

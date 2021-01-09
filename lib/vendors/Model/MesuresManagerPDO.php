@@ -100,6 +100,27 @@ class MesuresManagerPDO extends ManagerPDO
     }
 
     /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getListCount()
+    {
+        $sql = 'SELECT COUNT(*)
+			FROM sensors s
+			INNER JOIN mesures m
+			ON m.id_sensor = s.id';
+
+        if (!$q = $this->dao->query($sql)) {
+            throw new \Exception($this->dao->errorInfo());
+        }
+
+        $result = $q->fetchColumn();
+        $q->closeCursor();
+
+        return $result;
+    }
+
+    /**
      * @param string $sensor
      * @param string $dateMin
      * @param string $dateMax
