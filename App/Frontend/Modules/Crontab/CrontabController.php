@@ -150,7 +150,6 @@ class CrontabController extends BackController
         $this->page->addVar('card', $card);
     }
 
-
     /**
      * @param array $crontabList
      * @return \Materialize\Card\Card
@@ -178,7 +177,6 @@ class CrontabController extends BackController
         return $card;
     }
 
-
     /**
      * @param string $cronExpression
      * @param HTTPRequest $request
@@ -201,8 +199,6 @@ class CrontabController extends BackController
     protected function createCrontabFormBuilder(Crontab $item)
     {
         $scenariosManagerFactory = new ScenarioManagerPDOFactory();
-
-        /** @var ScenariosManagerPDO $scenariosManager */
         $scenariosManager = $scenariosManagerFactory->getScenariosManager();
         $scenarios = $scenariosManager->getAll();
         $scenariosOptions = [];
