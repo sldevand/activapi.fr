@@ -105,10 +105,7 @@ class MesuresManagerPDO extends ManagerPDO
      */
     public function getListCount()
     {
-        $sql = 'SELECT COUNT(*)
-			FROM sensors s
-			INNER JOIN mesures m
-			ON m.id_sensor = s.id';
+        $sql = 'SELECT COUNT(*) FROM mesures';
 
         if (!$q = $this->dao->query($sql)) {
             throw new \Exception($this->dao->errorInfo());
@@ -183,5 +180,19 @@ class MesuresManagerPDO extends ManagerPDO
         $q->closeCursor();
 
         return $sensors;
+    }
+
+    public function removeOrphanRows()
+    {
+        $sql = <<<SQL
+DELETE FROM mesures WHERE ROWID IN (
+    SELECT m.ROWID
+    FROM mesures m
+    LEFT JOIN sensors s ON m.id_sensor = s.id
+    WHERE s.id IS NULL
+);
+SQL;
+
+        return $this->dao->exec($sql);
     }
 }
