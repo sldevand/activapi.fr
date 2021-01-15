@@ -47,6 +47,6 @@ class CleanOrphanMesuresExecutor implements ExecutorInterface
 
     public function getDescription()
     {
-        return 'Repair Scenario Module orphan relations between tables' . PHP_EOL;
+        return 'Remove measures with orphan sensor rows' . PHP_EOL;
     }
 }
