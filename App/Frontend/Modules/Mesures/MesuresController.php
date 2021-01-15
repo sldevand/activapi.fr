@@ -2,6 +2,8 @@
 
 namespace App\Frontend\Modules\Mesures;
 
+use Debug\Log;
+use Entity\Mesure;
 use Helper\Pagination\Data;
 use Materialize\Table;
 use Materialize\WidgetFactory;
@@ -34,9 +36,11 @@ class MesuresController extends BackController
         if ($nDernieresMesures > self::MAX_MEASURE_COUNT_PER_PAGE) {
             $nDernieresMesures = self::MAX_MEASURE_COUNT_PER_PAGE;
         }
-        $cards = [];
-        $listeMesures = $managerMesures->getList($nDernieresMesures * ($page - 1), $nDernieresMesures);
         $nombreMesures = $managerMesures->getListCount();
+        $startPage = (int)(($nombreMesures / $nDernieresMesures) - ($page - 1)) * $nDernieresMesures;
+        $cards = [];
+        $listeMesures = $managerMesures->getList($startPage , $nDernieresMesures);
+        usort($listeMesures, [self::class, "sortMesureByHorodatage"]);
 
         $domId = 'Mesures';
         $table = WidgetFactory::makeTable($domId, $listeMesures);
@@ -73,5 +77,19 @@ class MesuresController extends BackController
             $nDernieresMesures,
             $table
         );
+    }
+
+    /**
+     * @param \Entity\Mesure $mesure
+     * @param \Entity\Mesure $mesureAfter
+     * @return int
+     */
+    public function sortMesureByHorodatage(Mesure $mesure, Mesure $mesureAfter)
+    {
+        if ($mesure->horodatage() === $mesureAfter->horodatage()) {
+            return 0;
+        }
+
+        return ($mesure->horodatage() > $mesureAfter->horodatage()) ? -1 : 1;
     }
 }

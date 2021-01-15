@@ -81,8 +81,7 @@ class MesuresManagerPDO extends ManagerPDO
         $sql = 'SELECT s.radioid id_sensor,s.nom, m.temperature, m.hygrometrie, m.horodatage
 			FROM sensors s
 			INNER JOIN mesures m
-			ON m.id_sensor = s.id
-			ORDER BY m.horodatage DESC';
+			ON m.id_sensor = s.id';
 
         if ($debut != -1 || $limite != -1) {
             $sql .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
