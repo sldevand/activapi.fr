@@ -2,12 +2,12 @@
 
 namespace App\Frontend\Modules\Mesures;
 
-use Debug\Log;
 use Entity\Mesure;
 use Helper\Pagination\Data;
 use Materialize\Table;
 use Materialize\WidgetFactory;
 use Model\MesuresManagerPDO;
+use OCFram\Application;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 
@@ -17,9 +17,25 @@ use OCFram\HTTPRequest;
  */
 class MesuresController extends BackController
 {
-
+    const DEFAULT_PAGE = 1;
     const PAGE_OFFSET = 3;
     const MAX_MEASURE_COUNT_PER_PAGE = 100;
+
+    /** @var MesuresManagerPDO */
+    protected $mesuresManager;
+
+    /**
+     * MesuresController constructor.
+     * @param Application $app
+     * @param string $module
+     * @param string $action
+     * @throws \Exception
+     */
+    public function __construct(Application $app, string $module, string $action)
+    {
+        parent::__construct($app, $module, $action);
+        $this->mesuresManager = $this->managers->getManagerOf('Mesures');
+    }
 
     /**
      * @param HTTPRequest $request
@@ -27,54 +43,47 @@ class MesuresController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        /** @var MesuresManagerPDO $managerMesures */
-        $managerMesures = $this->managers->getManagerOf('Mesures');
-
-        $page = $request->getData('page') ?? 1;
-        $nDernieresMesures = $request->getData("nbMesures") ?? self::MAX_MEASURE_COUNT_PER_PAGE;
-
-        if ($nDernieresMesures > self::MAX_MEASURE_COUNT_PER_PAGE) {
-            $nDernieresMesures = self::MAX_MEASURE_COUNT_PER_PAGE;
+        $page = $request->getData('page') ?? self::DEFAULT_PAGE;
+        $measuresCount = $request->getData("measuresCount") ?? self::MAX_MEASURE_COUNT_PER_PAGE;
+        if ($measuresCount > self::MAX_MEASURE_COUNT_PER_PAGE) {
+            $measuresCount = self::MAX_MEASURE_COUNT_PER_PAGE;
         }
-        $nombreMesures = $managerMesures->getListCount();
-        $startPage = (int)(($nombreMesures / $nDernieresMesures) - ($page - 1)) * $nDernieresMesures;
-        $cards = [];
-        $listeMesures = $managerMesures->getList($startPage , $nDernieresMesures);
-        usort($listeMesures, [self::class, "sortMesureByHorodatage"]);
+
+        $listCount = $this->mesuresManager->getListCount();
+        $startPage = (int)(($listCount / $measuresCount) - ($page - 1)) * $measuresCount;
+        $measures = $this->mesuresManager->getList($startPage, $measuresCount);
+        usort($measures, [self::class, "sortMesureByHorodatage"]);
 
         $domId = 'Mesures';
-        $table = WidgetFactory::makeTable($domId, $listeMesures);
         $card = WidgetFactory::makeCard($domId, $domId);
 
-        $pagesCount = ceil($nombreMesures / $nDernieresMesures);
-
-        $paginationHelper = new Data($this->app());
-        $uri = $paginationHelper->getUri($request);
-        $pages = $paginationHelper->getPaginationPages($page, $uri, $nDernieresMesures, $pagesCount);
-
-        $pagination = WidgetFactory::makePagination($pages, $nDernieresMesures, $page, $uri, $pagesCount);
-
+        //Add pagination to card
+        $pagination = $this->makePaginationWidget($listCount, $measuresCount, $request, $page);
         $card->addContent($pagination->getHtml());
-        $card->addContent($this->measuresView($nombreMesures, $nDernieresMesures, $table));
 
-        $cards[] = $card;
+        //Add measuresGridView to card
+        $table = WidgetFactory::makeTable($domId, $measures);
+        $measuresGridView = $this->measuresGridView($listCount, $measuresCount, $table);
+        $card->addContent($measuresGridView);
+
+        $cards = [$card];
 
         $this->page->addVar('title', 'Gestion des mesures');
         $this->page->addVar('cards', $cards);
     }
 
     /**
-     * @param int $nbMesures
-     * @param int $nDernieresMesures
+     * @param int $listCount
+     * @param int $measuresCount
      * @param Table $table
      * @return false|string
      */
-    public function measuresView($nbMesures, $nDernieresMesures, $table)
+    public function measuresGridView($listCount, $measuresCount, $table)
     {
         return $this->getBlock(
             MODULES . '/Mesures/Block/measuresView.phtml',
-            $nbMesures,
-            $nDernieresMesures,
+            $listCount,
+            $measuresCount,
             $table
         );
     }
@@ -91,5 +100,22 @@ class MesuresController extends BackController
         }
 
         return ($mesure->horodatage() > $mesureAfter->horodatage()) ? -1 : 1;
+    }
+
+    /**
+     * @param int $listCount
+     * @param int $measuresCount
+     * @param HTTPRequest $request
+     * @param int $page
+     * @return \Materialize\Pagination\Pagination
+     */
+    protected function makePaginationWidget(int $listCount, int $measuresCount, HTTPRequest $request, int $page)
+    {
+        $pagesCount = ceil($listCount / $measuresCount);
+        $paginationHelper = new Data($this->app());
+        $uri = $paginationHelper->getUri($request);
+        $pages = $paginationHelper->getPaginationPages($page, $uri, $measuresCount, $pagesCount);
+
+        return WidgetFactory::makePagination($pages, $measuresCount, $page, $uri, $pagesCount);
     }
 }

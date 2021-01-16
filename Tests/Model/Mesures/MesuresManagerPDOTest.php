@@ -258,8 +258,7 @@ class MesuresManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInt
                 ]
             );
             $mesure->setNom($sensor->nom());
-            $invertIndex = count($sensors) - ($key + 1);
-            $expected[$invertIndex] = $mesure;
+            $expected[$key] = $mesure;
         }
 
         return $expected;
