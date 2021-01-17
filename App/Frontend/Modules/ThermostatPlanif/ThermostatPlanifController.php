@@ -36,29 +36,7 @@ class ThermostatPlanifController extends BackController
         $thermostatPlanningsContainer = $manager->getListArray();
         $hideColumns = ['id', 'nomid', 'nom', 'modeid', 'defaultModeid'];
 
-        $cards = [];
-
-        foreach ($thermostatPlanningsContainer as $thermostatPlannings) {
-            $thermostatDatas = [];
-            foreach ($thermostatPlannings as $thermostatPlanningObj) {
-                $thermostatPlanning = json_decode(json_encode($thermostatPlanningObj), true);
-                $thermostatDatas[] = $this->prepareDataForTable($thermostatPlanning);
-            }
-
-            $domId = current($thermostatPlannings)["nom"]["nom"];
-            $table = WidgetFactory::makeTable($domId, $thermostatDatas, true, $hideColumns);
-
-            $cardTitle = 'Thermostat : Planning  ' . $domId;
-            $linkDelete = new Link('Supprimer ce Planning', $this->baseAddress . "thermostat-planif-delete-" . $thermostatPlanning["nomid"], 'delete', 'secondaryTextColor');
-
-            $cardContent = $linkDelete->getHtml();
-            $cardContent .= $table->getHtml();
-
-            $card = WidgetFactory::makeCard($domId, $cardTitle);
-            $card->addContent($cardContent);
-
-            $cards[] = $card;
-        }
+        $cards = $this->makePlanifCards($thermostatPlanningsContainer, $hideColumns);
 
         $addPlanifFab = new FloatingActionButton([
             'id' => "addPlanifFab",
@@ -230,4 +208,64 @@ class ThermostatPlanifController extends BackController
 
         return $thermostatPlanning;
     }
+
+
+    /**
+     * @param string $domId
+     * @param string $cardTitle
+     * @param string $nomId
+     * @param array $thermostatDatas
+     * @param array $hideColumns
+     * @return \Materialize\Card\Card
+     */
+    protected function makePlanifCard(
+        string $domId,
+        string $cardTitle,
+        string $nomId,
+        array $thermostatDatas,
+        array $hideColumns
+    ) {
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+
+        $linkDelete = new Link(
+            'Supprimer ce Planning',
+            $this->baseAddress . "thermostat-planif-delete-" . $nomId,
+            'delete', 'secondaryTextColor'
+        );
+        $card->addContent($linkDelete->getHtml());
+
+        $table = WidgetFactory::makeTable($domId, $thermostatDatas, true, $hideColumns);
+
+        return $card->addContent($table->getHtml());
+    }
+
+    /**
+     * @param array $thermostatPlanningsContainer
+     * @param array $hideColumns
+     * @return array
+     */
+    protected function makePlanifCards(
+        array $thermostatPlanningsContainer,
+        array $hideColumns
+    ) {
+        $cards = [];
+        foreach ($thermostatPlanningsContainer as $thermostatPlannings) {
+            $thermostatDatas = [];
+            foreach ($thermostatPlannings as $thermostatPlanningObj) {
+                $thermostatPlanning = json_decode(json_encode($thermostatPlanningObj), true);
+                $thermostatDatas[] = $this->prepareDataForTable($thermostatPlanning);
+            }
+
+            $domId = current($thermostatPlannings)["nom"]["nom"];
+            $cardTitle = 'Thermostat : Planning  ' . $domId;
+
+            $card = $this->makePlanifCard($domId, $cardTitle, $thermostatPlanning["nomid"], $thermostatDatas, $hideColumns);
+
+            $cards[] = $card;
+        }
+
+        return $cards;
+    }
+
+
 }
