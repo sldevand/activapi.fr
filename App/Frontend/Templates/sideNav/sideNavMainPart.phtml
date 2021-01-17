@@ -6,7 +6,7 @@ use Materialize\Sidenav\Sidenav;
 use Materialize\Sidenav\Subheader;
 
 $iconNames = [
-    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies','build'
+    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies', 'build', 'schedule', 'event_note', 'info', 'input'
 ];
 
 $icons = [];
@@ -99,21 +99,21 @@ $sidenav = new Sidenav(
                     'links' => [
                         new Link([
                             'id' => 'thermostat',
-                            'title' => 'Paramètres',
+                            'title' => 'Infos',
                             'link' => '/thermostat',
-                            'icon' => $icons['settings']
+                            'icon' => $icons['info']
                         ]),
                         new Link([
                             'id' => 'thermostat-log',
                             'title' => 'Log',
                             'link' => '/thermostat-log',
-                            'icon' => $icons['list']
+                            'icon' => $icons['event_note']
                         ]),
                         new Link([
                             'id' => 'thermostat-planif',
                             'title' => 'Planif',
                             'link' => '/thermostat-planif',
-                            'icon' => $icons['timetable']
+                            'icon' => $icons['schedule']
                         ]),
                         new Link([
                             'id' => 'thermostat-modes',
@@ -133,7 +133,7 @@ $sidenav = new Sidenav(
                             'id' => 'console',
                             'title' => 'Console',
                             'link' => '/console',
-                            'icon' => $icons['table']
+                            'icon' => $icons['input']
                         ]),
                         new Link([
                             'id' => 'crontab',
