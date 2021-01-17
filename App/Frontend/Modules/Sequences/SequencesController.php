@@ -3,7 +3,7 @@
 namespace App\Frontend\Modules\Sequences;
 
 use App\Backend\Modules\Sequences\SequencesController as SequencesBackController;
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\Link\Link;

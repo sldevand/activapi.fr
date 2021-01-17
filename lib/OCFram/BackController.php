@@ -3,7 +3,7 @@
 namespace OCFram;
 
 use Exception;
-use Materialize\Button\FlatButton;
+use Materialize\FormView;
 
 /**
  * Class BackController
@@ -11,6 +11,8 @@ use Materialize\Button\FlatButton;
  */
 abstract class BackController extends ApplicationComponent
 {
+    use FormView;
+
     /**
      * @var string
      */
@@ -238,25 +240,6 @@ abstract class BackController extends ApplicationComponent
         ob_start();
         require $fileName;
         return ob_get_clean();
-    }
-
-    /**
-     * @param Form $form
-     * @return false|string
-     */
-    public function editFormView(Form $form)
-    {
-        $submitButton = new FlatButton(
-            [
-                'id' => 'submit',
-                'title' => 'Valider',
-                'color' => 'primaryTextColor',
-                'type' => 'submit',
-                'icon' => 'check',
-                'wrapper' => 'col s12'
-            ]
-        );
-        return $this->getBlock(BLOCK . '/editFormView.phtml', $form, $submitButton);
     }
 
     /**

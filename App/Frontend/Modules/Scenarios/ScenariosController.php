@@ -3,7 +3,7 @@
 namespace App\Frontend\Modules\Scenarios;
 
 use App\Backend\Modules\Scenarios\ScenariosController as ScenariosBackController;
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\Link\Link;

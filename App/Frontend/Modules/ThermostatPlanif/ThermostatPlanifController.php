@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Modules\ThermostatPlanif;
 
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use Entity\ThermostatPlanif;
 use Entity\ThermostatPlanifNom;
 use FormBuilder\ThermostatPlanifFormBuilder;

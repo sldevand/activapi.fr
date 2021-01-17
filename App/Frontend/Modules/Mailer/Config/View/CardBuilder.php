@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Modules\Mailer\Config\View;
 
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use Materialize\Button\FlatButton;
 use Materialize\WidgetFactory;
 use OCFram\ApplicationComponent;

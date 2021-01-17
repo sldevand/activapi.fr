@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Modules\Sensors\Config\View;
 
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use Materialize\WidgetFactory;
 use OCFram\ApplicationComponent;
 use OCFram\Form;

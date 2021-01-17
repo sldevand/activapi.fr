@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Modules\Configuration;
 
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use App\Frontend\Modules\Mailer\Config\View\CardBuilder;
 use Helper\Configuration\Data;
 use Mailer\Helper\Config;

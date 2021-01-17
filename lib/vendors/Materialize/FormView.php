@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Frontend\Modules;
+namespace Materialize;
 
 use Materialize\Button\FlatButton;
 use OCFram\Block;
 
 /**
  * Trait FormView
- * @package App\Frontend\Modules
+ * @package Materialize
  */
 trait FormView
 {
