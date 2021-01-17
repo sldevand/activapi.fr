@@ -181,6 +181,9 @@ class MesuresManagerPDO extends ManagerPDO
         return $sensors;
     }
 
+    /**
+     * @return false|int
+     */
     public function removeOrphanRows()
     {
         $sql = <<<SQL

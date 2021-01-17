@@ -2,6 +2,8 @@
 
 namespace App\Frontend\Modules\ThermostatPlanif;
 
+use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCard;
+use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCardList;
 use Entity\ThermostatPlanif;
 use Entity\ThermostatPlanifNom;
 use FormBuilder\ThermostatPlanifFormBuilder;
@@ -36,29 +38,8 @@ class ThermostatPlanifController extends BackController
         $thermostatPlanningsContainer = $manager->getListArray();
         $hideColumns = ['id', 'nomid', 'nom', 'modeid', 'defaultModeid'];
 
-        $cards = [];
-
-        foreach ($thermostatPlanningsContainer as $thermostatPlannings) {
-            $thermostatDatas = [];
-            foreach ($thermostatPlannings as $thermostatPlanningObj) {
-                $thermostatPlanning = json_decode(json_encode($thermostatPlanningObj), true);
-                $thermostatDatas[] = $this->prepareDataForTable($thermostatPlanning);
-            }
-
-            $domId = current($thermostatPlannings)["nom"]["nom"];
-            $table = WidgetFactory::makeTable($domId, $thermostatDatas, true, $hideColumns);
-
-            $cardTitle = 'Thermostat : Planning  ' . $domId;
-            $linkDelete = new Link('Supprimer ce Planning', $this->baseAddress . "thermostat-planif-delete-" . $thermostatPlanning["nomid"], 'delete', 'secondaryTextColor');
-
-            $cardContent = $linkDelete->getHtml();
-            $cardContent .= $table->getHtml();
-
-            $card = WidgetFactory::makeCard($domId, $cardTitle);
-            $card->addContent($cardContent);
-
-            $cards[] = $card;
-        }
+        $planifCardList = new PlanifCardList($this->baseAddress);
+        $cards = $planifCardList->create($thermostatPlanningsContainer, $hideColumns);
 
         $addPlanifFab = new FloatingActionButton([
             'id' => "addPlanifFab",
@@ -214,20 +195,5 @@ class ThermostatPlanifController extends BackController
 
         $this->page->addVar('title', "Suppression du Planning $nom");
         $this->page->addVar('card', $card);
-    }
-
-    /**
-     * @param $thermostatPlanning
-     * @return mixed
-     */
-    protected function prepareDataForTable($thermostatPlanning)
-    {
-        $thermostatPlanning["jour"] = DateFactory::toStrDay($thermostatPlanning['jour']);
-        $thermostatPlanning["mode"] = $thermostatPlanning["mode"]["nom"];
-        $thermostatPlanning["defaultMode"] = $thermostatPlanning["defaultMode"]["nom"];
-        $linkEdit = new Link('', $this->baseAddress . "thermostat-planif-edit-" . $thermostatPlanning["id"], 'edit', 'primaryTextColor');
-        $thermostatPlanning["editer"] = $linkEdit->getHtmlForTable();
-
-        return $thermostatPlanning;
     }
 }

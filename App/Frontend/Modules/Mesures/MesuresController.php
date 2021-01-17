@@ -18,7 +18,6 @@ use OCFram\HTTPRequest;
 class MesuresController extends BackController
 {
     const DEFAULT_PAGE = 1;
-    const PAGE_OFFSET = 3;
     const MAX_MEASURE_COUNT_PER_PAGE = 100;
 
     /** @var MesuresManagerPDO */
