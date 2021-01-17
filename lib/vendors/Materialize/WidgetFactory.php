@@ -3,6 +3,7 @@
 namespace Materialize;
 
 use Materialize\Card\Card;
+use Materialize\Link\Link;
 use Materialize\Pagination\Pagination;
 use Materialize\Spinner\Spinner;
 
@@ -87,6 +88,25 @@ class WidgetFactory
             'headers' => $headers,
             'hideColumns' => $hideColumns
         ]);
+    }
+
+    /**
+     * @param string $domId
+     * @param string $link
+     * @param bool $dark
+     * @return Link
+     */
+    public static function makeBackArrow(string $domId, string $link, bool $dark = false)
+    {
+        $textColor = $dark ? 'black-text' : 'white-text';
+
+        return new Link(
+            $domId,
+            $link,
+            'arrow_back',
+            $textColor,
+            $textColor
+        );
     }
 
     /**
