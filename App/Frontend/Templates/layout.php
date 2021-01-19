@@ -1,3 +1,7 @@
+<?php
+/** @var \OCFram\User $user */
+/** @var string $content */
+?>
 <!DOCTYPE html>
 <html>
 <head>

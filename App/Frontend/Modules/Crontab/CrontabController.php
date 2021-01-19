@@ -104,12 +104,8 @@ class CrontabController extends BackController
             }
         }
 
-        $ctfb = $this->createCrontabFormBuilder($item);
-        $ctfb->build();
-        $form = $ctfb->form();
-
+        $form = $this->createCrontabFormBuilder($item)->build();
         $fh = new FormHandler($form, $this->manager, $request);
-
         if ($fh->process()) {
             $this->app->httpResponse()->redirect($this->getCrontabIndexUrl());
         }

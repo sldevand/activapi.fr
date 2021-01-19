@@ -13,43 +13,32 @@ abstract class BackController extends ApplicationComponent
 {
     use FormView;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $action = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $module = '';
 
-    /**
-     * @var null|Page
-     */
-    protected $page = null;
+    /** @var Page */
+    protected $page;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $view = '';
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $viewId = '';
 
-    /**
-     * @var null|Managers
-     */
-    protected $managers = null;
+    /** @var Managers */
+    protected $managers;
 
-    /**
-     * @var null|Cache
-     */
-    protected $cache = null;
+    /** @var Cache */
+    protected $cache;
 
     /** @var string */
     protected $baseAddress;
+
+    /** @var \OCFram\MessageHandler */
+    protected $messageHandler;
 
     /**
      * BackController constructor.
@@ -70,6 +59,7 @@ abstract class BackController extends ApplicationComponent
         $this->setView($action);
         $this->cache = new Cache($this->app());
         $this->baseAddress = $app->config()->getEnv('BASE_URL');
+        $this->messageHandler = new MessageHandler();
     }
 
     /**

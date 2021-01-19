@@ -13,11 +13,11 @@ use OCFram\StringField;
 class ActionneursFormBuilder extends FormBuilder
 {
     /**
-     * @return mixed|void
+     * @return \OCFram\Form
      */
     public function build()
     {
-        $this->form
+        return $this->form
             ->add(
                 new StringField([
                     'label' => 'nom',

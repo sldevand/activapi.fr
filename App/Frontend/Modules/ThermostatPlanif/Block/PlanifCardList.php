@@ -3,6 +3,7 @@
 namespace App\Frontend\Modules\ThermostatPlanif\Block;
 
 use Materialize\Link\Link;
+use Materialize\WidgetFactory;
 use OCFram\DateFactory;
 
 /**
@@ -46,6 +47,13 @@ class PlanifCardList
             $cards[] = PlanifCard::create($domId, $cardTitle, $backUrl, $thermostatDatas, $hideColumns);;
         }
 
+        if (empty($cards)) {
+            $table = WidgetFactory::makeTable('no-data', []);
+            $card = WidgetFactory::makeCard('card-no-data', 'Planification');
+            $card->addContent($table->getHtml());
+            $cards [] = $card;
+        }
+
         return $cards;
     }
 
@@ -58,7 +66,12 @@ class PlanifCardList
         $thermostatPlanning["jour"] = DateFactory::toStrDay($thermostatPlanning['jour']);
         $thermostatPlanning["mode"] = $thermostatPlanning["mode"]["nom"];
         $thermostatPlanning["defaultMode"] = $thermostatPlanning["defaultMode"]["nom"];
-        $linkEdit = new Link('', $this->baseAddress . "thermostat-planif-edit-" . $thermostatPlanning["id"], 'edit', 'primaryTextColor');
+        $linkEdit = new Link(
+            '',
+            $this->baseAddress . "thermostat-planif-edit-" . $thermostatPlanning["id"],
+            'edit',
+            'primaryTextColor'
+        );
         $thermostatPlanning["editer"] = $linkEdit->getHtmlForTable();
 
         return $thermostatPlanning;

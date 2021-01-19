@@ -4,6 +4,7 @@ namespace FormBuilder;
 
 use OCFram\FormBuilder;
 use OCFram\SelectField;
+use OCFram\StringField;
 use OCFram\TimePickerField;
 
 /**
@@ -13,20 +14,24 @@ use OCFram\TimePickerField;
 class ThermostatPlanifFormBuilder extends FormBuilder
 {
     /**
-     * @return mixed
+     * @return \OCFram\Form
      */
     public function build()
     {
-        $modesRaw = json_decode(json_encode($this->form()->entity()->modes), true);
+        $modesRaw = json_decode(json_encode($this->getData('modes')), true);
         $modes = [];
         foreach ($modesRaw as $key => $mode) {
             $modes[$mode["id"]] = $mode["nom"];
         }
 
-        $jour = $this->form()->entity()->jour();
-        $nomid = $this->form()->entity()->nomid();
-        $this->form
+        return $this->form
             ->add(
+                new StringField([
+                    'name' => 'nomid',
+                    'value' => $this->form()->entity()->nomid(),
+                    'hidden' => 'hidden'
+                ])
+            )->add(
                 new SelectField([
                     'label' => 'mode',
                     'name' => 'modeid',

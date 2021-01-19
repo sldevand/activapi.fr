@@ -26,7 +26,7 @@ abstract class FormBuilder
     }
 
     /**
-     * @return mixed
+     * @return \OCFram\Form
      */
     abstract public function build();
 

@@ -2,6 +2,8 @@
 
 namespace OCFram;
 
+use Debug\Log;
+
 /**
  * Class FormHandler
  * @package OCFram
@@ -23,6 +25,9 @@ class FormHandler
      */
     protected $request;
 
+    /** @var \OCFram\MessageHandler */
+    protected $messageHandler;
+
     /**
      * FormHandler constructor.
      * @param Form $form
@@ -34,6 +39,15 @@ class FormHandler
         $this->setForm($form);
         $this->setManager($manager);
         $this->setRequest($request);
+        $this->messageHandler = new MessageHandler();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function beforeProcess()
+    {
+        return true;
     }
 
     /**
@@ -41,9 +55,22 @@ class FormHandler
      */
     public function process()
     {
-        if ($this->request->method() !== 'POST' || !$this->form->isValid()) {
+        if ($this->request->method() !== HTTPRequest::POST) {
             return false;
         }
+
+        foreach ($this->form->getFields() as $field) {
+            $field->setValue($this->request->postData($field->name()));
+        }
+
+        if (!$this->beforeProcess()) {
+            return false;
+        }
+
+        if (!$this->form->isValid()) {
+            return false;
+        }
+
         $this->manager->save($this->form->entity());
 
         return true;
@@ -80,5 +107,13 @@ class FormHandler
         $this->request = $request;
 
         return $this;
+    }
+
+    /**
+     * @return \OCFram\MessageHandler
+     */
+    public function getMessageHandler(): MessageHandler
+    {
+        return $this->messageHandler;
     }
 }
