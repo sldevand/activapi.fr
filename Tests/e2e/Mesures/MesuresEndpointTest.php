@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class MesuresEndpointTest
  * @package Tests\e2e\Mesures
- * @author Synolia <contact@synolia.com>
  */
 class MesuresEndpointTest extends TestCase
 {

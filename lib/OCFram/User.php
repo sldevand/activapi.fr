@@ -42,6 +42,10 @@ class User
         $flash = $_SESSION['flash'];
         unset($_SESSION['flash']);
 
+        if (is_array($flash)) {
+           $flash = implode('</br>', $flash);
+        }
+
         return $flash;
     }
 
@@ -83,7 +87,7 @@ class User
     }
 
     /**
-     * @param string $value
+     * @param string | array $value
      */
     public function setFlash($value)
     {

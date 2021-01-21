@@ -3,6 +3,7 @@
 namespace FormBuilder;
 
 use OCFram\FormBuilder;
+use OCFram\NotNullValidator;
 use OCFram\StringField;
 
 /**
@@ -12,17 +13,19 @@ use OCFram\StringField;
 class ThermostatPlanifNameFormBuilder extends FormBuilder
 {
     /**
-     * @return mixed
+     * @return mixed|\OCFram\Form
      */
     public function build()
     {
-
-        $this->form
+        return $this->form
             ->add(
                 new StringField(
                     [
                         'label' => 'nom',
-                        'name' => 'nom'
+                        'name' => 'nom',
+                        'validators' => [
+                            new NotNullValidator('Le nom est vide!')
+                        ]
                     ]
                 )
             );

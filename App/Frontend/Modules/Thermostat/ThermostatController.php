@@ -15,7 +15,6 @@ use OCFram\HTTPRequest;
  */
 class ThermostatController extends BackController
 {
-    const PAGE_OFFSET = 3;
     const LOGS_COUNT  = 100;
 
     /**

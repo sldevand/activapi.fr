@@ -29,11 +29,14 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
 
     /**
      * @param int $id
+     * @return bool|int
      */
     public function delete($id)
     {
-        $this->dao->exec("DELETE FROM thermostat_corresp WHERE id = $id");
-        $this->dao->exec("DELETE FROM $this->tableName WHERE nomid = $id");
+        $resCorresp = $this->dao->exec("DELETE FROM thermostat_corresp WHERE id = $id");
+        $resPlanif  = $this->dao->exec("DELETE FROM $this->tableName WHERE nomid = $id");
+
+        return $resCorresp && $resPlanif;
     }
 
     /**
@@ -195,8 +198,8 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
                 "jour" => $jour,
                 "modeid" => "1",
                 "defaultModeid" => "3",
-                "heure1Start" => "",
-                "heure1Stop" => "",
+                "heure1Start" => "07:00",
+                "heure1Stop" => "23:00",
                 "heure2Start" => "",
                 "heure2Stop" => "",
                 "nomid" => $nomId
@@ -231,15 +234,16 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param int $id
-     * @return mixed
-     * @throws Exception
+     * @param int | string $value
+     * @param string $field
+     * @return \Entity\ThermostatPlanifNom
+     * @throws \Exception
      */
-    public function getNom($id)
+    public function getNom($value, $field = 'id')
     {
-        $sql = 'SELECT * FROM thermostat_corresp WHERE id = :id';
+        $sql = "SELECT * FROM thermostat_corresp WHERE $field = :value";
         $q = $this->prepare($sql);
-        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
+        $q->bindValue(':value', $value);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanifNom');
         $nom = $q->fetch();

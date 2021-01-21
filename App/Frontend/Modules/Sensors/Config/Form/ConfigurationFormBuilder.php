@@ -16,7 +16,7 @@ class ConfigurationFormBuilder extends FormBuilder
     const NAME = 'action-sensors-submit';
 
     /**
-     * @return mixed|void
+     * @return \OCFram\Form
      */
     public function build()
     {
@@ -24,7 +24,7 @@ class ConfigurationFormBuilder extends FormBuilder
         $enableFieldConfig = $this->getData(Config::PATH_SENSORS_ALERT_ENABLE);
         $enableFieldConfig = $enableFieldConfig ? $enableFieldConfig->getConfigValue() : '';
 
-        $this->form
+        return $this->form
             ->add(
                 new StringField(
                     [
