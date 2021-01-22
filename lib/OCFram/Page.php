@@ -23,6 +23,9 @@ class Page extends ApplicationComponent
      */
     protected $vars = [];
 
+    /** @var bool */
+    protected $flattenVars = false;
+
     /**
      * @param string $var
      * @param mixed $value
@@ -79,19 +82,45 @@ class Page extends ApplicationComponent
             echo $this->contentCache;
             return ob_get_clean();
         } else {
-            if (!file_exists($this->contentFile)) {
-                throw new \RuntimeException('La vue spécifiée n\'existe pas');
-            }
-
             extract($this->vars);
 
-            ob_start();
-            require $this->contentFile;
-            $content = ob_get_clean();
+            if ($this->flattenVars) {
+                $this->vars = $this->flatten($this->vars);
+                $this->flattenVars = false;
+            }
 
-            return $content;
+            return json_encode($this->vars, JSON_PRETTY_PRINT);
         }
     }
+
+    /**
+     * @param bool $flattenVars
+     * @return $this
+     */
+    public function setFlattenVars(bool $flattenVars): Page
+    {
+        $this->flattenVars = $flattenVars;
+
+        return $this;
+    }
+
+    /**
+     * @param array $array
+     * @return array
+     */
+    protected function flatten(array $array): array
+    {
+        $return = [];
+        array_walk_recursive(
+            $array,
+            function ($a) use (&$return) {
+                $return[] = $a;
+            }
+        );
+
+        return $return;
+    }
+
 
     /**
      * @param $contentFile

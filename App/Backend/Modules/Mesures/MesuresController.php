@@ -6,7 +6,6 @@ use DateTime;
 use DateTimeZone;
 use Entity\Mesure;
 use Entity\Sensor;
-use Helper\Sensors\Data;
 use Model\SensorsManagerPDO;
 use OCFram\BackController;
 use OCFram\DateFactory;
@@ -35,24 +34,11 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
-     */
-    public function executeDelete(HTTPRequest $request)
-    {
-        $id = $request->getData('id');
-        $this->manager->delete($id);
-        $this->app->user()->setFlash('La mesure a bien été supprimée !');
-        $this->app->httpResponse()->redirect('.');
-    }
-
-    /**
      * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */
     public function executeSensor(HTTPRequest $request)
     {
-        $this->page->addVar('title', 'Gestion de sensor');
-
         $sensorID = $request->getData("id_sensor");
 
         if ($request->getExists("dateMin") && $request->getExists("dateMax")) {
@@ -103,10 +89,11 @@ class MesuresController extends BackController
             $id = $listeMesures[0]->id();
         }
 
-        $this->page->addVar('nom', $nom);
-        $this->page->addVar('id', $id);
-        $this->page->addVar('listeMesures', $listeMesures);
-        $this->page->addVar('sensorID', $sensorID);
+        $this->page
+            ->addVar('nom', $nom)
+            ->addVar('id', $id)
+            ->addVar('data', $listeMesures)
+            ->addVar('sensor_id', $sensorID);
     }
 
     /**
@@ -126,7 +113,7 @@ class MesuresController extends BackController
         }
 
         if (!$sensorEntity instanceof Sensor) {
-            return $this->page->addVar('measure', 'No entity found with id ' . $sensorId);
+            return $this->page->addVar('measure', ["error" => "No entity found with id $sensorId"]);
         }
 
         $valeur1 = $request->getData("valeur1");
@@ -163,7 +150,8 @@ class MesuresController extends BackController
         $diff = abs($derniereValeur1 - $valeur1);
 
         if ($diff > 0) {
-            $this->page->addVar('measure', $this->manager->addWithSensorId($sensorEntity));
+            $res = $this->manager->addWithSensorId($sensorEntity);
+            $this->page->addVar('measure', $res);
         } else {
             $this->page->addVar('measure', 0);
         }
@@ -263,6 +251,7 @@ class MesuresController extends BackController
             $sensor = $this->manager->getSensor($radioaddress, 'radioaddress');
         }
 
+        $this->page->setFlattenVars(true);
         $this->page->addVar('sensor', [$sensor]);
     }
 

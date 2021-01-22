@@ -38,6 +38,8 @@ class MesuresEndpointTest extends TestCase
     }
 
     /**
+     * Route : /mesures/add-(sensor[0-9]{2}(?:ctn10|dht11|dht22|tinfo|therm|cdoor)id[0-9])-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function testExecuteInsert()
@@ -46,27 +48,33 @@ class MesuresEndpointTest extends TestCase
         $sensorBefore = $this->setSensorForTest($radioid);
         $url = $this->getFullUrl("/mesures/add-$radioid-12-0.0");
         $client = new Client();
-        $body = $this->getRequest($client, $url);
+        $successMessage = ["measure" => true];
+        $notInsertedMessage = ["measure" => 0];
 
         // first time insert is successful
-        self::assertEquals('true', $body);
+        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        self::assertEquals($successMessage, $body);
         $this->removeLastInsertedMeasure();
 
         // second time insert fails because values did not change
-        self::assertEquals('0', $this->getRequest($client, $url));
+        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        self::assertEquals($notInsertedMessage, $body);
 
         // we change values, the measure can be inserted
         $url = $this->getFullUrl("/mesures/add-$radioid-14.2-0.0");
-        self::assertEquals('true', $this->getRequest($client, $url));
+        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        self::assertEquals($successMessage, $body);
         $this->removeLastInsertedMeasure();
 
         self::$sensorsManager->save($sensorBefore);
     }
 
     /**
+     * Route : /mesures/(sensor[0-9]{2}(?:ctn10|dht11|dht22|tinfo|therm|cdoor)id[0-9])-(today|yesterday|week|month)
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testExecuteSensor()
+    public function testExecuteSensorToday()
     {
         $radioid = 'sensor24ctn10id3';
         $sensorBefore = $this->setSensorForTest($radioid);
@@ -96,7 +104,33 @@ class MesuresEndpointTest extends TestCase
         self::$sensorsManager->save($sensorBefore);
     }
 
-    protected function setSensorForTest($radioId)
+
+    /**
+     * Route : /mesures/get-(sensor[0-9]{2}(?:ctn10|dht11|dht22|tinfo|therm|cdoor)id[0-9])
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function testExecuteSensorStruct()
+    {
+        $radioid = 'sensor24ctn10id3';
+
+        $client = new Client();
+        $url = $this->getFullUrl("/mesures/get-$radioid");
+        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        $sensor = self::$mesuresManager->getSensor($radioid);
+        $expectedSensor = json_decode(json_encode($sensor), true);
+        $expected = [$expectedSensor];
+
+        self::assertEquals($expected, $body);
+    }
+
+
+    /**
+     * @param string $radioId
+     * @return \Entity\Sensor
+     * @throws \Exception
+     */
+    protected function setSensorForTest(string $radioId)
     {
         /** @var \Entity\Sensor $sensorBefore */
         $sensorBefore = self::$sensorsManager->getUniqueBy('radioid', $radioId);
@@ -115,7 +149,7 @@ class MesuresEndpointTest extends TestCase
      * @param string $path
      * @return string
      */
-    protected function getFullUrl(string $path)
+    protected function getFullUrl(string $path): string
     {
         $baseUrl = $_ENV['TEST_BASE_URL'] ?? $_ENV['BASE_URL'];
         $rootApiUri =  $_ENV['TEST_ROOT_API_URI'] ??  $_ENV['ROOT_API_URI'];
