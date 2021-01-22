@@ -6,6 +6,7 @@ use Entity\Sensor;
 use Entity\Thermostat;
 use Entity\ThermostatLog;
 use Entity\ThermostatMode;
+use OCFram\Managers;
 
 /**
  * Class ThermostatManagerPDO
@@ -13,6 +14,9 @@ use Entity\ThermostatMode;
  */
 class ThermostatManagerPDO extends ManagerPDO
 {
+    /** @var \OCFram\Managers */
+    protected $managers;
+
     /**
      * ThermostatManagerPDO constructor.
      * @param \PDO $dao
@@ -22,6 +26,7 @@ class ThermostatManagerPDO extends ManagerPDO
         parent::__construct($dao);
         $this->tableName = 'thermostat';
         $this->entity = new Thermostat();
+        $this->managers = new Managers('PDO', $dao);
     }
 
     /**
@@ -56,9 +61,15 @@ class ThermostatManagerPDO extends ManagerPDO
         $listeThermostat = $q->fetchAll();
         $q->closeCursor();
 
+
+        /** @var \Model\ThermostatModesManagerPDO $modesManager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
+        /** @var \Model\SensorsManagerPDO $sensorsManager */
+        $sensorsManager = $this->managers->getManagerOf('Sensors');
+
         foreach ($listeThermostat as $key => $thermostat) {
-            $mode = $this->getMode($thermostat->modeid());
-            $sensor = $this->getSensor($thermostat->sensorid());
+            $mode = $modesManager->getUnique($thermostat->modeid());
+            $sensor = $sensorsManager->getUnique($thermostat->sensorid());
             if (!is_bool($mode)) {
                 $thermostat->setMode($mode);
             }
@@ -68,40 +79,6 @@ class ThermostatManagerPDO extends ManagerPDO
         }
 
         return $listeThermostat;
-    }
-
-    /**
-     * @param int $id
-     * @return ThermostatMode
-     */
-    public function getMode($id)
-    {
-        $q = $this->prepare('SELECT * FROM thermostat_modes WHERE id = :id');
-        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-        $mode = $q->fetch();
-        $q->closeCursor();
-
-        return $mode;
-    }
-
-    /**
-     * @param int $id
-     * @return Sensor
-     * @throws \Exception
-     */
-    public function getSensor($id)
-    {
-
-        $q = $this->prepare('SELECT * FROM sensors WHERE id = :id');
-        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Sensor');
-        $sensor = $q->fetch();
-        $q->closeCursor();
-
-        return $sensor;
     }
 
     /**
@@ -127,18 +104,19 @@ class ThermostatManagerPDO extends ManagerPDO
      */
     public function modify(Thermostat $thermostat)
     {
-        $q = $this->prepare('UPDATE thermostat SET nom = :nom, modeid = :modeid, sensorid = :sensorid, planning = :planning, manuel = :manuel, consigne = :consigne, delta = :delta, interne = :interne, etat = :etat,releve=DateTime("now","localtime")  WHERE id = :id');
+        $q = $this->prepare('UPDATE thermostat SET nom = :nom, modeid = :modeid, sensorid = :sensorid, planning = :planning, manuel = :manuel, consigne = :consigne, delta = :delta, interne = :interne, etat = :etat, releve=DateTime("now","localtime"), pwr = :pwr WHERE id = :id');
 
-        $q->bindParam(':id', $thermostat->id());
-        $q->bindParam(':nom', $thermostat->nom());
-        $q->bindParam(':modeid', $thermostat->modeid());
-        $q->bindParam(':sensorid', $thermostat->sensorid());
-        $q->bindParam(':planning', $thermostat->planning());
-        $q->bindParam(':manuel', $thermostat->manuel());
-        $q->bindParam(':consigne', $thermostat->consigne());
-        $q->bindParam(':delta', $thermostat->delta());
-        $q->bindParam(':interne', $thermostat->interne());
-        $q->bindParam(':etat', $thermostat->etat());
+        $q->bindValue(':id', $thermostat->id());
+        $q->bindValue(':nom', $thermostat->nom());
+        $q->bindValue(':modeid', $thermostat->modeid());
+        $q->bindValue(':sensorid', $thermostat->sensorid());
+        $q->bindValue(':planning', $thermostat->planning());
+        $q->bindValue(':manuel', $thermostat->manuel());
+        $q->bindValue(':consigne', $thermostat->consigne());
+        $q->bindValue(':delta', $thermostat->delta());
+        $q->bindValue(':interne', $thermostat->interne());
+        $q->bindValue(':etat', $thermostat->etat());
+        $q->bindValue(':pwr', $thermostat->pwr());
         $q->execute();
         $q->closeCursor();
     }
@@ -206,19 +184,5 @@ class ThermostatManagerPDO extends ManagerPDO
         $q->closeCursor();
 
         return $listeLog;
-    }
-
-    /**
-     * @return array
-     * @throws \Exception
-     */
-    public function getModes()
-    {
-        $q = $this->prepare('SELECT * FROM thermostat_modes');
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-        $mode = $q->fetchAll();
-        $q->closeCursor();
-        return $mode;
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Frontend\Modules\Actions;
 
 use App\Backend\Modules\Actions\ActionsController as ActionsBackController;
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\Link\Link;

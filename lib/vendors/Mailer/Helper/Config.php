@@ -14,7 +14,7 @@ class Config extends \Helper\Configuration\Config
     /**
      * @return null|string
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->getValue(self::PATH_MAILER_ALERT_EMAIL);
     }
@@ -22,15 +22,15 @@ class Config extends \Helper\Configuration\Config
     /**
      * @return null|string
      */
-    public function getEnabled()
+    public function getEnabled(): ?string
     {
         return $this->getValue(self::PATH_MAILER_ALERT_ENABLE);
     }
 
     /**
-     * @return array|null
+     * @return array
      */
-    public function getConfigurations()
+    public function getConfigurations(): array
     {
         return parent::getConfigs(
             [

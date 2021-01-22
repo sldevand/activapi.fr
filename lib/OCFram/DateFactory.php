@@ -5,14 +5,12 @@ namespace OCFram;
 use DateTime;
 use DateTimeZone;
 
-
 /**
  * Class DateFactory
  * @package OCFram
  */
 class DateFactory
 {
-
     /**
      * @var array
      */
@@ -30,6 +28,7 @@ class DateFactory
      * @param string $dateStr1
      * @param string $dateStr2
      * @return float|int
+     * @throws \Exception
      */
     public static function diffMinutesFromStr($dateStr1, $dateStr2)
     {
@@ -52,6 +51,7 @@ class DateFactory
     /**
      * @param string $dateStr
      * @return DateTime
+     * @throws \Exception
      */
     public static function createDateFromStr($dateStr)
     {
@@ -60,17 +60,35 @@ class DateFactory
 
     /**
      * @return string
+     * @throws \Exception
      */
     public static function todayToString()
     {
-        $now = new DateTime("now", new DateTimeZone('Europe/Paris'));
+        return self::now()->format("Y-m-d");
+    }
 
-        return $now->format("Y-m-d");
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public static function todayFullString()
+    {
+        return self::now()->format('20y-m-d H:i:s');
+    }
+
+    /**
+     * @return \DateTime
+     * @throws \Exception
+     */
+    public static function now()
+    {
+        return new DateTime('now', new DateTimeZone('Europe/Paris'));
     }
 
     /**
      * @param string $dateStr
      * @return string
+     * @throws \Exception
      */
     public static function toFrDate($dateStr)
     {
@@ -98,43 +116,46 @@ class DateFactory
     }
 
     /**
-     * @param $hourStr
-     * @return string
+     * @param string $day
+     * @return array
+     * @throws \Exception
      */
-    public function prepareHourFromFile($hourStr)
+    public static function getDateLimits($day)
     {
-        $hourStr = explode(' ', $hourStr);
-        $timeStr = explode(':', $hourStr[0]);
-
-        $heure = $timeStr[0];
-        $minute = $timeStr[1];
-        $seconde = $timeStr[2];
-
-        if (strlen($heure . ':' . $minute . ':' . $seconde) < 8) {
-            if (strlen($heure) == 1) {
-                $heure = '0' . $heure;
-            }
-            if (strlen($minute) == 1) {
-                $minute = '0' . $minute;
-            }
-            if (strlen($seconde) == 1) {
-                $seconde = '0' . $seconde;
-            }
+        switch ($day) {
+            case "today":
+                $now = DateFactory::createDateFromStr("now");
+                $dateMin = $now->format("Y-m-d");
+                $dateMax = $now->format("Y-m-d");
+                break;
+            case "yesterday":
+                $yesterday = DateFactory::createDateFromStr("now -1 day");
+                $dateMin = $yesterday->format("Y-m-d");
+                $dateMax = $yesterday->format("Y-m-d");
+                break;
+            case "week":
+                $day = date('w');
+                if ($day == 0) {
+                    $day = 7;
+                }
+                $dateMin = date("Y-m-d", strtotime('-' . ($day - 1) . ' days'));
+                $dateMax = date("Y-m-d", strtotime('+' . (7 - $day) . ' days'));
+                break;
+            case "month":
+                $monthFirst = DateFactory::createDateFromStr("first day of this month");
+                $monthLast = DateFactory::createDateFromStr("last day of this month");
+                $dateMin = $monthFirst->format("Y-m-d");
+                $dateMax = $monthLast->format("Y-m-d");
+                break;
+            default:
+                $now = DateFactory::createDateFromStr("now");
+                $dateMin = $now->format("Y-m-d");
+                $dateMax = $now->format("Y-m-d");
         }
 
-        return $heure . ':' . $minute . ':' . $seconde;
-    }
-
-    /**
-     * @param $dateStr
-     * @return false|int|string
-     */
-    public function createDate($dateStr)
-    {
-        $date = date_create_from_format('d-m-Y H:i:s', $dateStr);
-        if (!is_bool($date)) {
-            return date_format($date, '20y-m-d H:i:s');
-        }
-        return -1;
+        return [
+            'dateMin' => $dateMin,
+            'dateMax' => $dateMax
+        ];
     }
 }

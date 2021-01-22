@@ -14,6 +14,8 @@
             "Debug\\": "lib/vendors/Debug",
             "Entity\\": "lib/vendors/Entity",
             "FormBuilder\\": "lib/vendors/FormBuilder",
+            "Api\\": "lib/vendors/Api",
+            "Sensors\\": "lib/vendors/Sensors",
             "Helper\\": "lib/vendors/Helper",
             "Mailer\\": "lib/vendors/Mailer",
             "Materialize\\": "lib/vendors/Materialize",

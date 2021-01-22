@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Frontend\Modules\Configuration\Form\FormBuilder;
+namespace App\Frontend\Modules\Mailer\Config\Form;
 
 use Mailer\Helper\Config;
 use OCFram\FormBuilder;
@@ -8,15 +8,15 @@ use OCFram\StringField;
 use OCFram\SwitchField;
 
 /**
- * Class EmailConfigurationFormBuilder
- * @package App\Frontend\Modules\Configuration\Form\FormBuilder
+ * Class ConfigurationFormBuilder
+ * @package App\Frontend\Modules\Mailer\Config\Form
  */
-class EmailConfigurationFormBuilder extends FormBuilder
+class ConfigurationFormBuilder extends FormBuilder
 {
     const NAME = 'action-mailer-submit';
 
     /**
-     * @return mixed|void
+     * @return \OCFram\Form
      */
     public function build()
     {
@@ -28,7 +28,7 @@ class EmailConfigurationFormBuilder extends FormBuilder
         $enableFieldConfig = $this->getData(Config::PATH_MAILER_ALERT_ENABLE);
         $enableFieldConfig = $enableFieldConfig ? $enableFieldConfig->getConfigValue() : '';
 
-        $this->form
+        return $this->form
             ->add(
                 new StringField(
                     [

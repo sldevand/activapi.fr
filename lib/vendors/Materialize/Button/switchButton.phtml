@@ -7,21 +7,8 @@ $checkedStr = $this->checked() ? 'checked' : '';
     <label class="right">
         <?= $this->leftText() ?>
         <input id="trick-<?= $this->id() ?>" type="hidden" name="<?= $this->name() ?>" value="<?= $this->value() ?>">
-        <input id="<?= $this->id() ?>" name="<?= $this->name() ?>" type="checkbox" value="<?= $this->value() ?>" <?= $checkedStr ?> />
+        <input id="<?= $this->id() ?>" name="<?= $this->name() ?>" type="checkbox" value="<?= $this->value() ?>" <?= $checkedStr ?> class="switch-button"/>
         <span class="lever"></span>
         <?= $this->rightText() ?>
     </label>
 </div>
-<script>
-    var trickSwitch = $("#trick-<?= $this->id() ?>");
-    $("#<?= $this->id() ?>").on('change', function(e) {
-        if(e.target.checked) {
-            e.target.setAttribute('value', 'yes');
-            trickSwitch.removeAttr('name');
-        } else {
-            e.target.setAttribute('value', 'no');
-            trickSwitch.attr('name', '<?= $this->name() ?>');
-            trickSwitch.attr('value', 'no');
-        }
-    } )
-</script>

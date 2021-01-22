@@ -26,9 +26,7 @@ class ScenariosController extends AbstractScenarioManagersController
     public function __construct(Application $app, string $module, string $action)
     {
         parent::__construct($app, $module, $action);
-
         $this->manager = $this->getScenariosManager();
-
         $this->entity = Scenario::class;
     }
 

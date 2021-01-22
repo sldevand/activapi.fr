@@ -2,8 +2,6 @@
 
 namespace OCFram;
 
-use DOMDocument;
-
 /**
  * Class Config
  * @package OCFram

@@ -1,3 +1,7 @@
+<?php
+/** @var \OCFram\User $user */
+/** @var string $content */
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,6 +50,7 @@
     </div>
 
     <script src="<?= DIST . '/socketio.js' ?>"></script>
+    <script src="<?= DIST . '/materializeTricks.js' ?>"></script>
     <script>
         $("#menubutton").sideNav({
             closeOnClick: true, // Closes side-nav on <a> clicks, useful for Angular/Meteor

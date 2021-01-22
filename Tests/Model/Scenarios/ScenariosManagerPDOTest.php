@@ -46,9 +46,6 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
         $expected->setNom('Test2');
         $scenario->setId($scenarioId);
         $scenario->setNom('Test2');
-
-        self::expectExceptionMessage('SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: scenario_sequence.scenarioId, scenario_sequence.sequenceId');
-
         $scenarioManager->save($scenario);
         $persisted = $scenarioManager->getUnique($expected->id());
 
@@ -98,12 +95,10 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function saveProvider()
     {
-        $sequences = $this->mockSequences();
-
         return [
             "createScenario" => [
-                $this->makeScenario('Test1', $sequences),
-                $this->makeScenario('Test1', $sequences, 1)
+                $this->makeScenario('Test1', []),
+                $this->makeScenario('Test1', [], 1)
             ]
         ];
     }
@@ -114,7 +109,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
      */
     public function getAllProvider()
     {
-        $sequences = $this->mockSequences();
+        $sequences = [];
 
         return [
             "createScenario" => [

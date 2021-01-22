@@ -4,7 +4,7 @@ namespace Model;
 
 use Entity\ThermostatPlanif;
 use Exception;
-use OCFram\Entity;
+use OCFram\Managers;
 
 /**
  * Class ThermostatPlanifManagerPDO
@@ -12,6 +12,9 @@ use OCFram\Entity;
  */
 class ThermostatPlanifManagerPDO extends ManagerPDO
 {
+    /** @var \OCFram\Managers */
+    protected $managers;
+
     /**
      * ThermostatPlanifManagerPDO constructor.
      * @param \PDO $dao
@@ -21,23 +24,19 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         parent::__construct($dao);
         $this->tableName = 'thermostat_planif';
         $this->entity = new ThermostatPlanif();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function countPlanifs()
-    {
-        return $this->dao->query('SELECT COUNT(*) FROM thermostat_corresp')->fetchColumn();
+        $this->managers = new Managers('PDO', $dao);
     }
 
     /**
      * @param int $id
+     * @return bool|int
      */
     public function delete($id)
     {
-        $this->dao->exec("DELETE FROM thermostat_corresp WHERE id = $id");
-        $this->dao->exec("DELETE FROM $this->tableName WHERE nomid = $id");
+        $resCorresp = $this->dao->exec("DELETE FROM thermostat_corresp WHERE id = $id");
+        $resPlanif  = $this->dao->exec("DELETE FROM $this->tableName WHERE nomid = $id");
+
+        return $resCorresp && $resPlanif;
     }
 
     /**
@@ -79,12 +78,19 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $listeThermostatPlanif = $q->fetchAll();
         $q->closeCursor();
 
+        /** @var \Model\ThermostatModesManagerPDO $manager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
+
+        /**
+         * @var int $key
+         * @var ThermostatPlanif[] $thermostatPlanifs
+         */
         foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
             $nom = $this->getNom($thermostatPlanif->nomid());
             $thermostatPlanif->setNom($nom);
-            $mode = $this->getMode($thermostatPlanif->modeid());
+            $mode = $modesManager->getUnique($thermostatPlanif->modeid());
             $thermostatPlanif->setMode($mode);
-            $defaultMode = $this->getMode($thermostatPlanif->defaultModeid());
+            $defaultMode = $modesManager->getUnique($thermostatPlanif->defaultModeid());
             $thermostatPlanif->setDefaultMode($defaultMode);
         }
 
@@ -106,6 +112,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $thermostatPlanif = $q->fetch();
         $q->closeCursor();
 
+        /** @var ThermostatPlanif $thermostatPlanif */
+        if (!$thermostatPlanif) {
+            return false;
+        }
+
         if (empty($thermostatPlanif->modeid())) {
             throw new \RuntimeException('modeid is null!');
         }
@@ -113,15 +124,17 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         if (empty($thermostatPlanif->defaultModeid())) {
             throw new \RuntimeException('defaultModeid is null!');
         }
-
-        $thermostatPlanif->setMode($this->getMode($thermostatPlanif->modeid()));
-        $thermostatPlanif->setDefaultMode($this->getMode($thermostatPlanif->defaultModeid()));
+        /** @var \Model\ThermostatModesManagerPDO $manager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
+        $thermostatPlanif->setNom($this->getNom($thermostatPlanif->getNomid()));
+        $thermostatPlanif->setMode($modesManager->getUnique($thermostatPlanif->modeid()));
+        $thermostatPlanif->setDefaultMode($modesManager->getUnique($thermostatPlanif->defaultModeid()));
 
         return $thermostatPlanif;
     }
 
     /**
-     * @param Entity $thermostatPlanif
+     * @param ThermostatPlanif $thermostatPlanif
      * @param array $ignoreProperties
      * @return bool|int
      * @throws Exception
@@ -133,12 +146,13 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         }
 
         return $thermostatPlanif->isNew()
-            ? $this->addPlanifTable($thermostatPlanif->nom())
+            ? $this->addPlanifTable($thermostatPlanif->getNom())
             : $this->modify($thermostatPlanif);
     }
 
     /**
      * @param ThermostatPlanif $thermostatPlanif
+     * @return bool
      * @throws Exception
      */
     public function modify(ThermostatPlanif $thermostatPlanif)
@@ -161,44 +175,18 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
         $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
         $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
-        $q->execute();
+        $result = $q->execute();
         $q->closeCursor();
+
+        return $result;
     }
 
-
     /**
-     * @param Entity $thermostatPlanif
-     * @param array $ignoreProperties
-     * @return bool|void
-     * @throws Exception
-     */
-    public function add($thermostatPlanif, $ignoreProperties = [])
-    {
-        $sql = 'INSERT INTO thermostat_planif 
-            (jour,modeid,defaultModeid,heure1Start,heure1Stop,heure2Start,heure2Stop,nomid) 
-            VALUES          
-            (:jour,:modeid,:defaultModeid,:heure1Start,:heure1Stop,:heure2Start,:heure2Stop,:nomid) ';
-
-        $q = $this->prepare($sql);
-        $q->bindValue(':jour', $thermostatPlanif->jour());
-        $q->bindValue(':modeid', $thermostatPlanif->modeid());
-        $q->bindValue(':defaultModeid', $thermostatPlanif->defaultModeid());
-        $q->bindValue(':heure1Start', $thermostatPlanif->heure1Start());
-        $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
-        $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
-        $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
-        $q->bindValue(':nomid', $thermostatPlanif->nomid());
-        $q->execute();
-        $q->closeCursor();
-    }
-
-
-    /**
-     * @param string $nom
+     * @param \Entity\ThermostatPlanifNom $nom
      * @return int
      * @throws Exception
      */
-    public function addPlanifTable($nom)
+    public function addPlanifTable(\Entity\ThermostatPlanifNom $nom)
     {
         $nomId = (int)$this->addNom($nom);
         if ($nomId <= 0) {
@@ -210,86 +198,52 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
                 "jour" => $jour,
                 "modeid" => "1",
                 "defaultModeid" => "3",
-                "heure1Start" => "",
-                "heure1Stop" => "",
+                "heure1Start" => "07:00",
+                "heure1Stop" => "23:00",
                 "heure2Start" => "",
                 "heure2Stop" => "",
                 "nomid" => $nomId
             ]);
 
-            $this->add($thermostatPlanif);
+            $this->add($thermostatPlanif, $this->getIgnoreProperties());
         }
 
         return $nomId;
     }
 
     /**
-     * @param int $id
-     * @return mixed
-     * @throws Exception
-     */
-    public function getMode($id)
-    {
-        $sql = 'SELECT * FROM thermostat_modes WHERE id = :id';
-
-        $q = $this->prepare($sql);
-        $q->bindValue(':id', $id);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-        $mode = $q->fetch();
-        $q->closeCursor();
-
-        return $mode;
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public function getModes()
-    {
-        $sql = 'SELECT * FROM thermostat_modes';
-        $q = $this->prepare($sql);
-        $q->execute();
-        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatMode');
-        $modes = $q->fetchAll();
-        $q->closeCursor();
-
-        return $modes;
-    }
-
-    /**
-     * @param stirng $name
+     * @param \Entity\ThermostatPlanifNom $name
      * @return string
      * @throws Exception
      */
-    public function addNom($name)
+    public function addNom(\Entity\ThermostatPlanifNom $name)
     {
-        $noms = $this->getNoms();
-        foreach ($noms as $key => $nom) {
-            if ($nom->nom() == $name) {
+        $thermostaPlanifNoms = $this->getNoms();
+        foreach ($thermostaPlanifNoms as $key => $thermostaPlanifNom) {
+            if ($thermostaPlanifNom->nom() == $name->nom()) {
                 return "Ce Nom existe déjà!";
             }
         }
 
         $sql = 'INSERT INTO thermostat_corresp (nom) VALUES (:nom)';
         $q = $this->prepare($sql);
-        $q->bindValue(':nom', $name);
+        $q->bindValue(':nom', $name->nom());
         $q->execute();
 
         return $this->dao->lastInsertId();
     }
 
     /**
-     * @param int $id
-     * @return mixed
-     * @throws Exception
+     * @param int | string $value
+     * @param string $field
+     * @return \Entity\ThermostatPlanifNom
+     * @throws \Exception
      */
-    public function getNom($id)
+    public function getNom($value, $field = 'id')
     {
-        $sql = 'SELECT * FROM thermostat_corresp WHERE id = :id';
+        $sql = "SELECT * FROM thermostat_corresp WHERE $field = :value";
         $q = $this->prepare($sql);
-        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
+        $q->bindValue(':value', $value);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanifNom');
         $nom = $q->fetch();
@@ -327,5 +281,10 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         $q->closeCursor();
 
         return $planifs;
+    }
+
+    protected function getIgnoreProperties()
+    {
+        return ['nom', 'defaultMode', 'mode', 'modes'];
     }
 }

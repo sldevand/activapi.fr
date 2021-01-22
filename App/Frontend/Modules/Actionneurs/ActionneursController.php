@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Modules\Actionneurs;
 
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
 use Entity\Actionneur;
 use FormBuilder\ActionneursFormBuilder;
 use Materialize\FloatingActionButton;

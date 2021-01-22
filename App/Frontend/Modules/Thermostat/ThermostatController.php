@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Modules\Thermostat;
 
+use Helper\Pagination\Data;
 use Materialize\Table;
 use Materialize\WidgetFactory;
 use Model\ThermostatManagerPDO;
@@ -14,7 +15,6 @@ use OCFram\HTTPRequest;
  */
 class ThermostatController extends BackController
 {
-    const PAGE_OFFSET = 3;
     const LOGS_COUNT  = 100;
 
     /**
@@ -78,8 +78,8 @@ class ThermostatController extends BackController
 
         foreach ($thermostats as $key => $thermostat) {
             $thermostat["mode"] = $thermostat["mode"]["nom"];
-            $thermostat["etat"] = $this->iconifyPower($thermostat["etat"]);
-
+            $thermostat["etat"] = $this->iconifyPower($thermostat["etat"] ?? 0);
+            $thermostat['pwr'] =$this->iconifyPower($thermostat['pwr'] ?? 0);
 
             $tableThermostatDatas[] = $thermostat;
         }
@@ -119,7 +119,7 @@ class ThermostatController extends BackController
             $data["actif"] = $this->iconifyResult($data["actif"]);
             $tableDatas[] = $data;
         }
-        $datasSensorsTemoin["actif"] = $this->iconifyResult($datasSensorsTemoin["actif"]);
+        $datasSensorsTemoin["actif"] = $this->iconifyResult($datasSensorsTemoin["actif"] ?? 0);
         $tableDatasSensorTemoin[] = $datasSensorsTemoin;
 
 
@@ -208,7 +208,8 @@ class ThermostatController extends BackController
         $thermotatLogUri = $this->getThermostatLogUri($request);
         $pagesCount = ceil($nbLogs / $logsCount);
 
-        $pages = $this->getPaginationPages($page, $thermotatLogUri, $logsCount, $pagesCount);
+        $paginationHelper = new Data($this->app());
+        $pages = $paginationHelper->getPaginationPages($page, $thermotatLogUri, $logsCount, $pagesCount);
         $pagination = WidgetFactory::makePagination($pages, $logsCount, $page, $thermotatLogUri, $pagesCount);
 
         $table = WidgetFactory::makeTable($domId, $tableDatas);
@@ -249,39 +250,5 @@ class ThermostatController extends BackController
         }
 
         return implode('-', $thermotatLogUri);
-    }
-
-    /**
-     * @param int $page
-     * @param string $thermotatLogUri
-     * @param int $logsCount
-     * @param int $totalPages
-     * @return array
-     */
-    protected function getPaginationPages(int $page, string $thermotatLogUri, int $logsCount, int $totalPages)
-    {
-        $pages = [];
-
-        $start = $page - self::PAGE_OFFSET;
-        $end = $page + self::PAGE_OFFSET;
-
-        if ($start <= 1) {
-            $start = 1;
-        }
-
-        if ($end >= $totalPages) {
-            $end = $totalPages;
-        }
-
-        for ($i = $start; $i <= $end; $i++) {
-            $class = $i == $page ? 'active' : 'waves-effect';
-            $pages [] = [
-                'name' => $i,
-                'href' => $thermotatLogUri . '-' . $i . '-' . $logsCount,
-                'class' => $class
-            ];
-        }
-
-        return $pages;
     }
 }

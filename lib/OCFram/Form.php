@@ -13,10 +13,10 @@ class Form
     /** @var Entity $entity */
     protected $entity;
 
-    /** @var array $fields */
+    /** @var \OCFram\Field[] $fields */
     protected $fields = [];
 
-    /** @var array $fields */
+    /** @var array $widgets */
     protected $widgets = [];
 
     /** @var string */
@@ -67,20 +67,6 @@ class Form
         }
 
         $this->fields[] = $field;
-        return $this;
-    }
-
-    /**
-     * @param Widget $widget
-     * @param null|string $after
-     * @return $this
-     */
-    public function addWidget(Widget $widget, $after = null)
-    {
-        $this->widgets[$widget->id()] = [
-            'widget' => $widget,
-            'after' => $after
-        ];
 
         return $this;
     }
@@ -91,7 +77,6 @@ class Form
     public function createView()
     {
         $view = '';
-        /** @var Field $field */
         foreach ($this->fields as $field) {
             $view .= '<div class="' . $field->getWrapper() . '">';
             $view .= $field->buildWidget();
@@ -141,22 +126,6 @@ class Form
     public function entity()
     {
         return $this->entity;
-    }
-
-    /**
-     * @return Field[]
-     */
-    public function getFields()
-    {
-        return $this->fields;
-    }
-
-    /**
-     * @return array
-     */
-    public function getWidgets()
-    {
-        return $this->widgets;
     }
 
     /**
@@ -214,5 +183,13 @@ class Form
         $this->ajax = $ajax;
 
         return $this;
+    }
+
+    /**
+     * @return \OCFram\Field[]
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
     }
 }

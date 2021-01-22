@@ -34,7 +34,16 @@ class ThermostatMode extends Entity
     {
         parent::isValid($ignoreProperties);
 
-        return !(empty($this->nom) || empty($this->consigne) || empty($this->delta));
+        $properties = get_object_vars($this);
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs" && $key !== "id" && empty($property) && !in_array($key, $ignoreProperties)) {
+                $objClass = new \ReflectionObject($this);
+                $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is empty";
+                throw new \Exception($this->erreurs['notValid']);
+            }
+        }
+
+        return true;
     }
 
     /**

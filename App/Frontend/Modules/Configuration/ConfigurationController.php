@@ -2,15 +2,14 @@
 
 namespace App\Frontend\Modules\Configuration;
 
-use App\Frontend\Modules\Configuration\Action\MailerConfigurationAction;
-use App\Frontend\Modules\FormView;
+use Materialize\FormView;
+use App\Frontend\Modules\Mailer\Config\View\CardBuilder;
 use Helper\Configuration\Data;
 use Mailer\Helper\Config;
-use Materialize\Button\FlatButton;
-use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
+use SFram\ClassFinder;
 
 /**
  * Class ConfigurationController
@@ -26,12 +25,9 @@ class ConfigurationController extends BackController
     /** @var \Helper\Configuration\Data */
     protected $dataHelper;
 
-    /** @var \App\Frontend\Modules\Configuration\Action\MailerConfigurationAction */
-    protected $mailerConfigAction;
-
     /**
-     * CrontabController constructor.
-     * @param Application $app
+     * ConfigurationController constructor.
+     * @param \OCFram\Application $app
      * @param string $module
      * @param string $action
      * @throws \Exception
@@ -44,12 +40,6 @@ class ConfigurationController extends BackController
         parent::__construct($app, $module, $action);
         $this->manager = $this->managers->getManagerOf('Configuration\Configuration');
         $this->dataHelper = new Data($app);
-        $this->mailerConfigAction = new MailerConfigurationAction(
-            $this->app(),
-            $this->manager,
-            $this->dataHelper,
-            new Config($app, $this->manager)
-        );
     }
 
     /**
@@ -61,13 +51,27 @@ class ConfigurationController extends BackController
         $this->page->addVar('title', 'Configuration Système');
 
         $cards = [];
-        $mailerForm = $this->mailerConfigAction->execute($request);
-        $mailerTestButtonUrl = $this->baseAddress . 'api/mailer/test';
-        $mailerTestButton = $this->getBlock(__DIR__ . '/Block/mailerTestButton.phtml', $mailerTestButtonUrl);
-        $mailerCard = WidgetFactory::makeCard('configuration-mailer', 'Mailer', $this->editFormView($mailerForm));
-        $mailerCard->addContent($mailerTestButton);
+        $actionNames = ClassFinder::getConfigClasses('Action');
 
-        $cards[] = $mailerCard;
+        /** @var string $action */
+        foreach ($actionNames as $actionName) {
+            $actionInstance = $this->createAction($actionName);
+            $cards[] = $actionInstance->execute($request);
+        }
+
         $this->page->addVar('cards', $cards);
+    }
+
+    /**
+     * @param string $action
+     * @return \App\Frontend\Modules\Configuration\Api\ActionInterface
+     */
+    protected function createAction(string $action): Api\ActionInterface
+    {
+        return new $action(
+            $this->app(),
+            $this->manager,
+            $this->dataHelper
+        );
     }
 }

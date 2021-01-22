@@ -21,6 +21,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
      * @param Application $app
      * @param string $module
      * @param string $action
+     * @throws Exception
      */
     public function __construct(Application $app, string $module, string $action)
     {
@@ -32,6 +33,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
 
     /**
      * @param \OCFram\HTTPRequest $httpRequest
+     * @return \OCFram\Page
      * @throws \Exception
      */
     public function executePost($httpRequest)
@@ -54,6 +56,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
 
     /**
      * @param \OCFram\HTTPRequest $httpRequest
+     * @return \OCFram\Page
      * @throws \Exception
      */
     public function executePut($httpRequest)

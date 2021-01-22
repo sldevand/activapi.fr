@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Frontend\Modules\Configuration\Action;
+namespace App\Frontend\Modules\Configuration;
 
-use App\Frontend\Modules\Configuration\Form\FormBuilder\EmailConfigurationFormBuilder;
-use App\Frontend\Modules\Configuration\Form\FormHandler\ConfigurationFormHandler;
-use Entity\Configuration\ConfigurationFactory;
+use Api\Helper\Configuration\ConfigInterface;
+use App\Frontend\Modules\Configuration\Api\ActionInterface;
+use App\Frontend\Modules\Configuration\Form\ConfigurationFormHandler;
+use Helper\Configuration\Config;
 use Helper\Configuration\Data;
-use Mailer\Helper\Config;
 use Model\Configuration\ConfigurationManagerPDO;
 use OCFram\Application;
 use OCFram\ApplicationComponent;
@@ -14,62 +14,50 @@ use OCFram\Form;
 use OCFram\HTTPRequest;
 
 /**
- * Class MailerConfigurationAction
- * @package App\Frontend\Modules\Configuration\Action
+ * Class AbstractAction
+ * @package App\Frontend\Modules\Configuration
  */
-class MailerConfigurationAction extends ApplicationComponent
+abstract class AbstractAction  extends ApplicationComponent implements ActionInterface
 {
+    /** @var string */
+    public const HELPER_CLASS = '\\Helper\\Configuration\\Config';
+
     /** @var \Model\Configuration\ConfigurationManagerPDO */
     protected $manager;
 
     /** @var \Helper\Configuration\Data */
     protected $dataHelper;
 
-    /** @var \Mailer\Helper\Config */
+    /** @var \Api\Helper\Configuration\ConfigInterface */
     protected $configHelper;
 
     /**
-     * MailerConfigurationAction constructor.
+     * @var string[]
+     */
+    protected $messages = [
+        'success' => 'Configuration have been saved!',
+        'error'   => 'Configuration could not been saved!'
+    ];
+
+    /**
+     * Action constructor.
      * @param \OCFram\Application $app
      * @param \Model\Configuration\ConfigurationManagerPDO $manager
      * @param \Helper\Configuration\Data $dataHelper
-     * @param \Mailer\Helper\Config
      */
     public function __construct(
         Application $app,
         ConfigurationManagerPDO $manager,
-        Data $dataHelper,
-        Config $configHelper
+        Data $dataHelper
     ) {
         parent::__construct($app);
 
         $this->manager = $manager;
         $this->dataHelper = $dataHelper;
-        $this->configHelper = $configHelper;
+        $this->configHelper = new Config($app, $manager);
     }
 
     /**
-     * @param \OCFram\HTTPRequest $request
-     * @return \OCFram\Form
-     * @throws \Exception
-     */
-    public function execute(HTTPRequest $request)
-    {
-        $configurations = $this->configHelper->getConfigurations();
-        $mailerForm = $this->createMailerForm($configurations);
-
-        if (
-            $request->method() === 'POST'
-            && $request->postData(EmailConfigurationFormBuilder::NAME) === EmailConfigurationFormBuilder::NAME
-        ) {
-            $this->doPost($configurations, $mailerForm, $request);
-        }
-
-        return $mailerForm;
-    }
-
-    /**
-     *
      * @param \Entity\Configuration\Configuration[] $configurations
      * @param \OCFram\Form $form
      * @param \OCFram\HTTPRequest $request
@@ -95,23 +83,10 @@ class MailerConfigurationAction extends ApplicationComponent
         }
 
         $message = $processed === count($configurations)
-            ? 'Mailer configuration have been saved!'
-            : 'Mailer configuration could not been saved!';
+            ? $this->messages['success']
+            : $this->messages['error'];
 
         $this->app()->user()->setFlash($message);
         $this->app->httpResponse()->redirect($this->dataHelper->getConfigurationIndexUrl());
-    }
-
-    /**
-     * @param \Entity\Configuration\Configuration $configuration
-     * @return \OCFram\Form
-     */
-    protected function createMailerForm(array $configurations)
-    {
-        $cfb = new EmailConfigurationFormBuilder(ConfigurationFactory::create());
-        $cfb->setData($configurations);
-        $cfb->build();
-
-        return $cfb->form();
     }
 }

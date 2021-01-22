@@ -2,16 +2,17 @@
 
 namespace App\Frontend\Modules\ThermostatPlanif;
 
-use App\Frontend\Modules\FormView;
+use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCardList;
+use App\Frontend\Modules\ThermostatPlanif\Form\ThermostatPlanifFormHandler;
 use Entity\ThermostatPlanif;
+use Entity\ThermostatPlanifNom;
 use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
 use Materialize\FloatingActionButton;
-use Materialize\Link\Link;
+use Materialize\FormView;
 use Materialize\WidgetFactory;
+use OCFram\Application;
 use OCFram\BackController;
-use OCFram\DateFactory;
-use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 
 /**
@@ -22,106 +23,74 @@ class ThermostatPlanifController extends BackController
 {
     use FormView;
 
+    /** @var \Model\ThermostatPlanifManagerPDO */
+    protected $manager;
+
     /**
-     * @param HTTPRequest $request
+     * ThermostatPlanifController constructor.
+     * @param \OCFram\Application $app
+     * @param $module
+     * @param $action
+     * @throws \Exception
+     */
+    public function __construct(Application $app, $module, $action)
+    {
+        parent::__construct($app, $module, $action);
+        $this->manager = $this->managers->getManagerOf('ThermostatPlanif');
+    }
+
+    /**
+     * @param \OCFram\HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $this->page->addVar('title', 'Gestion du Planning');
+        $thermostatPlanningsContainer = $this->manager->getListArray();
+        $hideColumns = ['id', 'nomid', 'nom', 'modeid', 'defaultModeid'];
 
-        $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $thermostatPlanningsContainer = $manager->getListArray();
+        $planifCardList = new PlanifCardList($this->baseAddress);
+        $cards = $planifCardList->create($thermostatPlanningsContainer, $hideColumns);
 
-        $cards = [];
+        $addPlanifFab = new FloatingActionButton(
+            [
+                'id' => "addPlanifFab",
+                'fixed' => true,
+                'icon' => "add",
+                'href' => $this->baseAddress . "thermostat-planif-add"
+            ]
+        );
 
-        foreach ($thermostatPlanningsContainer as $thermostatPlannings) {
-            $thermostatDatas = [];
-            foreach ($thermostatPlannings as $thermostatPlanningObj) {
-                $thermostatPlanning = json_decode(json_encode($thermostatPlanningObj), true);
-
-                //DATA PREPARE FOR TABLE
-                $hideColumns = ['id', 'nomid', 'nom', 'modeid', 'defaultModeid'];
-                $thermostatPlanning["jour"] = DateFactory::toStrDay($thermostatPlanning['jour']);
-                $thermostatPlanning["mode"] = $thermostatPlanning["mode"]["nom"];
-                $thermostatPlanning["defaultMode"] = $thermostatPlanning["defaultMode"]["nom"];
-                $linkEdit = new Link('', $this->baseAddress . "thermostat-planif-edit-" . $thermostatPlanning["id"], 'edit', 'primaryTextColor');
-                $thermostatPlanning["editer"] = $linkEdit->getHtmlForTable();
-                $domId = $thermostatPlanning["nom"]["nom"];
-                $thermostatDatas[] = $thermostatPlanning;
-            }
-
-            $table = WidgetFactory::makeTable($domId, $thermostatDatas, true, $hideColumns);
-
-            $cardTitle = 'Thermostat : Planning  ' . $domId;
-            $linkDelete = new Link('Supprimer ce Planning', $this->baseAddress . "thermostat-planif-delete-" . $thermostatPlanning["nomid"], 'delete', 'secondaryTextColor');
-
-            $cardContent = $linkDelete->getHtml();
-            $cardContent .= $table->getHtml();
-
-            $card = WidgetFactory::makeCard($domId, $cardTitle);
-            $card->addContent($cardContent);
-
-            $cards[] = $card;
-        }
-
-        $addPlanifFab = new FloatingActionButton([
-            'id' => "addPlanifFab",
-            'fixed' => true,
-            'icon' => "add",
-            'href' => $this->baseAddress . "thermostat-planif-add"
-        ]);
-
-        if (empty($cards)) {
-            $table = WidgetFactory::makeTable('no-data', []);
-            $card = WidgetFactory::makeCard('card-no-data', 'Planification');
-            $card->addContent($table->getHtml());
-            $cards [] = $card;
-        }
-
-        $this->page->addVar('cards', $cards);
-        $this->page->addVar('addPlanifFab', $addPlanifFab);
+        $this->page
+            ->addVar('title', 'Gestion du Planning')
+            ->addVar('cards', $cards)
+            ->addVar('addPlanifFab', $addPlanifFab);
     }
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeAdd(HTTPRequest $request)
     {
-        $manager = $this->managers->getManagerOf('ThermostatPlanif');
+        $isPost = $request->method() === HTTPRequest::POST;
+        $name = $isPost ? $request->postData('nom') : '';
+
+        $thermostatPlanifNom = new ThermostatPlanifNom(['nom' => $name]);
+        $item = new ThermostatPlanif(['nom' => $thermostatPlanifNom]);
+        $fb = new ThermostatPlanifNameFormBuilder($item);
+        $form = $fb->build();
+        $fh = new ThermostatPlanifFormHandler($form, $this->manager, $request);
+        if ($fh->process()) {
+            $this->redirectBack($thermostatPlanifNom->nom());
+        }
+
+        if ($messages = $fh->getMessageHandler()->getMessages()) {
+            $this->app->user()->setFlash($messages);
+        }
+
         $domId = 'Ajout';
         $cardTitle = 'Thermostat : Planning  ' . $domId;
-        $message = '';
-        $name = null;
-
-        if ($request->method() == 'POST') {
-            if ($request->postExists('nom')) {
-                $name = $request->postData('nom');
-            }
-
-            if (!is_null($name)) {
-                $result = $manager->addPlanifTable($name);
-                if ($result > 0) {
-                    $message = '<p class="flow-text">OK</p>';
-                } else {
-                    $message = "Ce nom existe déjà!";
-                }
-            } else {
-                $message = "Le nom est vide";
-            }
-        }
-
-        $item = new ThermostatPlanif(['nom' => $name]);
-        $fb = new ThermostatPlanifNameFormBuilder($item);
-        $fb->build();
-        $form = $fb->form();
-
-        $fh = new FormHandler($form, $manager, $request);
-
-        if ($fh->process()) {
-            $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-planif');
-        }
         $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $card->addContent($message);
         $card->addContent($this->editFormView($form));
 
         $this->page->addVar('card', $card);
@@ -129,103 +98,128 @@ class ThermostatPlanifController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
-        $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $modes = $manager->getModes();
-
-        if ($request->method() == 'POST') {
-            $item = new ThermostatPlanif([
-                'jour' => $request->postData('jour'),
-                'modeid' => $request->postData('modeid'),
-                'defaultModeid' => $request->postData('defaultModeid'),
-                'heure1Start' => $request->postData('heure1Start'),
-                'heure1Stop' => $request->postData('heure1Stop'),
-                'heure2Start' => $request->postData('heure2Start'),
-                'heure2Stop' => $request->postData('heure2Stop'),
-                'nomid' => $request->postData('nomid')
-            ]);
-
-            if ($request->getExists('id')) {
-                $id = $request->getData('id');
-                $item->setId($id);
-            }
+        if ($request->method() === HTTPRequest::POST) {
+            $item = $this->createThermostatPlanifFromPost($request);
         } else {
             if ($request->getExists('id')) {
                 $id = $request->getData("id");
-                $item = $manager->getUnique($id);
+                $item = $this->manager->getUnique($id);
             }
         }
-        $cards = [];
 
-        $domId = 'Edition';
-        $item->modes = $modes;
+        /** @var \Model\ThermostatModesManagerPDO $modesManager */
+        $modesManager = $this->managers->getManagerOf('ThermostatModes');
+        $modes = $modesManager->getList();
 
         $tpfb = new ThermostatPlanifFormBuilder($item);
-        $tpfb->build();
-        $form = $tpfb->form();
+        $tpfb->addData('modes', $modes);
+        $form = $tpfb->build();
 
-        $fh = new FormHandler($form, $manager, $request);
-
+        $fh = new ThermostatPlanifFormHandler($form, $this->manager, $request);
         if ($fh->process()) {
-            $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-planif');
+            $this->redirectBack($item->nom()->nom());
         }
 
-        $link = new Link(
-            "Edition",
-            $this->baseAddress . "thermostat-planif",
-            "arrow_back",
-            "white-text",
-            "white-text"
-        );
-
-        $cardTitle = $link->getHtml();
-
+        $domId = 'Edition';
+        $backUrl = $this->baseAddress . 'thermostat-planif';
+        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl . '#' . $item->getNom())->getHtml();
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->editFormView($form));
-        $cards[] = $card;
 
-        $this->page->addVar('title', 'Edition du Planning');
-        $this->page->addVar('cards', $cards);
+        $this->page
+            ->addVar('title', 'Edition du Planning')
+            ->addVar('card', $card);
     }
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeDelete(HTTPRequest $request)
     {
-        $manager = $this->managers->getManagerOf('ThermostatPlanif');
-
-        $domId = 'Suppression';
         $nom = '';
-        if ($request->method() == 'POST') {
+        if ($request->method() === HTTPRequest::POST) {
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
-                $manager->delete($id);
-                $this->app->httpResponse()->redirect($this->baseAddress . 'thermostat-planif');
+                $result = $this->manager->delete($id);
+                if ($result) {
+                    $this->app()->user()->setFlash('Planning supprimé');
+                }
+                $this->redirectBack();
             }
         } else {
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
-                $nom = $manager->getNom($id);
+                $nom = $this->manager->getNom($id);
             }
         }
 
-        $link = new Link(
-            $domId,
-            $this->baseAddress . "thermostat-planif",
-            "arrow_back",
-            "white-text",
-            "white-text"
-        );
-
-        $cardTitle = $link->getHtml();
+        $domId = 'Suppression';
+        $backUrl = $this->baseAddress . 'thermostat-planif';
+        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl . '#' . $nom)->getHtml();
 
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->deleteFormView());
 
-        $this->page->addVar('title', 'Suppression du Planning');
-        $this->page->addVar('card', $card);
+        $this->page
+            ->addVar('title', "Suppression du Planning $nom")
+            ->addVar('card', $card);
+    }
+
+    /**
+     * @param string $anchor
+     */
+    protected function redirectBack(string $anchor = '')
+    {
+        $this->app->httpResponse()->redirect($this->getRouteUrl($anchor));
+    }
+
+
+    /**
+     * @param string $anchor
+     * @return string
+     */
+    protected function getRouteUrl(string $anchor = '')
+    {
+        $anchor = !empty($anchor) ? '#' . $anchor : '';
+
+        return $this->baseAddress . 'thermostat-planif' . $anchor;
+    }
+
+    /**
+     * @param \OCFram\HTTPRequest $request
+     * @return \Entity\ThermostatPlanif
+     * @throws \Exception
+     */
+    protected function createThermostatPlanifFromPost(HTTPRequest $request): ThermostatPlanif
+    {
+        $thermostatPlanif = new ThermostatPlanif(
+            [
+                'jour' => $request->postData('jour'),
+                'modeid' => $request->postData('modeid'),
+                'defaultModeid' => $request->postData('defaultModeid'),
+                'heure1Start' => $request->postData('heure1Start') ?? '07:00',
+                'heure1Stop' => $request->postData('heure1Stop') ?? '23:00',
+                'heure2Start' => $request->postData('heure2Start'),
+                'heure2Stop' => $request->postData('heure2Stop'),
+                'nomid' => $request->postData('nomid')
+            ]
+        );
+
+        if ($request->getExists('id')) {
+            $id = $request->getData('id');
+            $thermostatPlanif->setId($id);
+        }
+
+        if ($thermostatPlanif->nomid()) {
+            $thermostatPlanifNom = $this->manager->getNom($thermostatPlanif->nomid());
+            $thermostatPlanif->setNom($thermostatPlanifNom);
+        }
+
+        return $thermostatPlanif;
     }
 }

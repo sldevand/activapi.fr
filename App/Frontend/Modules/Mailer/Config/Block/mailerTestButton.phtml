@@ -1,17 +1,10 @@
 <?php
+/** @var array $args*/
+/** @var string $mailerTestUrl */
+$mailerTestUrl    = $args[0];
+/** @var \Materialize\Button\FlatButton $mailerTestButton */
+$mailerTestButton = $args[1]
 
-use Materialize\Button\FlatButton;
-
-$mailerTestUrl = $args[0];
-$mailerTestButton = new FlatButton(
-    [
-        'id'      => 'mailer-alert-test-button',
-        'title'   => "Envoyer email de test",
-        'color'   => 'secondaryTextColor',
-        'icon'    => 'send',
-        'wrapper' => 'col s12'
-    ]
-);
 ?>
 <div class="row">
     <ul>

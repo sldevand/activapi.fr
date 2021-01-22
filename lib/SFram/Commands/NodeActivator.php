@@ -64,8 +64,10 @@ class NodeActivator
     public function getStatus()
     {
         exec($this->config->getEnv('NODE_STATUS_COMMAND'), $output, $returnVar);
-        if (isset($output) && !$returnVar && strpos($output[0], 'node') !== false) {
-            return 'on';
+        if (isset($output[0]) && !$returnVar) {
+            $output = current($output);
+
+            return $output === 'active' ? 'on' : 'off';
         }
 
         return 'off';

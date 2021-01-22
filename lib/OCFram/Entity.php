@@ -68,10 +68,13 @@ abstract class Entity extends MagicObject implements \ArrayAccess, \JsonSerializ
 
     /**
      * @param $id
+     * @return \OCFram\Entity
      */
     public function setId($id)
     {
         $this->id = (int)$id;
+
+        return $this;
     }
 
     /**

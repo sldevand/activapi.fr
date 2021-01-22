@@ -3,8 +3,7 @@
 namespace OCFram;
 
 use Exception;
-use Materialize\Button\FlatButton;
-use SFram\OSDetectorFactory;
+use Materialize\FormView;
 
 /**
  * Class BackController
@@ -12,43 +11,34 @@ use SFram\OSDetectorFactory;
  */
 abstract class BackController extends ApplicationComponent
 {
-    /**
-     * @var string
-     */
+    use FormView;
+
+    /** @var string */
     protected $action = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $module = '';
 
-    /**
-     * @var null|Page
-     */
-    protected $page = null;
+    /** @var Page */
+    protected $page;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $view = '';
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $viewId = '';
 
-    /**
-     * @var null|Managers
-     */
-    protected $managers = null;
+    /** @var Managers */
+    protected $managers;
 
-    /**
-     * @var null|Cache
-     */
-    protected $cache = null;
+    /** @var Cache */
+    protected $cache;
 
     /** @var string */
     protected $baseAddress;
+
+    /** @var \OCFram\MessageHandler */
+    protected $messageHandler;
 
     /**
      * @var bool
@@ -74,6 +64,7 @@ abstract class BackController extends ApplicationComponent
         $this->setView($action);
         $this->cache = new Cache($this->app());
         $this->baseAddress = $app->config()->getEnv('BASE_URL');
+        $this->messageHandler = new MessageHandler();
     }
 
     /**
@@ -244,25 +235,6 @@ abstract class BackController extends ApplicationComponent
         ob_start();
         require $fileName;
         return ob_get_clean();
-    }
-
-    /**
-     * @param Form $form
-     * @return false|string
-     */
-    public function editFormView(Form $form)
-    {
-        $submitButton = new FlatButton(
-            [
-                'id' => 'submit',
-                'title' => 'Valider',
-                'color' => 'primaryTextColor',
-                'type' => 'submit',
-                'icon' => 'check',
-                'wrapper' => 'col s12'
-            ]
-        );
-        return $this->getBlock(BLOCK . '/editFormView.phtml', $form, $submitButton);
     }
 
     /**

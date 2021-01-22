@@ -3,7 +3,6 @@
 namespace SFram\Console;
 
 use OCFram\PDOFactory;
-use SFram\OSDetectorFactory;
 use Symfony\Component\Console\Command\Command;
 
 /**
@@ -15,15 +14,13 @@ class BaseCommand extends Command
     /**
      * BaseCommand constructor.
      * @param null|string $name
+     * @throws \Exception
      */
     public function __construct(?string $name = null)
     {
         parent::__construct($name);
-        OSDetectorFactory::begin();
 
         $app = new \App\Backend\BackendApplication();
-
-        $key = OSDetectorFactory::getPdoAddressKey();
-        PDOFactory::setPdoAddress($app->config()->get($key));
+        PDOFactory::setPdoAddress($app->config()->get('DB_PATH'));
     }
 }

@@ -1,10 +1,8 @@
-<?php foreach ($cards as $card): ?>
-    <div class="row">
-        <div class="col s12">
-            <?php echo $card->getHtml(); ?>
-        </div>
+<div class="row">
+    <div class="col s12">
+        <?php echo $card->getHtml(); ?>
     </div>
-<?php endforeach; ?>
+</div>
 
 <script>
     $(document).ready(function () {

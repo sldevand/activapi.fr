@@ -1,46 +1,10 @@
 <?php
-/** @var \OCFram\Form $form */
-$form = $args[0];
-/** @var \Materialize\Button $button */
-$button = $args[1];
+    /** @var array $args */
+    /** @var OCFram\Form $form */
+    $form = $args[0];
+    $button = $args[1];
 ?>
-
-<form name="<?= $form->getId() ?>" action="<?= $form->getAction() ?>" method="post" class="row">
-    <?= $form->createView() ?>
-    <?= $button->getHtml() ?>
+<form action="<?= $form->getAction(); ?>" method="post" class="row">
+    <?= $form->createView(); ?>
+    <?= $button->getHtml(); ?>
 </form>
-
-<?php if ($form->isAjax() && $form->getAction()) : ?>
-    <script>
-        const form = document.forms[0];
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const url = form.getAttribute('action');
-            fetch(url,
-                {
-                    body: formData,
-                    method: "post"
-                })
-                .then((data) => {
-                    return data.json()
-                })
-                .then((json) => {
-                    let message = json.data
-                        ? json.data
-                        : json.error;
-
-
-                    Materialize.toast(message, 1000, '', function () {
-                        if (json.data) {
-                            window.location.reload();
-                        }
-                    });
-                })
-                .catch((err) => {
-                    Materialize.toast(err, 3000);
-                });
-        })
-        ;
-    </script>
-<?php endif; ?>

@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Frontend\Modules;
+namespace Materialize;
 
 use Materialize\Button\FlatButton;
+use OCFram\Block;
 
 /**
  * Trait FormView
- * @package App\Frontend\Modules
+ * @package Materialize
  */
 trait FormView
 {
@@ -15,7 +16,7 @@ trait FormView
      */
     public function deleteFormView()
     {
-        return $this->getBlock(BLOCK . '/deleteFormView.phtml');
+        return Block::getTemplate(BLOCK . '/deleteFormView.phtml');
     }
 
     /**
@@ -26,7 +27,7 @@ trait FormView
     {
         $button = new FlatButton(
             [
-                'id' => 'submit',
+                'id' => 'submit-'. time(),
                 'title' => 'Valider',
                 'color' => 'primaryTextColor',
                 'type' => 'submit',
@@ -35,6 +36,6 @@ trait FormView
             ]
         );
 
-        return $this->getBlock(BLOCK . '/editFormView.phtml', $form, $button);
+        return Block::getTemplate(BLOCK . '/editFormView.phtml', $form, $button);
     }
 }
