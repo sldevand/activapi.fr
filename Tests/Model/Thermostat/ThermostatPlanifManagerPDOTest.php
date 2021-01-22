@@ -213,6 +213,8 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
         $expectedCreated->setNom($nom->setId($expectedCreated->getNomid()));
         $expectedCreated->setMode($modes[0]->setId($expectedCreated->getModeId()));
         $expectedCreated->setDefaultMode($modes[2]->setId($expectedCreated->getDefaultModeId()));
+        $expectedCreated->setHeure1Start('07:00');
+        $expectedCreated->setHeure1Stop('23:00');
 
         /** @var \Entity\ThermostatPlanif $entityUpdated */
         $entityUpdated = self::deepCopy($expectedCreated);
@@ -252,6 +254,8 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
             $expectedEntity->setNom(null);
             $expectedEntity->setMode(null);
             $expectedEntity->setDefaultMode(null);
+            $expectedEntity->setHeure1Start('07:00');
+            $expectedEntity->setHeure1Stop('23:00');
         }
 
         return [
@@ -278,6 +282,8 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
             $expectedEntity->setNom($nom->setId(1));
             $expectedEntity->setMode($modes[0]->setId(1));
             $expectedEntity->setDefaultMode($modes[2]->setId(3));
+            $expectedEntity->setHeure1Start('07:00');
+            $expectedEntity->setHeure1Stop('23:00');
         }
 
         return [
