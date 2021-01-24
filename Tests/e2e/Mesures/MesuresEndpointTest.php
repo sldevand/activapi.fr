@@ -43,7 +43,7 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */
-    public function testExecuteInsert()
+    public function testExecuteInsertWithGoodRadioid()
     {
         $radioid = 'sensor24ctn10id3';
         $sensorBefore = $this->setSensorForTest($radioid);
@@ -67,6 +67,35 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
     }
 
     /**
+     * Route : /mesures/add-(sensor[0-9]{2}(?:ctn10|dht11|dht22|tinfo|therm|cdoor)id[0-9])-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteInsertWithUnknownRadioid()
+    {
+        $radioId = 'sensor24ctn10id8';
+        $url = $this->getFullUrl("/mesures/add-$radioId-12-0.0");
+        $client = new Client();
+        $body = $this->getJsonBody($client, $url);
+
+        self::assertEquals("No entity found with id $radioId", $body);
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function testExecuteInsertWithBadRadioIdRegexp()
+    {
+        $radioId = 'badRegexRadioId';
+        $url = $this->getFullUrl("/mesures/add-$radioId-12-0.0");
+        $client = new Client();
+
+        self::expectException(\GuzzleHttp\Exception\ClientException::class);
+        $this->getRequest($client, $url);
+    }
+
+    /**
      * Route : /mesures/addchacondio-([0-9]{8}(?:%20[0-9])?)-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -77,10 +106,10 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
         $radioid = 'sensor43cdoorid1';
         $sensorBefore = $this->setSensorForTest($radioid);
         $radioaddess = $sensorBefore->radioaddress();
-        $url = $this->getFullUrl("/mesures/addchacondio-$radioaddess-0-0");
-        $client = new Client();
-        $body = $this->getJsonBody($client, $url);
 
+        $client = new Client();
+
+        // first time insert is successful
         $expected = Utils::objToArray(new Mesure(
             [
                 'id_sensor' => $radioid,
@@ -89,7 +118,8 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
             ]
         ));
 
-        // first time insert is successful
+        $url = $this->getFullUrl("/mesures/addchacondio-$radioaddess-0-0");
+        $body = $this->getJsonBody($client, $url);
         self::assertEquals($expected, $body);
         $this->removeLastInsertedMeasure();
 
@@ -162,6 +192,43 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
         $sensor = self::$mesuresManager->getSensor($radioid);
         $expectedSensor = Utils::objToArray($sensor);
         $expected = [$expectedSensor];
+
+        self::assertEquals($expected, $body);
+    }
+
+
+    /**
+     * Route : /mesures/get-sensors(?:/)?(thermo|thermostat|teleinfo)?
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteSensorsWithNoCategorieFilter()
+    {
+        $client = new Client();
+        $url = $this->getFullUrl("/mesures/get-sensors");
+        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        $sensors = self::$sensorsManager->getList();
+        $expected = Utils::objToArray($sensors);
+
+        self::assertEquals($expected, $body);
+    }
+
+
+
+    /**
+     * Route : /mesures/get-sensors(?:/)?(thermo|thermostat|teleinfo)?
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteSensorsWithCategorieFilter()
+    {
+        $client = new Client();
+        $url = $this->getFullUrl("/mesures/get-sensors/thermo");
+        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        $sensors = self::$sensorsManager->getList('thermo');
+        $expected = Utils::objToArray($sensors);
 
         self::assertEquals($expected, $body);
     }
