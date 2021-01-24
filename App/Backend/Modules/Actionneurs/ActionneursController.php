@@ -34,17 +34,6 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
-     */
-    public function executeDelete(HTTPRequest $request)
-    {
-        $id = $request->getData('id');
-        $this->managers->getManagerOf('Actionneurs')->delete($id);
-        $this->app->user()->setFlash('L\'actionneur a bien été supprimé !');
-        $this->app->httpResponse()->redirect('.');
-    }
-
-    /**
-     * @param HTTPRequest $request
      * @throws Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -55,6 +44,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeInsert(HTTPRequest $request)
@@ -82,6 +72,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeUpdate(HTTPRequest $request)
@@ -127,6 +118,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws Exception
      */
     public function executeCommand(HTTPRequest $request)

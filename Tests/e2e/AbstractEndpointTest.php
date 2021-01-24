@@ -33,6 +33,21 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
     /**
      * @param Client $client
      * @param string $url
+     * @param array $body
+     * @param int $length
+     * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function postRequest(Client $client, string $url, array $body, int $length = 10)
+    {
+        $response = $client->post($url, ['form_params' => $body]);
+
+        return $response->getBody()->read($length);
+    }
+
+    /**
+     * @param Client $client
+     * @param string $url
      * @param int $length
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -40,6 +55,19 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
     public function getJsonBody(Client $client, string $url, int $length = 8192)
     {
         return json_decode($this->getRequest($client, $url, $length), true);
+    }
+
+    /**
+     * @param Client $client
+     * @param string $url
+     * @param array $body
+     * @param int $length
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPostJsonBody(Client $client, string $url, $body, int $length = 8192)
+    {
+        return json_decode($this->postRequest($client, $url, $body, $length), true);
     }
 
     /**
