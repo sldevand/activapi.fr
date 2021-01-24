@@ -35,17 +35,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
-     */
-    public function executeDelete(HTTPRequest $request)
-    {
-        $id = $request->getData('id');
-        $this->manager->delete($id);
-        $this->app->user()->setFlash('La mesure a bien été supprimée !');
-        $this->app->httpResponse()->redirect('.');
-    }
-
-    /**
      * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */

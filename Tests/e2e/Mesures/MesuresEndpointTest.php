@@ -2,18 +2,18 @@
 
 namespace Tests\e2e\Mesures;
 
+use Entity\Mesure;
 use GuzzleHttp\Client;
-use Model\MesuresManagerPDO;
 use OCFram\DateFactory;
 use OCFram\Managers;
 use OCFram\PDOFactory;
-use PHPUnit\Framework\TestCase;
+use SFram\Utils;
 
 /**
  * Class MesuresEndpointTest
  * @package Tests\e2e\Mesures
  */
-class MesuresEndpointTest extends TestCase
+class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
 {
     /** @var \PDO */
     protected static $db;
@@ -29,7 +29,7 @@ class MesuresEndpointTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        $path = $_ENV['DB_PATH_TEST'] ??  $_ENV['DB_PATH'];
+        $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);
         self::$db = PDOFactory::getSqliteConnexion();
         self::$managers = new Managers('PDO', self::$db);
@@ -41,6 +41,7 @@ class MesuresEndpointTest extends TestCase
      * Route : /mesures/add-(sensor[0-9]{2}(?:ctn10|dht11|dht22|tinfo|therm|cdoor)id[0-9])-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function testExecuteInsert()
     {
@@ -66,26 +67,44 @@ class MesuresEndpointTest extends TestCase
     }
 
     /**
+     * Route : /mesures/addchacondio-([0-9]{8}(?:%20[0-9])?)-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function testExecuteInsertChacon()
     {
-        $radioid = 'sensor24ctn10id3';
+        $radioid = 'sensor43cdoorid1';
         $sensorBefore = $this->setSensorForTest($radioid);
-        $url = $this->getFullUrl("/mesures/add-$radioid-12-0.0");
+        $radioaddess = $sensorBefore->radioaddress();
+        $url = $this->getFullUrl("/mesures/addchacondio-$radioaddess-0-0");
         $client = new Client();
-        $body = $this->getRequest($client, $url);
+        $body = $this->getJsonBody($client, $url);
+
+        $expected = Utils::objToArray(new Mesure(
+            [
+                'id_sensor' => $radioid,
+                'temperature' => '0',
+                'hygrometrie' => '0'
+            ]
+        ));
 
         // first time insert is successful
-        self::assertEquals('true', $body);
+        self::assertEquals($expected, $body);
         $this->removeLastInsertedMeasure();
 
-        // second time insert fails because values did not change
-        self::assertEquals('0', $this->getRequest($client, $url));
-
         // we change values, the measure can be inserted
-        $url = $this->getFullUrl("/mesures/add-$radioid-14.2-0.0");
-        self::assertEquals('true', $this->getRequest($client, $url));
+        $expected = Utils::objToArray(new Mesure(
+            [
+                'id_sensor' => $radioid,
+                'temperature' => '1',
+                'hygrometrie' => '0'
+            ]
+        ));
+
+        $url = $this->getFullUrl("/mesures/addchacondio-$radioaddess-1-0");
+        $body = $this->getJsonBody($client, $url);
+        self::assertEquals($expected, $body);
         $this->removeLastInsertedMeasure();
 
         self::$sensorsManager->save($sensorBefore);
@@ -95,6 +114,7 @@ class MesuresEndpointTest extends TestCase
      * Route : /mesures/(sensor[0-9]{2}(?:ctn10|dht11|dht22|tinfo|therm|cdoor)id[0-9])-(today|yesterday|week|month)
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function testExecuteSensorToday()
     {
@@ -106,7 +126,7 @@ class MesuresEndpointTest extends TestCase
         $this->getRequest($client, $url);
 
         $url = $this->getFullUrl("/mesures/$radioid-today");
-        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        $body = $this->getJsonBody($client, $url);
 
         $dates = DateFactory::getDateLimits("today");
         $dateMinFull = $dates['dateMin'] . " 00:00:00";
@@ -114,12 +134,12 @@ class MesuresEndpointTest extends TestCase
 
         $mesures = self::$mesuresManager->getSensorList($sensorBefore->radioid(), $dateMinFull, $dateMaxFull);
 
-        $expected = json_decode(json_encode([
+        $expected = Utils::objToArray([
             'nom' => $sensorBefore->nom(),
             'sensor_id' => $sensorBefore->radioid(),
             'id' => $sensorBefore->id(),
             'data' => $mesures
-        ]),true);
+        ]);
 
         self::assertEquals($expected, $body);
 
@@ -130,6 +150,7 @@ class MesuresEndpointTest extends TestCase
      * Route : /mesures/get-(sensor[0-9]{2}(?:ctn10|dht11|dht22|tinfo|therm|cdoor)id[0-9])
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function testExecuteSensorStruct()
     {
@@ -139,7 +160,7 @@ class MesuresEndpointTest extends TestCase
         $url = $this->getFullUrl("/mesures/get-$radioid");
         $body = json_decode($this->getRequest($client, $url, 8192), true);
         $sensor = self::$mesuresManager->getSensor($radioid);
-        $expectedSensor = json_decode(json_encode($sensor), true);
+        $expectedSensor = Utils::objToArray($sensor);
         $expected = [$expectedSensor];
 
         self::assertEquals($expected, $body);
@@ -163,32 +184,6 @@ class MesuresEndpointTest extends TestCase
         self::$sensorsManager->save($sensor);
 
         return $sensorBefore;
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    protected function getFullUrl(string $path): string
-    {
-        $baseUrl = $_ENV['TEST_BASE_URL'] ?? $_ENV['BASE_URL'];
-        $rootApiUri =  $_ENV['TEST_ROOT_API_URI'] ??  $_ENV['ROOT_API_URI'];
-
-        return $baseUrl . $rootApiUri . $path;
-    }
-
-    /**
-     * @param Client $client
-     * @param string $url
-     * @param int $length
-     * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getRequest(Client $client, string $url, int $length = 10)
-    {
-        $response = $client->request("GET", $url);
-
-        return $response->getBody()->read($length);
     }
 
     /**
