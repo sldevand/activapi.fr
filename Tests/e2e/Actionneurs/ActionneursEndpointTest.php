@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use OCFram\Managers;
 use OCFram\PDOFactory;
 use SFram\Utils;
+use Tests\e2e\Actionneurs\mock\ActionneursMock;
 
 /**
  * Class ActionneursEndpointTest
@@ -95,17 +96,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
         $url = $this->getFullUrl("/actionneurs/add");
         $client = new Client();
 
-        $body = [
-            'nom' => 'nomTest',
-            'module' => 'moduleTest',
-            'protocole' => 'protocoleTest',
-            'adresse' => 'protocoleTest',
-            'type' => 'typeTest',
-            'radioid' => 'radioidTest',
-            'etat' => 'etatTest',
-            'categorie' => 'categorieTest',
-        ];
-
+        $body = ActionneursMock::getActionneurs('create');
         $responseBody = $this->getPostJsonBody($client, $url, $body);
 
         $expected = ['message' => 'Ok'];
@@ -148,17 +139,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
     {
         $client = new Client();
 
-        $body = [
-            'nom' => 'nomTest',
-            'module' => 'moduleTest',
-            'protocole' => 'protocoleTest',
-            'adresse' => 'protocoleTest',
-            'type' => 'typeTest',
-            'radioid' => 'radioidTest',
-            'etat' => 'etatTest',
-            'categorie' => 'categorieTest',
-        ];
-
+        $body = ActionneursMock::getActionneurs('create');
         $url = $this->getFullUrl("/actionneurs/add");
         $responseBody = $this->getPostJsonBody($client, $url, $body);
 
@@ -173,17 +154,8 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
 
         self::assertEquals($body, $saved);
 
-        $body = [
-            'id' => $saved['id'],
-            'nom' => 'nomTest',
-            'module' => 'moduleTest2',
-            'protocole' => 'protocoleTest2',
-            'adresse' => 'protocoleTest2',
-            'type' => 'typeTest2',
-            'radioid' => 'radioidTest2',
-            'etat' => 'etatTest2',
-            'categorie' => 'categorieTest2',
-        ];
+        $body = ActionneursMock::getActionneurs('update');
+        $body['id'] = $saved['id'];
 
         $url = $this->getFullUrl("/actionneurs/update");
         $responseBody = $this->getPostJsonBody($client, $url, $body);
@@ -195,6 +167,39 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
         self::assertEquals($body, $updated);
 
         self::removeLastInsertedActionneur();
+    }
+
+    /**
+     * Route /actionneurs/command/([1-9]|[1-9][0-9]*)/([0-9]|[0-9][0-9]|[0-2][0-5][0-5])/?$
+     */
+    public function testExecuteCommandWithBadParams()
+    {
+        $client = new Client();
+
+        $actionneurId = '999';
+        $etat = '250';
+        $url = $this->getFullUrl("/actionneurs/command/$actionneurId/$etat");
+        $responseBody = $this->getJsonBody($client, $url);
+        self::assertEquals(['error' => 'No actionneur on id ' . $actionneurId], $responseBody);
+    }
+
+    /**
+     * Route /actionneurs/command/([1-9]|[1-9][0-9]*)/([0-9]|[0-9][0-9]|[0-2][0-5][0-5])/?$
+     */
+    public function testExecuteCommand()
+    {
+        $client = new Client();
+        $url = $this->getFullUrl("/actionneurs/add");
+        $body = ActionneursMock::getActionneurs('create');
+        $responseBody = $this->getPostJsonBody($client, $url, $body);
+        $expected = ['message' => 'Ok'];
+        self::assertEquals($expected, $responseBody);
+
+        $actionneurId = self::$actionneursManager->getLastInserted('actionneurs');
+        $url = $this->getFullUrl("/actionneurs/command/$actionneurId/1");
+        $responseBody = $this->getJsonBody($client, $url);
+
+        self::assertEquals(['message' => 'Ok'], $responseBody);
     }
 
     /**
