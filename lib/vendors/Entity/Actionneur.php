@@ -196,6 +196,27 @@ class Actionneur extends Entity
     }
 
     /**
+     * @param array $ignoreProperties
+     * @return bool
+     * @throws \Exception
+     */
+    public function isValid($ignoreProperties = [])
+    {
+        parent::isValid($ignoreProperties);
+
+        $properties = get_object_vars($this);
+        foreach ($properties as $key => $property) {
+            if ($key !== "erreurs" && $key !== "id" && empty($property) && !in_array($key, $ignoreProperties)) {
+                $objClass = new \ReflectionObject($this);
+                $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is empty";
+                throw new \Exception($this->erreurs['notValid']);
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @return array|mixed
      */
     public function jsonSerialize()

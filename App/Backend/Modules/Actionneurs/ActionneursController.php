@@ -107,6 +107,13 @@ class ActionneursController extends BackController
                 ]
             );
         }
+        if (empty($actionneur->id())) {
+            return $this->page->addVar('output', ['error' => 'The request must have an id']);
+        }
+
+        if (!$this->manager->getUnique($actionneur->id())) {
+            return $this->page->addVar('output', ['error' => 'Cannot update an unknown actionneur']);
+        }
 
         try {
             $this->manager->save($actionneur);

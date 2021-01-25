@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sebastien
- * Date: 24/01/21
- * Time: 16:08
- */
 
 namespace Tests\e2e;
 
@@ -23,7 +17,7 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
      * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getRequest(Client $client, string $url, int $length = 10)
+    public function getRequest(Client $client, string $url, int $length = 64000)
     {
         $response = $client->request("GET", $url);
 
@@ -38,7 +32,7 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
      * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function postRequest(Client $client, string $url, array $body, int $length = 10)
+    public function postRequest(Client $client, string $url, array $body, int $length = 64000)
     {
         $response = $client->post($url, ['form_params' => $body]);
 
@@ -52,7 +46,7 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getJsonBody(Client $client, string $url, int $length = 8192)
+    public function getJsonBody(Client $client, string $url, int $length = 64000)
     {
         return json_decode($this->getRequest($client, $url, $length), true);
     }
@@ -65,7 +59,7 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPostJsonBody(Client $client, string $url, $body, int $length = 8192)
+    public function getPostJsonBody(Client $client, string $url, $body, int $length = 64000)
     {
         return json_decode($this->postRequest($client, $url, $body, $length), true);
     }

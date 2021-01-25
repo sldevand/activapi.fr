@@ -95,7 +95,11 @@ class HTTPRequest extends ApplicationComponent
             throw new Exception('No JSON body sent from client');
         }
 
-        return $_POST = json_decode($jsonBody, true);
+        if (!empty($jsonPost = json_decode($jsonBody, true))) {
+            $_POST = $jsonPost;
+        }
+
+        return $_POST;
     }
 
     /**

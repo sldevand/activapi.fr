@@ -1,18 +1,16 @@
 <?php
 
-namespace Tests\e2e\Mesures;
+namespace Tests\e2e\Actionneurs;
 
 use Entity\Actionneur;
-use Entity\Mesure;
 use GuzzleHttp\Client;
-use OCFram\DateFactory;
 use OCFram\Managers;
 use OCFram\PDOFactory;
 use SFram\Utils;
 
 /**
  * Class ActionneursEndpointTest
- * @package Tests\e2e\Mesures
+ * @package Tests\e2e\Actionneurs
  */
 class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
 {
@@ -120,7 +118,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
 
         self::assertEquals($body, $saved);
 
-        $this->removeLastInsertedActionneur();
+        self::removeLastInsertedActionneur();
     }
 
     /**
@@ -135,7 +133,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
         $client = new Client();
         $body = $this->getJsonBody($client, $url);
 
-        $expected = ['error' => "in object " . Actionneur::class . " , nom is not set"];
+        $expected = ['error' => 'The request must have an id'];
 
         self::assertEquals($expected, $body);
     }
@@ -168,22 +166,48 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
 
         self::assertEquals($expected, $responseBody);
 
+        /** @var Actionneur $saved */
         $saved = self::$actionneursManager->getUniqueBy('nom', 'nomTest');
         $body['id'] = $saved->id();
         $saved = Utils::objToArray($saved);
 
         self::assertEquals($body, $saved);
 
-        $this->removeLastInsertedActionneur();
+        $body = [
+            'id' => $saved['id'],
+            'nom' => 'nomTest',
+            'module' => 'moduleTest2',
+            'protocole' => 'protocoleTest2',
+            'adresse' => 'protocoleTest2',
+            'type' => 'typeTest2',
+            'radioid' => 'radioidTest2',
+            'etat' => 'etatTest2',
+            'categorie' => 'categorieTest2',
+        ];
+
+        $url = $this->getFullUrl("/actionneurs/update");
+        $responseBody = $this->getPostJsonBody($client, $url, $body);
+
+        $expected = ['message' => 'Ok'];
+        self::assertEquals($expected, $responseBody);
+
+        $updated = Utils::objToArray(self::$actionneursManager->getUniqueBy('nom', 'nomTest'));
+        self::assertEquals($body, $updated);
+
+        self::removeLastInsertedActionneur();
     }
 
     /**
      * @throws \Exception
      */
-    public function removeLastInsertedActionneur()
+    public static function removeLastInsertedActionneur()
     {
         $id = self::$actionneursManager->getLastInserted('actionneurs');
-        $rows = self::$actionneursManager->delete($id);
-        self::assertEquals(1, $rows);
+        self::$actionneursManager->delete($id);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::removeLastInsertedActionneur();
     }
 }
