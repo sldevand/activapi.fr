@@ -16,4 +16,13 @@ class Utils
     {
         return json_decode(json_encode($obj), true);
     }
+
+    /**
+     * @param mixed $obj
+     * @return mixed
+     */
+    public static function deepCopy($obj)
+    {
+        return unserialize(serialize($obj));
+    }
 }

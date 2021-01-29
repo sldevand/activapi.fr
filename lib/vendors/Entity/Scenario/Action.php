@@ -86,7 +86,7 @@ class Action extends Entity
      * @return Action
      * @throws Exception
      */
-    public function setActionneur($actionneur)
+    public function setActionneur(Actionneur $actionneur): Action
     {
         if (empty($actionneur)) {
             throw new Exception('No actionneur was set');

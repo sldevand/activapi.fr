@@ -8,7 +8,6 @@ use SFram\Utils;
 /**
  * Class ActionneursMock
  * @package Tests\e2e\Actionneurs\mock
- * @author Synolia <contact@synolia.com>
  */
 class ActionneursMock
 {
