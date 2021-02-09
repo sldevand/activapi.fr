@@ -2,9 +2,7 @@
 
 namespace Tests\e2e\Scenarios\mock;
 
-use Entity\Scenario\Action;
 use Entity\Scenario\Sequence;
-use Tests\Model\Actionneurs\mock\ActionneursMock;
 
 /**
  * Class SequencesMock
