@@ -34,27 +34,41 @@ class ActionsEndpointTest extends \Tests\e2e\AbstractEndpointTest
 
     /**
      * Route : /actions/add
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecutePostWithWrongMethod()
+    {
+        list($client, $url) = $this->prepareActionRequest('/actions/add');
+
+        $result = $this->getJsonBody($client, $url);
+        self::assertEquals(['error' => 'Wrong method : GET, use POST method instead'], $result);
+    }
+
+    /**
+     * Route : /actions/add
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecutePostWithEmptyBody()
+    {
+        list($client, $url) = $this->prepareActionRequest('/actions/add');
+
+        $result = $this->getPostJsonBody($client, $url, []);
+        self::assertEquals(['error' => 'No JSON body sent from client'], $result);
+    }
+
+    /**
+     * Route : /actions/add
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function testExecutePost()
     {
-        $client = new Client();
-        $url = $this->getFullUrl("/actions/add");
-
-        // Prepare Action array
-        /** @var  \Entity\Scenario\Action $action */
-        $action = Utils::deepCopy(ActionsMock::getActions()[0]);
-
-        /** @var \Entity\Actionneur $actionneur */
-        $actionneur = self::$actionneursManager->getUnique($action->getActionneurId());
-        $action->setActionneur($actionneur);
-
-        $actionArray = Utils::objToArray($action);
-        unset($actionArray['actionneur']);
+        list($client, $url, $action, $actionArray) = $this->prepareActionRequest('/actions/add');
         $result = $this->getPostJsonBody($client, $url, $actionArray);
 
-        $expectedAction= Utils::deepCopy($action);
+        $expectedAction = Utils::deepCopy($action);
         $actionId = self::$actionManager->getLastInserted('action');
         $expectedAction->setId($actionId);
         $expected = Utils::objToArray($expectedAction);
@@ -71,12 +85,36 @@ class ActionsEndpointTest extends \Tests\e2e\AbstractEndpointTest
     }
 
     /**
+     * @param string $url
+     * @return array
+     * @throws \Exception
+     */
+    public function prepareActionRequest(string $url): array
+    {
+        $client = new Client();
+        $url = $this->getFullUrl($url);
+
+        // Prepare Action array
+        /** @var  \Entity\Scenario\Action $action */
+        $action = Utils::deepCopy(ActionsMock::getActions()[0]);
+
+        /** @var \Entity\Actionneur $actionneur */
+        $actionneur = self::$actionneursManager->getUnique($action->getActionneurId());
+        $action->setActionneur($actionneur);
+
+        $actionArray = Utils::objToArray($action);
+        unset($actionArray['actionneur']);
+
+        return [$client, $url, $action, $actionArray];
+    }
+
+    /**
      * @throws \Exception
      */
     public static function removeLastInsertedAction()
     {
         $id = self::$actionManager->getLastInserted('action');
-        $rows = self::$actionManager->delete($id);
+        self::$actionManager->delete($id);
     }
 
     /**
