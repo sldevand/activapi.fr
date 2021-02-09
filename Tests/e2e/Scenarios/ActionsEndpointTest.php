@@ -6,13 +6,14 @@ use GuzzleHttp\Client;
 use Model\Scenario\ScenarioManagerPDOFactory;
 use OCFram\PDOFactory;
 use SFram\Utils;
+use Tests\e2e\AbstractEndpointTest;
 use Tests\e2e\Scenarios\mock\ActionsMock;
 
 /**
  * Class ActionsEndpointTest
  * @package Tests\e2e\Mesures
  */
-class ActionsEndpointTest extends \Tests\e2e\AbstractEndpointTest
+class ActionsEndpointTest extends AbstractEndpointTest
 {
     /** @var \PDO */
     protected static $db;
@@ -82,6 +83,66 @@ class ActionsEndpointTest extends \Tests\e2e\AbstractEndpointTest
             ['error' => 'SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: action.nom'],
             $result
         );
+    }
+
+    /**
+     * Route : /actions/?([0-9]*)?
+     * @depends testExecutePost
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteGetAllActionsWithWrongMethod()
+    {
+        list($client, $url) = $this->prepareActionRequest('/actions');
+        $result = $this->getPostJsonBody($client, $url, []);
+
+        self::assertEquals(['error' => 'Wrong method : POST, use GET method instead'], $result);
+    }
+
+    /**
+     * Route : /actions/?([0-9]*)?
+     * @depends testExecutePost
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteGetAllActions()
+    {
+        list($client, $url) = $this->prepareActionRequest('/actions');
+        $result = $this->getJsonBody($client, $url);
+        $expected = Utils::objToArray(self::$actionManager->getAll());
+
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * Route : /actions/?([0-9]*)?
+     * @depends testExecuteGetAllActions
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteGetUniqueAction()
+    {
+        $actionId = self::$actionManager->getLastInserted('action');
+        list($client, $url) = $this->prepareActionRequest("/actions/$actionId");
+        $result = $this->getJsonBody($client, $url);
+        $expected = Utils::objToArray(self::$actionManager->getUnique($actionId));
+
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * Route : /actions/?([0-9]*)?
+     * @depends testExecuteGetUniqueAction
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteGetUndefinedAction()
+    {
+        $actionId = '569997774';
+        list($client, $url) = $this->prepareActionRequest("/actions/$actionId");
+        $result = $this->getJsonBody($client, $url);
+
+        self::assertEquals(['error' => 'No action found!'], $result);
     }
 
     /**

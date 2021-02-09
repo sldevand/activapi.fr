@@ -31,7 +31,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
 
     /**
      * @param HTTPRequest $httpRequest
-     * @return \Entity\Scenario\Scenario[] | \Entity\Scenario\Scenario
+     * @return \Entity\Scenario\Scenario|\Entity\Scenario\Scenario[]|\OCFram\Page
      * @throws Exception
      */
     public function executeGet($httpRequest)
