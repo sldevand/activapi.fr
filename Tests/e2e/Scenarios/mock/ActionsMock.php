@@ -3,7 +3,6 @@
 namespace Tests\e2e\Scenarios\mock;
 
 use Entity\Scenario\Action;
-use Tests\Model\Actionneurs\mock\ActionneursMock;
 
 /**
  * Class ActionsMock
@@ -11,9 +10,11 @@ use Tests\Model\Actionneurs\mock\ActionneursMock;
  */
 class ActionsMock
 {
-    public static function getActions()
+    /**
+     * @return \Entity\Scenario\Action[]
+     */
+    public static function getActions(): array
     {
-
         return [
             new Action(
                 [
