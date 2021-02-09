@@ -86,6 +86,74 @@ class ActionsEndpointTest extends AbstractEndpointTest
     }
 
     /**
+     * Route : /actions/update
+     * @depends testExecutePost
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecutePut()
+    {
+        list($client, $url, $action, $actionArray) = $this->prepareActionRequest('/actions/update');
+        $actionId = self::$actionManager->getLastInserted('action');
+        $action->setId($actionId);
+        $actionArray['id'] = $actionId;
+        $actionArray['nom'] = 'Test2';
+
+        $result = $this->getPutJsonBody($client, $url, $actionArray);
+
+        $expectedAction = Utils::deepCopy($action);
+        $expectedAction->setId($actionId);
+        $expectedAction->setNom('Test2');
+        $expected = Utils::objToArray($expectedAction);
+
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * Route : /actions/update
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecutePutWithWrongMethod()
+    {
+        list($client, $url) = $this->prepareActionRequest('/actions/update');
+
+        $result = $this->getJsonBody($client, $url);
+        self::assertEquals(['error' => 'Wrong method : GET, use PUT method instead'], $result);
+    }
+
+    /**
+     * Route : /actions/update
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecutePutWithEmptyBody()
+    {
+        list($client, $url) = $this->prepareActionRequest('/actions/update');
+
+        $result = $this->getPutJsonBody($client, $url, []);
+        self::assertEquals(['error' => 'No JSON body sent from client'], $result);
+    }
+
+    /**
+     * Route : /actions/update
+     * @depends testExecutePost
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecutePutWithoutId()
+    {
+        list($client, $url, $action, $actionArray) = $this->prepareActionRequest('/actions/update');
+        $actionId = self::$actionManager->getLastInserted('action');
+        $action->setId($actionId);
+        $actionArray['nom'] = 'Test2';
+
+        $result = $this->getPutJsonBody($client, $url, $actionArray);
+
+        self::assertEquals(['error' => 'JSON body must contain an id'], $result);
+    }
+
+    /**
      * Route : /actions/?([0-9]*)?
      * @depends testExecutePost
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -141,6 +209,52 @@ class ActionsEndpointTest extends AbstractEndpointTest
         $actionId = '569997774';
         list($client, $url) = $this->prepareActionRequest("/actions/$actionId");
         $result = $this->getJsonBody($client, $url);
+
+        self::assertEquals(['error' => 'No action found!'], $result);
+    }
+
+    /**
+     * Route : /actions/delete
+     * @depends testExecutePost
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteDeleteActionWithWrongMethod()
+    {
+        list($client, $url) = $this->prepareActionRequest('/actions/delete');
+        $result = $this->getJsonBody($client, $url);
+
+        self::assertEquals(['error' => 'Wrong method : GET, use DELETE method instead'], $result);
+    }
+
+    /**
+     * Route : /actions/delete
+     * @depends testExecutePost
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteDeleteAction()
+    {
+        $actionId = self::$actionManager->getLastInserted('action');
+        list($client, $url, $action, $actionArray) = $this->prepareActionRequest('/actions/delete');
+        $actionArray['id'] = $actionId;
+        $result = $this->getDeleteJsonBody($client, $url, $actionArray);
+
+        self::assertEquals(['success' => 'Test2 has been deleted'], $result);
+    }
+
+    /**
+     * Route : /actions/?([0-9]*)?
+     * @depends testExecuteGetUniqueAction
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testExecuteDeleteUndefinedAction()
+    {
+        $actionId = '569997774';
+        list($client, $url, , $actionArray) = $this->prepareActionRequest("/actions/delete");
+        $actionArray['id'] = $actionId;
+        $result = $this->getDeleteJsonBody($client, $url, $actionArray);
 
         self::assertEquals(['error' => 'No action found!'], $result);
     }

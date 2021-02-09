@@ -97,7 +97,12 @@ class HTTPRequest extends ApplicationComponent
 
         if (!empty($jsonPost = json_decode($jsonBody, true))) {
             $_POST = $jsonPost;
+            return $_POST;
         }
+
+        /** get form params */
+        parse_str(file_get_contents("php://input"), $params);
+        $_POST = $params;
 
         return $_POST;
     }
