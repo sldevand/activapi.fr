@@ -11,7 +11,7 @@ use Tests\e2e\Scenarios\mock\SequencesMock;
 
 /**
  * Class SequencesEndpointTest
- * @package Tests\e2e\Mesures
+ * @package Tests\e2e\Scenarios
  */
 class SequencesEndpointTest extends AbstractEndpointTest
 {

@@ -70,12 +70,13 @@ class ThermostatController extends BackController
         }
 
         $newThermostat = new Thermostat($hydrate);
-
-        $thermostatLog = new ThermostatLog([
-            'etat' => $prevEtat,
-            'consigne' => $newThermostat->consigne(),
-            'delta' => $newThermostat->delta()
-        ]);
+        $thermostatLog = new ThermostatLog(
+            [
+                'etat' => $prevEtat,
+                'consigne' => $newThermostat->consigne(),
+                'delta' => $newThermostat->delta()
+            ]
+        );
 
         if ($thermostat->hasChanged($newThermostat)) {
             if ($prevEtat != $postEtat) {
@@ -96,22 +97,29 @@ class ThermostatController extends BackController
     }
 
     /**
-     *
+     * @return \OCFram\Page
      */
-    public function executeRefreshLog()
+    public function executeRefreshLog(): \OCFram\Page
     {
+        /** @var \Model\ThermostatManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Thermostat');
-        $thermostats = $manager->getList();
-
-        foreach ($thermostats as $thermostat) {
-            $prevEtat = $thermostat->etat();
-            $thermostatLog = new ThermostatLog(['etat' => $prevEtat]);
-            $manager->addThermostatLog($thermostatLog);
+        try {
+            $thermostats = $manager->getList();
+            foreach ($thermostats as $thermostat) {
+                $prevEtat = $thermostat->etat();
+                $thermostatLog = new ThermostatLog(['etat' => $prevEtat]);
+                $manager->addThermostatLog($thermostatLog);
+            }
+        } catch (\Exception $e) {
+            return $this->page->addVar('output', ['error' => $e->getMessage()]);
         }
+
+        return $this->page->addVar('output', ['message' => 'Success']);
     }
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeLog(HTTPRequest $request)
     {

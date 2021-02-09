@@ -89,7 +89,7 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPostJsonBody(Client $client, string $url,array $body, int $length = 64000)
+    public function getPostJsonBody(Client $client, string $url, array $body, int $length = 64000)
     {
         return json_decode($this->postRequest($client, $url, $body, $length), true);
     }
@@ -102,7 +102,7 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPutJsonBody(Client $client, string $url,array $body, int $length = 64000)
+    public function getPutJsonBody(Client $client, string $url, array $body, int $length = 64000)
     {
         return json_decode($this->putRequest($client, $url, $body, $length), true);
     }
@@ -115,7 +115,7 @@ abstract class AbstractEndpointTest extends \PHPUnit\Framework\TestCase
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getDeleteJsonBody(Client $client, string $url,array $body, int $length = 64000)
+    public function getDeleteJsonBody(Client $client, string $url, array $body, int $length = 64000)
     {
         return json_decode($this->deleteRequest($client, $url, $body, $length), true);
     }

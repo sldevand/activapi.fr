@@ -11,7 +11,7 @@ use Tests\e2e\Scenarios\mock\ActionsMock;
 
 /**
  * Class ActionsEndpointTest
- * @package Tests\e2e\Mesures
+ * @package Tests\e2e\Scenarios
  */
 class ActionsEndpointTest extends AbstractEndpointTest
 {

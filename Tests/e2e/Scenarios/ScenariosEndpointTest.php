@@ -11,7 +11,7 @@ use Tests\e2e\Scenarios\mock\ScenariosMock;
 
 /**
  * Class ScenariosEndpointTest
- * @package Tests\e2e\Mesures
+ * @package Tests\e2e\Scenarios
  */
 class ScenariosEndpointTest extends AbstractEndpointTest
 {
@@ -273,7 +273,7 @@ class ScenariosEndpointTest extends AbstractEndpointTest
      */
     public function testExecuteCommand()
     {
-        list($client, $url,  $scenarioArray) = $this->prepareScenarioRequest('/scenarios/add');
+        list($client, $url, , $scenarioArray) = $this->prepareScenarioRequest('/scenarios/add');
         $this->getPostJsonBody($client, $url, $scenarioArray);
 
         $scenarioId = self::$scenariosManager->getLastInserted('scenario');
