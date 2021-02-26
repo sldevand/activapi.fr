@@ -2,16 +2,12 @@
 
 namespace Tests\e2e\Thermostat;
 
-use Entity\Sensor;
-use Entity\Thermostat;
-use Entity\ThermostatMode;
 use GuzzleHttp\Client;
-use Model\Scenario\ScenarioManagerPDOFactory;
+use GuzzleHttp\Exception\GuzzleException;
 use OCFram\Managers;
 use OCFram\PDOFactory;
 use SFram\Utils;
 use Tests\e2e\AbstractEndpointTest;
-use Tests\e2e\Scenarios\mock\SequencesMock;
 use Tests\e2e\Thermostat\mock\ThermostatMock;
 
 /**
@@ -114,5 +110,76 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         $thermostatArray = Utils::objToArray($thermostat);
 
         return [$client, $url, $thermostat, $thermostatArray];
+    }
+
+    /**
+     * Route : /thermostat/log/
+     * @depends testIndex
+     * @throws \Exception|\GuzzleHttp\Exception\GuzzleException
+     */
+    public function testLogWithoutParams()
+    {
+        list($client, $url) = $this->prepareThermostatRequest('/thermostat/log/');
+
+        $date = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        $dateMinFull = $date->format("Y-m-d 00:00:00");
+        $dateMaxFull = $date->format("Y-m-d 23:59:59");
+        $logList = self::$thermostatManager->getLogListWithDates($dateMinFull, $dateMaxFull);
+        $logList = Utils::objToArray($logList);
+
+        $expected = [
+            'id' => 1,
+            'nom' => 'Thermostat',
+            'sensor_id' => 'ther',
+            'data' => $logList
+        ];
+
+        $result = $this->getJsonBody($client, $url);
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * Route : /thermostat/log/([0-9]{4}-[0-9]{2}-[0-9]{2})?-?([0-9]{4}-[0-9]{2}-[0-9]{2})?
+     * @depends testIndex
+     * @throws \Exception|\GuzzleHttp\Exception\GuzzleException
+     */
+    public function testLogWithParams()
+    {
+        $now = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+        $threeDaysAgo = $now->sub(\DateInterval::createFromDateString('-3 days'));
+
+        $dateMinParam = $threeDaysAgo->format("Y-m-d");
+        $dateMaxParam = $now->format("Y-m-d");
+
+        list($client, $url) = $this->prepareThermostatRequest("/thermostat/log/$dateMinParam-$dateMaxParam");
+
+        $dateMinFull = $threeDaysAgo->format("Y-m-d 00:00:00");
+        $dateMaxFull = $now->format("Y-m-d 23:59:59");
+        $logList = self::$thermostatManager->getLogListWithDates($dateMinFull, $dateMaxFull);
+        $logList = Utils::objToArray($logList);
+
+        $expected = [
+            'id' => 1,
+            'nom' => 'Thermostat',
+            'sensor_id' => 'ther',
+            'data' => $logList
+        ];
+
+        $result = $this->getJsonBody($client, $url);
+        self::assertEquals($expected, $result);
+    }
+
+    /**
+     * Route : /thermostat/log/([0-9]{4}-[0-9]{2}-[0-9]{2})?-?([0-9]{4}-[0-9]{2}-[0-9]{2})?
+     * @depends testIndex
+     * @throws \Exception|\GuzzleHttp\Exception\GuzzleException
+     */
+    public function testLogWithWrongParams()
+    {
+        list($client, $url) = $this->prepareThermostatRequest("/thermostat/log/4ed122-45542");
+
+        self::expectException(GuzzleException::class);
+
+        $this->getJsonBody($client, $url);
     }
 }
