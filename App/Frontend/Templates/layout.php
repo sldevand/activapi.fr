@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="<?= DIST . '/index.css' ?>" type="text/css">
     <?php include("Block/favicon.phtml"); ?>
-    <link rel="manifest" href="<?= ROOT . '/manifest.json' ?>">
+    <link rel="manifest" href="<?= ROOT . '/manifest/manifest.json' ?>">
     <script src="<?= DIST . '/index.js' ?>"></script>
 </head>
 
