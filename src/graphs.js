@@ -1,3 +1,4 @@
 import {GraphsManage} from "./graphs/graphsManage";
-window.GraphsManage=GraphsManage;
+
+window.GraphsManage = GraphsManage;
 export default GraphsManage;

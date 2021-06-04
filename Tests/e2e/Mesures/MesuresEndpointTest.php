@@ -76,7 +76,7 @@ class MesuresEndpointTest extends TestCase
         $this->getRequest($client, $url);
 
         $url = $this->getFullUrl("/mesures/$radioid-today");
-        $body = json_decode($this->getRequest($client, $url, 8192), true);
+        $body = json_decode($this->getRequest($client, $url, 320000), true);
 
         $dates = DateFactory::getDateLimits("today");
         $dateMinFull = $dates['dateMin'] . " 00:00:00";

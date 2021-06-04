@@ -22,9 +22,7 @@ class GraphsController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-
-        $graphId = "tempGraph";
-        $sensorid = $request->getData("id_sensor");
+        $graphId = "tempGraph";;
         $dateMin = $request->getData("dateMin");
         $dateMax = $request->getData("dateMax");
         $today = DateFactory::todayToString();
@@ -52,15 +50,13 @@ class GraphsController extends BackController
         $tempMin = 10;
         $tempMax = 25;
 
-        if ($sensorid === "sensor24ctn10id3") {
-            $tempMin = -5;
-            $tempMax = 20;
+        if (in_array($dateMin, DateFactory::PERIOD_KEYWORDS)) {
+            list($dateMin, $dateMax) = DateFactory::getDateLimits($dateMin);
         }
 
         $jst = new JSTranslator(
             [
                 'apiURL' => $this->getApiUrl(),
-                'sensorid' => $sensorid,
                 'sensorids' => $sensorids,
                 'dateMin' => $dateMin,
                 'dateMax' => $dateMax,
@@ -70,7 +66,7 @@ class GraphsController extends BackController
             ]
         );
 
-        $buttons = $this->makeButtons($this->provideButtonDatas());
+        $buttons = $this->makeButtons($this->provideButtonsData());
         $period = $this->getSelectedPeriod($dateMin, $dateMax, $today);
         $graphCard = WidgetFactory::makeCard("temperatures", 'Températures');
         $graphCard->addContent($this->periodView($period));
@@ -84,44 +80,53 @@ class GraphsController extends BackController
     }
 
     /**
-     * @param $buttonDatas
+     * @param array $buttonsData
      * @return array
      */
-    public function makeButtons($buttonDatas)
+    public function makeButtons($buttonsData)
     {
         $buttons = [];
-        foreach ($buttonDatas as $buttonData) {
-            $buttons[] = new RaisedButton($buttonData);
+        foreach ($buttonsData as $buttonsDatum) {
+            $buttons[] = new RaisedButton($buttonsDatum);
         }
 
         return $buttons;
     }
 
-    public function provideButtonDatas()
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function provideButtonsData()
     {
+        $hrefs = [];
+        foreach (DateFactory::PERIOD_KEYWORDS as $periodKeyword) {
+            $hrefs[$periodKeyword] = DateFactory::getDateLimits($periodKeyword);
+        }
+
         return [
             [
                 'id' => 'yesterday',
                 'title' => "Hier",
-                'href' => ROOT,
+                'href' => $this->createUrl($hrefs['yesterday']['dateMin'], $hrefs['yesterday']['dateMax']),
                 'extend' => 'col s12'
             ],
             [
                 'id' => 'today',
                 'title' => "Aujourd'hui",
-                'href' => ROOT,
+                'href' => $this->createUrl($hrefs['today']['dateMin'], $hrefs['today']['dateMax']),
                 'extend' => 'col s12'
             ],
             [
                 'id' => 'week',
                 'title' => "Semaine",
-                'href' => ROOT,
+                'href' => $this->createUrl($hrefs['week']['dateMin'], $hrefs['week']['dateMax']),
                 'extend' => 'col s12'
             ],
             [
                 'id' => 'month',
                 'title' => "Mois",
-                'href' => ROOT,
+                'href' => $this->createUrl($hrefs['month']['dateMin'], $hrefs['month']['dateMax']),
                 'extend' => 'col s12'
             ]
         ];
@@ -132,6 +137,7 @@ class GraphsController extends BackController
      * @param $dateMax
      * @param $today
      * @return string
+     * @throws \Exception
      */
     public function getSelectedPeriod($dateMin, $dateMax, $today)
     {
@@ -174,5 +180,15 @@ class GraphsController extends BackController
     public function periodView($period)
     {
         return $this->getBlock(MODULES . '/Graphs/Block/periodView.phtml', $period);
+    }
+
+    /**
+     * @param string $dateMin
+     * @param string $dateMax
+     * @return string
+     */
+    public function createUrl(string $dateMin, string $dateMax)
+    {
+        return "graphs-$dateMin-$dateMax";
     }
 }
