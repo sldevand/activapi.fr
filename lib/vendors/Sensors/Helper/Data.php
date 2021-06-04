@@ -1,12 +1,12 @@
 <?php
 
-namespace Helper\Sensors;
+namespace Sensors\Helper;
 
 use OCFram\ApplicationComponent;
 
 /**
  * Class Data
- * @package Helper\Sensors
+ * @package Sensors\Helper
  */
 class Data extends ApplicationComponent
 {

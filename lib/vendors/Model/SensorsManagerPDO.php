@@ -3,9 +3,9 @@
 namespace Model;
 
 use Entity\Sensor;
-use Helper\Sensors\Data;
 use OCFram\DateFactory;
 use PDO;
+use Sensors\Helper\Data;
 
 /**
  * Class SensorsManagerPDO
