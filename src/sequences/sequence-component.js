@@ -25,7 +25,6 @@ export class Sequences {
                 this.actions = actions;
                 for (let sequenceActionId in this.sequence.actions) {
                     let actionId = this.sequence.actions[sequenceActionId].id;
-                    console.log(this.sequence.actions);
                     this.addRow(sequenceActionId, actionId);
                 }
                 this.initActionAddListener();
@@ -46,7 +45,7 @@ export class Sequences {
         elt.innerHTML = row;
         actions.appendChild(elt);
         $('select').material_select();
-        this.initRemoveButton(elt.id);
+        this.initRemoveButton(sequenceActionId);
     }
 
     removeRow(target) {
@@ -71,7 +70,7 @@ export class Sequences {
     }
 
     initRemoveButton(domId) {
-        const deleteButton = document.querySelector('#' + domId);
+        const deleteButton = document.querySelector('#sequence-action-delete-' + domId);
         deleteButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.removeRow(e.target.parentNode);
