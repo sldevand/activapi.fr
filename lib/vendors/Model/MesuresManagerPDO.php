@@ -4,8 +4,6 @@ namespace Model;
 
 use Entity\Mesure;
 use Entity\Sensor;
-use Helper\Sensors\Data;
-use OCFram\DateFactory;
 use OCFram\Managers;
 use OCFram\PDOFactory;
 

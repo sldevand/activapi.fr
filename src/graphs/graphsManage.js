@@ -26,7 +26,6 @@ export function GraphsManage(id) {
             graphsManage.m_pending_gets++;
             $.get(fullURL, function (sensor) {
                 var sensorJSON = sensor;
-                var label = sensorJSON.nom;
                 var datas = sensorJSON.data;
 
                 graphsManage.m_nom = sensorJSON.nom;
@@ -38,35 +37,32 @@ export function GraphsManage(id) {
                 var dataPointsEtat = [];
 
                 datas.forEach(function (data) {
-                    if (data.temperature != null && data.temperature != "") {
+                    if (data.temperature != null && data.temperature !== "") {
                         var dataPointTemp = {
                             x: data.horodatage,
                             y: data.temperature
-                        }
+                        };
 
                         dataPointsTemp.push(dataPointTemp);
                     }
 
-                    if (data.hygrometrie != null && data.hygrometrie != "") {
-
+                    if (data.hygrometrie != null && data.hygrometrie !== "") {
                         var dataPointHygro = {
                             x: data.horodatage,
                             y: data.hygrometrie
-                        }
+                        };
 
                         dataPointsHygro.push(dataPointHygro);
                     }
 
-                    if (data.etat != null && data.etat != "") {
-
+                    if (data.etat != null && data.etat !== "") {
                         var dataPointEtat = {
                             x: data.horodatage,
                             y: data.etat
-                        }
+                        };
 
                         dataPointsEtat.push(dataPointEtat);
                     }
-
 
                 });
 
@@ -81,31 +77,25 @@ export function GraphsManage(id) {
                 }
 
                 if (dataPointsHygro.length > 0) {
-
-                    if (graphsManage.m_sensorid.includes('dht11')) {
+                    if (graphsManage.m_sensorid.includes('dht')) {
                         measuretype = 'hygro';
-                        axis = 'hygroAxis'
+                        axis = 'hygroAxis';
                     }
 
                     if (graphsManage.m_sensorid.includes('therm')) {
                         measuretype = 'hygro';
-                        axis = 'hygroAxis'
+                        axis = 'hygroAxis';
                     }
-
                     graphsManage.addDataset(axis, graphType, dataPointsHygro, measuretype);
-
                 }
 
                 if (dataPointsEtat.length > 0) {
-
-                    measuretype = "etat"
-
+                    measuretype = "etat";
                     graphsManage.addDataset(axis, graphType, dataPointsEtat, measuretype);
-
                 }
 
                 graphsManage.m_pending_gets--;
-                if (graphsManage.m_pending_gets == 0) {
+                if (graphsManage.m_pending_gets === 0) {
                     graphsManage.drawEverything();
                 }
             });
@@ -116,7 +106,6 @@ export function GraphsManage(id) {
         },
 
         setParams: function (url, sensorid, datemin, datemax, minY = 0, maxY = 30, borderColor = 'rgba(255, 99, 132, 1)', backgroundColor = 'rgba(255, 99, 132, 0.4)') {
-
             graphsManage.m_url = url;
             graphsManage.m_sensorid = sensorid;
             graphsManage.m_datemin = datemin;
@@ -164,8 +153,6 @@ export function GraphsManage(id) {
                 if (colors.sensorid == graphsManage.m_sensorid) {
                     dataset.borderColor = colors.borderColor;
                     dataset.backgroundColor = colors.backgroundColor;
-
-                    return;
                 }
             });
 

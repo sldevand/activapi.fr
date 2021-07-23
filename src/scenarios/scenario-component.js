@@ -45,7 +45,7 @@ export class Scenarios {
         elt.innerHTML = row;
         sequences.appendChild(elt);
         $('select').material_select();
-        this.initRemoveButton(elt.id);
+        this.initRemoveButton(scenarioSequenceId);
     }
 
     removeRow(target) {
@@ -70,7 +70,7 @@ export class Scenarios {
     }
 
     initRemoveButton(domId) {
-        const deleteButton = document.querySelector('#' + domId);
+        const deleteButton = document.querySelector('#scenario-sequence-delete-' + domId);
         deleteButton.addEventListener('click', (e) => {
             e.preventDefault();
             this.removeRow(e.target.parentNode);

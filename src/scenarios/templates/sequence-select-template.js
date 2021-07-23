@@ -19,7 +19,7 @@ export class SequenceRowTemplate {
     </div>
 </div>
 
-<i id="scenario-sequence-delete" data-id="${scenarioSequenceId}" class="material-icons secondaryTextColor col s2 delete">delete</i>
+<i id="scenario-sequence-delete-${scenarioSequenceId}" data-id="${scenarioSequenceId}" class="material-icons secondaryTextColor col s2 delete">delete</i>
 `;
         return template;
     }

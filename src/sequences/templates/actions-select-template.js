@@ -19,7 +19,7 @@ export class ActionRowTemplate {
     </div>
 </div>
 
-<i id="sequence-action-delete" data-id="${sequenceActionId}" class="material-icons secondaryTextColor col s2 delete">delete</i>
+<i id="sequence-action-delete-${sequenceActionId}" data-id="${sequenceActionId}" class="material-icons secondaryTextColor col s2 delete">delete</i>
 `;
         return template;
     }

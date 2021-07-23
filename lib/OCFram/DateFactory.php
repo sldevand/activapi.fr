@@ -11,6 +11,9 @@ use DateTimeZone;
  */
 class DateFactory
 {
+
+    const PERIOD_KEYWORDS = ['today', 'yesterday', 'week', 'month'];
+
     /**
      * @var array
      */
