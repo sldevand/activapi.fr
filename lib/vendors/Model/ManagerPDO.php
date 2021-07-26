@@ -308,19 +308,18 @@ class ManagerPDO extends Manager
      */
     public function addInsertProperties($properties, $isValue = false)
     {
-        $count = count($properties) - 2;
+        unset($properties['id']);
+        unset($properties['erreurs']);
+        $count = count($properties);
         $i = 1;
         $sql = '';
         foreach ($properties as $key => $property) {
-            if ($key !== "id" && $key !== "erreurs") {
-                if ($isValue) {
-                    $sql .= ':';
-                }
-                $sql .= $key;
-                if ($i < $count) {
-                    $sql .= ",";
-                }
-//                $sql .= " ";
+            if ($isValue) {
+                $sql .= ':';
+            }
+            $sql .= $key;
+            if ($i < $count) {
+                $sql .= ",";
             }
             $i++;
         }
