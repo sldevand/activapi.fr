@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <routes>
-    <route url="\/" module="Home" action="index" scope="public"/>
+    <route url="\/" module="Home" action="index"/>
+
+    <route url="\/login" module="User" action="login" scope="public"/>
 
     <route url="\/actionneurs" module="Actionneurs" action="index"/>
     <route url="\/actionneurs-add" module="Actionneurs" action="edit"/>

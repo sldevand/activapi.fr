@@ -128,7 +128,7 @@ abstract class Application
     {
         if ($route->getScope() === Route::SCOPE_PRIVATE && !$this->user()->isAuthenticated()) {
             $this->user()->setFlash('You cannot access this page because you are not logged in!');
-            $this->httpResponse->redirect($this->root);
+            $this->httpResponse->redirect($this->root . '/login');
         }
     }
 

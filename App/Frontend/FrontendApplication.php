@@ -23,16 +23,11 @@ class FrontendApplication extends Application
 
     /**
      * @return mixed|void
+     * @throws \Exception
      */
     public function run()
     {
         $controller = $this->getController();
-
-        if ($controller->isRestricted() && !$this->user()->isAuthenticated()) {
-            $homeUrl = $this->httpRequest->baseUrl() . $this->router->getRoot() . '/';
-            $this->user->setFlash('You are not logged in');
-            $this->httpResponse->redirect($homeUrl);
-        }
 
         $controller->execute();
         $this->httpResponse->setPage($controller->page());

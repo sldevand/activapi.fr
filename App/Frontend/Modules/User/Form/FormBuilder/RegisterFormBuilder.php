@@ -11,7 +11,6 @@ use OCFram\StringField;
  */
 class RegisterFormBuilder extends FormBuilder
 {
-
     /**
      * @return mixed|void
      */
