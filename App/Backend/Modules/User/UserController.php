@@ -113,12 +113,13 @@ class UserController extends BackController
     protected function checkRequiredParams(HTTPRequest $request, array $requiredParamKeys)
     {
         $validatedParams = [];
+        $post = $request->getJsonPost();
         foreach ($requiredParamKeys as $requiredParamKey) {
-            if (!$request->postExists($requiredParamKey)) {
+            if (!$post[$requiredParamKey]) {
                 return [];
             }
             $validatedParams[$requiredParamKey] = htmlspecialchars(
-                $request->postData($requiredParamKey)
+                $post[$requiredParamKey]
             );
         }
 
