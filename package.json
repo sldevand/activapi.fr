@@ -31,7 +31,8 @@
         "babelConsole": "./node_modules/.bin/browserify ./src/console.js -t [babelify] -o ./Web/dist/console.js",
         "babelMaterialize": "./node_modules/.bin/browserify ./src/materializeTricks.js -t [babelify] -o ./Web/dist/materializeTricks.js",
         "babelUserLogin": "./node_modules/.bin/browserify ./src/user/login.js -t [babelify] -o ./Web/dist/user/login.js",
-        "babelAll": "npm run babelIndex && npm run babelGraphs && npm run babelSocketio && npm run babelModes && npm run babelScenarios && npm run babelSequences && npm run babelActions && npm run babelNode && npm run babelConsole && npm run babelMaterialize && npm run babelUserLogin"
+        "babelUserRegister": "./node_modules/.bin/browserify ./src/user/register.js -t [babelify] -o ./Web/dist/user/register.js",
+        "babelAll": "npm run babelIndex && npm run babelGraphs && npm run babelSocketio && npm run babelModes && npm run babelScenarios && npm run babelSequences && npm run babelActions && npm run babelNode && npm run babelConsole && npm run babelMaterialize && npm run babelUserLogin && npm run babelUserRegister"
     },
     "repository": {
         "type": "git",

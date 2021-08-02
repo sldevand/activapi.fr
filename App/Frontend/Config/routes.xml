@@ -2,7 +2,8 @@
 <routes>
     <route url="\/" module="Home" action="index"/>
 
-    <route url="\/login" module="User" action="login" scope="public"/>
+    <route url="\/user/login" module="User" action="login" scope="public"/>
+    <route url="\/user/register" module="User" action="register" scope="public"/>
 
     <route url="\/actionneurs" module="Actionneurs" action="index"/>
     <route url="\/actionneurs-add" module="Actionneurs" action="edit"/>

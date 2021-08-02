@@ -4,6 +4,7 @@ namespace App\Frontend\Modules\User\Form\FormBuilder;
 
 use OCFram\FormBuilder;
 use OCFram\StringField;
+use SFram\CsrfTokenManager;
 
 /**
  * Class RegisterFormBuilder.php
@@ -13,9 +14,13 @@ class RegisterFormBuilder extends FormBuilder
 {
     /**
      * @return mixed|void
+     * @throws \Exception
      */
     public function build()
     {
+        $csrfTokenManager = new CsrfTokenManager();
+        $token = $csrfTokenManager->generate();
+
         $this->form
             ->setAjax(true)
             ->setId('register-form')
@@ -63,6 +68,14 @@ class RegisterFormBuilder extends FormBuilder
                         'name' => 'password-repeat',
                         'required' => true,
                         'type' => 'password'
+                    ]
+                )
+            )->add(
+                new StringField(
+                    [
+                        'name' => 'token',
+                        'hidden' => 'hidden',
+                        'value' => $token
                     ]
                 )
             );

@@ -3,6 +3,7 @@
 namespace App\Frontend\Modules\User;
 
 use App\Frontend\Modules\User\Form\FormBuilder\LoginFormBuilder;
+use App\Frontend\Modules\User\Form\FormBuilder\RegisterFormBuilder;
 use Entity\User\User;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
@@ -23,6 +24,22 @@ class UserController extends BackController
         $domId = 'Login';
 
         $tmfb = new LoginFormBuilder(new User());
+        $tmfb->build();
+        $form = $tmfb->form();
+        $card = WidgetFactory::makeCard($domId, $domId);
+        $card->addContent($this->editFormView($form));
+        $this->page->addVar('card', $card);
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @throws \Exception
+     */
+    public function executeRegister(HTTPRequest $request)
+    {
+        $domId = 'Register';
+
+        $tmfb = new RegisterFormBuilder(new User());
         $tmfb->build();
         $form = $tmfb->form();
         $card = WidgetFactory::makeCard($domId, $domId);

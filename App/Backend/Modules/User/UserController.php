@@ -3,6 +3,7 @@
 namespace App\Backend\Modules\User;
 
 use Entity\User\User;
+use Exception;
 use Model\User\UsersManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
@@ -27,7 +28,7 @@ class UserController extends BackController
      * @param Application $app
      * @param string $module
      * @param string $action
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(Application $app, string $module, string $action)
     {
@@ -39,35 +40,24 @@ class UserController extends BackController
     /**
      * @param HTTPRequest $request
      * @return \OCFram\Page
-     * @throws \Exception
+     * @throws Exception
      */
     public function executeLogin(HTTPRequest $request)
     {
-        if ($request->method() !== 'POST') {
-            http_response_code(400);
-            return $this->page()->addVar('data', ['error' => "Must be a POST method!"]);
-        }
-
-        $requiredParamKeys = ['email', 'password', 'token'];
-        if (!$params = $this->checkRequiredParams($request, $requiredParamKeys)) {
-            http_response_code(400);
-            return $this->page()->addVar('data', ['error' => "A required parameter is missing"]);
-        }
-
         try {
-            if (!$this->checkToken($request->getJsonPost())) {
-                return $this->page()->addVar('data', ['error' => "The token is not valid!"]);
-            }
+            $this->checkMethod($request, 'POST');
+            $this->checkToken($request->getJsonPost());
+
+            $requiredParamKeys = ['email', 'password'];
+            $params = $this->getRequiredParams($request, $requiredParamKeys);
 
             /** @var User $user */
-            $user = $this->manager->getUniqueBy('email', $params['email']);
-            if (empty($user)) {
-                return $this->page()->addVar('data', ['error' => "This user does not exist!"]);
+            if (empty($user = $this->manager->getUniqueBy('email', $params['email']))
+                || !password_verify($params['password'], $user->getPassword())
+            ) {
+                throw new Exception("Invalid user/password");
             }
-            if (!password_verify($params['password'], $user->getPassword())) {
-                return $this->page()->addVar('data', ['error' => "The password is not valid!"]);
-            }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->page()->addVar('data', ['error' => $e->getMessage()]);
         }
 
@@ -77,33 +67,24 @@ class UserController extends BackController
     /**
      * @param HTTPRequest $request
      * @return \OCFram\Page
-     * @throws \Exception
+     * @throws Exception
      */
     public function executeRegister(HTTPRequest $request)
     {
-        if ($request->method() !== 'POST') {
-            http_response_code(400);
-            return $this->page()->addVar('data', ['error' => "Must be a POST method!"]);
-        }
-        $requiredParamKeys = ['email', 'firstName', 'lastName', 'password', 'password-repeat'];
-        if (!$params = $this->checkRequiredParams($request, $requiredParamKeys)) {
-            http_response_code(400);
-            return $this->page()->addVar('data', ['error' => "A required parameter is missing"]);
-        }
-
-        if ($params['password'] !== $params['password-repeat']) {
-            return $this->page()->addVar('data', ['error' => "Passwords don't equal!"]);
-        }
-
         try {
-            if (!$this->checkToken($request->getJsonPost())) {
-                return $this->page()->addVar('data', ['error' => "The token is not valid!"]);
+            $this->checkMethod($request, 'POST');
+            $this->checkToken($request->getJsonPost());
+
+            $requiredParamKeys = ['email', 'firstName', 'lastName', 'password', 'password-repeat'];
+            $params = $this->getRequiredParams($request, $requiredParamKeys);
+
+            if ($params['password'] !== $params['password-repeat']) {
+                throw new Exception("Passwords don't equal!");
             }
 
             /** @var User $user */
-            $user = $this->manager->getUniqueBy('email', $params['email']);
-            if ($user) {
-                return $this->page()->addVar('data', ['error' => "This user already exists!"]);
+            if ($user = $this->manager->getUniqueBy('email', $params['email'])) {
+                throw new Exception("This user already exists!");
             }
 
             unset($params['password-repeat']);
@@ -114,7 +95,7 @@ class UserController extends BackController
             $user->setActivated(false);
 
             $this->manager->save($user);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->page()->addVar('data', ['error' => $e->getMessage()]);
         }
 
@@ -125,15 +106,15 @@ class UserController extends BackController
      * @param HTTPRequest $request
      * @param array $requiredParamKeys
      * @return array|\OCFram\Page
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function checkRequiredParams(HTTPRequest $request, array $requiredParamKeys)
+    protected function getRequiredParams(HTTPRequest $request, array $requiredParamKeys)
     {
         $validatedParams = [];
         $post = $request->getJsonPost();
         foreach ($requiredParamKeys as $requiredParamKey) {
             if (!$post[$requiredParamKey]) {
-                return [];
+                throw new Exception("A required parameter is missing");
             }
             $validatedParams[$requiredParamKey] = htmlspecialchars(
                 $post[$requiredParamKey]
@@ -145,18 +126,16 @@ class UserController extends BackController
 
     /**
      * @param array $post
-     * @return bool
+     * @throws Exception
      */
     protected function checkToken(array $post)
     {
         if (!$this->csrfTokenManager->verify($post['token'])) {
             $this->csrfTokenManager->revoke();
 
-            return false;
+            throw new Exception('CSRF token is invalid');
         }
 
         $this->csrfTokenManager->revoke();
-
-        return true;
     }
 }
