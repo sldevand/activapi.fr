@@ -1,10 +1,11 @@
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
     let loginForm = document.querySelector('#login-form');
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const body = JSON.stringify(Object.fromEntries(new FormData(e.target).entries()));
+        const form = e.target;
+        const body = JSON.stringify(Object.fromEntries(new FormData(form).entries()));
 
-        fetch('/api/user/login', {
+        fetch(form.action, {
             method: 'post',
             body: body,
             headers: {

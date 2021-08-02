@@ -16,6 +16,7 @@ class UserController extends BackController
 {
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeLogin(HTTPRequest $request)
     {

@@ -4,6 +4,7 @@ namespace App\Frontend\Modules\User\Form\FormBuilder;
 
 use OCFram\FormBuilder;
 use OCFram\StringField;
+use SFram\CsrfTokenManager;
 
 /**
  * Class LoginFormBuilder
@@ -13,9 +14,13 @@ class LoginFormBuilder extends FormBuilder
 {
     /**
      * @return mixed|void
+     * @throws \Exception
      */
     public function build()
     {
+        $csrfTokenManager = new CsrfTokenManager();
+        $token = $csrfTokenManager->generate();
+
         $this->form
             ->setAjax(true)
             ->setId('login-form')
@@ -36,6 +41,14 @@ class LoginFormBuilder extends FormBuilder
                         'name' => 'password',
                         'required' => true,
                         'type' => 'password'
+                    ]
+                )
+            )->add(
+                new StringField(
+                    [
+                        'name' => 'token',
+                        'hidden' => 'hidden',
+                        'value' => $token
                     ]
                 )
             );

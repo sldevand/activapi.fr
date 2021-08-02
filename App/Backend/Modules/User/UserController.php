@@ -7,6 +7,7 @@ use Model\User\UsersManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
+use SFram\CsrfTokenManager;
 use SFram\Helpers\Random;
 
 /**
@@ -17,6 +18,9 @@ class UserController extends BackController
 {
     /** @var UsersManagerPDO */
     protected $manager;
+
+    /** @var CsrfTokenManager */
+    protected $csrfTokenManager;
 
     /**
      * UserController constructor.
@@ -29,11 +33,13 @@ class UserController extends BackController
     {
         parent::__construct($app, $module, $action);
         $this->manager = $this->managers->getManagerOf('User\Users');
+        $this->csrfTokenManager = new CsrfTokenManager();
     }
 
     /**
      * @param HTTPRequest $request
      * @return \OCFram\Page
+     * @throws \Exception
      */
     public function executeLogin(HTTPRequest $request)
     {
@@ -41,13 +47,18 @@ class UserController extends BackController
             http_response_code(400);
             return $this->page()->addVar('data', ['error' => "Must be a POST method!"]);
         }
-        $requiredParamKeys = ['email', 'password'];
+
+        $requiredParamKeys = ['email', 'password', 'token'];
         if (!$params = $this->checkRequiredParams($request, $requiredParamKeys)) {
             http_response_code(400);
             return $this->page()->addVar('data', ['error' => "A required parameter is missing"]);
         }
 
         try {
+            if (!$this->checkToken($request->getJsonPost())) {
+                return $this->page()->addVar('data', ['error' => "The token is not valid!"]);
+            }
+
             /** @var User $user */
             $user = $this->manager->getUniqueBy('email', $params['email']);
             if (empty($user)) {
@@ -66,6 +77,7 @@ class UserController extends BackController
     /**
      * @param HTTPRequest $request
      * @return \OCFram\Page
+     * @throws \Exception
      */
     public function executeRegister(HTTPRequest $request)
     {
@@ -84,6 +96,10 @@ class UserController extends BackController
         }
 
         try {
+            if (!$this->checkToken($request->getJsonPost())) {
+                return $this->page()->addVar('data', ['error' => "The token is not valid!"]);
+            }
+
             /** @var User $user */
             $user = $this->manager->getUniqueBy('email', $params['email']);
             if ($user) {
@@ -109,6 +125,7 @@ class UserController extends BackController
      * @param HTTPRequest $request
      * @param array $requiredParamKeys
      * @return array|\OCFram\Page
+     * @throws \Exception
      */
     protected function checkRequiredParams(HTTPRequest $request, array $requiredParamKeys)
     {
@@ -124,5 +141,22 @@ class UserController extends BackController
         }
 
         return $validatedParams;
+    }
+
+    /**
+     * @param array $post
+     * @return bool
+     */
+    protected function checkToken(array $post)
+    {
+        if (!$this->csrfTokenManager->verify($post['token'])) {
+            $this->csrfTokenManager->revoke();
+
+            return false;
+        }
+
+        $this->csrfTokenManager->revoke();
+
+        return true;
     }
 }
