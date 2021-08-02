@@ -77,9 +77,6 @@ abstract class Application
         return new $controllerClass($this, $matchedRoute->module(), $matchedRoute->action());
     }
 
-    /**
-     *
-     */
     protected function addRoutesToRouter()
     {
         $xml = new \DOMDocument();
@@ -128,7 +125,7 @@ abstract class Application
     {
         if ($route->getScope() === Route::SCOPE_PRIVATE && !$this->user()->isAuthenticated()) {
             $this->user()->setFlash('You cannot access this page because you are not logged in!');
-            $this->httpResponse->redirect($this->root . '/login');
+            $this->httpResponse->redirect($this->root . '/user/login');
         }
     }
 

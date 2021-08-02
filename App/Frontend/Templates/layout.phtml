@@ -22,13 +22,15 @@
             <div class="valign-wrapper">
                 <div class="brand-logo center">ActivAPI</div>
                 <a id="menubutton" data-activates="slide-out" class="button-collapse show-on-large">
+                <?php if ($user->isAuthenticated()) : ?>
                     <i class="material-icons">menu</i>
+                <?php endif; ?>
                 </a>
-                <i id="ioconnection"
-                   class="valign material-icons z-depth-1 circle red lighten-3 red-text right">
-                    fiber_manual_record
-                </i>
-                <?php if($user->isAuthenticated()) : ?>
+                <?php if ($user->isAuthenticated()) : ?>
+                    <i id="ioconnection"
+                       class="valign material-icons z-depth-1 circle red lighten-3 red-text right">
+                        fiber_manual_record
+                    </i>
                     <i id="authentication"
                        class="valign material-icons right">
                        verified_user
@@ -37,18 +39,18 @@
             </div>
         </div>
     </nav>
-
+    <?php if ($user->isAuthenticated()) : ?>
     <ul id="slide-out" class="side-nav">
         <?php include("sideNav/sideNavMainPart.phtml"); ?>
     </ul>
-
+    <?php endif; ?>
     <div id="maincontent" class="container-light">
         <?php if ($user->hasFlash()) : ?>
             <script> Materialize.toast("<?= $user->getFlash() ?>", 3000); </script>
         <?php endif; ?>
         <?= $content ?>
     </div>
-
+    <?php if ($user->isAuthenticated()) : ?>
     <script src="<?= DIST . '/socketio.js' ?>"></script>
     <script src="<?= DIST . '/materializeTricks.js' ?>"></script>
     <script>
@@ -58,5 +60,6 @@
             menuWidth: 250
         });
     </script>
+    <?php endif; ?>
 </body>
 </html>
