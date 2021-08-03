@@ -3,4 +3,4 @@
         <?php echo $card->getHtml(); ?>
     </div>
 </div>
-<script src="<?= DIST . '/user/register.js' ?>"></script>
+<script src="<?= DIST . '/user.js' ?>"></script>

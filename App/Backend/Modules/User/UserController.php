@@ -42,11 +42,11 @@ class UserController extends BackController
      * @return \OCFram\Page
      * @throws Exception
      */
-    public function executeLogin(HTTPRequest $request)
+    public function executeLogin(HTTPRequest $request): \OCFram\Page
     {
         try {
             $this->checkMethod($request, 'POST');
-            $this->checkToken($request->getJsonPost());
+            CsrfTokenManager::verify($request->getJsonPost()['token']);
 
             $requiredParamKeys = ['email', 'password'];
             $params = $this->getRequiredParams($request, $requiredParamKeys);
@@ -61,6 +61,8 @@ class UserController extends BackController
             return $this->page()->addVar('data', ['error' => $e->getMessage()]);
         }
 
+        $this->app()->user()->setAuthenticated(true);
+
         return $this->page()->addVar('data', ['data' => "Successfully logged in"]);
     }
 
@@ -69,13 +71,13 @@ class UserController extends BackController
      * @return \OCFram\Page
      * @throws Exception
      */
-    public function executeRegister(HTTPRequest $request)
+    public function executeRegister(HTTPRequest $request): \OCFram\Page
     {
         try {
             $this->checkMethod($request, 'POST');
-            $this->checkToken($request->getJsonPost());
+            CsrfTokenManager::verify($request->getJsonPost()['token']);
 
-            $requiredParamKeys = ['email', 'firstName', 'lastName', 'password', 'password-repeat'];
+            $requiredParamKeys = ['email', 'password', 'password-repeat'];
             $params = $this->getRequiredParams($request, $requiredParamKeys);
 
             if ($params['password'] !== $params['password-repeat']) {
@@ -87,6 +89,7 @@ class UserController extends BackController
                 throw new Exception("This user already exists!");
             }
 
+            $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
             unset($params['password-repeat']);
 
             $user = new User($params);
@@ -122,20 +125,5 @@ class UserController extends BackController
         }
 
         return $validatedParams;
-    }
-
-    /**
-     * @param array $post
-     * @throws Exception
-     */
-    protected function checkToken(array $post)
-    {
-        if (!$this->csrfTokenManager->verify($post['token'])) {
-            $this->csrfTokenManager->revoke();
-
-            throw new Exception('CSRF token is invalid');
-        }
-
-        $this->csrfTokenManager->revoke();
     }
 }

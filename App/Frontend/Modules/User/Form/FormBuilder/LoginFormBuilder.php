@@ -18,9 +18,6 @@ class LoginFormBuilder extends FormBuilder
      */
     public function build()
     {
-        $csrfTokenManager = new CsrfTokenManager();
-        $token = $csrfTokenManager->generate();
-
         $this->form
             ->setAjax(true)
             ->setId('login-form')
@@ -48,7 +45,7 @@ class LoginFormBuilder extends FormBuilder
                     [
                         'name' => 'token',
                         'hidden' => 'hidden',
-                        'value' => $token
+                        'value' => CsrfTokenManager::get()
                     ]
                 )
             );

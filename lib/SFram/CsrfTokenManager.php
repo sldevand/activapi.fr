@@ -2,6 +2,8 @@
 
 namespace SFram;
 
+use Exception;
+
 /**
  * Class CsrfTokenManager
  * @package SFram
@@ -9,30 +11,29 @@ namespace SFram;
 class CsrfTokenManager
 {
     /**
-     * @return string
      * @throws \Exception
      */
-    public function generate(): string
+    public static function generate()
     {
-        if (empty($_SESSION['token'])) {
-            $_SESSION['token'] = bin2hex(random_bytes(32));
-        }
+        $_SESSION['token'] = bin2hex(random_bytes(32));
+    }
 
+    /**
+     * @return mixed
+     */
+    public static function get(): string
+    {
         return $_SESSION['token'];
     }
 
-
     /**
      * @param string $token
-     * @return bool
+     * @throws \Exception
      */
-    public function verify(string $token): bool
+    public static function verify(string $token)
     {
-        return hash_equals($_SESSION['token'], $token);
-    }
-
-    public function revoke()
-    {
-        unset($_SESSION['token']);
+        if (!hash_equals($_SESSION['token'], $token)) {
+            throw new Exception('CSRF token is invalid');
+        }
     }
 }

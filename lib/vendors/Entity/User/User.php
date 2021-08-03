@@ -22,12 +22,6 @@ class User extends Entity
     protected $email;
 
     /** @var string */
-    protected $firstName;
-
-    /** @var string */
-    protected $lastName;
-
-    /** @var string */
     protected $password;
 
     /** @var string */

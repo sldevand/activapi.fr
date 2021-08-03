@@ -18,9 +18,6 @@ class RegisterFormBuilder extends FormBuilder
      */
     public function build()
     {
-        $csrfTokenManager = new CsrfTokenManager();
-        $token = $csrfTokenManager->generate();
-
         $this->form
             ->setAjax(true)
             ->setId('register-form')
@@ -32,24 +29,6 @@ class RegisterFormBuilder extends FormBuilder
                         'name' => 'email',
                         'required' => true,
                         'type' => 'email'
-                    ]
-                )
-            )->add(
-                new StringField(
-                    [
-                        'label' => 'Prénom',
-                        'name' => 'firstName',
-                        'required' => true,
-                        'type' => 'text'
-                    ]
-                )
-            )->add(
-                new StringField(
-                    [
-                        'label' => 'Nom',
-                        'name' => 'lastName',
-                        'required' => true,
-                        'type' => 'text'
                     ]
                 )
             )->add(
@@ -75,7 +54,7 @@ class RegisterFormBuilder extends FormBuilder
                     [
                         'name' => 'token',
                         'hidden' => 'hidden',
-                        'value' => $token
+                        'value' => CsrfTokenManager::get()
                     ]
                 )
             );

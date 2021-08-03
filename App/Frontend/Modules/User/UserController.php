@@ -6,8 +6,10 @@ use App\Frontend\Modules\User\Form\FormBuilder\LoginFormBuilder;
 use App\Frontend\Modules\User\Form\FormBuilder\RegisterFormBuilder;
 use Entity\User\User;
 use Materialize\WidgetFactory;
+use OCFram\Application;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
+use SFram\CsrfTokenManager;
 
 /**
  * Class UserController
@@ -15,6 +17,19 @@ use OCFram\HTTPRequest;
  */
 class UserController extends BackController
 {
+    /**
+     * UserController constructor.
+     * @param \OCFram\Application $app
+     * @param $module
+     * @param $action
+     * @throws \Exception
+     */
+    public function __construct(Application $app, $module, $action)
+    {
+        parent::__construct($app, $module, $action);
+        CsrfTokenManager::generate();
+    }
+
     /**
      * @param HTTPRequest $request
      * @throws \Exception
