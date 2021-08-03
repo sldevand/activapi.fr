@@ -53,4 +53,5 @@
 
     <route url="\/user\/login" module="User" action="login" scope="public"/>
     <route url="\/user\/register" module="User" action="register" scope="public"/>
+    <route url="\/user\/logout" module="User" action="logout"/>
 </routes>

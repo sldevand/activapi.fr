@@ -166,6 +166,19 @@ if ($user->isAuthenticated()) {
                             ]),
                         ]
                     ]
+                ),
+                new Subheader(
+                    [
+                        'title' => 'Admin',
+                        'links' => [
+                            new Link([
+                                'id' => 'logout',
+                                'title' => 'Logout',
+                                'link' => '/api/user/logout',
+                                'icon' => $icons['input']
+                            ])
+                        ]
+                    ]
                 )
             ]
         ]

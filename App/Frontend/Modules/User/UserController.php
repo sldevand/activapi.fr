@@ -5,7 +5,9 @@ namespace App\Frontend\Modules\User;
 use App\Frontend\Modules\User\Form\FormBuilder\LoginFormBuilder;
 use App\Frontend\Modules\User\Form\FormBuilder\RegisterFormBuilder;
 use Entity\User\User;
+use Exception;
 use Materialize\WidgetFactory;
+use Model\User\UsersManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
@@ -17,6 +19,9 @@ use SFram\CsrfTokenManager;
  */
 class UserController extends BackController
 {
+    /** @var UsersManagerPDO */
+    protected $manager;
+
     /**
      * UserController constructor.
      * @param \OCFram\Application $app
@@ -28,6 +33,7 @@ class UserController extends BackController
     {
         parent::__construct($app, $module, $action);
         CsrfTokenManager::generate();
+        $this->manager = $this->managers->getManagerOf('User\Users');
     }
 
     /**
@@ -37,6 +43,14 @@ class UserController extends BackController
     public function executeLogin(HTTPRequest $request)
     {
         $domId = 'Login';
+        if ($this->app()->user()->isAuthenticated()) {
+            $this->app()->httpResponse()->redirect($this->baseAddress);
+        }
+
+        if (!$this->manager->getAdminUser()) {
+            $this->app()->user()->setFlash("No admin user saved, please register");
+            $this->app()->httpResponse()->redirect($this->baseAddress . 'user/register');
+        }
 
         $tmfb = new LoginFormBuilder(new User());
         $tmfb->build();
@@ -53,7 +67,13 @@ class UserController extends BackController
     public function executeRegister(HTTPRequest $request)
     {
         $domId = 'Register';
-
+        if ($this->app()->user()->isAuthenticated()) {
+            $this->app()->httpResponse()->redirect($this->baseAddress);
+        }
+        if ($this->manager->getAdminUser()) {
+            $this->app()->user()->setFlash("Impossible to register twice, please login with admin credentials.");
+            $this->app()->httpResponse()->redirect($this->baseAddress . 'user/login');
+        }
         $tmfb = new RegisterFormBuilder(new User());
         $tmfb->build();
         $form = $tmfb->form();

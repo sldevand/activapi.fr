@@ -84,9 +84,8 @@ class UserController extends BackController
                 throw new Exception("Passwords don't equal!");
             }
 
-            /** @var User $user */
-            if ($user = $this->manager->getUniqueBy('email', $params['email'])) {
-                throw new Exception("This user already exists!");
+            if ($this->manager->getAdminUser()) {
+                throw new Exception('There is already one admin user');
             }
 
             $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
@@ -102,7 +101,20 @@ class UserController extends BackController
             return $this->page()->addVar('data', ['error' => $e->getMessage()]);
         }
 
+        $this->app()->user()->setAuthenticated(true);
+
         return $this->page()->addVar('data', ['data' => "Successfully registered"]);
+    }
+
+    /**
+     * @param HTTPRequest $request
+     * @throws \Exception
+     */
+    public function executeLogout(HTTPRequest $request)
+    {
+        $this->app()->user()->setAuthenticated(false);
+        $this->app()->user()->setFlash('You have logged out');
+        $this->app()->httpResponse()->redirect($this->baseAddress . 'user/login');
     }
 
     /**

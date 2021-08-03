@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (message) {
                     Materialize.toast(message, 3000);
+                    if (data.hasOwnProperty('data')) {
+                        window.location.replace('');
+                    }
                 }
             }).catch(err => console.log(err));
     });
