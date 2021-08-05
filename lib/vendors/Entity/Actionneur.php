@@ -206,7 +206,12 @@ class Actionneur extends Entity
 
         $properties = get_object_vars($this);
         foreach ($properties as $key => $property) {
-            if ($key !== "erreurs" && $key !== "id" && empty($property) && !in_array($key, $ignoreProperties)) {
+            if ($key !== "erreurs"
+                && $key !== "id"
+                && empty($property)
+                && !in_array($key, $ignoreProperties)
+                && $property !== '0'
+            ) {
                 $objClass = new \ReflectionObject($this);
                 $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is empty";
                 throw new \Exception($this->erreurs['notValid']);
@@ -221,7 +226,6 @@ class Actionneur extends Entity
      */
     public function jsonSerialize()
     {
-
         return array(
             'id' => $this->id(),
             'nom' => $this->nom,
