@@ -30,10 +30,6 @@ class ManagerPDO extends Manager
      */
     public function save($entity, $ignoreProperties = [])
     {
-        if (!$entity->isValid($ignoreProperties)) {
-            throw new \RuntimeException($entity->erreurs()["notValid"]);
-        }
-
         return $entity->isNew() ? $this->add($entity, $ignoreProperties) : $this->update($entity, $ignoreProperties);
     }
 
@@ -69,6 +65,10 @@ class ManagerPDO extends Manager
      */
     public function update($entity, $ignoreProperties = null)
     {
+        if (!$entity->isValid($ignoreProperties)) {
+            throw new \RuntimeException($entity->erreurs()["notValid"]);
+        }
+
         $sql = "UPDATE $this->tableName SET ";
         $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = $this->addProperties($sql, $properties);
@@ -89,6 +89,10 @@ class ManagerPDO extends Manager
      */
     public function add($entity, $ignoreProperties = [])
     {
+        if (!$entity->isValid($ignoreProperties)) {
+            throw new \RuntimeException($entity->erreurs()["notValid"]);
+        }
+
         $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = "INSERT INTO $this->tableName (";
         $sql .= $this->addInsertProperties($properties);
@@ -308,19 +312,18 @@ class ManagerPDO extends Manager
      */
     public function addInsertProperties($properties, $isValue = false)
     {
-        $count = count($properties) - 2;
+        unset($properties['id']);
+        unset($properties['erreurs']);
+        $count = count($properties);
         $i = 1;
         $sql = '';
         foreach ($properties as $key => $property) {
-            if ($key !== "id" && $key !== "erreurs") {
-                if ($isValue) {
-                    $sql .= ':';
-                }
-                $sql .= $key;
-                if ($i < $count) {
-                    $sql .= ",";
-                }
-//                $sql .= " ";
+            if ($isValue) {
+                $sql .= ':';
+            }
+            $sql .= $key;
+            if ($i < $count) {
+                $sql .= ",";
             }
             $i++;
         }

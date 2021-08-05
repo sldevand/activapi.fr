@@ -64,7 +64,7 @@ class Page extends ApplicationComponent
         $content = ob_get_clean();
 
         ob_start();
-        require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.php';
+        require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.phtml';
 
         return ob_get_clean();
     }
@@ -94,11 +94,11 @@ class Page extends ApplicationComponent
     }
 
     /**
-     * @param $contentFile
+     * @param string $contentFile
      */
-    public function setContentFile($contentFile)
+    public function setContentFile(string $contentFile)
     {
-        if (!is_string($contentFile) || empty($contentFile)) {
+        if (empty($contentFile)) {
             throw new \InvalidArgumentException('La vue spécifiée est invalide');
         }
 

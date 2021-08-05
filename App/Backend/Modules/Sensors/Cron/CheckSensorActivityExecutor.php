@@ -49,8 +49,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
      */
     public function execute()
     {
-
-
         echo $this->getDescription();
         $sensors = $this->manager->getList();
 
@@ -60,7 +58,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
                 $preparedSensors[] = $this->prepareNotification($sensor->id());
             }
         }
-
 
         if ($preparedSensors) {
             echo $this->sendMail($preparedSensors);
@@ -96,7 +93,9 @@ class CheckSensorActivityExecutor implements ExecutorInterface
             return 'Sensors mail alerts are disabled';
         }
 
-        $subject = 'Activapi.fr : Check sensors activity';
+        $sensorNames = $this->getSensorNames($sensors);
+        $subject = "Activapi.fr : $sensorNames sensors are inactive";
+
         ob_start();
         require BACKEND . '/Modules/Sensors/Templates/Mail/checkSensorActivity.phtml';
         $body = ob_get_clean();
@@ -120,5 +119,19 @@ class CheckSensorActivityExecutor implements ExecutorInterface
     public function getDescription()
     {
         return 'Check if sensors are inactive for a period, sends notification email' . PHP_EOL;
+    }
+
+    /**
+     * @param Sensor[] $sensors
+     * @return string
+     */
+    protected function getSensorNames(array $sensors): string
+    {
+        $sensorNames = [];
+        foreach ($sensors as $sensor) {
+            $sensorNames[] = $sensor->nom();
+        }
+
+        return implode(',', $sensorNames);
     }
 }

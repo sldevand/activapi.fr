@@ -6,7 +6,7 @@ use DateTime;
 use DateTimeZone;
 use Entity\Mesure;
 use Entity\Sensor;
-use Helper\Sensors\Data;
+use Sensors\Helper\Data;
 use Model\SensorsManagerPDO;
 use OCFram\BackController;
 use OCFram\DateFactory;

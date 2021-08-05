@@ -1,10 +1,15 @@
 <?php
-    /** @var array $args */
-    /** @var OCFram\Form $form */
-    $form = $args[0];
-    $button = $args[1];
+/** @var array $args */
+/** @var OCFram\Form $form */
+$form = $args[0];
+$button = $args[1];
 ?>
-<form action="<?= $form->getAction(); ?>" method="post" class="row">
+<form
+    action="<?= $form->getAction(); ?>"
+    method="post"
+    class="row"
+    <?= $form->getId() ? 'id="' . $form->getId() . '"' : '' ?>
+>
     <?= $form->createView(); ?>
     <?= $button->getHtml(); ?>
 </form>

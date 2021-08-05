@@ -2,12 +2,13 @@
 
 namespace OCFram;
 
+use SFram\MagicObject;
 
 /**
  * Class Entity
  * @package OCFram
  */
-abstract class Entity implements \ArrayAccess, \JsonSerializable
+abstract class Entity extends MagicObject implements \ArrayAccess, \JsonSerializable
 {
     use Hydrator;
 
@@ -124,11 +125,6 @@ abstract class Entity implements \ArrayAccess, \JsonSerializable
     }
 
     /**
-     * @return mixed
-     */
-    abstract public function jsonSerialize();
-
-    /**
      * @param array $ignoreProperties
      * @return bool
      * @throws \Exception
@@ -170,5 +166,20 @@ abstract class Entity implements \ArrayAccess, \JsonSerializable
             $array3 = $array1;
         }
         return ($array3);
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        $properties = get_class_vars(get_class($this));
+        $serialized = [];
+        foreach ($properties as $property => $value) {
+            $getMethod = $this->getPropertyMethod($property);
+            $serialized[$property] = $this->$getMethod();
+        }
+
+        return $serialized;
     }
 }

@@ -4,9 +4,9 @@ namespace Tests\Model\Sensor;
 
 use DateInterval;
 use Entity\Sensor;
-use Helper\Sensors\Data;
 use Model\SensorsManagerPDO;
 use OCFram\DateFactory;
+use Sensors\Helper\Data;
 use Tests\AbstractPDOTestCase;
 use Tests\Api\ManagerPDOInterfaceTest;
 use Tests\Model\Sensor\mock\SensorsMock;

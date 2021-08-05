@@ -50,4 +50,8 @@
     <route url="\/crontab\/update" module="Crontab" action="put"/>
 
     <route url="\/mailer\/test" module="Mailer" action="test" />
+
+    <route url="\/user\/login" module="User" action="login" scope="public"/>
+    <route url="\/user\/register" module="User" action="register" scope="public"/>
+    <route url="\/user\/logout" module="User" action="logout"/>
 </routes>

@@ -8,6 +8,9 @@ namespace OCFram;
  */
 class Route
 {
+    const SCOPE_PRIVATE = 'private';
+    const SCOPE_PUBLIC  = 'public';
+
     /**
      * @var string $action
      */
@@ -34,18 +37,33 @@ class Route
     protected $vars = [];
 
     /**
+     * @var string
+     */
+    protected $scope;
+
+    /**
      * Route constructor.
      * @param $url
      * @param $module
      * @param $action
      * @param array $varsNames
+     * @param string $scope
      */
-    public function __construct($url, $module, $action, array $varsNames)
+    public function __construct($url, $module, $action, array $varsNames, string $scope = self::SCOPE_PRIVATE)
     {
         $this->setUrl($url);
         $this->setModule($module);
         $this->setAction($action);
         $this->setVarsNames($varsNames);
+        $this->setScope($scope);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
     }
 
     /**
@@ -145,5 +163,24 @@ class Route
     public function varsNames()
     {
         return $this->varsNames;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @param string|null $scope
+     * @return \OCFram\Route
+     */
+    public function setScope(?string $scope)
+    {
+        $this->scope = $scope;
+
+        return $this;
     }
 }

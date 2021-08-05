@@ -41,6 +41,11 @@ abstract class BackController extends ApplicationComponent
     protected $messageHandler;
 
     /**
+     * @var bool
+     */
+    protected $restricted = false;
+
+    /**
      * BackController constructor.
      * @param Application $app
      * @param string $module
@@ -87,11 +92,11 @@ abstract class BackController extends ApplicationComponent
     }
 
     /**
-     * @param $view
+     * @param string $view
      */
-    public function setView($view)
+    public function setView(string $view)
     {
-        if (!is_string($view) || empty($view)) {
+        if (empty($view)) {
             throw new \InvalidArgumentException('La vue doit être une chaine de caractères valide');
         }
 
@@ -299,5 +304,13 @@ abstract class BackController extends ApplicationComponent
     public function setViewId($viewId)
     {
         $this->viewId = $viewId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRestricted(): bool
+    {
+        return $this->restricted;
     }
 }

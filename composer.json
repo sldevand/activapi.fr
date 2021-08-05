@@ -16,6 +16,7 @@
             "FormBuilder\\": "lib/vendors/FormBuilder",
             "Api\\": "lib/vendors/Api",
             "Sensors\\": "lib/vendors/Sensors",
+            "Thermostat\\": "lib/vendors/Thermostat",
             "Helper\\": "lib/vendors/Helper",
             "Mailer\\": "lib/vendors/Mailer",
             "Materialize\\": "lib/vendors/Materialize",

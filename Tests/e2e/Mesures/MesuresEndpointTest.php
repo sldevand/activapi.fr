@@ -156,7 +156,7 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
         $this->getRequest($client, $url);
 
         $url = $this->getFullUrl("/mesures/$radioid-today");
-        $body = $this->getJsonBody($client, $url, 64000);
+        $body = $this->getJsonBody($client, $url, 320000);
 
         $dates = DateFactory::getDateLimits("today");
         $dateMinFull = $dates['dateMin'] . " 00:00:00";

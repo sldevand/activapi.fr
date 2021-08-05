@@ -23,10 +23,12 @@ class FrontendApplication extends Application
 
     /**
      * @return mixed|void
+     * @throws \Exception
      */
     public function run()
     {
         $controller = $this->getController();
+
         $controller->execute();
         $this->httpResponse->setPage($controller->page());
         $this->httpResponse->send();
