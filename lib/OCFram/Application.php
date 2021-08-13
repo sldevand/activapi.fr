@@ -121,13 +121,7 @@ abstract class Application
     /**
      * @param \OCFram\Route $route
      */
-    protected function checkRoutePermission(Route $route)
-    {
-        if ($route->getScope() === Route::SCOPE_PRIVATE && !$this->user()->isAuthenticated()) {
-            $this->user()->setFlash('You cannot access this page because you are not logged in!');
-            $this->httpResponse->redirect($this->root . '/user/login');
-        }
-    }
+    abstract protected function checkRoutePermission(Route $route);
 
     /**
      * @return mixed

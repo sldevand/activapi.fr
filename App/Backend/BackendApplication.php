@@ -40,7 +40,5 @@ class BackendApplication extends Application
      */
     protected function checkRoutePermission(Route $route)
     {
-        //TODO implement api token logic here
-        return;
     }
 }

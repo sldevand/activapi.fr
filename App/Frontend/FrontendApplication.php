@@ -3,6 +3,7 @@
 namespace App\Frontend;
 
 use OCFram\Application;
+use OCFram\Route;
 
 /**
  * Class FrontendApplication
@@ -32,5 +33,16 @@ class FrontendApplication extends Application
         $controller->execute();
         $this->httpResponse->setPage($controller->page());
         $this->httpResponse->send();
+    }
+
+    /**
+     * @param \OCFram\Route $route
+     */
+    protected function checkRoutePermission(Route $route)
+    {
+        if ($route->getScope() === Route::SCOPE_PRIVATE && !$this->user()->isAuthenticated()) {
+            $this->user()->setFlash('You cannot access this page because you are not logged in!');
+            $this->httpResponse->redirect($this->root . '/user/login');
+        }
     }
 }
