@@ -1,11 +1,12 @@
 <?php
 /** @var \OCFram\User $user */
 /** @var string $content */
+$title = 'ActivAPI';
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= isset($title) ? $title : 'ActivAPI'; ?></title>
+    <title><?= $title ?></title>
 
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -31,7 +32,7 @@
                         fiber_manual_record
                     </i>
                 <?php endif; ?>
-                <div class="brand-logo center">ActivAPI</div>
+                <div class="brand-logo center"><?= $title ?></div>
             </div>
         </div>
     </nav>
