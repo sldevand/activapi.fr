@@ -2,8 +2,6 @@
 
 namespace OCFram;
 
-use Materialize\Widget;
-
 /**
  * Class Form
  * @package OCFram
@@ -50,12 +48,10 @@ class Form
 
     /**
      * @param Field $field
-     * @param null|string $wrapper
      * @return $this
      */
-    public function add(Field $field, $wrapper = null)
+    public function add(Field $field)
     {
-        $field->setWrapper($wrapper);
         $attr = $field->name();
 
         if (!method_exists($this->entity, $attr)) {
@@ -78,10 +74,16 @@ class Form
     {
         $view = '';
         foreach ($this->fields as $field) {
+            if ($field->getSeparator() === 'top') {
+                $view .= '<div class="row"></div>';
+            }
             $view .= '<div class="' . $field->getWrapper() . '">';
             $view .= $field->buildWidget();
             $view .= '</div>';
             $view .= $this->createWidgetView($field);
+            if ($field->getSeparator() === 'bottom') {
+                $view .= '<div class="row"></div>';
+            }
         }
 
         return $view;

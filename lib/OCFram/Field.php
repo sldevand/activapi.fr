@@ -10,55 +10,38 @@ abstract class Field
 {
     use Hydrator;
 
-    /**
-     * @var string $errorMessage
-     */
+    /** @var string $errorMessage */
     protected $errorMessage;
 
-    /**
-     * @var string $label
-     */
+    /** @var string $label */
     protected $label;
 
-    /**
-     * @var string $id
-     */
+    /** @var string $id */
     protected $id;
 
-    /**
-     * @var string $name
-     */
+    /** @var string $name */
     protected $name;
 
-    /**
-     * @var array $validators
-     */
+    /** @var array $validators */
     protected $validators = [];
 
-    /**
-     * @var string $value
-     */
+    /** @var string $value */
     protected $value;
 
-    /**
-     * @var int $length
-     */
+    /** @var int $length */
     protected $length;
 
-    /**
-     * @var string $hidden
-     */
+    /** @var string $hidden */
     protected $hidden = "";
 
-    /**
-     * @var string $required
-     */
+    /** @var string $required */
     protected $required = false;
 
-    /**
-     * @var string $wrapper
-     */
+    /** @var string $wrapper */
     protected $wrapper = 'col s12';
+
+    /** @var string */
+    protected $separator = '';
 
     /**
      * Field constructor.
@@ -284,6 +267,25 @@ abstract class Field
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeparator()
+    {
+        return $this->separator;
+    }
+
+    /**
+     * @param string $separator
+     * @return Field
+     */
+    public function setSeparator(string $separator)
+    {
+        $this->separator = $separator;
+
         return $this;
     }
 }

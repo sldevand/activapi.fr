@@ -43,7 +43,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
 
         self::assertTrue($result);
 
-        $thermostatArray['planningName'] = false;
+        $thermostatArray['planningName'] = ['id' => '5', 'nom' => 'Presence'];
         $thermostatArray['mode'] = [
             'id' => '1',
             'nom' => 'Confort',

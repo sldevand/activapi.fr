@@ -46,7 +46,8 @@ class ConfigurationFormBuilder extends FormBuilder
                         'value' => $enableFieldConfig === 'yes' ? 'yes' : 'no',
                         'leftText' => 'No',
                         'rightText' => 'Yes',
-                        'wrapper' => 'col s10 m6 l4'
+                        'wrapper' => 'col s10 m6 l4',
+                        'separator' => 'bottom'
                     ]
                 )
             );
@@ -60,9 +61,23 @@ class ConfigurationFormBuilder extends FormBuilder
                 ->add(
                     new StringField(
                         [
-                            'name' => $alertTimesPath . '[' . $index . ']',
+                            'name' => 'sensor-' . $sensor->id(),
                             'type' => 'text',
                             'value' => $sensor->id(),
+                            'label' => 'id',
+                            'wrapper' => 'col s2',
+                            'readonly' => true
+                        ]
+                    )
+                )
+                ->add(
+                    new StringField(
+                        [
+                            'name' => $alertTimesPath . '[' . $index . ']',
+                            'type' => 'text',
+                            'value' => '',
+                            'label' => 'time',
+                            'wrapper' => 'col s10 m6 l4'
                         ]
                     )
                 );
