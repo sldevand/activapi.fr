@@ -3,9 +3,11 @@
 namespace App\Frontend\Modules\Sensors\Config\Form;
 
 use OCFram\FormBuilder;
+use OCFram\NumberField;
 use OCFram\StringField;
 use OCFram\SwitchField;
 use Sensors\Helper\Config;
+use Sensors\Helper\Data;
 
 /**
  * Class ConfigurationFormBuilder
@@ -51,8 +53,8 @@ class ConfigurationFormBuilder extends FormBuilder
                     ]
                 )
             );
-
-        $times = $thermostatPlanning = json_decode(json_encode($this->getData(Config::PATH_SENSORS_ALERT_TIMES)), true);;
+        $timesConfig = $this->getData(Config::PATH_SENSORS_ALERT_TIMES);
+        $times = json_decode($timesConfig->getConfigValue(), true);
         $sensors = $this->getData('sensors');
         $alertTimesPath = Config::PATH_SENSORS_ALERT_TIMES;
         $index = 0;
@@ -64,7 +66,7 @@ class ConfigurationFormBuilder extends FormBuilder
                             'name' => 'sensor-' . $sensor->id(),
                             'type' => 'text',
                             'value' => $sensor->id(),
-                            'label' => 'id',
+                            'label' => 'Id',
                             'wrapper' => 'col s2',
                             'readonly' => true
                         ]
@@ -73,12 +75,27 @@ class ConfigurationFormBuilder extends FormBuilder
                 ->add(
                     new StringField(
                         [
-                            'name' => $alertTimesPath . '[' . $index . ']',
+                            'name' => 'sensor-' . $sensor->nom(),
                             'type' => 'text',
-                            'value' => '',
-                            'label' => 'time',
-                            'wrapper' => 'col s10 m6 l4'
+                            'value' => $sensor->nom(),
+                            'label' => 'Nom',
+                            'wrapper' => 'col s6',
+                            'readonly' => true
                         ]
+                    )
+                )
+                ->add(
+                    new NumberField(
+                        array(
+                            'name' => $alertTimesPath . '-' . $sensor->id(),
+                            'type' => 'text',
+                            'value' => $times[$sensor->id()] ?? (string)Data::SENSOR_ACTIVITY_TIME,
+                            'label' => 'time (min) ',
+                            'min' => 5,
+                            'max' => 2880,
+                            'wrapper' => 'col s4'
+
+                        )
                     )
                 );
             $index++;

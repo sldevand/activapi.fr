@@ -60,6 +60,17 @@ class HTTPRequest extends ApplicationComponent
     }
 
     /**
+     * @param string $key
+     * @return array
+     */
+    public function postDataLike(string $key)
+    {
+        return array_filter($_POST, function ($postKey) use ($key) {
+            return str_contains($postKey, $key);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
      * @param $key
      * @return mixed
      */
@@ -75,7 +86,7 @@ class HTTPRequest extends ApplicationComponent
      */
     public function setPostData(string $key, $value)
     {
-        return  $_POST[$key] = $value;
+        return $_POST[$key] = $value;
     }
 
     /**

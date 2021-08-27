@@ -64,6 +64,16 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
     }
 
     /**
+     * @param array $configurations
+     * @param Form $form
+     * @param HTTPRequest $request
+     * @return $this
+     */
+    protected function beforeDoPost(array &$configurations, Form &$form, HTTPRequest &$request) {
+        return $this;
+    }
+
+    /**
      * @param \Entity\Configuration\Configuration[] $configurations
      * @param \OCFram\Form $form
      * @param \OCFram\HTTPRequest $request
@@ -71,6 +81,7 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
      */
     protected function doPost(array $configurations, Form $form, HTTPRequest $request)
     {
+        $this->beforeDoPost($configurations, $form,$request);
         $processed = 0;
         foreach ($configurations as $key => $configuration) {
             if (!$requestConfigValue = $request->postData($key)) {

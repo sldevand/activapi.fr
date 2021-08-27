@@ -38,6 +38,26 @@ class Action extends AbstractAction
     }
 
     /**
+     * @param array $configurations
+     * @param Form $form
+     * @param HTTPRequest $request
+     * @return AbstractAction
+     */
+    protected function beforeDoPost(array &$configurations, Form &$form, HTTPRequest &$request)
+    {
+        $postedTimes = $request->postDataLike(Config::PATH_SENSORS_ALERT_TIMES);
+
+        $times = [];
+        foreach ($postedTimes as $fullId => $postedTime) {
+            $id = str_replace(Config::PATH_SENSORS_ALERT_TIMES . '-', '', $fullId);
+            $times[$id] = $postedTime;
+        }
+        $request->setPostData(Config::PATH_SENSORS_ALERT_TIMES, json_encode($times));
+
+        return parent::beforeDoPost($configurations, $form, $request);
+    }
+
+    /**
      * @param \OCFram\HTTPRequest $request
      * @return \Materialize\Card\Card
      * @throws \Exception
@@ -51,8 +71,6 @@ class Action extends AbstractAction
             $request->method() === HTTPRequest::POST
             && $request->postData(ConfigurationFormBuilder::NAME) === ConfigurationFormBuilder::NAME
         ) {
-            $encodedValue = json_encode($request->postData(Config::PATH_SENSORS_ALERT_TIMES));
-            $request->setPostData(Config::PATH_SENSORS_ALERT_TIMES,$encodedValue);
             $this->doPost($configurations, $form, $request);
         }
 
