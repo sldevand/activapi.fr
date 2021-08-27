@@ -70,6 +70,16 @@ class HTTPRequest extends ApplicationComponent
 
     /**
      * @param string $key
+     * @param mixed $value
+     * @return mixed
+     */
+    public function setPostData(string $key, $value)
+    {
+        return  $_POST[$key] = $value;
+    }
+
+    /**
+     * @param string $key
      * @return bool
      */
     public function postExists($key)

@@ -51,21 +51,24 @@ class ConfigurationFormBuilder extends FormBuilder
                 )
             );
 
-            $times = $thermostatPlanning = json_decode(json_encode($this->getData(Config::PATH_SENSORS_ALERT_TIMES)), true);;
+        $times = $thermostatPlanning = json_decode(json_encode($this->getData(Config::PATH_SENSORS_ALERT_TIMES)), true);;
+        $sensors = $this->getData('sensors');
+        $alertTimesPath = Config::PATH_SENSORS_ALERT_TIMES;
+        $index = 0;
+        foreach ($sensors as $sensor) {
+            $this->form
+                ->add(
+                    new StringField(
+                        [
+                            'name' => $alertTimesPath . '[' . $index . ']',
+                            'type' => 'text',
+                            'value' => $sensor->id(),
+                        ]
+                    )
+                );
+            $index++;
+        }
 
-
-//
-//        $this->form
-//            ->add(
-//                new StringField(
-//                    [
-//                        'name' => "action-sensors-time[$index]",
-//                        'type' => 'text',
-//                        'value' => self::NAME,
-//                        'hidden' => 'hidden'
-//                    ]
-//                )
-//            );
 
         return $this->form;
     }

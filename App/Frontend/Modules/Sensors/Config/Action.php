@@ -51,6 +51,8 @@ class Action extends AbstractAction
             $request->method() === HTTPRequest::POST
             && $request->postData(ConfigurationFormBuilder::NAME) === ConfigurationFormBuilder::NAME
         ) {
+            $encodedValue = json_encode($request->postData(Config::PATH_SENSORS_ALERT_TIMES));
+            $request->setPostData(Config::PATH_SENSORS_ALERT_TIMES,$encodedValue);
             $this->doPost($configurations, $form, $request);
         }
 
@@ -62,11 +64,15 @@ class Action extends AbstractAction
     /**
      * @param array $configurations
      * @return \OCFram\Form
+     * @throws \Exception
      */
     protected function createForm(array $configurations): Form
     {
         $cfb = new ConfigurationFormBuilder(ConfigurationFactory::create());
         $cfb->setData($configurations);
+        /** @var \Model\SensorsManagerPDO $sensorsManager */
+        $sensorsManager = $this->managers->getManagerOf('Sensors');
+        $cfb->addData('sensors', $sensorsManager->getList());
         $cfb->build();
 
         return $cfb->form();
