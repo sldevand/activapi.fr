@@ -71,7 +71,8 @@ class ConfigurationController extends BackController
         return new $action(
             $this->app(),
             $this->manager,
-            $this->dataHelper
+            $this->dataHelper,
+            $this->managers
         );
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Frontend\Modules\Configuration;
 
-use Api\Helper\Configuration\ConfigInterface;
 use App\Frontend\Modules\Configuration\Api\ActionInterface;
 use App\Frontend\Modules\Configuration\Form\ConfigurationFormHandler;
 use Helper\Configuration\Config;
@@ -12,6 +11,7 @@ use OCFram\Application;
 use OCFram\ApplicationComponent;
 use OCFram\Form;
 use OCFram\HTTPRequest;
+use OCFram\Managers;
 
 /**
  * Class AbstractAction
@@ -24,6 +24,9 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
 
     /** @var \Model\Configuration\ConfigurationManagerPDO */
     protected $manager;
+
+    /** @var \OCFram\Managers */
+    protected $managers;
 
     /** @var \Helper\Configuration\Data */
     protected $dataHelper;
@@ -44,17 +47,20 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
      * @param \OCFram\Application $app
      * @param \Model\Configuration\ConfigurationManagerPDO $manager
      * @param \Helper\Configuration\Data $dataHelper
+     * @param \OCFram\Managers $managers
      */
     public function __construct(
         Application $app,
         ConfigurationManagerPDO $manager,
-        Data $dataHelper
+        Data $dataHelper,
+        Managers $managers
     ) {
         parent::__construct($app);
 
         $this->manager = $manager;
         $this->dataHelper = $dataHelper;
         $this->configHelper = new Config($app, $manager);
+        $this->managers = $managers;
     }
 
     /**

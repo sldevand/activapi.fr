@@ -24,7 +24,7 @@ class ConfigurationFormBuilder extends FormBuilder
         $enableFieldConfig = $this->getData(Config::PATH_SENSORS_ALERT_ENABLE);
         $enableFieldConfig = $enableFieldConfig ? $enableFieldConfig->getConfigValue() : '';
 
-        return $this->form
+        $this->form
             ->add(
                 new StringField(
                     [
@@ -42,13 +42,31 @@ class ConfigurationFormBuilder extends FormBuilder
                         'title' => 'Enable mail alerts',
                         'name' => Config::PATH_SENSORS_ALERT_ENABLE,
                         'required' => true,
-                        'checked' => $enableFieldConfig == 'yes' ? true : false,
-                        'value' => $enableFieldConfig == 'yes' ? 'yes' : 'no',
+                        'checked' => $enableFieldConfig === 'yes',
+                        'value' => $enableFieldConfig === 'yes' ? 'yes' : 'no',
                         'leftText' => 'No',
                         'rightText' => 'Yes',
                         'wrapper' => 'col s10 m6 l4'
                     ]
                 )
             );
+
+            $times = $thermostatPlanning = json_decode(json_encode($this->getData(Config::PATH_SENSORS_ALERT_TIMES)), true);;
+
+
+//
+//        $this->form
+//            ->add(
+//                new StringField(
+//                    [
+//                        'name' => "action-sensors-time[$index]",
+//                        'type' => 'text',
+//                        'value' => self::NAME,
+//                        'hidden' => 'hidden'
+//                    ]
+//                )
+//            );
+
+        return $this->form;
     }
 }

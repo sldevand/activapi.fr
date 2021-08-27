@@ -7,6 +7,7 @@ use App\Frontend\Modules\Sensors\Config\Form\ConfigurationFormBuilder;
 use App\Frontend\Modules\Sensors\Config\View\CardBuilder;
 use Entity\Configuration\ConfigurationFactory;
 use Helper\Configuration\Data;
+use OCFram\Managers;
 use Sensors\Helper\Config;
 use Model\Configuration\ConfigurationManagerPDO;
 use OCFram\Application;
@@ -24,10 +25,15 @@ class Action extends AbstractAction
      * @param \OCFram\Application $app
      * @param \Model\Configuration\ConfigurationManagerPDO $manager
      * @param \Helper\Configuration\Data $dataHelper
+     * @param \OCFram\Managers $managers
      */
-    public function __construct(Application $app, ConfigurationManagerPDO $manager, Data $dataHelper)
-    {
-        parent::__construct($app, $manager, $dataHelper);
+    public function __construct(
+        Application $app,
+        ConfigurationManagerPDO $manager,
+        Data $dataHelper,
+        Managers $managers
+    ) {
+        parent::__construct($app, $manager, $dataHelper, $managers);
         $this->configHelper = new Config($app, $manager);
     }
 
