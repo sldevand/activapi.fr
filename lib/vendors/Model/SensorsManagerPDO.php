@@ -79,17 +79,18 @@ class SensorsManagerPDO extends ManagerPDO
 
     /**
      * @param \Entity\Sensor $sensor
+     * @param int $activityTime
      * @return bool
      * @throws \Exception
      */
-    public function checkSensorActivity(Sensor $sensor): bool
+    public function checkSensorActivity(Sensor $sensor, int $activityTime = Data::SENSOR_ACTIVITY_TIME): bool
     {
         if ($sensor->categorie() === Data::SENSOR_CATEGORY_DOOR) {
             return false;
         }
 
         $minutes = DateFactory::diffMinutesFromStr("now", $sensor->releve());
-        if ($minutes >= Data::SENSOR_ACTIVITY_TIME && $sensor->actif()) {
+        if ($minutes >= $activityTime && $sensor->actif()) {
             return $this->sensorActivityUpdate($sensor, 0);
         }
 

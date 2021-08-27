@@ -20,11 +20,11 @@ class Config extends \Helper\Configuration\Config
     }
 
     /**
-     * @return null|string
+     * @return array
      */
-    public function getAlertTimes(): ?string
+    public function getAlertTimes(): array
     {
-        return $this->getValue(self::PATH_SENSORS_ALERT_TIMES);
+        return json_decode($this->getValue(self::PATH_SENSORS_ALERT_TIMES), true) ?? [];
     }
 
     /**

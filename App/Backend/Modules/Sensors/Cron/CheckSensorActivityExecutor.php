@@ -10,6 +10,7 @@ use Mailer\MailerFactory;
 use Model\SensorsManagerPDO;
 use OCFram\Managers;
 use OCFram\PDOFactory;
+use Sensors\Helper\Data;
 use Sldevand\Cron\ExecutorInterface;
 
 /**
@@ -54,7 +55,9 @@ class CheckSensorActivityExecutor implements ExecutorInterface
 
         $preparedSensors = [];
         foreach ($sensors as $sensor) {
-            if ($this->manager->checkSensorActivity($sensor)) {
+            $alertTimes = $this->sensorConfigHelper->getAlertTimes();
+            $alertTime = $alertTimes[$sensor->id()] ?? Data::SENSOR_ACTIVITY_TIME;
+            if ($this->manager->checkSensorActivity($sensor, $alertTime)) {
                 $preparedSensors[] = $this->prepareNotification($sensor->id());
             }
         }
