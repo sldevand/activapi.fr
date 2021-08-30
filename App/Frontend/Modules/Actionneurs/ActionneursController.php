@@ -72,8 +72,8 @@ class ActionneursController extends BackController
             $actionneur["supprimer"] = $linkDelete->getHtmlForTable();
             $actionneursData[] = $actionneur;
         }
-
-        $table = WidgetFactory::makeTable($domId, $actionneursData);
+        $hiddenColumns = ['protocole', 'type', 'etat', 'categorie'];
+        $table = WidgetFactory::makeTable($domId, $actionneursData, true, $hiddenColumns);
         $card = WidgetFactory::makeCard($domId, $domId);
         $card->addContent($table->getHtml());
 
