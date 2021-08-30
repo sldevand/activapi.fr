@@ -2,10 +2,10 @@
 
 namespace App\Frontend\Modules\Actionneurs;
 
-use Materialize\FormView;
 use Entity\Actionneur;
 use FormBuilder\ActionneursFormBuilder;
 use Materialize\FloatingActionButton;
+use Materialize\FormView;
 use Materialize\Link\Link;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
@@ -22,9 +22,14 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
+        if ($content = $this->cache()->getView($this)) {
+            $this->page->setContentCache($content);
+            return;
+        }
         $this->page->addVar('title', 'Gestion des actionneurs');
 
         $manager = $this->managers->getManagerOf('Actionneurs');
@@ -41,6 +46,8 @@ class ActionneursController extends BackController
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('addActionneurFab', $addActionneurFab);
+
+        $this->cache()->saveView($this, $this->page()->getGeneratedPage());
     }
 
     /**

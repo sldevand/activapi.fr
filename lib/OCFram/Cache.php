@@ -54,7 +54,7 @@ class Cache extends ApplicationComponent
      */
     public function getTimeStamp()
     {
-        if (!empty($this->fileArray)) {
+        if (!$this->fileArray) {
             return false;
         }
 
@@ -183,7 +183,7 @@ class Cache extends ApplicationComponent
 
     /**
      * @param \OCFram\BackController $controller
-     * @return bool|\OCFram\Page
+     * @return string | bool
      * @throws \Exception
      */
     public function getView(BackController $controller)
@@ -191,7 +191,7 @@ class Cache extends ApplicationComponent
         $this->setViewPath($controller);
         $content = '';
 
-        if ($this->exists()) {
+        if (!$this->exists()) {
             return false;
         }
 
@@ -211,10 +211,7 @@ class Cache extends ApplicationComponent
             return false;
         }
 
-        $page = new Page($this->app());
-        $page->setContentCache($content);
-
-        return $page;
+        return $content;
     }
 
     /**
