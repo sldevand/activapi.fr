@@ -167,7 +167,8 @@ class SensorsController extends BackController
             $sensor["supprimer"] = $linkDelete->getHtmlForTable();
             $sensorsData[] = $sensor;
         }
-        $table = WidgetFactory::makeTable($domId, $sensorsData);
+        $hiddenColumns = ['releve', 'actif', 'valeur1', 'valeur2'];
+        $table = WidgetFactory::makeTable($domId, $sensorsData, true, $hiddenColumns);
         $card = WidgetFactory::makeCard($domId, $domId);
         $card->addContent($table->getHtml());
 
