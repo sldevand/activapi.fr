@@ -99,9 +99,19 @@ abstract class Application
                 $scope = $routeXml->getAttribute('scope');
             }
 
-            $this->router->addRoute(
-                new Route($fullUrl, $routeXml->getAttribute('module'), $routeXml->getAttribute('action'), $vars, $scope)
+            $route = new Route(
+                $fullUrl,
+                $routeXml->getAttribute('module'),
+                $routeXml->getAttribute('action'),
+                $vars,
+                $scope
             );
+
+            if ($cached = $routeXml->getAttribute('cached') === 'true') {
+                $route->setCached($cached);
+            }
+
+            $this->router->addRoute($route);
         }
     }
 

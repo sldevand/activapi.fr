@@ -23,14 +23,25 @@ class FrontendApplication extends Application
     }
 
     /**
-     * @return mixed|void
+     * @return void
      * @throws \Exception
      */
     public function run()
     {
         $controller = $this->getController();
-
+        $isCacheEnabledOnPage = $this->matchRoute()->cached();
+        if ($isCacheEnabledOnPage
+            && $content = $controller->cache()->getView($controller)
+        ) {
+            $controller->page()->setContentCache($content);
+            $this->httpResponse->setPage($controller->page());
+            $this->httpResponse->send();
+            return;
+        }
         $controller->execute();
+        if ($isCacheEnabledOnPage) {
+            $controller->cache()->saveView($controller, $controller->page()->getGeneratedPage());
+        }
         $this->httpResponse->setPage($controller->page());
         $this->httpResponse->send();
     }

@@ -23,10 +23,6 @@ class SensorsController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        if ($content = $this->cache()->getView($this)) {
-            $this->page->setContentCache($content);
-            return;
-        }
         $this->page->addVar('title', 'Gestion des sensors');
         $manager = $this->managers->getManagerOf('Sensors');
         $cards = [];
@@ -41,8 +37,6 @@ class SensorsController extends BackController
 
         $this->page->addVar('cards', $cards);
         $this->page->addVar('addSensorsFab', $addSensorsFab);
-
-        $this->cache()->saveView($this, $this->page()->getGeneratedPage());
     }
 
     /**

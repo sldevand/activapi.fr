@@ -41,6 +41,9 @@ class Route
      */
     protected $scope;
 
+    /** @var bool */
+    protected $cached = false;
+
     /**
      * Route constructor.
      * @param $url
@@ -180,6 +183,25 @@ class Route
     public function setScope(?string $scope)
     {
         $this->scope = $scope;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function cached(): bool
+    {
+        return $this->cached;
+    }
+
+    /**
+     * @param bool $cached
+     * @return \OCFram\Route
+     */
+    public function setCached(bool $cached): Route
+    {
+        $this->cached = $cached;
 
         return $this;
     }

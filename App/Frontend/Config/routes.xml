@@ -5,12 +5,12 @@
     <route url="\/user/login" module="User" action="login" scope="public"/>
     <route url="\/user/register" module="User" action="register" scope="public"/>
 
-    <route url="\/actionneurs" module="Actionneurs" action="index"/>
+    <route url="\/actionneurs" module="Actionneurs" action="index" cached="true"/>
     <route url="\/actionneurs-add" module="Actionneurs" action="edit"/>
     <route url="\/actionneurs-edit-([0-9]+)" module="Actionneurs" action="edit" vars="id"/>
     <route url="\/actionneurs-delete-([0-9]+)" module="Actionneurs" action="delete" vars="id"/>
 
-    <route url="\/sensors" module="Sensors" action="index"/>
+    <route url="\/sensors" module="Sensors" action="index" cached="true"/>
     <route url="\/sensors-add" module="Sensors" action="edit"/>
     <route url="\/sensors-edit-([0-9]+)" module="Sensors" action="edit" vars="id"/>
     <route url="\/sensors-delete-([0-9]+)" module="Sensors" action="delete" vars="id"/>
