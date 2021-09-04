@@ -32,7 +32,7 @@
     <route url="\/thermostat-modes-delete-([0-9]+)" module="ThermostatModes" action="delete" vars="id"/>
     <route url="\/thermostat-modes-edit-([0-9]+)" module="ThermostatModes" action="edit" vars="id"/>
 
-    <route url="\/scenarios-?([0-9]*)?\/?" module="Scenarios" action="index" vars="id" />
+    <route url="\/scenarios-?([0-9]*)?\/?" module="Scenarios" action="index" vars="id" cached="true"/>
     <route url="\/scenarios-add" module="Scenarios" action="edit"/>
     <route url="\/scenarios-delete-([0-9]+)" module="Scenarios" action="delete"  vars="id"  />
     <route url="\/scenarios-edit-([0-9]+)" module="Scenarios" action="edit" vars="id"  />
