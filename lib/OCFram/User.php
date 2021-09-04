@@ -19,7 +19,7 @@ class User
      */
     public function __construct(Application $app)
     {
-        if (empty($_SESSION)) {
+        if (!isset($_SESSION)) {
             session_start();
         }
         $this->app = $app;

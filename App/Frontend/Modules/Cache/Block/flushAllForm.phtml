@@ -1,0 +1,9 @@
+<?php
+/** @var \Materialize\Button\FlatButton $submit */
+$submit = $args[0];
+/** @var string $action */
+$action = $args[1];
+?>
+<form action="<?= $action ?>" method="post">
+    <?= $submit->getHtml()?>
+</form>

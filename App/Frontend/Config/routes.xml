@@ -55,4 +55,6 @@
     <route url="\/crontab-delete-([0-9]+)" module="Crontab" action="delete" vars="id"  />
 
     <route url="\/configuration" module="Configuration" action="index" />
+
+    <route url="\/cache" module="Cache" action="index" />
 </routes>
