@@ -6,7 +6,7 @@ use Materialize\Sidenav\Sidenav;
 use Materialize\Sidenav\Subheader;
 
 $iconNames = [
-    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies', 'build', 'schedule', 'event_note', 'info', 'input'
+    'home', 'settings_power', 'leak_add', 'list', 'assessment', 'settings', 'play_arrow', 'local_movies', 'movies', 'build', 'schedule', 'event_note', 'info', 'input', 'storage'
 ];
 
 $icons = [];
@@ -163,6 +163,12 @@ if ($user->isAuthenticated()) {
                                 'title' => 'Configuration',
                                 'link' => '/configuration',
                                 'icon' => $icons['build']
+                            ]),
+                            new Link([
+                                'id' => 'cache',
+                                'title' => 'Cache',
+                                'link' => '/cache',
+                                'icon' => $icons['storage']
                             ]),
                         ]
                     ]

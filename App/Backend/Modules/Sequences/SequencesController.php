@@ -42,6 +42,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
             $this->checkMethod($httpRequest, HTTPRequest::POST);
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkJsonBodyId($jsonPost);
+            unset($jsonPost['deletedSequenceActions']);
             $entity = new $this->entity($jsonPost);
             $entity->setSequenceActions($this->getSequenceActions($jsonPost));
             $entityId = $this->manager->save($entity);
@@ -50,6 +51,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
+        $this->deleteActionCache('index', 'Frontend');
 
         return $this->page->addVar('data', $persisted);
     }
@@ -65,8 +67,9 @@ class SequencesController extends AbstractScenarioManagersController implements 
             $this->checkMethod($httpRequest, HTTPRequest::PUT);
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkNotJsonBodyId($jsonPost);
-            $entity = new $this->entity($jsonPost);
             $this->deleteSequenceActions($jsonPost);
+            unset($jsonPost['deletedSequenceActions']);
+            $entity = new $this->entity($jsonPost);
             $entity->setSequenceActions($this->getSequenceActions($jsonPost));
             $entityId = $this->manager->save($entity);
             $persisted = $this->manager->getUnique($entityId);
@@ -74,6 +77,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
+        $this->deleteActionCache('index', 'Frontend');
 
         return $this->page->addVar('data', $persisted);
     }

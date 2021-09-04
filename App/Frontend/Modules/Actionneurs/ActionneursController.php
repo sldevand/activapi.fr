@@ -2,10 +2,10 @@
 
 namespace App\Frontend\Modules\Actionneurs;
 
-use Materialize\FormView;
 use Entity\Actionneur;
 use FormBuilder\ActionneursFormBuilder;
 use Materialize\FloatingActionButton;
+use Materialize\FormView;
 use Materialize\Link\Link;
 use Materialize\WidgetFactory;
 use OCFram\BackController;
@@ -22,6 +22,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
@@ -82,6 +83,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeDelete(HTTPRequest $request)
     {
@@ -92,6 +94,7 @@ class ActionneursController extends BackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
+                $this->deleteActionCache('index');
                 $this->app->httpResponse()->redirect($this->baseAddress . 'actionneurs');
             }
         }
@@ -115,6 +118,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
@@ -157,6 +161,7 @@ class ActionneursController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
+            $this->deleteActionCache('index');
             $this->app->httpResponse()->redirect($this->baseAddress . 'actionneurs');
         }
 

@@ -5,12 +5,12 @@
     <route url="\/user/login" module="User" action="login" scope="public"/>
     <route url="\/user/register" module="User" action="register" scope="public"/>
 
-    <route url="\/actionneurs" module="Actionneurs" action="index"/>
+    <route url="\/actionneurs" module="Actionneurs" action="index" cached="true"/>
     <route url="\/actionneurs-add" module="Actionneurs" action="edit"/>
     <route url="\/actionneurs-edit-([0-9]+)" module="Actionneurs" action="edit" vars="id"/>
     <route url="\/actionneurs-delete-([0-9]+)" module="Actionneurs" action="delete" vars="id"/>
 
-    <route url="\/sensors" module="Sensors" action="index"/>
+    <route url="\/sensors" module="Sensors" action="index" cached="true"/>
     <route url="\/sensors-add" module="Sensors" action="edit"/>
     <route url="\/sensors-edit-([0-9]+)" module="Sensors" action="edit" vars="id"/>
     <route url="\/sensors-delete-([0-9]+)" module="Sensors" action="delete" vars="id"/>
@@ -22,7 +22,7 @@
     <route url="\/thermostat" module="Thermostat" action="index"/>
     <route url="\/thermostat-log-?([0-9]+)?-?([0-9]+)?" module="Thermostat" action="log" vars="page,logsCount"/>
 
-    <route url="\/thermostat-planif" module="ThermostatPlanif" action="index"/>
+    <route url="\/thermostat-planif" module="ThermostatPlanif" action="index" cached="true"/>
     <route url="\/thermostat-planif-add" module="ThermostatPlanif" action="add"/>
     <route url="\/thermostat-planif-edit-([0-9]+)" module="ThermostatPlanif" action="edit" vars="id"/>
     <route url="\/thermostat-planif-delete-([0-9]+)" module="ThermostatPlanif" action="delete" vars="id"/>
@@ -32,17 +32,17 @@
     <route url="\/thermostat-modes-delete-([0-9]+)" module="ThermostatModes" action="delete" vars="id"/>
     <route url="\/thermostat-modes-edit-([0-9]+)" module="ThermostatModes" action="edit" vars="id"/>
 
-    <route url="\/scenarios-?([0-9]*)?\/?" module="Scenarios" action="index" vars="id" />
+    <route url="\/scenarios-?([0-9]*)?\/?" module="Scenarios" action="index" vars="id" cached="true"/>
     <route url="\/scenarios-add" module="Scenarios" action="edit"/>
     <route url="\/scenarios-delete-([0-9]+)" module="Scenarios" action="delete"  vars="id"  />
     <route url="\/scenarios-edit-([0-9]+)" module="Scenarios" action="edit" vars="id"  />
 
-    <route url="\/sequences-?([0-9]*)?\/?" module="Sequences" action="index" vars="id" />
+    <route url="\/sequences-?([0-9]*)?\/?" module="Sequences" action="index" vars="id" cached="true"/>
     <route url="\/sequences-add" module="Sequences" action="edit"/>
     <route url="\/sequences-delete-([0-9]+)" module="Sequences" action="delete"  vars="id"  />
     <route url="\/sequences-edit-([0-9]+)" module="Sequences" action="edit" vars="id"  />
 
-    <route url="\/actions-?([0-9]*)?\/?" module="Actions" action="index" vars="id" />
+    <route url="\/actions-?([0-9]*)?\/?" module="Actions" action="index" vars="id" cached="true" />
     <route url="\/actions-add" module="Actions" action="edit"/>
     <route url="\/actions-delete-([0-9]+)" module="Actions" action="delete"  vars="id"  />
     <route url="\/actions-edit-([0-9]+)" module="Actions" action="edit" vars="id"  />
@@ -55,4 +55,6 @@
     <route url="\/crontab-delete-([0-9]+)" module="Crontab" action="delete" vars="id"  />
 
     <route url="\/configuration" module="Configuration" action="index" />
+
+    <route url="\/cache" module="Cache" action="index" />
 </routes>

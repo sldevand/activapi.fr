@@ -156,6 +156,18 @@ abstract class BackController extends ApplicationComponent
         }
     }
 
+    /**
+     * @param string $action
+     * @param string $appName
+     * @throws Exception
+     */
+    protected function deleteActionCache(string $action, string $appName = '')
+    {
+        $controller = clone $this;
+        $controller->setAction($action);
+        $this->cache()->setViewPath($controller, $appName);
+        $this->cache()->deleteFile();
+    }
 
     /**
      * @return null|Cache

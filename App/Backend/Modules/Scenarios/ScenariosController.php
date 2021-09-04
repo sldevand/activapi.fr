@@ -41,6 +41,7 @@ class ScenariosController extends AbstractScenarioManagersController
             $this->checkMethod($httpRequest, HTTPRequest::POST);
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkJsonBodyId($jsonPost);
+            unset($jsonPost['deletedScenarioSequences']);
             $entity = new $this->entity($jsonPost);
             $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
             $entityId = $this->manager->save($entity);
@@ -49,6 +50,8 @@ class ScenariosController extends AbstractScenarioManagersController
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
+        $this->deleteActionCache('index', 'Frontend');
+
 
         return $this->page->addVar('data', $persisted);
     }
@@ -64,8 +67,9 @@ class ScenariosController extends AbstractScenarioManagersController
             $this->checkMethod($httpRequest, HTTPRequest::PUT);
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkNotJsonBodyId($jsonPost);
-            $entity = new $this->entity($jsonPost);
             $this->deleteScenarioSequences($jsonPost);
+            unset($jsonPost['deletedScenarioSequences']);
+            $entity = new $this->entity($jsonPost);
             $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
             $entityId = $this->manager->save($entity);
             $persisted = $this->manager->getUnique($entityId);
@@ -73,6 +77,7 @@ class ScenariosController extends AbstractScenarioManagersController
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
+        $this->deleteActionCache('index', 'Frontend');
 
         return $this->page->addVar('data', $persisted);
     }
@@ -86,6 +91,7 @@ class ScenariosController extends AbstractScenarioManagersController
     {
         try {
             $this->manager->resetScenarioStatuses();
+            $this->deleteActionCache('index', 'Frontend');
             http_response_code(202);
         } catch (Exception $e) {
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
@@ -159,6 +165,8 @@ class ScenariosController extends AbstractScenarioManagersController
         if (!$socketIoSender->send($scenario)) {
             return $this->page->addVar('output', ['error' => 'Node error']);
         }
+
+        $this->deleteActionCache('index', 'Frontend');
 
         return $this->page->addVar('output', ['message' => 'Ok']);
     }

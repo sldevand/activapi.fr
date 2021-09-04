@@ -44,6 +44,7 @@ class Page extends ApplicationComponent
      */
     public function getGeneratedPage()
     {
+        $user = $this->app->user();
         if (!empty($this->contentCache)) {
             ob_start();
             echo $this->contentCache;
@@ -54,8 +55,6 @@ class Page extends ApplicationComponent
         if (!file_exists($this->contentFile)) {
             throw new \RuntimeException('La vue spécifiée n\'existe pas');
         }
-
-        $user = $this->app->user();
 
         extract($this->vars);
 

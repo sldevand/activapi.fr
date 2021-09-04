@@ -12,6 +12,11 @@ use Symfony\Component\Console\Command\Command;
 class BaseCommand extends Command
 {
     /**
+     * @var \App\Backend\BackendApplication
+     */
+    protected $app;
+
+    /**
      * BaseCommand constructor.
      * @param null|string $name
      * @throws \Exception
@@ -20,7 +25,7 @@ class BaseCommand extends Command
     {
         parent::__construct($name);
 
-        $app = new \App\Backend\BackendApplication();
-        PDOFactory::setPdoAddress($app->config()->get('DB_PATH'));
+        $this->app = new \App\Backend\BackendApplication();
+        PDOFactory::setPdoAddress($this->app->config()->get('DB_PATH'));
     }
 }

@@ -27,4 +27,30 @@ class ActionsController extends AbstractScenarioManagersController implements Re
         $this->manager = $this->getActionManager();
         $this->entity = Action::class;
     }
+
+    /**
+     * @param \OCFram\HTTPRequest $httpRequest
+     * @return \OCFram\Page
+     * @throws \Exception
+     */
+    public function executePost($httpRequest)
+    {
+        $page = parent::executePost($httpRequest);
+        $this->deleteActionCache('index', 'Frontend');
+
+        return $page;
+    }
+
+    /**
+     * @param \OCFram\HTTPRequest $httpRequest
+     * @return \OCFram\Page
+     * @throws \Exception
+     */
+    public function executePut($httpRequest)
+    {
+        $page = parent::executePut($httpRequest);
+        $this->deleteActionCache('index', 'Frontend');
+
+        return $page;
+    }
 }
