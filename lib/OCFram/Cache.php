@@ -232,12 +232,14 @@ class Cache extends ApplicationComponent
 
     /**
      * @param BackController $controller
+     * @param string $appName
      * @throws \Exception
      */
-    public function setViewPath(BackController $controller)
+    public function setViewPath(BackController $controller, string $appName = '')
     {
+        $appName = $appName ?: $this->app()->name();
         $this->fileName = $this->app()->config()->get('cache_dir') . 'views' . '/' .
-            $this->app()->name() . '_' .
+            $appName . '_' .
             $controller->module() . '_' .
             $controller->action() . '-' .
             $controller->viewId();

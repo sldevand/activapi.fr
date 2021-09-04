@@ -42,7 +42,7 @@
     <route url="\/sequences-delete-([0-9]+)" module="Sequences" action="delete"  vars="id"  />
     <route url="\/sequences-edit-([0-9]+)" module="Sequences" action="edit" vars="id"  />
 
-    <route url="\/actions-?([0-9]*)?\/?" module="Actions" action="index" vars="id" />
+    <route url="\/actions-?([0-9]*)?\/?" module="Actions" action="index" vars="id" cached="true" />
     <route url="\/actions-add" module="Actions" action="edit"/>
     <route url="\/actions-delete-([0-9]+)" module="Actions" action="delete"  vars="id"  />
     <route url="\/actions-edit-([0-9]+)" module="Actions" action="edit" vars="id"  />
