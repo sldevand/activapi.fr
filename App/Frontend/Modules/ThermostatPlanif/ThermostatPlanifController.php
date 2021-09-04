@@ -81,6 +81,7 @@ class ThermostatPlanifController extends BackController
         $form = $fb->build();
         $fh = new ThermostatPlanifFormHandler($form, $this->manager, $request);
         if ($fh->process()) {
+            $this->deleteActionCache('index');
             $this->redirectBack($thermostatPlanifNom->nom());
         }
 
@@ -121,6 +122,7 @@ class ThermostatPlanifController extends BackController
 
         $fh = new ThermostatPlanifFormHandler($form, $this->manager, $request);
         if ($fh->process()) {
+            $this->deleteActionCache('index');
             $this->redirectBack($item->nom()->nom());
         }
 
@@ -147,7 +149,7 @@ class ThermostatPlanifController extends BackController
                 $id = $request->getData('id');
                 $result = $this->manager->delete($id);
                 if ($result) {
-                    $this->app()->user()->setFlash('Planning supprimé');
+                    $this->deleteActionCache('index');
                 }
                 $this->redirectBack();
             }

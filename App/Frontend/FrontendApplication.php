@@ -34,15 +34,12 @@ class FrontendApplication extends Application
             && $content = $controller->cache()->getView($controller)
         ) {
             $controller->page()->setContentCache($content);
-            echo 'CACHE';
             $this->httpResponse->setPage($controller->page());
             $this->httpResponse->send();
             return;
         }
-         echo 'NO CACHE';
         $controller->execute();
         if ($isCacheEnabledOnPage) {
-            echo 'SAVE CACHE';
             $controller->cache()->saveView($controller, $controller->page()->getGeneratedPage());
         }
         $this->httpResponse->setPage($controller->page());

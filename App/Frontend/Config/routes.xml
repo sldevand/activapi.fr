@@ -22,7 +22,7 @@
     <route url="\/thermostat" module="Thermostat" action="index"/>
     <route url="\/thermostat-log-?([0-9]+)?-?([0-9]+)?" module="Thermostat" action="log" vars="page,logsCount"/>
 
-    <route url="\/thermostat-planif" module="ThermostatPlanif" action="index"/>
+    <route url="\/thermostat-planif" module="ThermostatPlanif" action="index" cached="true"/>
     <route url="\/thermostat-planif-add" module="ThermostatPlanif" action="add"/>
     <route url="\/thermostat-planif-edit-([0-9]+)" module="ThermostatPlanif" action="edit" vars="id"/>
     <route url="\/thermostat-planif-delete-([0-9]+)" module="ThermostatPlanif" action="delete" vars="id"/>
