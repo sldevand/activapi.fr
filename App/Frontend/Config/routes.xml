@@ -37,7 +37,7 @@
     <route url="\/scenarios-delete-([0-9]+)" module="Scenarios" action="delete"  vars="id"  />
     <route url="\/scenarios-edit-([0-9]+)" module="Scenarios" action="edit" vars="id"  />
 
-    <route url="\/sequences-?([0-9]*)?\/?" module="Sequences" action="index" vars="id" />
+    <route url="\/sequences-?([0-9]*)?\/?" module="Sequences" action="index" vars="id" cached="true"/>
     <route url="\/sequences-add" module="Sequences" action="edit"/>
     <route url="\/sequences-delete-([0-9]+)" module="Sequences" action="delete"  vars="id"  />
     <route url="\/sequences-edit-([0-9]+)" module="Sequences" action="edit" vars="id"  />
