@@ -22,6 +22,7 @@ class RepairDatabaseCommand extends BaseCommand
     /**
      * RepairDatabaseCommand constructor.
      * @param null|string $name
+     * @throws \Exception
      */
     public function __construct(?string $name = null)
     {

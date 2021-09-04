@@ -83,6 +83,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeDelete(HTTPRequest $request)
     {
@@ -93,6 +94,7 @@ class ActionneursController extends BackController
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
                 $manager->delete($id);
+                $this->deleteActionCache('index');
                 $this->app->httpResponse()->redirect($this->baseAddress . 'actionneurs');
             }
         }
@@ -116,6 +118,7 @@ class ActionneursController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
@@ -158,6 +161,7 @@ class ActionneursController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
+            $this->deleteActionCache('index');
             $this->app->httpResponse()->redirect($this->baseAddress . 'actionneurs');
         }
 

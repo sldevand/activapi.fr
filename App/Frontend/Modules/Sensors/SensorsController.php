@@ -41,6 +41,7 @@ class SensorsController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeDelete(HTTPRequest $request)
     {
@@ -49,6 +50,7 @@ class SensorsController extends BackController
         if ($request->method() === 'POST' && $request->getExists('id')) {
             $id = $request->getData('id');
             $manager->delete($id);
+            $this->deleteActionCache('index');
             $this->app->httpResponse()->redirect($this->baseAddress . 'sensors');
             return;
         }
@@ -70,6 +72,7 @@ class SensorsController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
@@ -117,6 +120,7 @@ class SensorsController extends BackController
         $fh = new FormHandler($form, $manager, $request);
 
         if ($fh->process()) {
+            $this->deleteActionCache('index');
             $this->app->httpResponse()->redirect($this->baseAddress . 'sensors');
         }
 

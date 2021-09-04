@@ -2,9 +2,11 @@
 
 namespace App\Backend\Modules\Scenarios\Cron;
 
+use Entity\Scenario\Action;
 use Entity\Scenario\ScenarioSequence;
 use Entity\Scenario\SequenceAction;
 use Exception;
+use Model\ActionneursManagerPDO;
 use Model\Scenario\ActionManagerPDO;
 use Model\Scenario\ScenarioSequenceManagerPDO;
 use Model\Scenario\ScenariosManagerPDO;
@@ -74,8 +76,26 @@ class RepairDatabaseExecutor implements ExecutorInterface
     {
         echo $this->getDescription();
 
+        $this->cleanActionsWithNoActionneur();
         $this->cleanSequenceActions();
         $this->cleanScenarioSequences();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function cleanActionsWithNoActionneur()
+    {
+        $actions = $this->actionManager->getRows();
+        /** @var Action $action */
+        foreach ($actions as $action) {
+            try {
+                $this->actionManager->getUnique($action->getActionneurId());
+            } catch (Exception $exception) {
+                $this->actionManager->delete($action->id());
+                echo 'Deleted sequence_action row : ' . $action->id() . PHP_EOL;
+            }
+        }
     }
 
     /**

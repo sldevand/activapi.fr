@@ -95,4 +95,13 @@ class ActionManagerPDO extends ManagerPDO
 
         return $actions;
     }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function getRows()
+    {
+        return parent::getAll();
+    }
 }
