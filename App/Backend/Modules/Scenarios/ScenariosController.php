@@ -69,6 +69,9 @@ class ScenariosController extends AbstractScenarioManagersController
             $this->checkNotJsonBodyId($jsonPost);
             $this->deleteScenarioSequences($jsonPost);
             unset($jsonPost['deletedScenarioSequences']);
+            unset($jsonPost['startTime']);
+            unset($jsonPost['stopTime']);
+            unset($jsonPost['remainingTime']);
             $entity = new $this->entity($jsonPost);
             $entity->setScenarioSequences($this->getScenarioSequences($jsonPost));
             $entityId = $this->manager->save($entity);
