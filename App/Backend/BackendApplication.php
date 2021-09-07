@@ -36,6 +36,20 @@ class BackendApplication extends Application
     }
 
     /**
+     * @return Route | null
+     */
+    protected function matchRoute()
+    {
+        try {
+            return $this->router->getRoute($this->httpRequest->requestURI());
+        } catch (\RuntimeException $e) {
+            $this->httpResponse->redirectJson404();
+            return null;
+        }
+    }
+
+
+    /**
      * @param \OCFram\Route $route
      */
     protected function checkRoutePermission(Route $route)

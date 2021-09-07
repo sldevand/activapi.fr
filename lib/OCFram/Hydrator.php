@@ -2,6 +2,8 @@
 
 namespace OCFram;
 
+use OCFram\Exception\PropertyNotExist;
+
 /**
  * Trait Hydrator
  * @package OCFram
@@ -17,7 +19,11 @@ trait Hydrator
             $method = 'set' . ucfirst($key);
 
             if (is_callable([$this, $method])) {
-                $this->$method($value);
+                try {
+                    $this->$method($value);
+                } catch (PropertyNotExist $exception) {
+                    //Intentionnally empty
+                }
             }
         }
     }

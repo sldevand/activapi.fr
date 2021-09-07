@@ -184,25 +184,6 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
     }
 
     /**
-     * Route /actionneurs/command/([1-9]|[1-9][0-9]*)/([0-9]|[0-9][0-9]|[0-2][0-5][0-5])/?$
-     */
-    public function testExecuteCommand()
-    {
-        $client = new Client();
-        $url = $this->getFullUrl("/actionneurs/add");
-        $body = ActionneursMock::getActionneurs('create');
-        $responseBody = $this->getPostJsonBody($client, $url, $body);
-        $expected = ['message' => 'Ok'];
-        self::assertEquals($expected, $responseBody);
-
-        $actionneurId = self::$actionneursManager->getLastInserted('actionneurs');
-        $url = $this->getFullUrl("/actionneurs/command/$actionneurId/1");
-        $responseBody = $this->getJsonBody($client, $url);
-
-        self::assertEquals(['message' => 'Ok'], $responseBody);
-    }
-
-    /**
      * @throws \Exception
      */
     public static function removeLastInsertedActionneur()

@@ -268,24 +268,6 @@ class ScenariosEndpointTest extends AbstractEndpointTest
     }
 
     /**
-     * Route : /scenarios/command/([1-9]|[1-9][0-9]*)/?
-     * @throws \Exception|\GuzzleHttp\Exception\GuzzleException
-     */
-    public function testExecuteCommand()
-    {
-        list($client, $url, , $scenarioArray) = $this->prepareScenarioRequest('/scenarios/add');
-        $this->getPostJsonBody($client, $url, $scenarioArray);
-
-        $scenarioId = self::$scenariosManager->getLastInserted('scenario');
-        self::assertNotEmpty($scenarioId);
-
-        list($client, $url) = $this->prepareScenarioRequest("/scenarios/command/$scenarioId");
-        $result = $this->getJsonBody($client, $url);
-
-        self::assertEquals(['message' => 'Ok'], $result);
-    }
-
-    /**
      * @param string $url
      * @return array
      * @throws \Exception
