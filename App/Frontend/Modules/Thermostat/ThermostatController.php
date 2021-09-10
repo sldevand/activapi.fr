@@ -45,7 +45,7 @@ class ThermostatController extends BackController
         $cards = [];
         $cards[] = $this->makeThermostatWidget($thermostats);
         $cards[] = $this->makeSensorsWidget(
-            $this->mesuresManager->getSensors("thermostat"),
+            $this->mesuresManager->getSensors(['thermostat']),
             $this->getSensorTemoin($thermostats)
         );
 
@@ -64,7 +64,7 @@ class ThermostatController extends BackController
      */
     protected function getSensorTemoin(array $thermostats)
     {
-        $sensorsTemoin = $this->mesuresManager->getSensors("thermo");
+        $sensorsTemoin = $this->mesuresManager->getSensors(['thermo']);
         foreach ($sensorsTemoin as $sensor) {
             if ($sensor['id'] == $thermostats[0]['sensorid']) {
                 return $sensor;

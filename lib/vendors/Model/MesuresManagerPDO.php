@@ -156,27 +156,38 @@ class MesuresManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param $categorie
+     * @param array $categories
      * @return Sensor[]
      * @throws \Exception
      */
-    public function getSensors($categorie)
+    public function getSensors(array $categories = []): array
     {
         $sql = "SELECT * FROM sensors";
-        if ($categorie != "" && $categorie != null) {
-            $sql .= " WHERE categorie=:categorie";
+        if ($categories) {
+            $categoriesSql = implode('","', $categories);
+            $sql .= ' WHERE categorie IN ("' . $categoriesSql . '")';
         }
-
         $q = $this->prepare($sql);
-        if ($categorie != "" && $categorie != null) {
-            $q->bindParam(":categorie", $categorie);
-        }
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Sensor');
         $sensors = $q->fetchAll();
         $q->closeCursor();
 
         return $sensors;
+    }
+
+    /**
+     * @param array $categories
+     * @return string[]
+     * @throws \Exception
+     */
+    public function getSensorsRadioIds(array $categories = []): array
+    {
+        $sensors = $this->getSensors($categories);
+
+        return array_map(function ($sensor) {
+            return $sensor->radioid();
+        }, $sensors);
     }
 
     /**

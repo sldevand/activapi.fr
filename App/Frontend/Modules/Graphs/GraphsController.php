@@ -16,67 +16,48 @@ use SFram\JSTranslator;
  */
 class GraphsController extends BackController
 {
+    const TEMP_MIN = 10;
+    const TEMP_MAX = 25;
+
     /**
      * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $graphId = "tempGraph";;
-        $dateMin = $request->getData("dateMin");
-        $dateMax = $request->getData("dateMax");
+        $this->page->addVar('title', 'Gestion des Graphs');
+        $graphId = "tempGraph";
+
         $today = DateFactory::todayToString();
-
-        if (is_null($dateMin) || $dateMin == "") {
-            $dateMin = $today;
-        }
-        if (is_null($dateMax) || $dateMax == "") {
-            $dateMax = $today;
-        }
-
-        $manager = $this->managers->getManagerOf('Mesures');
-        $listeSensors = $manager->getSensors('thermo');
-        $listeThermostat = $manager->getSensors('thermostat');
-
-        $sensorids = [];
-        foreach ($listeSensors as $sensor) {
-            $sensorids[] = $sensor->radioid();
-        }
-
-        foreach ($listeThermostat as $thermostat) {
-            $sensorids[] = $thermostat->radioid();
-        }
-
-        $tempMin = 10;
-        $tempMax = 25;
-
+        $dateMin = $request->getData("dateMin") ?: $today;
+        $dateMax = $request->getData("dateMax") ?: $today;
         if (in_array($dateMin, DateFactory::PERIOD_KEYWORDS)) {
             list($dateMin, $dateMax) = DateFactory::getDateLimits($dateMin);
         }
 
+        $radioIds = $this->managers->getManagerOf('Mesures')->getSensorsRadioIds(['thermo', 'thermostat']);
         $jst = new JSTranslator(
             [
                 'apiURL' => $this->getApiUrl(),
-                'sensorids' => $sensorids,
+                'sensorids' => $radioIds,
                 'dateMin' => $dateMin,
                 'dateMax' => $dateMax,
-                'tempMin' => $tempMin,
-                'tempMax' => $tempMax,
+                'tempMin' => self::TEMP_MIN,
+                'tempMax' => self::TEMP_MAX,
                 'graphId' => $graphId
             ]
         );
 
-        $buttons = $this->makeButtons($this->provideButtonsData());
         $period = $this->getSelectedPeriod($dateMin, $dateMax, $today);
+        $buttons = $this->makeButtons($this->provideButtonsData());
         $graphCard = WidgetFactory::makeCard("temperatures", 'Températures');
         $graphCard->addContent($this->periodView($period));
         $graphCard->addContent($this->buttonsView($buttons));
         $graphCard->addContent($this->graphView($graphId));
 
-        $this->page->addVar('title', 'Gestion des Graphs');
+        $this->page->addVar('graphCard', $graphCard);
         $this->page->addVar('jst', $jst);
         $this->page->addVar('graphId', $graphId);
-        $this->page->addVar('graphCard', $graphCard);
     }
 
     /**
