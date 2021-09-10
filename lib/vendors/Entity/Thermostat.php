@@ -91,6 +91,11 @@ class Thermostat extends Entity
     protected $pwr;
 
     /**
+     * @var string
+     */
+    protected $lastTurnOn = '';
+
+    /**
      * @return string
      */
     public function nom()
@@ -131,7 +136,7 @@ class Thermostat extends Entity
     }
 
     /**
-     * @return ThermostatPlanif
+     * @return string
      */
     public function planning()
     {
@@ -245,10 +250,10 @@ class Thermostat extends Entity
     }
 
     /**
-     * @param ThermostatPlanif $planning
+     * @param string $planning
      * @return Thermostat
      */
-    public function setPlanning($planning)
+    public function setPlanning(string $planning)
     {
         $this->planning = $planning;
         return $this;
@@ -388,6 +393,26 @@ class Thermostat extends Entity
         return $this->delta;
     }
 
+
+    /**
+     * @return mixed
+     */
+    public function getLastTurnOn()
+    {
+        return $this->lastTurnOn;
+    }
+
+    /**
+     * @param $lastTurnOn
+     * @return $this
+     */
+    public function setLastTurnOn($lastTurnOn): Thermostat
+    {
+        $this->lastTurnOn = $lastTurnOn;
+
+        return $this;
+    }
+
     /**
      * @return array|mixed
      */
@@ -410,7 +435,8 @@ class Thermostat extends Entity
             'releve' => $this->releve,
             'temperature' => $this->temperature,
             'hygrometrie' => $this->hygrometrie,
-            'pwr' => $this->pwr
+            'pwr' => $this->pwr,
+            'lastTurnOn' => $this->lastTurnOn
         );
     }
 }

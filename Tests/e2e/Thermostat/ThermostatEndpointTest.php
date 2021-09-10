@@ -39,7 +39,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         list($client, $url, $thermostat, $thermostatArray) = $this->prepareThermostatRequest('/thermostat');
 
         $result = self::$thermostatManager
-            ->save($thermostat, ['mode', 'sensor', 'planningName', 'temperature', 'hygrometrie']);
+            ->save($thermostat, ['mode', 'sensor', 'planningName', 'temperature', 'hygrometrie', 'lastTurnOn']);
 
         self::assertTrue($result);
 
@@ -50,6 +50,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
             'consigne' => '21.5',
             'delta' => '0.7'
         ];
+        $thermostatArray['lastTurnOn'] = self::$thermostatManager->getLastTurnOnLog();
         $expected = [
             $thermostatArray
         ];

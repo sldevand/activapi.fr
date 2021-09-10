@@ -15,14 +15,17 @@ class ThermostatController extends BackController
 {
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Gestion du Thermostat');
+        /** @var \Model\ThermostatManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Thermostat');
         $managerPlanif = $this->managers->getManagerOf('ThermostatPlanif');
         $thermostats = $manager->getList();
 
+        /** @var Thermostat[] $thermostats */
         foreach ($thermostats as $thermostat) {
             $name = "Aucun";
             if ($thermostat->planning() > 0) {
@@ -30,6 +33,7 @@ class ThermostatController extends BackController
             }
 
             $thermostat->setPlanningName($name);
+            $thermostat->setLastTurnOn($manager->getLastTurnOnLog());
         }
 
         $this->page->addVar('thermostats', $thermostats);

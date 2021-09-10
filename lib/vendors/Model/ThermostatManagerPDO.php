@@ -48,6 +48,17 @@ class ThermostatManagerPDO extends ManagerPDO
     }
 
     /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getLastTurnOnLog(): string
+    {
+        return $this
+            ->query('SELECT horodatage from thermostat_log where etat="1" order by id desc limit 1')
+            ->fetchColumn() ?? '';
+    }
+
+    /**
      * @param int | null $id
      * @return array
      * @throws \Exception
@@ -67,7 +78,8 @@ class ThermostatManagerPDO extends ManagerPDO
         /** @var \Model\SensorsManagerPDO $sensorsManager */
         $sensorsManager = $this->managers->getManagerOf('Sensors');
 
-        foreach ($listeThermostat as $key => $thermostat) {
+        /** @var Thermostat $thermostat */
+        foreach ($listeThermostat as $thermostat) {
             $mode = $modesManager->getUnique($thermostat->modeid());
             $sensor = $sensorsManager->getUnique($thermostat->sensorid());
             if (!is_bool($mode)) {
