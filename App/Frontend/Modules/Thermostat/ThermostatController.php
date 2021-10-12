@@ -118,6 +118,7 @@ class ThermostatController extends BackController
             $thermostat["mode"] = $thermostat["mode"]["nom"];
             $thermostat["etat"] = $this->iconifyPower($thermostat["etat"] ?? 0);
             $thermostat['pwr'] = $this->iconifyPower($thermostat['pwr'] ?? 0);
+            $thermostat['lastPwrOff'] = $thermostat['lastPwrOff'] ?? '';
 
             $tableThermostatDatas[] = $thermostat;
         }

@@ -29,6 +29,11 @@ $crontab = [
         'expression' => '* * * * *',
         'executor' => '\App\Backend\Modules\Sensors\Cron\CheckSensorActivityExecutor',
         'args' => ['app' => $app]
+    ],
+    'check_thermostat_power' => [
+        'expression' => '* * * * *',
+        'executor' => '\App\Backend\Modules\Thermostat\Cron\CheckThermostatPower',
+        'args' => ['app' => $app]
     ]
 ];
 

@@ -96,6 +96,11 @@ class Thermostat extends Entity
     protected $lastTurnOn = '';
 
     /**
+     * @var string $releve
+     */
+    protected $lastPwrOff = '';
+
+    /**
      * @return string
      */
     public function nom()
@@ -414,6 +419,25 @@ class Thermostat extends Entity
     }
 
     /**
+     * @return string
+     */
+    public function getLastPwrOff(): string
+    {
+        return $this->lastPwrOff;
+    }
+
+    /**
+     * @param string $lastPwrOff
+     * @return Thermostat
+     */
+    public function setLastPwrOff(string $lastPwrOff): Thermostat
+    {
+        $this->lastPwrOff = $lastPwrOff;
+
+        return $this;
+    }
+
+    /**
      * @return array|mixed
      */
     public function jsonSerialize()
@@ -436,7 +460,8 @@ class Thermostat extends Entity
             'temperature' => $this->temperature,
             'hygrometrie' => $this->hygrometrie,
             'pwr' => $this->pwr,
-            'lastTurnOn' => $this->lastTurnOn
+            'lastTurnOn' => $this->lastTurnOn,
+            'lastPwrOff' => $this->lastPwrOff
         );
     }
 }

@@ -6,6 +6,7 @@ use Entity\Thermostat;
 use Entity\ThermostatLog;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
+use SFram\Helpers\DateHelper;
 
 /**
  * Class ThermostatController
@@ -49,7 +50,7 @@ class ThermostatController extends BackController
         $manager = $this->managers->getManagerOf('Thermostat');
         $thermostatPDO = $manager->getList();
         $thermostat = $thermostatPDO[0];
-        $prevEtat = $thermostatPDO[0]->etat();
+        $prevEtat = $thermostat->etat();
         $postEtat = $request->postData('etat');
 
         $hydrate = [
@@ -74,6 +75,9 @@ class ThermostatController extends BackController
         }
 
         $newThermostat = new Thermostat($hydrate);
+        if ($newThermostat->pwr() != '1') {
+            $newThermostat->setLastPwrOff(DateHelper::now());
+        }
         $thermostatLog = new ThermostatLog(
             [
                 'etat' => $prevEtat,

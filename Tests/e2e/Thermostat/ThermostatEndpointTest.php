@@ -2,6 +2,7 @@
 
 namespace Tests\e2e\Thermostat;
 
+use Entity\Thermostat;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use OCFram\Managers;
@@ -83,6 +84,35 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         unset($thermostatArrayToUpdate['interne']);
         $result = $this->postRequest($client, $url, $thermostatArrayToUpdate);
         self::assertEquals('Update Error : Value interne is null!', $result);
+    }
+
+    /**
+     * Route : /thermostat/update
+     * @depends testUpdate
+     * @throws \Exception|\GuzzleHttp\Exception\GuzzleException
+     */
+    public function testLastPwrOff()
+    {
+        list($client, $url, ,$thermostatArray) = $this->prepareThermostatRequest('/thermostat/update');
+
+        /* Trying to update with pwr on, nothing happens for lastPwrOff */
+        /** @var Thermostat $thermostatBefore */
+        $thermostatBefore = current(self::$thermostatManager->getList());
+        $this->postRequest($client, $url, $thermostatArray);
+        sleep(1);
+        /** @var Thermostat $thermostatAfter */
+        $thermostatAfter = current(self::$thermostatManager->getList());
+        self::assertEquals($thermostatAfter->getLastPwrOff(), $thermostatBefore->getLastPwrOff());
+
+        /* Trying to update with pwr off, lastPwrOff must equals to now */
+        $thermostatArray['pwr'] = '0';
+        $result = $this->postRequest($client, $url, $thermostatArray);
+        sleep(1);
+        self::assertEquals('No need to log : same thermostats', $result);
+
+        /** @var Thermostat $thermostatAfterPwrOff */
+        $thermostatAfterPwrOff = current(self::$thermostatManager->getList());
+        self::assertNotEquals($thermostatAfterPwrOff->getLastPwrOff(), $thermostatAfter->getLastPwrOff());
     }
 
     /**
