@@ -14,3 +14,5 @@ Tests/database/activhome-test\.db
 /src/config/config.js
 /build/
 /tmp/
+/deploy/.env
+/deploy/remote/.env
