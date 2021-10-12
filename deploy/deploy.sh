@@ -38,7 +38,7 @@ mkdir $LOCAL_BUILD_PATH &&
 
 myEcho "Local : Git clone $GIT_BRANCH branch" &&
 cd $LOCAL_BUILD_PATH &&
-git clone --single-branch --branch $GIT_BRANCH $GIT_PATH &&
+git clone --single-branch --branch $GIT_BRANCH $GIT_URL &&
 
 myEcho "Local : Sassify scss files" &&
 npm run sass-compile &&
