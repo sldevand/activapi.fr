@@ -2,7 +2,11 @@
 
 namespace App\Backend\Modules\Thermostat\Cron;
 
+use App\Backend\Modules\Thermostat\Helper\Power;
+use Entity\Thermostat;
 use Exception;
+use Model\Thermostat\SocketIoSender;
+use Model\ThermostatManagerPDO;
 use OCFram\Managers;
 use OCFram\PDOFactory;
 use Sldevand\Cron\ExecutorInterface;
@@ -18,6 +22,15 @@ class CheckThermostatPower implements ExecutorInterface
     /** @var ThermostatConfigHelper */
     protected $thermostatConfigHelper;
 
+    /** @var ThermostatManagerPDO */
+    protected $thermostatManager;
+
+    /** @var SocketIoSender */
+    protected $socketIOSender;
+
+    /** @var Power */
+    protected $powerHelper;
+
     /**
      * CheckThermostatPower constructor.
      * @param array|null $args
@@ -29,6 +42,9 @@ class CheckThermostatPower implements ExecutorInterface
             $args['app'],
             $managers->getManagerOf('Configuration\Configuration')
         );
+        $this->thermostatManager = $managers->getManagerOf('Thermostat');
+        $this->socketIOSender = new SocketIoSender($args['app']);
+        $this->powerHelper = new Power();
     }
 
     /**
@@ -36,13 +52,27 @@ class CheckThermostatPower implements ExecutorInterface
      */
     public function execute()
     {
-        if (!$this->thermostatConfigHelper->getEnabled()) {
-           return ;
+        if ($this->thermostatConfigHelper->getEnabled() !== 'yes') {
+            return;
         }
+
+        if (!$delay = $this->thermostatConfigHelper->getDelay() ?? 0) {
+            throw new Exception('Delay is not set');
+        }
+
+        /** @var Thermostat $thermostat */
+        if (!$thermostat = current($this->thermostatManager->getList())) {
+            throw new Exception('No thermostat found');
+        }
+
         echo $this->getDescription();
+        if ($thermostat->pwr() || !$thermostat->getLastPwrOff()) {
+            return;
+        }
 
-        //check if
-
+        if ($this->powerHelper->canTurnPwrOn($thermostat, $delay)) {
+            $this->socketIOSender->sendPwrOn();
+        }
     }
 
     /**
