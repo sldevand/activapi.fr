@@ -101,9 +101,9 @@ class Thermostat extends Entity
     protected $lastPwrOff = '';
 
     /**
-     * @var bool
+     * @var int
      */
-    protected $mailSent = false;
+    protected $mailSent;
 
     /**
      * @return string
@@ -446,18 +446,18 @@ class Thermostat extends Entity
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isMailSent(): bool
+    public function isMailSent()
     {
         return $this->mailSent;
     }
 
     /**
-     * @param bool $mailSent
+     * @param int $mailSent
      * @return Thermostat
      */
-    public function setMailSent(bool $mailSent): Thermostat
+    public function setMailSent(int $mailSent): Thermostat
     {
         $this->mailSent = $mailSent;
 

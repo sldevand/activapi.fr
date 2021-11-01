@@ -122,7 +122,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         /** @var Thermostat $thermostatAfter */
         $thermostatAfter = current(self::$thermostatManager->getList());
         self::assertTrue($thermostat->pwr() === '0');
-        self::assertTrue($thermostatAfter->isMailSent());
+        self::assertTrue($thermostatAfter->isMailSent() === '1');
 
         $thermostatArray = Utils::objToArray($thermostatAfter);
         /* Trying to update with pwr on, mail sent must be 0 */
@@ -133,7 +133,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         /** @var Thermostat $thermostatAfter */
         $thermostatAfter = current(self::$thermostatManager->getList());
         self::assertTrue($thermostatAfter->pwr() === '1');
-        self::assertFalse($thermostatAfter->isMailSent());
+        self::assertTrue($thermostatAfter->isMailSent() === '0');
     }
 
     /**
