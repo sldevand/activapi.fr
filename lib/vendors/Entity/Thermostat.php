@@ -103,7 +103,7 @@ class Thermostat extends Entity
     /**
      * @var bool
      */
-    protected $mailSent;
+    protected $mailSent = false;
 
     /**
      * @return string

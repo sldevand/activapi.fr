@@ -113,6 +113,27 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         /** @var Thermostat $thermostatAfterPwrOff */
         $thermostatAfterPwrOff = current(self::$thermostatManager->getList());
         self::assertNotEquals($thermostatAfterPwrOff->getLastPwrOff(), $thermostatAfter->getLastPwrOff());
+
+        // Force mail sent to 1
+        /** @var Thermostat $thermostat */
+        $thermostat = current(self::$thermostatManager->getList());
+        $thermostat->setMailSent(true);
+        self::$thermostatManager->save($thermostat, ['mode', 'sensor', 'planningName', 'temperature', 'hygrometrie', 'lastTurnOn']);
+        /** @var Thermostat $thermostatAfter */
+        $thermostatAfter = current(self::$thermostatManager->getList());
+        self::assertTrue($thermostat->pwr() === '0');
+        self::assertTrue($thermostatAfter->isMailSent());
+
+        $thermostatArray = Utils::objToArray($thermostatAfter);
+        /* Trying to update with pwr on, mail sent must be 0 */
+        $thermostatArray['pwr'] = '1';
+        $result = $this->postRequest($client, $url, $thermostatArray);
+        sleep(1);
+        self::assertEquals('Success', $result);
+        /** @var Thermostat $thermostatAfter */
+        $thermostatAfter = current(self::$thermostatManager->getList());
+        self::assertTrue($thermostatAfter->pwr() === '1');
+        self::assertFalse($thermostatAfter->isMailSent());
     }
 
     /**

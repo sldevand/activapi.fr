@@ -118,7 +118,7 @@ class ThermostatManagerPDO extends ManagerPDO
     {
         $lastPwrOffPart = $thermostat->getLastPwrOff() ? ', lastPwrOff = :lastPwrOff' : '';
 
-        $q = $this->prepare('UPDATE thermostat SET nom = :nom, modeid = :modeid, sensorid = :sensorid, planning = :planning, manuel = :manuel, consigne = :consigne, delta = :delta, interne = :interne, etat = :etat, releve=DateTime("now","localtime"), pwr = :pwr ' . $lastPwrOffPart . ' WHERE id = :id');
+        $q = $this->prepare('UPDATE thermostat SET nom = :nom, modeid = :modeid, sensorid = :sensorid, planning = :planning, manuel = :manuel, consigne = :consigne, delta = :delta, interne = :interne, etat = :etat, releve=DateTime("now","localtime"), pwr = :pwr, mailSent = :mailSent ' . $lastPwrOffPart . ' WHERE id = :id');
 
         $q->bindValue(':id', $thermostat->id());
         $q->bindValue(':nom', $thermostat->nom());
@@ -131,6 +131,7 @@ class ThermostatManagerPDO extends ManagerPDO
         $q->bindValue(':interne', $thermostat->interne());
         $q->bindValue(':etat', $thermostat->etat());
         $q->bindValue(':pwr', $thermostat->pwr());
+        $q->bindValue(':mailSent', $thermostat->isMailSent() ? '1' : '0');
         if ($thermostat->getLastPwrOff()) {
             $q->bindValue(':lastPwrOff', $thermostat->getLastPwrOff());
         }
