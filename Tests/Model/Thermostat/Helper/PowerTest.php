@@ -43,7 +43,7 @@ class PowerTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testCanTurnPwrOn()
+    public function testCanSendPwrOnEmail()
     {
         $power = new Power();
         /** @var ThermostatManagerPDO $thermostatManager */
@@ -55,21 +55,21 @@ class PowerTest extends TestCase
         $datetime = new DateTime();
         $datetime->sub(new DateInterval('PT6M'));
         $thermostat->setLastPwrOff($datetime->format('20y-m-d H:i:s'));
-        $result = $power->canTurnPwrOn($thermostat, 5);
+        $result = $power->canSendPwrOnEmail($thermostat, 5);
         $this->assertTrue($result);
 
         // power off 30 minutes ago with a 35 minutes delay, result must be false
         $datetime = new DateTime();
         $datetime->sub(new DateInterval('PT30M'));
         $thermostat->setLastPwrOff($datetime->format('20y-m-d H:i:s'));
-        $result = $power->canTurnPwrOn($thermostat, 35);
+        $result = $power->canSendPwrOnEmail($thermostat, 35);
         $this->assertFalse($result);
 
         // power off 30 minutes ago with a 29 minutes delay, result must be true
         $datetime = new DateTime();
         $datetime->sub(new DateInterval('PT30M'));
         $thermostat->setLastPwrOff($datetime->format('20y-m-d H:i:s'));
-        $result = $power->canTurnPwrOn($thermostat, 29);
+        $result = $power->canSendPwrOnEmail($thermostat, 29);
         $this->assertTrue($result);
     }
 }

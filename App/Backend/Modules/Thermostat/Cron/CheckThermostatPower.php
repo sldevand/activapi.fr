@@ -2,10 +2,10 @@
 
 namespace App\Backend\Modules\Thermostat\Cron;
 
+use App\Backend\Modules\Mailer\Helper\MailSender;
 use App\Backend\Modules\Thermostat\Helper\Power;
 use Entity\Thermostat;
 use Exception;
-use Model\Thermostat\SocketIoSender;
 use Model\ThermostatManagerPDO;
 use OCFram\Managers;
 use OCFram\PDOFactory;
@@ -25,15 +25,16 @@ class CheckThermostatPower implements ExecutorInterface
     /** @var ThermostatManagerPDO */
     protected $thermostatManager;
 
-    /** @var SocketIoSender */
-    protected $socketIOSender;
-
     /** @var Power */
     protected $powerHelper;
+
+    /** @var MailSender */
+    protected $mailSender;
 
     /**
      * CheckThermostatPower constructor.
      * @param array|null $args
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function __construct(?array $args = null)
     {
@@ -43,8 +44,8 @@ class CheckThermostatPower implements ExecutorInterface
             $managers->getManagerOf('Configuration\Configuration')
         );
         $this->thermostatManager = $managers->getManagerOf('Thermostat');
-        $this->socketIOSender = new SocketIoSender($args['app']);
         $this->powerHelper = new Power();
+        $this->mailSender = new MailSender($args['app']);
     }
 
     /**
@@ -70,8 +71,28 @@ class CheckThermostatPower implements ExecutorInterface
             return;
         }
 
-        if ($this->powerHelper->canTurnPwrOn($thermostat, $delay)) {
-            $this->socketIOSender->sendPwrOn();
+        if (!$this->powerHelper->canSendPwrOnEmail($thermostat, $delay)) {
+            return;
+        }
+
+        try {
+            $subject = 'Thermostat Power is off';
+            ob_start();
+            require BACKEND . '/Modules/Thermostat/Templates/Mail/checkThermostatPower.phtml';
+            $body = ob_get_clean();
+
+            if (!$this->mailSender->sendMail($subject, $body)) {
+                echo 'An error occured when sending mail';
+                return;
+            }
+            $thermostat->setMailSent(true);
+            $this->thermostatManager
+                ->save(
+                    $thermostat,
+                    ['mode', 'sensor', 'planningName', 'temperature', 'hygrometrie', 'lastTurnOn']
+                );
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
         }
     }
 
@@ -80,6 +101,6 @@ class CheckThermostatPower implements ExecutorInterface
      */
     public function getDescription()
     {
-        return 'Check if thermostat is powered off for a period, set on after that period' . PHP_EOL;
+        return 'Check if thermostat is powered off for a period, send mail after that period' . PHP_EOL;
     }
 }

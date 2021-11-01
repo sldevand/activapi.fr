@@ -11,77 +11,77 @@ use OCFram\Entity;
 class Thermostat extends Entity
 {
     /**
-     * @var string $nom
+     * @var string
      */
     protected $nom;
 
     /**
-     * @var int $modeid
+     * @var int
      */
     protected $modeid;
 
     /**
-     * @var ThermostatMode $mode
+     * @var ThermostatMode
      */
     protected $mode;
 
     /**
-     * @var int $sensorid
+     * @var int
      */
     protected $sensorid;
 
     /**
-     * @var Sensor $sensor
+     * @var Sensor
      */
     protected $sensor;
 
     /**
-     * @var ThermostatPlanif $planning
+     * @var ThermostatPlanif
      */
     protected $planning;
 
     /**
-     * @var string $planningName
+     * @var string
      */
     protected $planningName;
 
     /**
-     * @var bool $manuel
+     * @var bool
      */
     protected $manuel;
 
     /**
-     * @var float $consigne
+     * @var float
      */
     protected $consigne;
 
     /**
-     * @var float $delta
+     * @var float
      */
     protected $delta;
 
     /**
-     * @var bool $interne
+     * @var bool
      */
     protected $interne;
 
     /**
-     * @var int $etat
+     * @var int
      */
     protected $etat;
 
     /**
-     * @var string $releve
+     * @var string
      */
     protected $releve;
 
     /**
-     * @var float $temperature
+     * @var float
      */
     protected $temperature;
 
     /**
-     * @var float $hygrometrie
+     * @var float
      */
     protected $hygrometrie;
 
@@ -96,9 +96,14 @@ class Thermostat extends Entity
     protected $lastTurnOn = '';
 
     /**
-     * @var string $releve
+     * @var string
      */
     protected $lastPwrOff = '';
+
+    /**
+     * @var bool
+     */
+    protected $mailSent;
 
     /**
      * @return string
@@ -371,7 +376,10 @@ class Thermostat extends Entity
      */
     public function hasChanged(Thermostat $thermostat)
     {
-        return ($thermostat->etat() != $this->etat() || $thermostat->consigne() != $this->consigne() || $thermostat->delta() != $this->delta());
+        return ($thermostat->etat() != $this->etat()
+            || $thermostat->consigne() != $this->consigne()
+            || $thermostat->delta() != $this->delta())
+            || $thermostat->pwr() != $this->pwr();
     }
 
     /**
@@ -433,6 +441,25 @@ class Thermostat extends Entity
     public function setLastPwrOff(string $lastPwrOff): Thermostat
     {
         $this->lastPwrOff = $lastPwrOff;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMailSent(): bool
+    {
+        return $this->mailSent;
+    }
+
+    /**
+     * @param bool $mailSent
+     * @return Thermostat
+     */
+    public function setMailSent(bool $mailSent): Thermostat
+    {
+        $this->mailSent = $mailSent;
 
         return $this;
     }

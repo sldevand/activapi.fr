@@ -18,10 +18,10 @@ class Power
      * @return bool
      * @throws Exception
      */
-    public function canTurnPwrOn(Thermostat $thermostat, int $delay)
+    public function canSendPwrOnEmail(Thermostat $thermostat, int $delay)
     {
-        $diff = DateFactory::diffMinutesFromStr(DateFactory::todayFullString(), $thermostat->getLastPwrOff());
+        $diff = DateFactory::diffMinutesFromStr('now', $thermostat->getLastPwrOff());
 
-        return $delay - $diff < 0;
+        return $delay - $diff < 0 && !$thermostat->isMailSent();
     }
 }

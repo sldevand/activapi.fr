@@ -49,6 +49,8 @@ class ThermostatController extends BackController
         /** @var \Model\ThermostatManagerPDO $manager */
         $manager = $this->managers->getManagerOf('Thermostat');
         $thermostatPDO = $manager->getList();
+
+        /** @var Thermostat $thermostat */
         $thermostat = $thermostatPDO[0];
         $prevEtat = $thermostat->etat();
         $postEtat = $request->postData('etat');
@@ -75,9 +77,6 @@ class ThermostatController extends BackController
         }
 
         $newThermostat = new Thermostat($hydrate);
-        if ($newThermostat->pwr() != '1') {
-            $newThermostat->setLastPwrOff(DateHelper::now());
-        }
         $thermostatLog = new ThermostatLog(
             [
                 'etat' => $prevEtat,
@@ -91,7 +90,11 @@ class ThermostatController extends BackController
                 $thermostatLog->setEtat($prevEtat);
                 $manager->addThermostatLog($thermostatLog);
             }
-
+            if ($newThermostat->pwr() != '1') {
+                $newThermostat->setLastPwrOff(DateHelper::now());
+            } else {
+                $newThermostat->setMailSent(false);
+            }
             $thermostatLog->setEtat($postEtat);
             $manager->addThermostatLog($thermostatLog);
             $result = "Success";
