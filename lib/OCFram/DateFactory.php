@@ -48,7 +48,9 @@ class DateFactory
      */
     public static function diffMinutes($date1, $date2)
     {
-        return $minutes = $date1->diff($date2)->i + $date1->diff($date2)->h * 60;
+        $diff = $date1->diff($date2);
+
+        return $diff->i + $diff->h * 60 + $diff->days * 3600;
     }
 
     /**
