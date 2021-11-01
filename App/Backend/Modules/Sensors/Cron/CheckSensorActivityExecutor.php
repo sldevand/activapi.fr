@@ -2,14 +2,13 @@
 
 namespace App\Backend\Modules\Sensors\Cron;
 
+use App\Backend\Modules\Mailer\Helper\MailSender;
 use Entity\Sensor;
 use Exception;
-use Mailer\Helper\Config;
-use Sensors\Helper\Config as SensorsConfigHelper;
-use Mailer\MailerFactory;
 use Model\SensorsManagerPDO;
 use OCFram\Managers;
 use OCFram\PDOFactory;
+use Sensors\Helper\Config as SensorsConfigHelper;
 use Sensors\Helper\Data;
 use Sldevand\Cron\ExecutorInterface;
 
@@ -22,14 +21,11 @@ class CheckSensorActivityExecutor implements ExecutorInterface
     /** @var SensorsManagerPDO */
     protected $manager;
 
-    /** @var Config */
-    protected $configHelper;
-
     /** @var SensorsConfigHelper */
     protected $sensorConfigHelper;
 
-    /** @var \PHPMailer\PHPMailer\PHPMailer */
-    protected $mailer;
+    /** @var MailSender */
+    protected $mailSender;
 
     /**
      * CheckSensorActivityExecutor constructor.
@@ -40,9 +36,8 @@ class CheckSensorActivityExecutor implements ExecutorInterface
     {
         $managers = new Managers('PDO', PDOFactory::getSqliteConnexion());
         $this->manager = $managers->getManagerOf('Sensors');
-        $this->configHelper = new Config($args['app'], $managers->getManagerOf('Configuration\Configuration'));
         $this->sensorConfigHelper = new SensorsConfigHelper($args['app'], $managers->getManagerOf('Configuration\Configuration'));
-        $this->mailer = MailerFactory::create();
+        $this->mailSender = new MailSender($args['app']);
     }
 
     /**
@@ -63,7 +58,20 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         }
 
         if ($preparedSensors) {
-            echo $this->sendMail($preparedSensors);
+            $sensorNames = $this->getSensorNames($preparedSensors);
+            $subject = "Activapi.fr : $sensorNames sensors are inactive";
+            ob_start();
+            require BACKEND . '/Modules/Sensors/Templates/Mail/checkSensorActivity.phtml';
+            $body = ob_get_clean();
+
+            try {
+                if (!$this->mailSender->sendMail($subject, $body)) {
+                    echo 'An error occured when sending mail';
+                }
+
+            } catch (\Exception $exception) {
+                echo $exception->getMessage();
+            }
         }
     }
 
@@ -79,53 +87,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
 
     /**
      * @param Sensor[] $sensors
-     * @return mixed
-     * @throws \PHPMailer\PHPMailer\Exception
-     */
-    public function sendMail(array $sensors)
-    {
-        if ($this->configHelper->getEnabled() !== 'yes') {
-            return 'Mailer module is not enabled';
-        }
-
-        if (!$mailAddress = $this->configHelper->getEmail()) {
-            return 'No mail was configured in Mailer module';
-        }
-
-        if ($this->sensorConfigHelper->getEnabled() !== 'yes') {
-            return 'Sensors mail alerts are disabled';
-        }
-
-        $sensorNames = $this->getSensorNames($sensors);
-        $subject = "Activapi.fr : $sensorNames sensors are inactive";
-
-        ob_start();
-        require BACKEND . '/Modules/Sensors/Templates/Mail/checkSensorActivity.phtml';
-        $body = ob_get_clean();
-
-        $this->mailer->Subject = $subject;
-        $this->mailer->MsgHTML($body);
-        $this->mailer->AddAddress($mailAddress);
-
-        $sent = $this->mailer->send();
-
-        $message = $sent
-            ? 'The message was successfully sent!'
-            : 'An error occured when email was sent';
-
-        return $message;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return 'Check if sensors are inactive for a period, sends notification email' . PHP_EOL;
-    }
-
-    /**
-     * @param Sensor[] $sensors
      * @return string
      */
     protected function getSensorNames(array $sensors): string
@@ -136,5 +97,13 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         }
 
         return implode(',', $sensorNames);
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return 'Check if sensors are inactive for a period, sends notification email' . PHP_EOL;
     }
 }
