@@ -85,7 +85,7 @@ class CheckThermostatPower implements ExecutorInterface
                 echo 'An error occured when sending mail';
                 return;
             }
-            $thermostat->setMailSent(true);
+            $thermostat->setMailSent(1);
             $this->thermostatManager
                 ->save(
                     $thermostat,

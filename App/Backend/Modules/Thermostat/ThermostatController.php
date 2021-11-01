@@ -93,7 +93,7 @@ class ThermostatController extends BackController
             if ($newThermostat->pwr() != '1') {
                 $newThermostat->setLastPwrOff(DateHelper::now());
             } else {
-                $newThermostat->setMailSent(false);
+                $newThermostat->setMailSent(0);
             }
             $thermostatLog->setEtat($postEtat);
             $manager->addThermostatLog($thermostatLog);

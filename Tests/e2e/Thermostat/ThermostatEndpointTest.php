@@ -117,7 +117,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         // Force mail sent to 1
         /** @var Thermostat $thermostat */
         $thermostat = current(self::$thermostatManager->getList());
-        $thermostat->setMailSent(true);
+        $thermostat->setMailSent(1);
         self::$thermostatManager->save($thermostat, ['mode', 'sensor', 'planningName', 'temperature', 'hygrometrie', 'lastTurnOn']);
         /** @var Thermostat $thermostatAfter */
         $thermostatAfter = current(self::$thermostatManager->getList());

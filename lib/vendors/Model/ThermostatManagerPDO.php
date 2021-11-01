@@ -117,7 +117,7 @@ class ThermostatManagerPDO extends ManagerPDO
     public function modify(Thermostat $thermostat)
     {
         $lastPwrOffPart = $thermostat->getLastPwrOff() ? ', lastPwrOff = :lastPwrOff' : '';
-        $mailSentPart = $thermostat->isMailSent() ? ', mailSent = :mailSent' : '';
+        $mailSentPart = !is_null($thermostat->isMailSent()) ? ', mailSent = :mailSent' : '';
 
         $q = $this->prepare('UPDATE thermostat SET nom = :nom, modeid = :modeid, sensorid = :sensorid, planning = :planning, manuel = :manuel, consigne = :consigne, delta = :delta, interne = :interne, etat = :etat, releve=DateTime("now","localtime"), pwr = :pwr, mailSent = :mailSent ' . $lastPwrOffPart . $mailSentPart .' WHERE id = :id');
 
