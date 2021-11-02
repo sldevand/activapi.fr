@@ -84,16 +84,12 @@ class ThermostatController extends BackController
                 'delta' => $newThermostat->delta()
             ]
         );
+        $newThermostat = $this->managePowerChange($newThermostat, $thermostat);
 
         if ($thermostat->hasChanged($newThermostat)) {
             if ($prevEtat != $postEtat) {
                 $thermostatLog->setEtat($prevEtat);
                 $manager->addThermostatLog($thermostatLog);
-            }
-            if ($newThermostat->pwr() != '1') {
-                $newThermostat->setLastPwrOff(DateHelper::now());
-            } else {
-                $newThermostat->setMailSent(0);
             }
             $thermostatLog->setEtat($postEtat);
             $manager->addThermostatLog($thermostatLog);
@@ -105,6 +101,25 @@ class ThermostatController extends BackController
         $manager->modify($newThermostat);
 
         $this->page->addVar('thermostat', $result);
+    }
+
+    /**
+     * @param \Entity\Thermostat $newThermostat
+     * @param \Entity\Thermostat $thermostat
+     * @return \Entity\Thermostat
+     * @throws \Exception
+     */
+    protected function managePowerChange(Thermostat $newThermostat, Thermostat $thermostat)
+    {
+        if ($newThermostat->pwr() == $thermostat->pwr()) {
+            return $newThermostat;
+        }
+        if (!$newThermostat->pwr()) {
+            $newThermostat->setLastPwrOff(DateHelper::now());
+        }
+        $newThermostat->setMailSent(0);
+
+        return $newThermostat;
     }
 
     /**

@@ -378,8 +378,7 @@ class Thermostat extends Entity
     {
         return ($thermostat->etat() != $this->etat()
             || $thermostat->consigne() != $this->consigne()
-            || $thermostat->delta() != $this->delta())
-            || $thermostat->pwr() != $this->pwr();
+            || $thermostat->delta() != $this->delta());
     }
 
     /**
