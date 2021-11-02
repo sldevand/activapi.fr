@@ -11,6 +11,7 @@ use Model\ThermostatManagerPDO;
 use OCFram\Managers;
 use OCFram\PDOFactory;
 use PHPUnit\Framework\TestCase;
+use Tests\Model\Thermostat\mock\ThermostatMock;
 
 /**
  * Class PowerTest
@@ -38,6 +39,15 @@ class PowerTest extends TestCase
         PDOFactory::setPdoAddress(TEST_DB_PATH);
         self::$db = PDOFactory::getSqliteConnexion();
         self::$managers = new Managers('PDO', self::$db);
+        self::dropAndCreateTables();
+    }
+
+    public static function dropAndCreateTables()
+    {
+        if (file_exists(THERMOSTAT_SQL_PATH)) {
+            $sql = file_get_contents(THERMOSTAT_SQL_PATH);
+            self::$db->exec($sql);
+        }
     }
 
     /**
@@ -48,6 +58,14 @@ class PowerTest extends TestCase
         $power = new Power();
         /** @var ThermostatManagerPDO $thermostatManager */
         $thermostatManager = self::$managers->getManagerOf('Thermostat');
+        $thermostat = ThermostatMock::getThermostats('create');
+
+        $success = $thermostatManager->save(
+            $thermostat,
+            ['mode', 'sensor', 'planningName', 'temperature', 'hygrometrie', 'lastTurnOn', 'mailSent']
+        );
+        self::assertTrue($success);
+
         /** @var Thermostat $thermostat */
         $thermostat = current($thermostatManager->getList());
 

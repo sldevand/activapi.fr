@@ -108,7 +108,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         $thermostatArray['pwr'] = '0';
         $result = $this->postRequest($client, $url, $thermostatArray);
         sleep(1);
-        self::assertEquals('Success', $result);
+        self::assertEquals('No need to log : same thermostats', $result);
 
         /** @var Thermostat $thermostatAfterPwrOff */
         $thermostatAfterPwrOff = current(self::$thermostatManager->getList());
@@ -129,7 +129,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
         $thermostatArray['pwr'] = '1';
         $result = $this->postRequest($client, $url, $thermostatArray);
         sleep(1);
-        self::assertEquals('Success', $result);
+        self::assertEquals('No need to log : same thermostats', $result);
         /** @var Thermostat $thermostatAfter */
         $thermostatAfter = current(self::$thermostatManager->getList());
         self::assertTrue($thermostatAfter->pwr() === '1');
