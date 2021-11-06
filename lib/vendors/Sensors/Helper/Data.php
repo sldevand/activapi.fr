@@ -11,5 +11,6 @@ use OCFram\ApplicationComponent;
 class Data extends ApplicationComponent
 {
     const SENSOR_ACTIVITY_TIME = 10;
+    const SENSOR_ALERT_VALUE = 10;
     const SENSOR_CATEGORY_DOOR = 'door';
 }

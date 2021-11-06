@@ -66,9 +66,8 @@ class ConfigurationFormBuilder extends FormBuilder
                             'name' => 'sensor-' . $sensor->id(),
                             'type' => 'text',
                             'value' => $sensor->id(),
-                            'label' => 'Id',
-                            'wrapper' => 'col s2',
-                            'readonly' => true
+                            'readonly' => true,
+                            'hidden' => 'hidden'
                         ]
                     )
                 )
@@ -79,7 +78,7 @@ class ConfigurationFormBuilder extends FormBuilder
                             'type' => 'text',
                             'value' => $sensor->nom(),
                             'label' => 'Nom',
-                            'wrapper' => 'col s6',
+                            'wrapper' => 'col s4',
                             'readonly' => true
                         ]
                     )
@@ -87,12 +86,26 @@ class ConfigurationFormBuilder extends FormBuilder
                 ->add(
                     new NumberField(
                         array(
-                            'name' => $alertTimesPath . '-' . $sensor->id(),
+                            'name' => $alertTimesPath . '-time-' . $sensor->id(),
                             'type' => 'text',
-                            'value' => $times[$sensor->id()] ?? (string)Data::SENSOR_ACTIVITY_TIME,
+                            'value' => $times['time-'. $sensor->id()] ?? (string)Data::SENSOR_ACTIVITY_TIME,
                             'label' => 'time (min) ',
                             'min' => 5,
                             'max' => 2880,
+                            'wrapper' => 'col s4'
+
+                        )
+                    )
+                )
+                ->add(
+                    new NumberField(
+                        array(
+                            'name' => $alertTimesPath . '-value-' . $sensor->id(),
+                            'type' => 'text',
+                            'value' => $times['value-'. $sensor->id()] ?? (string)Data::SENSOR_ALERT_VALUE,
+                            'label' => 'value',
+                            'min' => 0,
+                            'max' => 30,
                             'wrapper' => 'col s4'
 
                         )
