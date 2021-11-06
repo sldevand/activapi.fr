@@ -1,14 +1,15 @@
 <?php
-/** @var \Entity\Sensor[] $preparedSensors */
+/** @var \Entity\Sensor[] $sensors */
 ?>
 
 <h1>Activapi.fr</h1>
-<h3>These sensors are inactive :</h3>
+<h3><?= $subject ?></h3>
 
-<?php foreach ($preparedSensors as $sensor) : ?>
+<?php foreach ($sensors as $sensor) : ?>
     <h4><span><?= $sensor->nom() ?></span></h4>
     <ul>
         <li><span>Radio ID : </span> <span><?= $sensor->radioid() ?></span></li>
+        <li><span>Value 1 : </span> <span><?= $sensor->valeur1() ?></span></li>
         <li><span>Last measure : </span> <span><?= $sensor->releve() ?></span>
     </ul>
 <?php endforeach; ?>

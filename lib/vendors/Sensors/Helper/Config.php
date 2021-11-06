@@ -22,7 +22,7 @@ class Config extends \Helper\Configuration\Config
     /**
      * @return array
      */
-    public function getAlertTimes(): array
+    public function getAlerts(): array
     {
         return json_decode($this->getValue(self::PATH_SENSORS_ALERT_TIMES), true) ?? [];
     }

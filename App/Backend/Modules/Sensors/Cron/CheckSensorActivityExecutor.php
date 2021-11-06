@@ -48,41 +48,47 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         echo $this->getDescription();
         $sensors = $this->manager->getList();
 
-        $preparedSensors = [];
+        $inactiveSensors = [];
+        $underValueSensors = [];
         foreach ($sensors as $sensor) {
-            $alertTimes = $this->sensorConfigHelper->getAlertTimes();
-            $alertTime = $alertTimes['time-' . $sensor->id()] ?? Data::SENSOR_ACTIVITY_TIME;
+            $alerts = $this->sensorConfigHelper->getAlerts();
+            $alertTime = $alerts['time-' . $sensor->id()] ?? Data::SENSOR_ACTIVITY_TIME;
             if ($this->manager->checkSensorActivity($sensor, $alertTime)) {
-                $preparedSensors[] = $this->prepareNotification($sensor->id());
+                $inactiveSensors[] = $this->manager->getUnique($sensor->id());
+            }
+            $alertValue = $alerts['value-' . $sensor->id()] ?? Data::SENSOR_ALERT_VALUE;
+            if ($this->manager->isSensorValueUnder($sensor, $alertValue)) {
+                $underValueSensors[] = $this->manager->getUnique($sensor->id());
             }
         }
 
-        if ($preparedSensors) {
-            $sensorNames = $this->getSensorNames($preparedSensors);
+        if ($inactiveSensors) {
+            $sensorNames = $this->getSensorNames($inactiveSensors);
             $subject = "Activapi.fr : $sensorNames sensors are inactive";
-            ob_start();
-            require BACKEND . '/Modules/Sensors/Templates/Mail/checkSensorActivity.phtml';
-            $body = ob_get_clean();
 
-            try {
-                if (!$this->mailSender->sendMail($subject, $body)) {
-                    echo 'An error occured when sending mail';
-                }
+            $this->sendMail($inactiveSensors, $subject);
+        }
 
-            } catch (\Exception $exception) {
-                echo $exception->getMessage();
-            }
+        if ($underValueSensors) {
+            $sensorNames = $this->getSensorNames($underValueSensors);
+            $subject = "Activapi.fr : $sensorNames sensors are too cold";
+            $this->sendMail($underValueSensors, $subject);
         }
     }
 
-    /**
-     * @param int $sensorId
-     * @return null|\OCFram\Entity
-     * @throws Exception
-     */
-    public function prepareNotification(int $sensorId)
-    {
-        return $this->manager->getUnique($sensorId);
+
+    protected function sendMail (array $sensors, $subject) {
+        ob_start();
+        require BACKEND . '/Modules/Sensors/Templates/Mail/checkSensorActivity.phtml';
+        $body = ob_get_clean();
+
+        try {
+            if (!$this->mailSender->sendMail($subject, $body)) {
+                echo 'An error occured when sending mail';
+            }
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
+        }
     }
 
     /**

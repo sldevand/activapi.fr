@@ -96,4 +96,21 @@ class SensorsManagerPDO extends ManagerPDO
 
         return false;
     }
+
+    /**
+     * @param \Entity\Sensor $sensor
+     * @param int $alertValue
+     * @return bool
+     */
+    public function isSensorValueUnder(Sensor $sensor, int $alertValue = Data::SENSOR_ALERT_VALUE): bool
+    {
+        if ($sensor->categorie() === Data::SENSOR_CATEGORY_DOOR
+            || $sensor->valeur1() >= $alertValue
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 }
+

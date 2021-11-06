@@ -186,6 +186,31 @@ class SensorsManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInt
     }
 
     /**
+     * @throws \Exception
+     */
+    public function testIsSensorValueUnder()
+    {
+        self::dropAndCreateTables();
+        $manager = $this->getManager();
+        $sensor = SensorsMock::getSensors()[0];
+        $sensor->setValeur1('20');
+        $result = $manager->isSensorValueUnder($sensor, '25');
+        self::assertTrue($result);
+        $result = $manager->isSensorValueUnder($sensor, 25);
+        self::assertTrue($result);
+
+        $result = $manager->isSensorValueUnder($sensor, '20');
+        self::assertFalse($result);
+        $result = $manager->isSensorValueUnder($sensor, 20);
+        self::assertFalse($result);
+
+        $result = $manager->isSensorValueUnder($sensor, '15');
+        self::assertFalse($result);
+        $result = $manager->isSensorValueUnder($sensor, 15);
+        self::assertFalse($result);
+    }
+
+    /**
      * @return array[]
      * @throws \Exception
      */
