@@ -9,4 +9,5 @@
     <module name="Crontab" version="1.0.1" />
     <module name="Configuration" version="1.0.1" />
     <module name="User" version="1.0.1" />
+    <module name="Notification" version="1.0.1" />
 </modules>
