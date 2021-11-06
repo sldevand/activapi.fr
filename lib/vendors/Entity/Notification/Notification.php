@@ -3,7 +3,6 @@
 namespace Entity\Notification;
 
 use OCFram\Entity;
-use SFram\Traits\Entity\EntityTimestampableTrait;
 
 /**
  * Class Notification
@@ -11,8 +10,6 @@ use SFram\Traits\Entity\EntityTimestampableTrait;
  */
 class Notification extends Entity
 {
-    use EntityTimestampableTrait;
-
     /** @var int */
     protected $entityId;
 

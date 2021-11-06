@@ -363,7 +363,7 @@ class ManagerPDO extends Manager
      */
     protected function where($field, $value, $sql, $bind = null, $operator = '=')
     {
-        if (empty($value)) {
+        if (empty($value) && $value !== 0 && $value !== '0') {
             return $sql;
         }
 
