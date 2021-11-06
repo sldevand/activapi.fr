@@ -51,7 +51,7 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         $preparedSensors = [];
         foreach ($sensors as $sensor) {
             $alertTimes = $this->sensorConfigHelper->getAlertTimes();
-            $alertTime = $alertTimes[$sensor->id()] ?? Data::SENSOR_ACTIVITY_TIME;
+            $alertTime = $alertTimes['time-' . $sensor->id()] ?? Data::SENSOR_ACTIVITY_TIME;
             if ($this->manager->checkSensorActivity($sensor, $alertTime)) {
                 $preparedSensors[] = $this->prepareNotification($sensor->id());
             }
