@@ -45,7 +45,7 @@ class ConfigurationFormBuilder extends FormBuilder
                 new SwitchField(
                     [
                         'id' => 'action-thermostat-enable',
-                        'title' => 'Enable power on',
+                        'title' => 'Enable email alerts',
                         'name' => Config::PATH_THERMOSTAT_ENABLE,
                         'required' => true,
                         'checked' => $enableFieldConfig == 'yes' ? true : false,
