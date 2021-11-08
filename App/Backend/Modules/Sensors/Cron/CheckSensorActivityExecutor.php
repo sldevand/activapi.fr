@@ -20,6 +20,10 @@ use Sldevand\Cron\ExecutorInterface;
  */
 class CheckSensorActivityExecutor implements ExecutorInterface
 {
+    const ALERT_INACTIVE = 'inactive';
+
+    const ALERT_UNDERVALUE = 'underValue';
+
     /** @var SensorsManagerPDO */
     protected $sensorsManager;
 
@@ -52,30 +56,39 @@ class CheckSensorActivityExecutor implements ExecutorInterface
     public function execute()
     {
         echo $this->getDescription();
-        $sensors = $this->sensorsManager->getList();
+        if ($this->sensorConfigHelper->getEnabled() !== 'yes') {
+            echo 'Sensor alerts are disabled !' . PHP_EOL;
+            return;
+        }
+
+        if (!$alerts = $this->sensorConfigHelper->getAlerts()) {
+            echo'No Sensor alerts found !' . PHP_EOL;
+            return;
+        }
 
         $inactiveSensors = [];
         $underValueSensors = [];
+        $sensors = $this->sensorsManager->getList();
         foreach ($sensors as $sensor) {
-            $alerts = $this->sensorConfigHelper->getAlerts();
             $alertTime = $alerts['time-' . $sensor->id()] ?? Data::SENSOR_ACTIVITY_TIME;
             if ($this->sensorsManager->checkSensorActivity($sensor, $alertTime)) {
                 $inactiveSensors[] = $this->sensorsManager->getUnique($sensor->id());
             }
 
-            $this->manageUnderValueSensors($sensor, $underValueSensors);
+            $alertValue = $alerts['value-' . $sensor->id()] ?? Data::SENSOR_ALERT_VALUE;
+            $this->manageUnderValueSensors($sensor, $underValueSensors, $alertValue);
         }
 
         if ($inactiveSensors) {
             $sensorNames = $this->getSensorNames($inactiveSensors);
             $subject = "Activapi.fr : $sensorNames sensors are inactive";
-            $this->sendMail($inactiveSensors, $subject, 'inactive', true);
+            $this->sendMail($inactiveSensors, $subject, self::ALERT_INACTIVE, true);
         }
 
         if ($underValueSensors) {
             $sensorNames = $this->getSensorNames($underValueSensors);
             $subject = "Activapi.fr : $sensorNames sensors are too cold";
-            $this->sendMail($underValueSensors, $subject, 'underValue');
+            $this->sendMail($underValueSensors, $subject, self::ALERT_UNDERVALUE);
         }
     }
 
@@ -112,7 +125,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         } catch (\Exception $exception) {
             echo $exception->getMessage();
         }
-
     }
 
     /**
@@ -157,21 +169,22 @@ class CheckSensorActivityExecutor implements ExecutorInterface
     /**
      * @param Sensor $sensor
      * @param array $underValueSensors
+     * @param int $alertValue
      * @throws Exception
      */
-    protected function manageUnderValueSensors(Sensor $sensor,array &$underValueSensors) {
-        $alertValue = $alerts['value-' . $sensor->id()] ?? Data::SENSOR_ALERT_VALUE;
+    protected function manageUnderValueSensors(Sensor $sensor, array &$underValueSensors, int $alertValue)
+    {
         if ($this->sensorsManager->isSensorValueUnder($sensor, $alertValue)) {
             $underValueSensors[] = $this->sensorsManager->getUnique($sensor->id());
         } else {
             $notification = current($this->notificationManager->getListBy(
                 Sensor::class,
-                'underValue',
+                self::ALERT_UNDERVALUE,
                 1,
                 $sensor->id()
             ));
 
-            if($notification && $notification->getSent()) {
+            if ($notification && $notification->getSent()) {
                 $notification->setSent(0);
                 $this->notificationManager->save($notification);
             }
@@ -183,6 +196,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
      */
     public function getDescription()
     {
-        return 'Check if sensors are inactive for a period, sends notification email' . PHP_EOL;
+        return 'Sensor alerts notification sender' . PHP_EOL;
     }
 }
