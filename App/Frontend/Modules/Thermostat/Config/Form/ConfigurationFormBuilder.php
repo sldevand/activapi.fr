@@ -70,6 +70,16 @@ class ConfigurationFormBuilder extends FormBuilder
                         'wrapper' => 'col s6 m10'
                     ]
                 )
+            )
+            ->add(
+                new StringField(
+                    [
+                        'label' => 'Power off emails',
+                        'name' => Config::PATH_THERMOSTAT_OFF_EMAILS,
+                        'value' => $this->getData(Config::PATH_THERMOSTAT_OFF_EMAILS)->getConfigValue(),
+                        'required' => false
+                    ]
+                )
             );
     }
 }

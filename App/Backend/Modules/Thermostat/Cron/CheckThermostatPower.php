@@ -70,8 +70,8 @@ class CheckThermostatPower implements ExecutorInterface
         if ($thermostat->pwr() || !$thermostat->getLastPwrOff()) {
             return;
         }
-
-        if (!$this->powerHelper->canSendPwrOnEmail($thermostat, $delay)) {
+        $emails = $this->thermostatConfigHelper->getPowerOffEmails();
+        if (!$this->powerHelper->canSendPwrOnEmail($thermostat, $delay, $emails)) {
             return;
         }
 
