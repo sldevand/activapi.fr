@@ -62,7 +62,7 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         }
 
         if (!$alerts = $this->sensorConfigHelper->getAlerts()) {
-            echo'No Sensor alerts found !' . PHP_EOL;
+            echo 'No Sensor alerts found !' . PHP_EOL;
             return;
         }
 
@@ -116,7 +116,14 @@ class CheckSensorActivityExecutor implements ExecutorInterface
             require BACKEND . '/Modules/Sensors/Templates/Mail/checkSensorActivity.phtml';
             $body = ob_get_clean();
 
-            if (!$sent = $this->mailSender->sendMail($subject, $body)) {
+            $emails = [];
+            if ($alertType === self::ALERT_INACTIVE) {
+                $emails = $this->sensorConfigHelper->getActivityEmails();
+            }
+            if ($alertType === self::ALERT_UNDERVALUE) {
+                $emails = $this->sensorConfigHelper->getUndervalueEmails();
+            }
+            if (!$sent = $this->mailSender->sendMail($subject, $body, $emails)) {
                 echo 'An error occured when sending mail';
             }
             if (!$ignoreNotifications) {

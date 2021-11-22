@@ -37,23 +37,26 @@ class MailSender extends ApplicationComponent
     /**
      * @param string $subject
      * @param string $body
-     * @return string
+     * @param array $mails
+     * @return bool
      * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \Exception
      */
-    public function sendMail(string $subject, string $body)
+    public function sendMail(string $subject, string $body, array $mails = [])
     {
         if ($this->configHelper->getEnabled() !== 'yes') {
             throw new \Exception('Mailer module is not enabled');
         }
 
-        if (!$mailAddress = $this->configHelper->getEmail()) {
+        if (!$mailerEmail = $this->configHelper->getEmail()) {
             throw new \Exception('No mail was configured in Mailer module');
         }
 
+        $mails = array_merge([$mailerEmail], $mails);
         $this->mailer->Subject = $subject;
         $this->mailer->MsgHTML($body);
-        $this->mailer->AddAddress($mailAddress);
+        foreach ($mails as $mail) {
+            $this->mailer->AddAddress($mail);
+        }
 
         return $this->mailer->send();
     }

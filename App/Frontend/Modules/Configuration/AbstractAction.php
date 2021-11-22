@@ -84,14 +84,14 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
         $this->beforeDoPost($configurations, $form,$request);
         $processed = 0;
         foreach ($configurations as $key => $configuration) {
-            if (!$requestConfigValue = $request->postData($key)) {
+            if (!$request->postData($key) && $request->postData($key) !== '') {
                 $this->app()->user()->setFlash("Missing $key parameter in post");
                 $this->app->httpResponse()->redirect($this->dataHelper->getConfigurationIndexUrl());
                 return;
             }
 
             $configuration->setConfigKey($key);
-            $configuration->setConfigValue($requestConfigValue);
+            $configuration->setConfigValue($request->postData($key));
 
             $fh = new ConfigurationFormHandler($form, $this->manager, $request, $configuration);
             if ($fh->process()) {

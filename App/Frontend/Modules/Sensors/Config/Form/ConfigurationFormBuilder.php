@@ -52,6 +52,30 @@ class ConfigurationFormBuilder extends FormBuilder
                         'separator' => 'bottom'
                     ]
                 )
+            )
+            ->add(
+                new StringField(
+                    [
+                        'id' => 'action-sensors-undervalue-emails',
+                        'title' => 'Undervalue alert emails',
+                        'label' => 'Undervalue alert emails',
+                        'name' => Config::PATH_SENSORS_ALERT_UNDERVALUE_EMAILS,
+                        'required' => false,
+                        'value' =>  $this->getData(Config::PATH_SENSORS_ALERT_UNDERVALUE_EMAILS)->getConfigValue()
+                    ]
+                )
+            )
+            ->add(
+                new StringField(
+                    [
+                        'id' => 'action-sensors-activity-emails',
+                        'title' => 'Activity alert emails',
+                        'label' => 'Activity alert emails',
+                        'name' => Config::PATH_SENSORS_ALERT_ACTIVITY_EMAILS,
+                        'required' => false,
+                        'value' => $this->getData(Config::PATH_SENSORS_ALERT_ACTIVITY_EMAILS)->getConfigValue()
+                    ]
+                )
             );
         $timesConfig = $this->getData(Config::PATH_SENSORS_ALERT_TIMES);
         $times = json_decode($timesConfig->getConfigValue(), true);

@@ -75,4 +75,14 @@ class Config extends ApplicationComponent implements ConfigInterface
 
         return $configurations;
     }
+
+    /**
+     * @param $delimiter
+     * @param $string
+     * @return array
+     */
+    protected function cleanExplode($delimiter, $string)
+    {
+        return array_filter(array_map('trim', explode($delimiter, trim($string))));
+    }
 }
