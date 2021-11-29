@@ -10,6 +10,7 @@ class Config extends \Helper\Configuration\Config
 {
     const PATH_THERMOSTAT_ENABLE = 'thermostat/power/enable';
     const PATH_THERMOSTAT_DELAY = 'thermostat/power/delay';
+    const PATH_THERMOSTAT_OFF_EMAILS = 'thermostat/power/off_emails';
 
     /**
      * @return null|string
@@ -30,12 +31,21 @@ class Config extends \Helper\Configuration\Config
     /**
      * @return array
      */
+    public function getPowerOffEmails(): array
+    {
+        return $this->cleanExplode(',' , $this->getValue(self::PATH_THERMOSTAT_OFF_EMAILS));
+    }
+
+    /**
+     * @return array
+     */
     public function getConfigurations(): array
     {
         return parent::getConfigs(
             [
                 self::PATH_THERMOSTAT_ENABLE,
-                self::PATH_THERMOSTAT_DELAY
+                self::PATH_THERMOSTAT_DELAY,
+                self::PATH_THERMOSTAT_OFF_EMAILS
             ]
         );
     }
