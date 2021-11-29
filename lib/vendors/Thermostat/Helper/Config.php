@@ -44,7 +44,8 @@ class Config extends \Helper\Configuration\Config
         return parent::getConfigs(
             [
                 self::PATH_THERMOSTAT_ENABLE,
-                self::PATH_THERMOSTAT_DELAY
+                self::PATH_THERMOSTAT_DELAY,
+                self::PATH_THERMOSTAT_OFF_EMAILS
             ]
         );
     }

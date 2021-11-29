@@ -71,7 +71,7 @@ class CheckThermostatPower implements ExecutorInterface
             return;
         }
         $emails = $this->thermostatConfigHelper->getPowerOffEmails();
-        if (!$this->powerHelper->canSendPwrOnEmail($thermostat, $delay, $emails)) {
+        if (!$this->powerHelper->canSendPwrOnEmail($thermostat, $delay)) {
             return;
         }
 
@@ -81,7 +81,7 @@ class CheckThermostatPower implements ExecutorInterface
             require BACKEND . '/Modules/Thermostat/Templates/Mail/checkThermostatPower.phtml';
             $body = ob_get_clean();
 
-            if (!$this->mailSender->sendMail($subject, $body)) {
+            if (!$this->mailSender->sendMail($subject, $body, $emails)) {
                 echo 'An error occured when sending mail';
                 return;
             }
