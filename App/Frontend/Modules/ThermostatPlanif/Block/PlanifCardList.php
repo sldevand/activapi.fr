@@ -43,8 +43,12 @@ class PlanifCardList
 
             $domId = current($thermostatPlannings)["nom"]["nom"];
             $cardTitle = 'Thermostat : Planning  ' . $domId;
-            $backUrl = $this->baseAddress . "thermostat-planif-delete-" . $thermostatPlanning["nomid"];
-            $cards[] = PlanifCard::create($domId, $cardTitle, $backUrl, $thermostatDatas, $hideColumns);;
+            $urls = [
+                'back' => $this->baseAddress . "thermostat-planif-delete-" . $thermostatPlanning["nomid"],
+                'duplicate' =>  $this->baseAddress . "thermostat-planif-duplicate-" . $thermostatPlanning["nomid"]
+            ];
+
+            $cards[] = PlanifCard::create($domId, $cardTitle, $urls, $thermostatDatas, $hideColumns);
         }
 
         if (empty($cards)) {
