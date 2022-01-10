@@ -13,6 +13,7 @@ use Materialize\FormView;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
+use OCFram\Block;
 use OCFram\HTTPRequest;
 
 /**
@@ -173,11 +174,53 @@ class ThermostatPlanifController extends BackController
     }
 
     /**
+     * @param \OCFram\HTTPRequest $request
+     * @throws \Exception
+     */
+    public function executeDuplicate(HTTPRequest $request)
+    {
+        if ($request->method() === HTTPRequest::POST) {
+            if ($request->getExists('id')) {
+                $id = $request->getData('id');
+                $result = $this->manager->duplicate($id);
+                if ($result) {
+                    $this->deleteActionCache('index');
+                }
+                $this->redirectBack();
+            }
+        } else {
+            if ($request->getExists('id')) {
+                $id = $request->getData('id');
+                $nom = $this->manager->getNom($id);
+            }
+        }
+
+        $domId = 'Duplication';
+        $backUrl = $this->baseAddress . 'thermostat-planif';
+        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl . '#' . $nom)->getHtml();
+
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->duplicateFormView());
+
+        $this->page
+            ->addVar('title', "Dupliquer Planning $nom")
+            ->addVar('card', $card);
+    }
+
+    /**
      * @param string $anchor
      */
     protected function redirectBack(string $anchor = '')
     {
         $this->app->httpResponse()->redirect($this->getRouteUrl($anchor));
+    }
+
+    /**
+     * @return false|string
+     */
+    public function duplicateFormView()
+    {
+        return Block::getTemplate('./Block/duplicateFormView.phtml');
     }
 
 

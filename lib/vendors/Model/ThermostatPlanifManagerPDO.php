@@ -283,6 +283,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         return $planifs;
     }
 
+    public function duplicate($id)
+    {
+
+    }
+
     protected function getIgnoreProperties()
     {
         return ['nom', 'defaultMode', 'mode', 'modes'];

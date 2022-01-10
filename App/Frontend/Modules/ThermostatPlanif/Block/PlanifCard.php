@@ -31,7 +31,7 @@ class PlanifCard
 
         if (isset($urls['back'])) {
             $linkDelete = new Link(
-                'Supprimer ce Planning',
+                'Supprimer',
                 $urls['back'],
                 'delete',
                 'secondaryTextColor'

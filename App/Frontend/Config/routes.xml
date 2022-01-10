@@ -26,6 +26,7 @@
     <route url="\/thermostat-planif-add" module="ThermostatPlanif" action="add"/>
     <route url="\/thermostat-planif-edit-([0-9]+)" module="ThermostatPlanif" action="edit" vars="id"/>
     <route url="\/thermostat-planif-delete-([0-9]+)" module="ThermostatPlanif" action="delete" vars="id"/>
+    <route url="\/thermostat-planif-duplicate-([0-9]+)" module="ThermostatPlanif" action="duplicate" vars="id"/>
 
     <route url="\/thermostat-modes" module="ThermostatModes" action="index"/>
     <route url="\/thermostat-modes-add" module="ThermostatModes" action="edit"/>
