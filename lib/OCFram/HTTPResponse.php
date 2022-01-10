@@ -18,7 +18,14 @@ class HTTPResponse extends ApplicationComponent
      */
     public function redirect($location)
     {
+        header('Status: 301 Moved Permanently', false, 301);
         header('Location: ' . $location);
+        exit;
+    }
+
+    public function redirectReferer()
+    {
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 

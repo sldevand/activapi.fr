@@ -3,8 +3,10 @@
 namespace Model;
 
 use Entity\ThermostatPlanif;
+use Entity\ThermostatPlanifNom;
 use Exception;
 use OCFram\Managers;
+use SFram\Utils;
 
 /**
  * Class ThermostatPlanifManagerPDO
@@ -34,7 +36,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     public function delete($id)
     {
         $resCorresp = $this->dao->exec("DELETE FROM thermostat_corresp WHERE id = $id");
-        $resPlanif  = $this->dao->exec("DELETE FROM $this->tableName WHERE nomid = $id");
+        $resPlanif = $this->dao->exec("DELETE FROM $this->tableName WHERE nomid = $id");
 
         return $resCorresp && $resPlanif;
     }
@@ -182,11 +184,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param \Entity\ThermostatPlanifNom $nom
+     * @param ThermostatPlanifNom $nom
      * @return int
      * @throws Exception
      */
-    public function addPlanifTable(\Entity\ThermostatPlanifNom $nom)
+    public function addPlanifTable(ThermostatPlanifNom $nom)
     {
         $nomId = (int)$this->addNom($nom);
         if ($nomId <= 0) {
@@ -212,16 +214,16 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param \Entity\ThermostatPlanifNom $name
+     * @param ThermostatPlanifNom $name
      * @return string
      * @throws Exception
      */
-    public function addNom(\Entity\ThermostatPlanifNom $name)
+    public function addNom(ThermostatPlanifNom $name)
     {
         $thermostaPlanifNoms = $this->getNoms();
         foreach ($thermostaPlanifNoms as $key => $thermostaPlanifNom) {
             if ($thermostaPlanifNom->nom() == $name->nom()) {
-                return "Ce Nom existe déjà!";
+                throw new \Exception('Ce nom existe déjà !');
             }
         }
 
@@ -236,7 +238,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     /**
      * @param int | string $value
      * @param string $field
-     * @return \Entity\ThermostatPlanifNom
+     * @return ThermostatPlanifNom
      * @throws \Exception
      */
     public function getNom($value, $field = 'id')
@@ -283,9 +285,22 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         return $planifs;
     }
 
-    public function duplicate($id)
+    /**
+     * @param $id
+     * @param $nom
+     * @throws Exception
+     */
+    public function duplicate($id, string $nom)
     {
-
+        $nomToAdd = new ThermostatPlanifNom(['nom' => $nom]);
+        $nomId = $this->addNom($nomToAdd);
+        $planifDays = $this->getList($id);
+        foreach ($planifDays as $planifDay) {
+            $planifDayArray = Utils::objToArray($planifDay);
+            unset($planifDayArray['id']);
+            $planifDayArray['nomid'] = $nomId;
+            $this->add(new ThermostatPlanif($planifDayArray), $this->getIgnoreProperties());
+        }
     }
 
     protected function getIgnoreProperties()
