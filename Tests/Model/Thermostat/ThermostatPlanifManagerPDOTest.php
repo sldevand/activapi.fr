@@ -78,7 +78,12 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
         $manager = $this->getManager();
         $thermostatPlanifNom = self::deepCopy(ThermostatPlanifMock::getThermostatPlanifNom());
         $thermostatPlanifNom->setId('1');
-        $manager->addPlanifTable($thermostatPlanifNom);
+        try {
+            $manager->addPlanifTable($thermostatPlanifNom);
+        } catch (\Exception $exception) {
+            self::assertTrue($exception->getMessage() === 'Ce nom existe déjà !');
+        }
+
         $thermostatPlanif = $manager->getUnique(1);
         $thermostatPlanif
             ->setHeure1Start('10:00:00')
@@ -104,7 +109,11 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
 
         $manager = $this->getManager();
         foreach ($thermostatPlanifs as $thermostatPlanif) {
-            $manager->save($thermostatPlanif);
+            try {
+                $manager->save($thermostatPlanif);
+            } catch (\Exception $exception) {
+                self::assertTrue($exception->getMessage() === 'Ce nom existe déjà !');
+            }
         }
 
         $persisted = $manager->getAll();
@@ -123,7 +132,11 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
 
         $manager = $this->getManager();
         foreach ($thermostatPlanifs as $thermostatPlanif) {
-            $manager->save($thermostatPlanif);
+            try {
+                $manager->save($thermostatPlanif);
+            } catch (\Exception $exception) {
+                self::assertTrue($exception->getMessage() === 'Ce nom existe déjà !');
+            }
         }
 
         // Test filtered by categorie inter list
