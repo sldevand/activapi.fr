@@ -15,7 +15,7 @@ class PlanifCard
     /**
      * @param string $domId
      * @param string $cardTitle
-     * @param string $backUrl
+     * @param array $urls
      * @param array $thermostatDatas
      * @param array $hideColumns
      * @return \Materialize\Card\Card
@@ -23,18 +23,31 @@ class PlanifCard
     public static function create(
         string $domId,
         string $cardTitle,
-        string $backUrl,
+        array $urls,
         array $thermostatDatas,
         array $hideColumns
     ): Card {
         $card = WidgetFactory::makeCard($domId, $cardTitle);
 
-        $linkDelete = new Link(
-            'Supprimer ce Planning',
-            $backUrl,
-            'delete', 'secondaryTextColor'
-        );
-        $card->addContent($linkDelete->getHtml());
+        if (isset($urls['back'])) {
+            $linkDelete = new Link(
+                'Supprimer',
+                $urls['back'],
+                'delete',
+                'secondaryTextColor'
+            );
+            $card->addContent($linkDelete->getHtml());
+        }
+
+        if (isset($urls['duplicate'])) {
+            $linkDuplicate = new Link(
+                'Dupliquer',
+                $urls['duplicate'],
+                'content_copy',
+                'primaryTextDarkColor'
+            );
+            $card->addContent($linkDuplicate->getHtml());
+        }
 
         $table = WidgetFactory::makeTable($domId, $thermostatDatas, true, $hideColumns);
 

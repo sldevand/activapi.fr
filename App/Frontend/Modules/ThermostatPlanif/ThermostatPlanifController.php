@@ -13,6 +13,7 @@ use Materialize\FormView;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
+use OCFram\Block;
 use OCFram\HTTPRequest;
 
 /**
@@ -21,6 +22,8 @@ use OCFram\HTTPRequest;
  */
 class ThermostatPlanifController extends BackController
 {
+    const DUPLICATE_FORM_VIEW_TEMPLATE = __DIR__ . '/Block/duplicateFormView.phtml';
+
     use FormView;
 
     /** @var \Model\ThermostatPlanifManagerPDO */
@@ -143,23 +146,20 @@ class ThermostatPlanifController extends BackController
      */
     public function executeDelete(HTTPRequest $request)
     {
-        $nom = '';
-        if ($request->method() === HTTPRequest::POST) {
-            if ($request->getExists('id')) {
-                $id = $request->getData('id');
-                $result = $this->manager->delete($id);
-                if ($result) {
-                    $this->deleteActionCache('index');
-                }
-                $this->redirectBack();
-            }
-        } else {
-            if ($request->getExists('id')) {
-                $id = $request->getData('id');
-                $nom = $this->manager->getNom($id);
-            }
+        if (!$id = $request->getData('id')) {
+            $this->app()->user()->setFlash('No id was found in the request for deletion');
+            $this->deleteActionCache('index');
+            return $this->redirectBack();
         }
 
+        if ($request->method() === HTTPRequest::POST) {
+            if ($this->manager->delete($id)) {
+                $this->deleteActionCache('index');
+            }
+            return $this->redirectBack();
+        }
+
+        $nom = $this->manager->getNom($id);
         $domId = 'Suppression';
         $backUrl = $this->baseAddress . 'thermostat-planif';
         $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl . '#' . $nom)->getHtml();
@@ -173,11 +173,55 @@ class ThermostatPlanifController extends BackController
     }
 
     /**
+     * @param \OCFram\HTTPRequest $request
+     * @throws \Exception
+     */
+    public function executeDuplicate(HTTPRequest $request)
+    {
+        if (!$id = $request->getData('id')) {
+            $this->app()->user()->setFlash('No id was found in the request for duplication');
+            $this->deleteActionCache('index');
+            return $this->redirectBack();
+        }
+
+        if ($request->method() === HTTPRequest::POST) {
+            try {
+                $nom = $request->postData('nom');
+                $this->deleteActionCache('index');
+                $this->manager->duplicate($id, $nom);
+            } catch (\Exception $exception) {
+                $this->app()->user()->setFlash($exception->getMessage());
+                return $this->app->httpResponse()->redirectReferer();
+            }
+            return $this->redirectBack();
+        }
+
+        $nom = $this->manager->getNom($id);
+        $domId = 'Duplication';
+        $backUrl = $this->baseAddress . 'thermostat-planif';
+        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl . '#' . $nom)->getHtml();
+
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->duplicateFormView($nom));
+
+        $this->page->addVar('card', $card);
+    }
+
+    /**
      * @param string $anchor
      */
     protected function redirectBack(string $anchor = '')
     {
         $this->app->httpResponse()->redirect($this->getRouteUrl($anchor));
+    }
+
+    /**
+     * @param array $args
+     * @return false|string
+     */
+    public function duplicateFormView(...$args)
+    {
+        return Block::getTemplate(  self::DUPLICATE_FORM_VIEW_TEMPLATE, ...$args);
     }
 
 
