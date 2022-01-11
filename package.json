@@ -1,6 +1,6 @@
 {
     "name": "activapi.fr",
-    "version": "1.7.0",
+    "version": "v1.7.1",
     "description": "activapi ====== **activapi** is a home automation administration WebApp/API  included in my home automation solution ActivHome. <br>",
     "main": "index.js",
     "directories": {

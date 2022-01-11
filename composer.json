@@ -52,5 +52,6 @@
     },
     "scripts": {
         "tests": "php vendor/phpunit/phpunit/phpunit -c \"Tests/phpunit.xml\""
-    }
+    },
+    "version": "v1.7.1"
 }
