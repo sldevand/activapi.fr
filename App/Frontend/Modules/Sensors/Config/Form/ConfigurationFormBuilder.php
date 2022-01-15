@@ -125,10 +125,9 @@ class ConfigurationFormBuilder extends FormBuilder
                     new NumberField(
                         array(
                             'name' => $alertTimesPath . '-value-' . $sensor->id(),
-                            'type' => 'text',
                             'value' => $times['value-'. $sensor->id()] ?? (string)Data::SENSOR_ALERT_VALUE,
                             'label' => 'value',
-                            'min' => 0,
+                            'min' => -30,
                             'max' => 30,
                             'wrapper' => 'col s4'
 
