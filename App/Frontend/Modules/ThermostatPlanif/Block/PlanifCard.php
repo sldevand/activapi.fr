@@ -5,6 +5,7 @@ namespace App\Frontend\Modules\ThermostatPlanif\Block;
 use Materialize\Card\Card;
 use Materialize\Link\Link;
 use Materialize\WidgetFactory;
+use OCFram\Block;
 
 /**
  * Class PlanifCard
@@ -12,6 +13,8 @@ use Materialize\WidgetFactory;
  */
 class PlanifCard
 {
+    const TEST_BUTTON_LAYOUT_TEMPLATE = __DIR__ . '/../Block/buttonsLayout.phtml';
+
     /**
      * @param string $domId
      * @param string $cardTitle
@@ -28,29 +31,39 @@ class PlanifCard
         array $hideColumns
     ): Card {
         $card = WidgetFactory::makeCard($domId, $cardTitle);
-
+        $links = [];
         if (isset($urls['back'])) {
-            $linkDelete = new Link(
+            $links['back'] = new Link(
                 'Supprimer',
                 $urls['back'],
                 'delete',
                 'secondaryTextColor'
             );
-            $card->addContent($linkDelete->getHtml());
         }
 
         if (isset($urls['duplicate'])) {
-            $linkDuplicate = new Link(
+            $links['duplicate'] = new Link(
                 'Dupliquer',
                 $urls['duplicate'],
                 'content_copy',
                 'primaryTextDarkColor'
             );
-            $card->addContent($linkDuplicate->getHtml());
         }
 
+        $buttonsLayout = self::getButtonsLayout($links);
+
+        $card->addContent($buttonsLayout);
         $table = WidgetFactory::makeTable($domId, $thermostatDatas, true, $hideColumns);
 
         return $card->addContent($table->getHtml());
+    }
+
+    /**
+     * @param array $links
+     * @return string
+     */
+    protected static function getButtonsLayout(array $links): string
+    {
+        return Block::getTemplate(self::TEST_BUTTON_LAYOUT_TEMPLATE, $links);
     }
 }
