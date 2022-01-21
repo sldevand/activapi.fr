@@ -176,4 +176,12 @@ class Link extends Widget
         $this->_align = $align;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function align(): string
+    {
+        return $this->_align ?? '';
+    }
 }

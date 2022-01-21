@@ -39,6 +39,7 @@ class PlanifCard
                 'delete',
                 'secondaryTextColor'
             );
+            $links['back']->setAlign('left');
         }
 
         if (isset($urls['duplicate'])) {
@@ -48,6 +49,7 @@ class PlanifCard
                 'content_copy',
                 'primaryTextDarkColor'
             );
+            $links['duplicate']->setAlign('right');
         }
 
         $buttonsLayout = self::getButtonsLayout($links);
