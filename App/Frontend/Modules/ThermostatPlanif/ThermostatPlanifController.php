@@ -48,11 +48,15 @@ class ThermostatPlanifController extends BackController
      */
     public function executeIndex(HTTPRequest $request)
     {
+        /** @var \Model\ThermostatManagerPDO $thermostatManager */
+        $thermostatManager = $this->managers->getManagerOf('Thermostat');
+        $thermostat = current($thermostatManager->getList());
+
         $thermostatPlanningsContainer = $this->manager->getListArray();
         $hideColumns = ['id', 'nomid', 'nom', 'modeid', 'defaultModeid'];
 
         $planifCardList = new PlanifCardList($this->baseAddress);
-        $cards = $planifCardList->create($thermostatPlanningsContainer, $hideColumns);
+        $cards = $planifCardList->create($thermostatPlanningsContainer, $hideColumns, $thermostat->planning());
 
         $addPlanifFab = new FloatingActionButton(
             [

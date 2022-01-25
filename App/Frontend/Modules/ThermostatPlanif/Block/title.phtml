@@ -1,0 +1,15 @@
+<?php
+/** @var array $args */
+/** @var string $title */
+$title = $args[0];
+/** @var boolean $selected */
+$selected = $args[1];
+?>
+<div class="row no-marg-bot valign-wrapper">
+    <span class="col s12 left"><?= $title ?></span>
+    <span class="right">
+            <?php if ($selected) : ?>
+                <i class="mdi mdi-checkbox-marked-circle"></i>
+            <?php endif; ?>
+        </span>
+</div>

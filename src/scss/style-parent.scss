@@ -67,6 +67,12 @@ nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
   line-height: 1;
 }
 
+.row {
+  .no-marg-bot {
+    margin-bottom: 0;
+  }
+}
+
 @media screen and (max-width: 600px) {
 
   .chip {

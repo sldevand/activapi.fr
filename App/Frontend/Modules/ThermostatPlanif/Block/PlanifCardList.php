@@ -27,14 +27,16 @@ class PlanifCardList
     /**
      * @param array $thermostatPlanningsContainer
      * @param array $hideColumns
+     * @param string $selectedPlanning
      * @return array
      */
     public function create(
         array $thermostatPlanningsContainer,
-        array $hideColumns
+        array $hideColumns,
+        string $selectedPlanning
     ) {
         $cards = [];
-        foreach ($thermostatPlanningsContainer as $thermostatPlannings) {
+        foreach ($thermostatPlanningsContainer as $key => $thermostatPlannings) {
             $thermostatDatas = [];
             foreach ($thermostatPlannings as $thermostatPlanningObj) {
                 $thermostatPlanning = json_decode(json_encode($thermostatPlanningObj), true);
@@ -48,7 +50,8 @@ class PlanifCardList
                 'duplicate' =>  $this->baseAddress . "thermostat-planif-duplicate-" . $thermostatPlanning["nomid"]
             ];
 
-            $cards[] = PlanifCard::create($domId, $cardTitle, $urls, $thermostatDatas, $hideColumns);
+            $isSelected = $key == $selectedPlanning;
+            $cards[] = PlanifCard::create($domId, $cardTitle, $urls, $thermostatDatas, $hideColumns, $isSelected);
         }
 
         if (empty($cards)) {

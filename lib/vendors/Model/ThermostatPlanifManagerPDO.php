@@ -47,11 +47,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
      */
     public function getListArray()
     {
-        $liste = $this->getAllPlanifs();
+        $allPlanifs = $this->getAllPlanifs();
         $listeTab = [];
-        foreach ($liste as $value) {
-            $nomid = (int)$value["id"];
-            $listeTab[] = $this->getList($nomid);
+        foreach ($allPlanifs as $planif) {
+            $nomid = (int)$planif["id"];
+            $listeTab[$nomid] = $this->getList($nomid);
         }
 
         return $listeTab;

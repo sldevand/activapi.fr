@@ -13,7 +13,8 @@ use OCFram\Block;
  */
 class PlanifCard
 {
-    const TEST_BUTTON_LAYOUT_TEMPLATE = __DIR__ . '/../Block/buttonsLayout.phtml';
+    const BUTTONS_LAYOUT_TEMPLATE = __DIR__ . '/../Block/buttonsLayout.phtml';
+    const TITLE_TEMPLATE = __DIR__ . '/../Block/title.phtml';
 
     /**
      * @param string $domId
@@ -21,6 +22,7 @@ class PlanifCard
      * @param array $urls
      * @param array $thermostatDatas
      * @param array $hideColumns
+     * @param bool $selected
      * @return \Materialize\Card\Card
      */
     public static function create(
@@ -28,9 +30,11 @@ class PlanifCard
         string $cardTitle,
         array $urls,
         array $thermostatDatas,
-        array $hideColumns
+        array $hideColumns,
+        bool $selected
     ): Card {
-        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $titleTemplate = self::getTitleTemplate($cardTitle, $selected);
+        $card = WidgetFactory::makeCard($domId, $titleTemplate);
         $links = [];
         if (isset($urls['back'])) {
             $links['back'] = new Link(
@@ -66,6 +70,15 @@ class PlanifCard
      */
     protected static function getButtonsLayout(array $links): string
     {
-        return Block::getTemplate(self::TEST_BUTTON_LAYOUT_TEMPLATE, $links);
+        return Block::getTemplate(self::BUTTONS_LAYOUT_TEMPLATE, $links);
+    }
+
+    /**
+     * @param string $title
+     * @return string
+     */
+    protected static function getTitleTemplate(string $title, bool $selected): string
+    {
+        return Block::getTemplate(self::TITLE_TEMPLATE, $title, $selected);
     }
 }
