@@ -2,6 +2,7 @@
 
 namespace App\Backend\Modules\Thermostat;
 
+use App\Frontend\Modules\ThermostatPlanif\ThermostatPlanifController;
 use Entity\Thermostat;
 use Entity\ThermostatLog;
 use OCFram\BackController;
@@ -99,6 +100,9 @@ class ThermostatController extends BackController
         }
 
         $manager->modify($newThermostat);
+        if ($thermostat->planning() != $newThermostat->planning()) {
+            $this->deleteActionCache('index', 'Frontend', 'ThermostatPlanif');
+        }
 
         $this->page->addVar('thermostat', $result);
     }
