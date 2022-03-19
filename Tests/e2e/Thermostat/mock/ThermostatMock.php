@@ -40,7 +40,7 @@ class ThermostatMock
                     'nom' => 'Thermostat',
                     'modeId' => 1,
                     'sensorId' => 2,
-                    'planning' => 5,
+                    'planning' => 6,
                     'manuel' => 0,
                     'consigne' => 22.0,
                     'delta' => 0.7,
