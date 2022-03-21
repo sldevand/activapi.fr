@@ -18,6 +18,9 @@ class Crontab extends Entity
     /** @var string */
     protected $executor;
 
+    /** @var array */
+    protected $args;
+
     /**
      * @return mixed
      */
@@ -28,7 +31,8 @@ class Crontab extends Entity
             'name' => $this->getName(),
             'expression' => $this->getExpression(),
             'active' => $this->isActive(),
-            'executor' => $this->getExecutor()
+            'executor' => $this->getExecutor(),
+            'args' => $this->getArgs()
         ];
     }
 
