@@ -39,7 +39,7 @@ try {
     }
 
     //Data Setup
-    $dataUpdater = new DataUpdater();
+    $dataUpdater = new DataUpdater($pdo);
     echo $dataUpdater->execute() . PHP_EOL;
 } catch (Exception $e) {
     echo $e->getMessage() . PHP_EOL;

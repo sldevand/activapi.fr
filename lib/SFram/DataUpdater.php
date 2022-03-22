@@ -3,6 +3,8 @@
 namespace SFram;
 
 
+use Entity\InstalledSetup;
+use Model\InstalledSetupManagerPDO;
 use SFram\Api\DataSetupInterface;
 
 /**
@@ -13,6 +15,17 @@ class DataUpdater
 {
     const SETUP_CLASSES_DIR = APP . 'App/*/Modules/*/Setup/*';
     const SETUP_CLASSES_PATTERN = '/^App\\\\.*\\\\Modules\\\\.*\\\\Setup\\\\.*/';
+
+    /** @var \PDO */
+    protected $pdo;
+
+    /**
+     * @param \PDO $pdo
+     */
+    public function __construct(\PDO $pdo)
+    {
+        $this->pdo = $pdo;
+    }
 
     /**
      * @throws \Exception
@@ -28,7 +41,10 @@ class DataUpdater
         }
 
         $matchedClasses = [];
-        $addedClasses = array_diff(get_declared_classes(), $originalDeclaredClasses);
+        if (!$addedClasses = array_diff(get_declared_classes(), $originalDeclaredClasses)) {
+            return 'No classes added to declared classes';
+        }
+        $installedSetupManager = new InstalledSetupManagerPDO($this->pdo);
         foreach ($addedClasses as $addedClass) {
             preg_match(self::SETUP_CLASSES_PATTERN, $addedClass, $matchedClasses);
             foreach ($matchedClasses as $matchedClass) {
@@ -36,7 +52,13 @@ class DataUpdater
                 if (!$instance instanceof DataSetupInterface) {
                     throw new \Exception("$matchedClass does not implement \SFram\Api\DataSetupInterface");
                 }
-                $instance->execute();
+                if (!$installedSetupManager->getUniqueBy('className', $matchedClass)) {
+                    echo "Installing $matchedClass setup... ";
+                    $instance->execute();
+                    $installedSetup = new InstalledSetup(['className' => $matchedClass]);
+                    $installedSetupManager->save($installedSetup);
+                    echo 'OK !' . PHP_EOL;
+                }
             }
         }
         if (!$matchedClasses) {
