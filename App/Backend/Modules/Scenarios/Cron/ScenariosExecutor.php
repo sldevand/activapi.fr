@@ -44,7 +44,7 @@ class ScenariosExecutor implements ExecutorInterface
 
         /** @var \Model\Crontab\CrontabManagerPDO $crontabManager */
         $crontabManager = $this->managers->getManagerOf('Crontab\Crontab');
-        $crontabScenarios = $crontabManager->getListLike('executor', 'scenario');
+        $crontabScenarios = $crontabManager->getListLike('executor', 'scenario-');
 
         $sent = false;
         /** @var Crontab $crontabScenario */

@@ -14,7 +14,7 @@ $pdo = PDOFactory::getSqliteConnexion();
 $managers = new Managers('PDO',$pdo);
 /** @var \Model\Crontab\CrontabManagerPDO $crontabManager */
 $crontabManager = $managers->getManagerOf('Crontab\Crontab');
-$crontab = $crontabManager->getListLike('executor', 'scenario', false);
+$crontab = $crontabManager->getListLike('executor', 'scenario-', false);
 $tempCrontab = \SFram\Utils::objToArray($crontab);
 $crontabArray = [];
 foreach ($tempCrontab as $key => $item) {

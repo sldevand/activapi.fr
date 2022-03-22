@@ -12,7 +12,6 @@ use Materialize\Link\DeleteLinkFactory;
 use Materialize\Link\EditLinkFactory;
 use Materialize\WidgetFactory;
 use Model\Scenario\ScenarioManagerPDOFactory;
-use Model\Scenario\ScenariosManagerPDO;
 use OCFram\Application;
 use OCFram\BackController;
 use OCFram\FormHandler;
@@ -87,7 +86,8 @@ class CrontabController extends BackController
                 'name' => $request->postData('name'),
                 'expression' => $expression,
                 'active' => $request->postData('active'),
-                'executor' => $request->postData('executor')
+                'executor' => $request->postData('executor'),
+                'args' => $request->postData('args'),
             ]);
 
             if ($request->getExists('id')) {
@@ -202,8 +202,16 @@ class CrontabController extends BackController
             $scenariosOptions['scenario-' . $scenario->id()] = $scenario->getNom();
         }
 
+        $crontabExecutors = \Crontab\ClassFinder::getClasses();
+        $crontabOptions = [];
+        foreach ($crontabExecutors as $executor) {
+            $explodedFqn = explode('\\', $executor);
+            $crontabOptions[$executor] = $explodedFqn[4] . ':' . $explodedFqn[6];
+        }
+
         $ctfb = new CrontabFormBuilder($item);
         $ctfb->addData('scenarios', $scenariosOptions);
+        $ctfb->addData('crontab', $crontabOptions);
 
         return $ctfb;
     }

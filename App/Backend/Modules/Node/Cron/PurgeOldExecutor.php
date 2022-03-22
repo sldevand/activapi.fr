@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Backend\Modules\Node\Log\Cron;
+namespace App\Backend\Modules\Node\Cron;
 
 use DateTime;
 use Model\Log\LogManagerPDO;
@@ -10,7 +10,7 @@ use Sldevand\Cron\ExecutorInterface;
 
 /**
  * Class PurgeOldExecutor
- * @package App\Backend\Modules\Node\Log\Cron
+ * @package App\Backend\Modules\Node\Cron
  */
 class PurgeOldExecutor implements ExecutorInterface
 {

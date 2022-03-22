@@ -26,7 +26,7 @@ class InitCrontab implements DataSetupInterface
         $crontab = [
             'purge_old_node_log_rows' => [
                 'expression' => '10 0 * * *',
-                'executor' => '\App\Backend\Modules\Node\Log\Cron\PurgeOldExecutor'
+                'executor' => '\App\Backend\Modules\Node\Cron\PurgeOldExecutor'
             ],
             'remove_mesures_table_orphan_rows' => [
                 'expression' => '15 0 * * *',
