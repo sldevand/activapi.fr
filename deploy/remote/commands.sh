@@ -42,11 +42,11 @@ myEcho "Remote : Add .env file" &&
 sudo cp $REMOTE_ENV_FILE $REMOTE_APP_PATH &&
 
 myEcho "Remote : Install database" &&
-sudo chmod +x $REMOTE_APP_PATH/bin/sqlSetup.php &&
-sudo php -f $REMOTE_APP_PATH/bin/sqlSetup.php &&
+sudo chmod +x $REMOTE_APP_PATH/bin/dataSetup.php &&
+sudo php -f $REMOTE_APP_PATH/bin/dataSetup.php &&
 
-myEcho "Remove sqlSetup files" &&
-sudo rm -rfv $REMOTE_APP_PATH/bin/sqlSetup.php &&
+myEcho "Remove dataSetup files" &&
+sudo rm -rfv $REMOTE_APP_PATH/bin/dataSetup.php &&
 sudo rm -rfv $REMOTE_APP_PATH/sql &&
 
 myEcho "Remote : Creating symbolic link" &&

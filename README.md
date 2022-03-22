@@ -17,7 +17,7 @@ A modern responsive front-end framework based on Material Design
 ```bash
 composer install
 npm install
-php bin/sqlSetup.php
+php bin/dataSetup.php
 npm run babelAll
 npm run sass-compile
 cp .env.sample .env 

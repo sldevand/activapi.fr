@@ -7,7 +7,6 @@ use Entity\Thermostat;
 /**
  * Class ThermostatMock
  * @package Tests\Model\Thermostat\mock
- * @author Synolia <contact@synolia.com>
  */
 class ThermostatMock
 {
