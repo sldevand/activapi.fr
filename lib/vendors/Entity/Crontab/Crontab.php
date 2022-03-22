@@ -18,7 +18,7 @@ class Crontab extends Entity
     /** @var string */
     protected $executor;
 
-    /** @var array */
+    /** @var string */
     protected $args;
 
     /**

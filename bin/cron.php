@@ -1,6 +1,7 @@
 <?php
 
 use App\Backend\BackendApplication;
+use OCFram\Managers;
 use OCFram\PDOFactory;
 use Sldevand\Cron\Launcher;
 
@@ -10,32 +11,22 @@ $app = new BackendApplication();
 
 PDOFactory::setPdoAddress($_ENV['DB_PATH']);
 $pdo = PDOFactory::getSqliteConnexion();
-
-$crontab = [
-    'purge_old_node_log_rows' => [
-        'expression' => '10 0 * * *',
-        'executor' => '\App\Backend\Modules\Node\Log\Cron\PurgeOldExecutor'
-    ],
-    'remove_mesures_table_orphan_rows' => [
-        'expression' => '15 0 * * *',
-        'executor' => '\App\Backend\Modules\Mesures\Cron\CleanOrphanMesuresExecutor'
-    ],
-    'scheduled_scenarios_executor' => [
-        'expression' => '* * * * *',
-        'executor' => '\App\Backend\Modules\Scenarios\Cron\ScenariosExecutor',
-        'args' => ['app' => $app]
-    ],
-    'check_sensors_activity' => [
-        'expression' => '* * * * *',
-        'executor' => '\App\Backend\Modules\Sensors\Cron\CheckSensorActivityExecutor',
-        'args' => ['app' => $app]
-    ],
-    'check_thermostat_power' => [
-        'expression' => '* * * * *',
-        'executor' => '\App\Backend\Modules\Thermostat\Cron\CheckThermostatPower',
-        'args' => ['app' => $app]
-    ]
-];
-
-$launcher = new Launcher($crontab);
+$managers = new Managers('PDO',$pdo);
+/** @var \Model\Crontab\CrontabManagerPDO $crontabManager */
+$crontabManager = $managers->getManagerOf('Crontab\Crontab');
+$crontab = $crontabManager->getListLike('executor', 'scenario', false);
+$tempCrontab = \SFram\Utils::objToArray($crontab);
+$crontabArray = [];
+foreach ($tempCrontab as $key => $item) {
+    $item['args'] = json_decode($item['args']);
+    foreach ($item['args'] as $key => $arg) {
+        if($arg === 'app') {
+            unset($item['args'][$key]);
+            $item['args']['app'] = $app;
+        }
+    }
+    $crontabArray[$item['name']] = $item;
+    unset($crontabArray[$item['name']]['name']);
+}
+$launcher = new Launcher($crontabArray);
 $launcher->launch();

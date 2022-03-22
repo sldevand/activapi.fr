@@ -28,10 +28,11 @@ class CrontabManagerPDO extends ManagerPDO
      * @return array
      * @throws \Exception
      */
-    public function getListLike(string $field, string $value)
+    public function getListLike(string $field, string $value, bool $like = true)
     {
+        $likeSql = $like ? 'LIKE' : 'NOT LIKE';
         $sql = <<<SQL
-SELECT * FROM $this->tableName WHERE $field LIKE "%$value%" AND active=1
+SELECT * FROM $this->tableName WHERE $field $likeSql "%$value%" AND active=1
 SQL;
 
         $q = $this->prepare($sql);
