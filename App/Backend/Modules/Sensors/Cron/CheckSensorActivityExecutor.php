@@ -86,8 +86,9 @@ class CheckSensorActivityExecutor implements ExecutorInterface
         }
 
         if ($underValueSensors) {
+            $pluralPart = count($underValueSensors) > 1 ? 's are' : ' is';
             $sensorNames = $this->getSensorNames($underValueSensors);
-            $subject = "Activapi.fr : $sensorNames sensors are too cold";
+            $subject = "Activapi.fr : $sensorNames sensor$pluralPart too cold";
             $this->sendMail($underValueSensors, $subject, self::ALERT_UNDERVALUE);
         }
     }
