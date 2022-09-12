@@ -20,6 +20,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
     public static function dropAndCreateTables()
     {
         self::executeSqlScript(SCENARIOS_SQL_PATH);
+        self::executeSqlScript(SCENARIOS2_SQL_PATH);
     }
 
     /**
@@ -69,6 +70,26 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
             $manager->save($scenario);
         }
         $persisted = $manager->getAll();
+        self::assertEquals($expected, $persisted);
+    }
+
+    /**
+     * @dataProvider getVisibleProvider
+     * @param Scenario[] $expected
+     * @param Scenario[] $scenarios
+     * @throws \Exception
+     */
+    public function testGetVisibleScenarios($scenarios, $expected)
+    {
+        self::dropAndCreateTables();
+        $this->fixtureActions();
+        $this->fixtureSequences();
+
+        $manager = $this->getManager();
+        foreach ($scenarios as $scenario) {
+            $manager->save($scenario);
+        }
+        $persisted = $manager->getVisibleScenarios();
         self::assertEquals($expected, $persisted);
     }
 
@@ -124,6 +145,30 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
                     $this->makeScenario('TestScenario2', $sequences, '2'),
                     $this->makeScenario('TestScenario3', $sequences, '3'),
                     $this->makeScenario('TestScenario4', $sequences, '4')
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function getVisibleProvider()
+    {
+        $sequences = [];
+
+        return [
+            "createScenario" => [
+                [
+                    $this->makeScenario('TestScenario1', $sequences, null, 0, 0),
+                    $this->makeScenario('TestScenario2', $sequences, null, 0, 0),
+                    $this->makeScenario('TestScenario3', $sequences),
+                    $this->makeScenario('TestScenario4', $sequences)
+                ],
+                [
+                    $this->makeScenario('TestScenario3', $sequences, '3',0,1),
+                    $this->makeScenario('TestScenario4', $sequences, '4',0,1)
                 ]
             ]
         ];

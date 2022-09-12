@@ -63,7 +63,7 @@ class ScenariosManagerPDO extends ManagerPDO
      * @return Scenario
      * @throws \Exception
      */
-    public function getUnique($id)
+    public function getUnique($id): Scenario
     {
         /** @var Scenario $scenario */
         $scenario = parent::getUnique($id);
@@ -71,10 +71,7 @@ class ScenariosManagerPDO extends ManagerPDO
             throw new \Exception('No scenario was found!');
         }
 
-        /** @var Sequence[] $sequences */
-        $sequences = $this->getScenarioSequences($id);
-
-        $scenario->setSequences($sequences);
+        $this->linkSequences([$scenario]);
 
         return $scenario;
     }
@@ -84,27 +81,56 @@ class ScenariosManagerPDO extends ManagerPDO
      * @return Scenario[]
      * @throws \Exception
      */
-    public function getAll($id = null)
+    public function getAll($id = null): array
     {
         /** @var Scenario[] $scenarios */
         $scenarios = parent::getAll($id);
         if (empty($scenarios)) {
             throw new \Exception('No scenarios were found!');
         }
+        $this->linkSequences($scenarios);
 
-        foreach ($scenarios as $key => $scenario) {
+        return $scenarios;
+    }
+
+    /**
+     * @param array $scenarios
+     * @return void
+     * @throws \Exception
+     */
+    protected function linkSequences(array $scenarios): void
+    {
+        foreach ($scenarios as $scenario) {
             /** @var Sequence[] $sequences */
             $sequences = $this->getScenarioSequences($scenario->id());
-            $scenarios[$key]->setSequences($sequences);
+            $scenario->setSequences($sequences);
         }
+    }
 
+    /**
+     * @return Scenario[]
+     * @throws \Exception
+     */
+    public function getVisibleScenarios(): array
+    {
+        $sql = "SELECT * FROM $this->tableName WHERE visibility=1";
+        $q = $this->prepare($sql);;
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
+        $scenarios = $q->fetchAll();
+        $q->closeCursor();
+
+        if (empty($scenarios)) {
+            throw new \Exception('No scenarios were found!');
+        }
+        $this->linkSequences($scenarios);
 
         return $scenarios;
     }
 
     /**
      * @param int $id
-     * @return bool|int
+     * @return bool
      * @throws \Exception
      */
     public function delete($id)

@@ -10,25 +10,20 @@ use OCFram\Entity;
  */
 class Scenario extends Entity
 {
-    /**
-     * @var string $nom
-     */
+    /** @var string $nom */
     protected $nom;
 
-    /**
-     * @var ScenarioSequence[] $scenarioSequences
-     */
+    /** @var ScenarioSequence[] $scenarioSequences */
     protected $scenarioSequences;
 
-    /**
-     * @var Sequence[] $sequences
-     */
+    /** @var Sequence[] $sequences */
     protected $sequences;
 
-    /**
-     * @var string $status
-     */
+    /** @var string $status */
     protected $status;
+
+    /** @var int */
+    protected $visibility;
 
     /**
      * @return mixed
@@ -136,5 +131,24 @@ class Scenario extends Entity
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVisibility(): int
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * @param int $visibility
+     * @return $this
+     */
+    public function setVisibility(int $visibility): Scenario
+    {
+        $this->visibility = $visibility;
+
+        return $this;
     }
 }

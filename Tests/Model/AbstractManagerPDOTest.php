@@ -100,16 +100,19 @@ abstract class AbstractManagerPDOTest extends AbstractPDOTestCase implements Man
      * @param $nom
      * @param Sequence[] $sequences
      * @param null | int $id
+     * @param int $status
+     * @param int $visibility
      * @return Scenario
      */
-    public function makeScenario($nom, $sequences, $id = null)
+    public function makeScenario($nom, $sequences, $id = null, $status = 0, $visibility = 1)
     {
         return new Scenario(
             [
                 'id' => $id,
                 'nom' => $nom,
                 'sequences' => $sequences,
-                'status' => 0
+                'status' => $status,
+                'visibility' => $visibility
             ]
         );
     }
