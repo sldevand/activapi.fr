@@ -32,7 +32,16 @@ export class ScenarioTemplate {
                 template += `
                 </select>
             </div>
-        </div>        
+        </div>
+        <div class="col s6">
+            <label for=visibility" class="active">Visible</label>
+            <div class="select-wrapper"><span class="caret">▼</span>
+                <select name="visibility" id="visibility">
+                    <option value="0">Non</option>
+                    <option value="1">Oui</option>
+                </select>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div id="sequences" class="s12"></div>
