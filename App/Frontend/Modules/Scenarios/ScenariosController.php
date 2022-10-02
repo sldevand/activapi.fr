@@ -24,7 +24,7 @@ class ScenariosController extends ScenariosBackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $scenarios = parent::executeGet($request);
+        $scenarios = parent::executeGetAll($request);
 
         $this->page->addVar('title', 'Gestion des scenarios');
 
