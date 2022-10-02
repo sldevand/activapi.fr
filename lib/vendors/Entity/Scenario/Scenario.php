@@ -23,7 +23,7 @@ class Scenario extends Entity
     protected $status;
 
     /** @var int */
-    protected $visibility;
+    protected $visibility = 0;
 
     /**
      * @return mixed
@@ -34,7 +34,8 @@ class Scenario extends Entity
             'id' => $this->id(),
             'nom' => $this->getNom(),
             'sequences' => $this->getSequences(),
-            'status' => $this->getStatus()
+            'status' => $this->getStatus(),
+            'visibility' => $this->getVisibility()
         ];
     }
 
