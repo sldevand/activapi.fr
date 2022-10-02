@@ -81,10 +81,10 @@ class ScenariosManagerPDO extends ManagerPDO
      * @return Scenario[]
      * @throws \Exception
      */
-    public function getAll($id = null): array
+    public function getAll($id = null, $visibleOnly = true): array
     {
         /** @var Scenario[] $scenarios */
-        $scenarios = parent::getAll($id);
+        $scenarios = $visibleOnly ? $this->getVisibleScenarios() :parent::getAll($id);
         if (empty($scenarios)) {
             throw new \Exception('No scenarios were found!');
         }
@@ -111,10 +111,10 @@ class ScenariosManagerPDO extends ManagerPDO
      * @return Scenario[]
      * @throws \Exception
      */
-    public function getVisibleScenarios(): array
+    protected function getVisibleScenarios(): array
     {
         $sql = "SELECT * FROM $this->tableName WHERE visibility=1";
-        $q = $this->prepare($sql);;
+        $q = $this->prepare($sql);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
         $scenarios = $q->fetchAll();
@@ -123,7 +123,6 @@ class ScenariosManagerPDO extends ManagerPDO
         if (empty($scenarios)) {
             throw new \Exception('No scenarios were found!');
         }
-        $this->linkSequences($scenarios);
 
         return $scenarios;
     }

@@ -89,7 +89,7 @@ class ScenariosManagerPDOTest extends AbstractManagerPDOTest
         foreach ($scenarios as $scenario) {
             $manager->save($scenario);
         }
-        $persisted = $manager->getVisibleScenarios();
+        $persisted = $manager->getAll(null, true);
         self::assertEquals($expected, $persisted);
     }
 

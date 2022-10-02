@@ -35,6 +35,24 @@ class ScenariosController extends AbstractScenarioManagersController
      * @return \OCFram\Page
      * @throws Exception
      */
+    public function executeGetAll($httpRequest) {
+        try {
+            $this->checkMethod($httpRequest, HTTPRequest::GET);
+                $entities = $this->manager->getAll(null, false);
+        } catch (Exception $e) {
+            return $this->page()->addVar('data', ["error" => $e->getMessage()]);
+        }
+
+        $this->page()->addVar('data', $entities);
+
+        return $entities;
+    }
+
+    /**
+     * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
+     * @throws Exception
+     */
     public function executePost($httpRequest)
     {
         try {

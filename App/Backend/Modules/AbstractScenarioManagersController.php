@@ -42,7 +42,7 @@ abstract class AbstractScenarioManagersController extends BackController impleme
             if ($id) {
                 $entities = $this->manager->getUnique($id);
             } else {
-                $entities = $this->manager->getAll($id);
+                $entities = $this->manager->getAll($id, true);
             }
         } catch (Exception $e) {
             return $this->page()->addVar('data', ["error" => $e->getMessage()]);
