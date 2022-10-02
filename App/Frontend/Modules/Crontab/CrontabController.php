@@ -196,7 +196,7 @@ class CrontabController extends BackController
     {
         $scenariosManagerFactory = new ScenarioManagerPDOFactory();
         $scenariosManager = $scenariosManagerFactory->getScenariosManager();
-        $scenarios = $scenariosManager->getAll();
+        $scenarios = $scenariosManager->getAll(null, false);
         $scenariosOptions = [];
         foreach ($scenarios as $scenario) {
             $scenariosOptions['scenario-' . $scenario->id()] = $scenario->getNom();
