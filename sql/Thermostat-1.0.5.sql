@@ -5,3 +5,5 @@ CREATE TABLE IF NOT EXISTS 'thermostat_planif' (
     'nomid' INTEGER,
     'timetable' TEXT
 );
+
+DELETE FROM thermostat_corresp;
