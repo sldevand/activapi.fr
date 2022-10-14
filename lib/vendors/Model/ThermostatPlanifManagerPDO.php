@@ -101,7 +101,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
 
     /**
      * @param int $id
-     * @return mixed|null|\OCFram\Entity
+     * @return mixed|null|ThermostatPlanif
      * @throws Exception
      */
     public function getUnique($id)
@@ -119,18 +119,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
             return false;
         }
 
-        if (empty($thermostatPlanif->modeid())) {
-            throw new \RuntimeException('modeid is null!');
-        }
-
-        if (empty($thermostatPlanif->defaultModeid())) {
-            throw new \RuntimeException('defaultModeid is null!');
-        }
-        /** @var \Model\ThermostatModesManagerPDO $manager */
-        $modesManager = $this->managers->getManagerOf('ThermostatModes');
         $thermostatPlanif->setNom($this->getNom($thermostatPlanif->getNomid()));
-        $thermostatPlanif->setMode($modesManager->getUnique($thermostatPlanif->modeid()));
-        $thermostatPlanif->setDefaultMode($modesManager->getUnique($thermostatPlanif->defaultModeid()));
 
         return $thermostatPlanif;
     }
@@ -161,22 +150,12 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     {
         $sql = 'UPDATE thermostat_planif 
             SET             
-            modeid=:modeid,
-            defaultModeid=:defaultModeid,
-            heure1Start=:heure1Start,
-            heure1Stop=:heure1Stop,
-            heure2Start=:heure2Start,
-            heure2Stop=:heure2Stop           
+            timetable=:timetable      
             WHERE id=:id';
 
         $q = $this->prepare($sql);
         $q->bindValue(':id', $thermostatPlanif->id());
-        $q->bindValue(':modeid', $thermostatPlanif->modeid());
-        $q->bindValue(':defaultModeid', $thermostatPlanif->defaultModeid());
-        $q->bindValue(':heure1Start', $thermostatPlanif->heure1Start());
-        $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
-        $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
-        $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
+        $q->bindValue(':timetable', $thermostatPlanif->getTimetable());
         $result = $q->execute();
         $q->closeCursor();
 
@@ -198,12 +177,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         for ($jour = 1; $jour < 8; $jour++) {
             $thermostatPlanif = new ThermostatPlanif([
                 "jour" => $jour,
-                "modeid" => "1",
-                "defaultModeid" => "3",
-                "heure1Start" => "07:00",
-                "heure1Stop" => "23:00",
-                "heure2Start" => "",
-                "heure2Stop" => "",
+                "timetable" => json_encode(['300-1', '600-2','800-1','1200-3']),
                 "nomid" => $nomId
             ]);
 

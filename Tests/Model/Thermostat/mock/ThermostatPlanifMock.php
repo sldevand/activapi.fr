@@ -24,16 +24,9 @@ class ThermostatPlanifMock
 
             $thermostatPlanifsCommon = [
                 'jour' => 1,
-                'modeid' => 1,
-                'defaultModeid' => 3,
-                'heure1Start' => '',
-                'heure1Stop' => '',
-                'heure2Start' => '',
-                'heure2Stop' => '',
+                "timetable" => json_encode(['300-1', '600-2','800-1','1200-3']),
                 'nomid' => '1',
-                'nom' => self::getThermostatPlanifNom(),
-                'mode' => $modes[0],
-                'defaultMode' => $modes[1]
+                'nom' => self::getThermostatPlanifNom()
             ];
 
             $thermostatPlanifs = [];
@@ -61,12 +54,7 @@ class ThermostatPlanifMock
             $thermostatPlanifs[] = new ThermostatPlanif(
                 [
                     "jour" => $day,
-                    "modeid" => "1",
-                    "defaultModeid" => "3",
-                    "heure1Start" => "07:00",
-                    "heure1Stop" => "23:00",
-                    "heure2Start" => "",
-                    "heure2Stop" => "",
+                    "timetable" => json_encode(['300-1', '600-2','800-1','1200-3']),
                     "nomid" => '1',
                     'id' => $day
                 ]

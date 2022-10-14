@@ -341,7 +341,8 @@ class ManagerPDO extends Manager
     public function bindProperties($query, $properties)
     {
         if (!$query) {
-            throw new Exception($this->dao->errorInfo());
+            $errorInfo = implode(' | ' , $this->dao->errorInfo());
+            throw new Exception($errorInfo);
         }
 
         foreach ($properties as $key => $value) {

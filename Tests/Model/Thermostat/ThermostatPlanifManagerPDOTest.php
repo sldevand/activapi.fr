@@ -81,15 +81,11 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
         try {
             $manager->addPlanifTable($thermostatPlanifNom);
         } catch (\Exception $exception) {
-            self::assertTrue($exception->getMessage() === 'Ce nom existe déjà !');
+            self::assertEquals($exception->getMessage(), 'Ce nom existe déjà !');
         }
 
         $thermostatPlanif = $manager->getUnique(1);
-        $thermostatPlanif
-            ->setHeure1Start('10:00:00')
-            ->setHeure1Stop('18:00:00')
-            ->setHeure2Start('18:00:00')
-            ->setHeure2Stop('23:59:00');
+        $thermostatPlanif->setTimetable(json_encode(['300-1', '600-2','800-1','1200-3']));
 
         $result = $manager->modify($thermostatPlanif);
         self::assertTrue($result);
