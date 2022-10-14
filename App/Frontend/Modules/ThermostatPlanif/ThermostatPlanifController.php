@@ -53,7 +53,7 @@ class ThermostatPlanifController extends BackController
         $thermostat = current($thermostatManager->getList());
 
         $thermostatPlanningsContainer = $this->manager->getListArray();
-        $hideColumns = ['id', 'nomid', 'nom', 'modeid', 'defaultModeid'];
+        $hideColumns = ['id', 'nomid', 'nom'];
 
         $planifCardList = new PlanifCardList($this->baseAddress);
         $cards = $planifCardList->create($thermostatPlanningsContainer, $hideColumns, $thermostat->planning());

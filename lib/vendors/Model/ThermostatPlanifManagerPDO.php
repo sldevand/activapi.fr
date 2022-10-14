@@ -88,12 +88,8 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
          * @var ThermostatPlanif[] $thermostatPlanifs
          */
         foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
-            $nom = $this->getNom($thermostatPlanif->nomid());
+            $nom = $this->getNom($thermostatPlanif->getNomId());
             $thermostatPlanif->setNom($nom);
-            $mode = $modesManager->getUnique($thermostatPlanif->modeid());
-            $thermostatPlanif->setMode($mode);
-            $defaultMode = $modesManager->getUnique($thermostatPlanif->defaultModeid());
-            $thermostatPlanif->setDefaultMode($defaultMode);
         }
 
         return $listeThermostatPlanif;

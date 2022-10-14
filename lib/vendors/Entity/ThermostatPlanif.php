@@ -12,7 +12,7 @@ use Entity\ThermostatPlanifNom;
 class ThermostatPlanif extends Entity
 {
     protected int $nomid;
-    protected ThermostatPlanifNom $nom;
+    protected ?ThermostatPlanifNom $nom = null;
     protected string $jour;
     protected string $timetable;
 

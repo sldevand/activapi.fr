@@ -43,7 +43,7 @@ class PlanifCardList
                 $thermostatDatas[] = $this->prepareDataForTable($thermostatPlanning);
             }
 
-            $domId = current($thermostatPlannings)["nom"]["nom"];
+            $domId = current($thermostatPlannings)->getNom()->getNom();
             $cardTitle = 'Thermostat : Planning  ' . $domId;
             $urls = [
                 'back' => $this->baseAddress . "thermostat-planif-delete-" . $thermostatPlanning["nomid"],
@@ -71,8 +71,6 @@ class PlanifCardList
     protected function prepareDataForTable($thermostatPlanning)
     {
         $thermostatPlanning["jour"] = DateFactory::toStrDay($thermostatPlanning['jour']);
-        $thermostatPlanning["mode"] = $thermostatPlanning["mode"]["nom"];
-        $thermostatPlanning["defaultMode"] = $thermostatPlanning["defaultMode"]["nom"];
         $linkEdit = new Link(
             '',
             $this->baseAddress . "thermostat-planif-edit-" . $thermostatPlanning["id"],
