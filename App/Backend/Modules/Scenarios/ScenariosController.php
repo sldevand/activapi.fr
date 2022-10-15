@@ -2,13 +2,12 @@
 
 namespace App\Backend\Modules\Scenarios;
 
-use App\Backend\Modules\AbstractScenarioManagersController;
-use Entity\Scenario\Scenario;
-use Entity\Scenario\ScenarioSequence;
 use Exception;
-use Model\Scenario\ScenarioSocketIoSender;
 use OCFram\Application;
 use OCFram\HTTPRequest;
+use Entity\Scenario\Scenario;
+use Entity\Scenario\ScenarioSequence;
+use Model\Scenario\ScenarioSocketIoSender;
 
 /**
  * Class ScenariosController
@@ -16,6 +15,9 @@ use OCFram\HTTPRequest;
  */
 class ScenariosController extends AbstractScenarioManagersController
 {
+    /** @var \Model\Scenario\ScenariosManagerPDO */
+    protected $manager;
+    
     /**
      * ScenariosController constructor.
      * @param Application $app
@@ -26,7 +28,7 @@ class ScenariosController extends AbstractScenarioManagersController
     public function __construct(Application $app, string $module, string $action)
     {
         parent::__construct($app, $module, $action);
-        $this->manager = $this->getScenariosManager();
+        $this->manager = $this->scenarioManagerPDOFactory->getScenariosManager();
         $this->entity = Scenario::class;
     }
 
@@ -38,7 +40,7 @@ class ScenariosController extends AbstractScenarioManagersController
     public function executeGetAll($httpRequest) {
         try {
             $this->checkMethod($httpRequest, HTTPRequest::GET);
-                $entities = $this->manager->getAll(null, false);
+            $entities = $this->manager->getAll(null, false);
         } catch (Exception $e) {
             return $this->page()->addVar('data', ["error" => $e->getMessage()]);
         }
@@ -69,7 +71,6 @@ class ScenariosController extends AbstractScenarioManagersController
             return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
         $this->deleteActionCache('index', 'Frontend');
-
 
         return $this->page->addVar('data', $persisted);
     }
@@ -157,7 +158,7 @@ class ScenariosController extends AbstractScenarioManagersController
 
         $scenarioSequences = [];
         foreach ($jsonPost['deletedScenarioSequences'] as $deletedScenarioSequence) {
-            $this->getScenarioSequenceManager()->delete($deletedScenarioSequence);
+            $this->scenarioManagerPDOFactory->getScenarioSequenceManager()->delete($deletedScenarioSequence);
         }
 
         return $scenarioSequences;

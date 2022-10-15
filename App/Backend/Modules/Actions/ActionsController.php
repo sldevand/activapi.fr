@@ -2,7 +2,7 @@
 
 namespace App\Backend\Modules\Actions;
 
-use App\Backend\Modules\AbstractScenarioManagersController;
+use App\Backend\Modules\Scenarios\AbstractScenarioManagersController;
 use Entity\Scenario\Action;
 use OCFram\Application;
 use OCFram\RestInterface;
@@ -24,7 +24,7 @@ class ActionsController extends AbstractScenarioManagersController implements Re
     {
         parent::__construct($app, $module, $action);
 
-        $this->manager = $this->getActionManager();
+        $this->manager = $this->scenarioManagerPDOFactory->getActionManager();
         $this->entity = Action::class;
     }
 

@@ -236,7 +236,7 @@ class SequencesEndpointTest extends AbstractEndpointTest
         $sequenceArray['id'] = $sequenceId;
         $result = $this->getDeleteJsonBody($client, $url, $sequenceArray);
 
-        self::assertEquals(['success' => 'Test2 has been deleted'], $result);
+        self::assertEquals(['success' => "$sequenceId has been deleted"], $result);
     }
 
     /**

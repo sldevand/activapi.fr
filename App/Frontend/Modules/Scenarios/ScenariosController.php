@@ -97,7 +97,7 @@ class ScenariosController extends ScenariosBackController
      */
     public function executeDelete($request)
     {
-        $manager = $this->getScenariosManager();
+        $manager = $this->scenarioManagerPDOFactory->getScenariosManager();
 
         $domId = 'Suppression';
         if ($request->method() == 'POST') {

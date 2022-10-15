@@ -240,7 +240,7 @@ class ActionsEndpointTest extends AbstractEndpointTest
         $actionArray['id'] = $actionId;
         $result = $this->getDeleteJsonBody($client, $url, $actionArray);
 
-        self::assertEquals(['success' => 'Test2 has been deleted'], $result);
+        self::assertEquals(['success' => "$actionId has been deleted"], $result);
     }
 
     /**

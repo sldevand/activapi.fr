@@ -2,19 +2,21 @@
 
 namespace App\Frontend\Modules\ThermostatPlanif;
 
-use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCardList;
-use App\Frontend\Modules\ThermostatPlanif\Form\ThermostatPlanifFormHandler;
+use OCFram\Block;
+use OCFram\Application;
+use OCFram\HTTPRequest;
+use Materialize\FormView;
+use Materialize\Link\Link;
+use OCFram\BackController;
 use Entity\ThermostatPlanif;
+use Materialize\WidgetFactory;
 use Entity\ThermostatPlanifNom;
+use Materialize\Button\FlatButton;
+use Materialize\FloatingActionButton;
 use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
-use Materialize\FloatingActionButton;
-use Materialize\FormView;
-use Materialize\WidgetFactory;
-use OCFram\Application;
-use OCFram\BackController;
-use OCFram\Block;
-use OCFram\HTTPRequest;
+use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCardList;
+use App\Frontend\Modules\ThermostatPlanif\Form\ThermostatPlanifFormHandler;
 
 /**
  * Class ThermostatPlanifController
@@ -104,44 +106,43 @@ class ThermostatPlanifController extends BackController
         $this->page->addVar('card', $card);
     }
 
-    /**
+     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
-        if ($request->method() === HTTPRequest::POST) {
-            $item = $this->createThermostatPlanifFromPost($request);
-        } else {
-            if ($request->getExists('id')) {
-                $id = $request->getData("id");
-                $item = $this->manager->getUnique($id);
-            }
-        }
-
-        /** @var \Model\ThermostatModesManagerPDO $modesManager */
-        $modesManager = $this->managers->getManagerOf('ThermostatModes');
-        $modes = $modesManager->getList();
-
-        $tpfb = new ThermostatPlanifFormBuilder($item);
-        $tpfb->addData('modes', $modes);
-        $form = $tpfb->build();
-
-        $fh = new ThermostatPlanifFormHandler($form, $this->manager, $request);
-        if ($fh->process()) {
-            $this->deleteActionCache('index');
-            $this->redirectBack($item->nom()->nom());
-        }
-
         $domId = 'Edition';
-        $backUrl = $this->baseAddress . 'thermostat-planif';
-        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl . '#' . $item->getNom())->getHtml();
-        $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $card->addContent($this->editFormView($form));
+        if (!$id = $request->getData('id')) {
+            $domId = 'Ajout';
+        }
 
-        $this->page
-            ->addVar('title', 'Edition du Planning')
-            ->addVar('card', $card);
+        $this->page->addVar('title', "$domId du Scénario");
+
+        $link = new Link(
+            $domId,
+            $this->baseAddress . "thermostat-planif",
+            "arrow_back",
+            "white-text",
+            "white-text"
+        );
+        $submitButton = new FlatButton(
+            [
+                'id' => 'submit',
+                'title' => 'Valider',
+                'color' => 'primaryTextColor',
+                'type' => 'submit',
+                'icon' => 'check',
+                'wrapper' => 'col s12'
+            ]
+        );
+        $cardTitle = $link->getHtml();
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $formBlock = $this->getBlock(__DIR__ . '/Block/thermostatPlanifForm.phtml', $id, $submitButton);
+        $card->addContent($formBlock);
+
+        return $this->page->addVar('card', $card);
     }
 
     /**
