@@ -2,27 +2,60 @@
 
 namespace App\Backend\Modules\ThermostatPlanif;
 
-use Entity\ThermostatPlanif;
-use Model\ThermostatPlanifManagerPDO;
-use OCFram\BackController;
+use OCFram\Application;
 use OCFram\HTTPRequest;
+use Entity\ThermostatPlanif;
+use Entity\ThermostatPlanifNom;
+use OCFram\AbstractRestController;
+use Model\ThermostatPlanifManagerPDO;
+use Exception;
 
 /**
  * Class ThermostatPlanifController
  * @package App\Backend\Modules\ThermostatPlanif
  */
-class ThermostatPlanifController extends BackController
+class ThermostatPlanifController extends AbstractRestController
 {
     /**
-     * @param HTTPRequest $request
+     * @var \Model\ThermostatPlanifManagerPDO $manager
      */
-    public function executeIndex(HTTPRequest $request)
+    protected $manager;
+
+    /**
+     * ScenariosController constructor.
+     * @param Application $app
+     * @param string $module
+     * @param string $action
+     * @throws Exception
+     */
+    public function __construct(Application $app, string $module, string $action)
     {
-        $id = $request->getData('id');
-        /** @var ThermostatPlanifManagerPDO $manager */
-        $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $thermostatPlanifs = $manager->getList($id);
-        $this->page->addVar('thermostatPlanifs', $thermostatPlanifs);
+        parent::__construct($app, $module, $action);
+        $this->manager = $this->managers->getManagerOf('ThermostatPlanif');
+        $this->entity = ThermostatPlanif::class;
+    }
+
+   /**
+     * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
+     * @throws Exception
+     */
+    public function executeGet($httpRequest)
+    {
+        try {
+            $this->checkMethod($httpRequest, HTTPRequest::GET);
+            $nomid = $httpRequest->getData('nomid');
+            $day = $httpRequest->getData('jour');
+            if ($nomid && $day) {
+                $entities = $this->manager->getByNomIdAndDay($nomid, $day);
+            } else {
+                $entities = $this->manager->getList($nomid);
+            }
+        } catch (Exception $exception) {
+            return $this->page()->addVar('data', ["error" => $exception->getMessage()]);
+        }
+
+        return $this->page()->addVar('data', $entities);
     }
 
     /**
@@ -43,65 +76,23 @@ class ThermostatPlanifController extends BackController
         $this->page->addVar('thermostatPlanifs', $thermostatPlanifs);
     }
 
-    /**
-     * @param HTTPRequest $request
-     */
-    public function executeUpdate(HTTPRequest $request)
+    public function executePut($httpRequest)
     {
-        $hydrate = [
-            'id' => $request->postData('id'),
-            'nom' => $request->postData('nom'),
-            'modeid' => $request->postData('modeid'),
-            'sensorid' => $request->postData('sensorid'),
-            'planning' => $request->postData('planning'),
-            'manuel' => $request->postData('manuel'),
-            'consigne' => $request->postData('consigne'),
-            'delta' => $request->postData('delta')
-        ];
-
-        foreach ($hydrate as $key => $value) {
-            if (is_null($value)) {
-                $this->page->addVar('thermostatPlanif', "Update Error : Value " . $key . " is null!");
-                return;
+        try {
+            $this->checkMethod($httpRequest, HTTPRequest::PUT);
+            $jsonPost = $httpRequest->getJsonPost();
+            $this->checkNotJsonBodyId($jsonPost);
+            $entity = new $this->entity($jsonPost);
+            if(!$this->manager->save($entity)) {
+                throw new Exception("L'entité ThermostatPlanif" . $entity->getId() . " n'a pas pu être sauvegardée");
             }
+            $persisted = $this->manager->getByNomIdAndDay($entity->getNomid(), $entity->getJour());
+            http_response_code(202);
+        } catch (Exception $e) {
+            return $this->page->addVar('data', ['error' => $e->getMessage()]);
         }
+        $this->deleteActionCache('index', 'Frontend');
 
-        /** @var ThermostatPlanifManagerPDO $manager */
-        $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $thermostat = new ThermostatPlanif($hydrate);
-
-        $manager->modify($thermostat);
-        $this->page->addVar('thermostatPlanif', "Success");
-    }
-
-     /**
-     * @param HTTPRequest $request
-     */
-    public function executeAdd(HTTPRequest $request)
-    {
-        $hydrate = [
-            'id' => $request->postData('id'),
-            'nom' => $request->postData('nom'),
-            'modeid' => $request->postData('modeid'),
-            'sensorid' => $request->postData('sensorid'),
-            'planning' => $request->postData('planning'),
-            'manuel' => $request->postData('manuel'),
-            'consigne' => $request->postData('consigne'),
-            'delta' => $request->postData('delta')
-        ];
-
-        foreach ($hydrate as $key => $value) {
-            if (is_null($value)) {
-                $this->page->addVar('thermostatPlanif', "Update Error : Value " . $key . " is null!");
-                return;
-            }
-        }
-
-        /** @var ThermostatPlanifManagerPDO $manager */
-        $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $thermostat = new ThermostatPlanif($hydrate);
-
-        $manager->modify($thermostat);
-        $this->page->addVar('thermostatPlanif', "Success");
+        return $this->page->addVar('data', $persisted);
     }
 }

@@ -42,6 +42,17 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
+     * @return bool|int
+     */
+    public function deleteAll()
+    {
+        $resCorresp = $this->dao->exec("DELETE FROM thermostat_corresp");
+        $resPlanif = $this->dao->exec("DELETE FROM $this->tableName");
+
+        return $resCorresp && $resPlanif;
+    }
+
+    /**
      * @return array
      * @throws Exception
      */
@@ -146,7 +157,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     {
         $sql = 'UPDATE thermostat_planif 
             SET             
-            timetable=:timetable      
+            timetable=:timetable
             WHERE id=:id';
 
         $q = $this->prepare($sql);
@@ -173,7 +184,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         for ($jour = 1; $jour < 8; $jour++) {
             $thermostatPlanif = new ThermostatPlanif([
                 "jour" => $jour,
-                "timetable" => json_encode(['300-1', '600-2','800-1','1200-3']),
+                "timetable" => json_encode(['300-1', '600-2', '800-1', '1200-3']),
                 "nomid" => $nomId
             ]);
 
@@ -273,8 +284,37 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         }
     }
 
-    protected function getIgnoreProperties()
+    /**
+     * @return array
+     */
+    protected function getIgnoreProperties(): array
     {
         return ['nom', 'defaultMode', 'mode', 'modes'];
+    }
+
+    /**
+    * @param int $nomid
+    * @param int $day
+    * @return \Entity\ThermostatPlanif | false
+    */
+    public function getByNomIdAndDay($nomid, $day)
+    {
+        $sql = 'SELECT * FROM thermostat_planif WHERE nomid = :nomid AND jour = :jour';
+        $q = $this->prepare($sql);
+        $q->bindValue(':nomid', (int)$nomid, \PDO::PARAM_INT);
+        $q->bindValue(':jour', (int)$day, \PDO::PARAM_INT);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, \Entity\ThermostatPlanif::class);
+        $thermostatPlanif = $q->fetch();
+        $q->closeCursor();
+
+        /** @var ThermostatPlanif $thermostatPlanif */
+        if (!$thermostatPlanif) {
+            return false;
+        }
+
+        $thermostatPlanif->setNom($this->getNom($nomid));
+
+        return $thermostatPlanif;
     }
 }

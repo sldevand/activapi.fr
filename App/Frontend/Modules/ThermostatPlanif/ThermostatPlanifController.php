@@ -13,7 +13,6 @@ use Materialize\WidgetFactory;
 use Entity\ThermostatPlanifNom;
 use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
-use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
 use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCardList;
 use App\Frontend\Modules\ThermostatPlanif\Form\ThermostatPlanifFormHandler;
