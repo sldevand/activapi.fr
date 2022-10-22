@@ -20,6 +20,7 @@
         "babelifyActions": "./node_modules/.bin/watchify  ./src/actionsManage.js -t [babelify] -o ./Web/dist/actionsManage.js",
         "babelifyNode": "./node_modules/.bin/watchify  ./src/nodeManage.js -t [babelify] -o ./Web/dist/nodeManage.js",
         "babelifyConsole": "./node_modules/.bin/watchify  ./src/console.js -t [babelify] -o ./Web/dist/console.js",
+        "babelifyThermostatPlanif": "./node_modules/.bin/watchify  ./src/thermostatPlanifManage.js -t [babelify] -o ./Web/dist/thermostatPlanifManage.js",
         "babelIndex": "./node_modules/.bin/browserify  ./src/index.js -t [babelify] -o ./Web/dist/index.js",
         "babelGraphs": "./node_modules/.bin/browserify ./src/graphs.js -t [babelify] -o ./Web/dist/graphs.js",
         "babelSocketio": "./node_modules/.bin/browserify ./src/socketio.js -t [babelify] -o ./Web/dist/socketio.js",
@@ -31,7 +32,8 @@
         "babelConsole": "./node_modules/.bin/browserify ./src/console.js -t [babelify] -o ./Web/dist/console.js",
         "babelMaterialize": "./node_modules/.bin/browserify ./src/materializeTricks.js -t [babelify] -o ./Web/dist/materializeTricks.js",
         "babelUser": "./node_modules/.bin/browserify ./src/user.js -t [babelify] -o ./Web/dist/user.js",
-        "babelAll": "npm run babelIndex && npm run babelGraphs && npm run babelSocketio && npm run babelModes && npm run babelScenarios && npm run babelSequences && npm run babelActions && npm run babelNode && npm run babelConsole && npm run babelMaterialize && npm run babelUser"
+        "babelThermostatPlanif": "./node_modules/.bin/browserify ./src/thermostatPlanifManage.js -t [babelify] -o ./Web/dist/thermostatPlanifManage.js",
+        "babelAll": "npm run babelIndex && npm run babelGraphs && npm run babelSocketio && npm run babelModes && npm run babelScenarios && npm run babelSequences && npm run babelActions && npm run babelNode && npm run babelConsole && npm run babelMaterialize && npm run babelUser && npm run babelThermostatPlanif"
     },
     "repository": {
         "type": "git",

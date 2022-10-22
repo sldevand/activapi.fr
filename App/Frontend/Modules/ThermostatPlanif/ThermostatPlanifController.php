@@ -116,6 +116,7 @@ class ThermostatPlanifController extends BackController
         if (!$id = $request->getData('id')) {
             $domId = 'Ajout';
         }
+        $thermostatPlanif = $this->manager->getUnique($id);
 
         $this->page->addVar('title', "$domId du Scénario");
 
@@ -138,7 +139,7 @@ class ThermostatPlanifController extends BackController
         );
         $cardTitle = $link->getHtml();
         $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $formBlock = $this->getBlock(__DIR__ . '/Block/thermostatPlanifForm.phtml', $id, $submitButton);
+        $formBlock = $this->getBlock(__DIR__ . '/Block/thermostatPlanifForm.phtml', $thermostatPlanif, $submitButton);
         $card->addContent($formBlock);
 
         return $this->page->addVar('card', $card);

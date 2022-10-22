@@ -1,5 +1,5 @@
 <?php
-$thermostatPlanifId = $args[0];
+$thermostatPlanif = $args[0];
 /** @var \Materialize\Button\FlatButton $submit */
 $submit = $args[1];
 $addButton = new \Materialize\FloatingActionButton([
@@ -10,18 +10,16 @@ $addButton = new \Materialize\FloatingActionButton([
     'fixed' => true
 ]);
 $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
-
-$method = ($thermostatPlanifId) ? 'put' : 'post';
-$action = ($thermostatPlanifId) ? 'api/thermostat/planif/update' : 'api/thermostat/planif/add';
-
 ?>
-<form class="row" action="<?= $action ?>" method="<?= $method ?>">
-    <div id="scenario-content">
+<form class="row" action="api/thermostat/planif/update" method="put">
+    <div id="thermostat-planif-content">
         <div class="center-align">
             <?= $spinner->getHtml(); ?>
         </div>
     </div>
-    <input type="text" name="id" id="id" value="<?= $thermostatPlanifId ?>" hidden readonly required/>
+    <input type="text" name="thermostat-planif-id" id="thermostat-planif-id" value="<?= $thermostatPlanif->getId() ?>" hidden readonly required/>
+    <input type="text" name="thermostat-planif-nomid" id="thermostat-planif-nomid" value="<?= $thermostatPlanif->getNomid() ?>" hidden readonly required/>
+    <input type="text" name="thermostat-planif-jour" id="thermostat-planif-jour" value="<?= $thermostatPlanif->getJour() ?>" hidden readonly required/>
     <?= $submit->getHtml(); ?>
     <?= $addButton->getHtml() ?>
 </form>
