@@ -1,7 +1,12 @@
-import { ThermostatPlanifTemplate } from "./templates/thermostat-planif-template";
+import { ThermostatPlanifRowTemplate } from "./templates/thermostat-planif-row-template";
 import { ApiManage } from "../utils/apiManage";
 
 export class ThermostatPlanif {
+    constructor() {
+        this.planifContent = document.querySelector('#thermostat-planif-content');
+        this.lastIndex = 0;
+    }
+
     async init() {
         const nomid = document.querySelector('#thermostat-planif-nomid').getAttribute('value');
         const jour = document.querySelector('#thermostat-planif-jour').getAttribute('value');
@@ -16,11 +21,63 @@ export class ThermostatPlanif {
 
             json.timetable = newTimetable;
             const themostatPlanif = json;
-            document.querySelector('#thermostat-planif-content').replaceWith(this.createTemplate(themostatPlanif));
+            let planifRows = this.initPlanifRows(themostatPlanif);
+            this.planifContent.innerHTML = '';
+            this.planifContent.append(planifRows);
+            this.initAddEvent();
+            this.initDeleteEvents();
+            this.refreshMaterializeElements();
             return this.initForm();
         } catch (err) {
             return console.log(err);
         }
+    }
+
+    initAddEvent() {
+        document.querySelector('#planif-add').addEventListener('click', (event) => {
+            event.preventDefault();
+            if (document.querySelectorAll('.thermostat-planif-row').length > 5) {
+                return;
+            }
+            this.lastIndex++;
+            this.planifContent.append(this.createThermostatPlanifRow(null, this.lastIndex));
+            this.initDeleteEvents();
+            this.refreshMaterializeElements();
+        });
+    }
+
+    refreshMaterializeElements() {
+        $('select').material_select();
+
+        let timePicker = $(".timepicker");
+
+        timePicker.pickatime({
+            default: 'now',
+            fromnow: 0,
+            twelvehour: false,
+            donetext: 'OK',
+            cleartext: 'Effacer',
+            canceltext: 'Annuler',
+            autoclose: false,
+            ampmclickable: false,
+            aftershow: function () {
+            }
+        });
+
+        timePicker.on('mousedown', function (event) {
+            event.preventDefault();
+        })
+    }
+
+    initDeleteEvents() {
+        document.querySelectorAll('.thermostat-planif-row-delete').forEach((button) => {
+            button.removeEventListener('click', this.removeRow);
+            button.addEventListener('click', this.removeRow);
+        });
+    }
+
+    removeRow(event) {
+        event.currentTarget.parentNode.remove();
     }
 
     minuteToHour(minute) {
@@ -30,9 +87,19 @@ export class ThermostatPlanif {
         return `${hourPart}:${minutePart}`;
     }
 
-    createTemplate(themostatPlanif) {
-        let thermostatPlanifTemplate = new ThermostatPlanifTemplate();
-        return thermostatPlanifTemplate.render(themostatPlanif);
+    initPlanifRows(thermostatPlanif) {
+        const fragment = new DocumentFragment();
+        thermostatPlanif.timetable.forEach((minuteModeId, index) => {
+            fragment.append(this.createThermostatPlanifRow(minuteModeId, index));
+            this.lastIndex = index;
+        });
+
+        return fragment;
+    }
+
+    createThermostatPlanifRow(minuteModeId, index) {
+        let thermostatPlanifRowTemplate = new ThermostatPlanifRowTemplate();
+        return thermostatPlanifRowTemplate.render(minuteModeId, index);
     }
 
     initForm() {

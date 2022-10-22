@@ -7,7 +7,7 @@ $addButton = new \Materialize\FloatingActionButton([
     'id' => 'planif-add',
     'icon' => 'add',
     'wrapper' => 'col s6',
-    'href' => '#',
+    'href' => '',
     'fixed' => true
 ]);
 $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
@@ -25,7 +25,7 @@ $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
     <?= $addButton->getHtml() ?>
 </form>
 <template id="timetable-row-layout">
-    <div class="row">
+    <div class="row thermostat-planif-row">
         <div class="col s6">
             <input class="timepicker" type="text" name="timetable[]" id="thermostat-planif-time-" value="" required>
         </div>
@@ -34,7 +34,7 @@ $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
                 <select id="thermostat-planif-modeId-"></select>
             </div>
         </div>
-        <i id="thermostat-planif-delete-" data-id="" class="material-icons secondaryTextColor col s2 delete">delete</i>
+        <i class="material-icons secondaryTextColor col s2 delete thermostat-planif-row-delete">delete</i>
     </div>
 </template>
 
