@@ -105,7 +105,7 @@ class ThermostatPlanifController extends BackController
         $this->page->addVar('card', $card);
     }
 
-     /**
+    /**
      * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws \Exception
@@ -116,7 +116,6 @@ class ThermostatPlanifController extends BackController
         if (!$id = $request->getData('id')) {
             $domId = 'Ajout';
         }
-        $thermostatPlanif = $this->manager->getUnique($id);
 
         $this->page->addVar('title', "$domId du Scénario");
 
@@ -137,9 +136,15 @@ class ThermostatPlanifController extends BackController
                 'wrapper' => 'col s12'
             ]
         );
+
         $cardTitle = $link->getHtml();
         $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $formBlock = $this->getBlock(__DIR__ . '/Block/thermostatPlanifForm.phtml', $thermostatPlanif, $submitButton);
+        $thermostatPlanif = $this->manager->getUnique($id);
+        /** @var \Model\ThermostatModesManagerPDO $thermostatModesManager */
+        $thermostatModesManager = $this->managers->getManagerOf('ThermostatModes');
+        $modes = $thermostatModesManager->getList();
+        
+        $formBlock = $this->getBlock(__DIR__ . '/Block/thermostatPlanifForm.phtml', $thermostatPlanif, $modes, $submitButton);
         $card->addContent($formBlock);
 
         return $this->page->addVar('card', $card);
@@ -226,7 +231,7 @@ class ThermostatPlanifController extends BackController
      */
     public function duplicateFormView(...$args)
     {
-        return Block::getTemplate(  self::DUPLICATE_FORM_VIEW_TEMPLATE, ...$args);
+        return Block::getTemplate(self::DUPLICATE_FORM_VIEW_TEMPLATE, ...$args);
     }
 
 

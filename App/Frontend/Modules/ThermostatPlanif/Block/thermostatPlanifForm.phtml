@@ -1,7 +1,8 @@
 <?php
 $thermostatPlanif = $args[0];
+$modes = $args[1];
 /** @var \Materialize\Button\FlatButton $submit */
-$submit = $args[1];
+$submit = $args[2];
 $addButton = new \Materialize\FloatingActionButton([
     'id' => 'planif-add',
     'icon' => 'add',
@@ -17,9 +18,26 @@ $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
             <?= $spinner->getHtml(); ?>
         </div>
     </div>
-    <input type="text" name="thermostat-planif-id" id="thermostat-planif-id" value="<?= $thermostatPlanif->getId() ?>" hidden readonly required/>
-    <input type="text" name="thermostat-planif-nomid" id="thermostat-planif-nomid" value="<?= $thermostatPlanif->getNomid() ?>" hidden readonly required/>
-    <input type="text" name="thermostat-planif-jour" id="thermostat-planif-jour" value="<?= $thermostatPlanif->getJour() ?>" hidden readonly required/>
+    <input type="text" name="thermostat-planif-id" id="thermostat-planif-id" value="<?= $thermostatPlanif->getId() ?>" hidden readonly required />
+    <input type="text" name="thermostat-planif-nomid" id="thermostat-planif-nomid" value="<?= $thermostatPlanif->getNomid() ?>" hidden readonly required />
+    <input type="text" name="thermostat-planif-jour" id="thermostat-planif-jour" value="<?= $thermostatPlanif->getJour() ?>" hidden readonly required />
     <?= $submit->getHtml(); ?>
     <?= $addButton->getHtml() ?>
 </form>
+<template id="timetable-row-layout">
+    <div class="row">
+        <div class="col s6">
+            <input class="timepicker" type="text" name="timetable[]" id="thermostat-planif-time-" value="" required>
+        </div>
+        <div class="col s6">
+            <div class="select-wrapper"><span class="caret">▼</span>
+                <select id="thermostat-planif-modeId-"></select>
+            </div>
+        </div>
+        <i id="thermostat-planif-delete-" data-id="" class="material-icons secondaryTextColor col s2 delete">delete</i>
+    </div>
+</template>
+
+<script>
+    window.thermostatModes = <?= json_encode($modes) ?>
+</script>
