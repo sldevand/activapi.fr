@@ -17,10 +17,12 @@ export class ThermostatPlanifRowTemplate {
     createTimePicker(planifRow, minuteModeId, index) {
         let timeId = `${this.prefixTimeId}${index}`;
         planifRow.getElementById(this.prefixTimeId).setAttribute('id', timeId);
+        let timeElement = planifRow.getElementById(timeId);
+        timeElement.setAttribute('name', timeId);
         if (minuteModeId) {
-            planifRow.getElementById(timeId).setAttribute('value', minuteModeId.hour);
+            timeElement.setAttribute('value', minuteModeId.hour);
         }
-        planifRow.getElementById(timeId).parentNode.prepend(this.createLabel(timeId, 'Time'));
+        timeElement.parentNode.prepend(this.createLabel(timeId, 'Time'));
     }
 
     createModeSelect(planifRow, minuteModeId, index) {

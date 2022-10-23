@@ -87,6 +87,11 @@ export class ThermostatPlanif {
         return `${hourPart}:${minutePart}`;
     }
 
+    hourToMinute(hour) {
+        let hourParts = hour.split(':');
+        return parseInt(hourParts[0]) * 60 + parseInt(hourParts[1]);
+    }
+
     initPlanifRows(thermostatPlanif) {
         const fragment = new DocumentFragment();
         thermostatPlanif.timetable.forEach((minuteModeId, index) => {
@@ -109,59 +114,68 @@ export class ThermostatPlanif {
             document.getElementById('submit').disabled = true;
             let apiManage = new ApiManage(form.getAttribute('method'), form.getAttribute('action'));
 
-            let formData = new FormData(form);
-            debugger
-            // let object = {};
-            // object.scenarioSequences = [];
-            // object.deletedScenarioSequences = [];
-            // formData.forEach((value, key) => {
-            //     if (key.startsWith('sequence-')) {
-            //         let scenarioSequenceId = key.split('-')[1];
-            //         object.scenarioSequences.push({"id": scenarioSequenceId, "sequenceId": value});
-            //     } else if (key.startsWith('deleted-scenarioSequence-')) {
-            //         object.deletedScenarioSequences.push(value);
-            //     } else {
-            //         object[key] = value;
-            //     }
-            // });
-            // apiManage.sendObject(JSON.stringify(object), (request) => {
-            //     this.responseManagement(request)
-            // });
+            const fieldsets = form.querySelectorAll('fieldset')
+            let timetable = [];
+            if (fieldsets.length) {
+
+                fieldsets.forEach(fieldset => {
+                    let timeValue = fieldset.querySelector(".thermostat-planif-time").value;
+                    let minute = this.hourToMinute(timeValue);
+                    let modeIdValue = fieldset.querySelector(".thermostat-planif-modeId > select").value;
+                    let planifRowValue = `${minute}-${modeIdValue}`;
+                    timetable.push(planifRowValue);
+                    fieldset.setAttribute('disabled', true)
+                })
+            }
+
+            let id = form.querySelector('#thermostat-planif-id').value;
+            let nomid = form.querySelector('#thermostat-planif-nomid').value;
+            let jour = form.querySelector('#thermostat-planif-jour').value;
+            let payload = {
+                id: id,
+                nomid:nomid,
+                jour: jour,
+                timetable: JSON.stringify(timetable)
+            };
+            apiManage.sendObject(JSON.stringify(payload), (request) => {
+                this.responseManagement(request)
+            });
         });
     }
 
-    // responseManagement(request) {
-    //     let jsonResponse = JSON.parse(request.response);
-    //     this.dispatchResponse(request.status, jsonResponse);
-    // }
+    responseManagement(request) {
+        debugger
+        let jsonResponse = JSON.parse(request.response);
+        this.dispatchResponse(request.status, jsonResponse);
+    }
 
-    // dispatchResponse(status, jsonResponse) {
-    //     let crudOperation = '';
-    //     switch (status) {
-    //         case 202:
-    //             crudOperation = "updated";
-    //             break;
-    //         case 201:
-    //             crudOperation = "created";
-    //             break;
-    //         case 204:
-    //             crudOperation = "deleted";
-    //             break;
-    //         default:
-    //             return Materialize.toast(jsonResponse['error'], 2000);
-    //     }
+    dispatchResponse(status, jsonResponse) {
+        let crudOperation = '';
+        switch (status) {
+            case 202:
+                crudOperation = "updated";
+                break;
+            case 201:
+                crudOperation = "created";
+                break;
+            case 204:
+                crudOperation = "deleted";
+                break;
+            default:
+                return Materialize.toast(jsonResponse['error'], 2000);
+        }
 
-    //     return this.makeToast(jsonResponse, crudOperation);
-    // }
+        return this.makeToast(jsonResponse, crudOperation);
+    }
 
-    // makeToast(jsonResponse, crudOperation) {
-    //     return Materialize.toast(
-    //         jsonResponse.nom + " " + crudOperation,
-    //         700,
-    //         '',
-    //         () => {
-    //             window.location.replace('scenarios');
-    //         }
-    //     );
-    // }
+    makeToast(jsonResponse, crudOperation) {
+        return Materialize.toast(
+            jsonResponse.id + " " + crudOperation,
+            700,
+            '',
+            () => {
+                window.location.replace('thermostat-planif');
+            }
+        );
+    }
 }
