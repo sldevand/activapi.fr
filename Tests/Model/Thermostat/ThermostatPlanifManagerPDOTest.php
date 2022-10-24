@@ -276,7 +276,7 @@ class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements Mana
             $expectedEntity->setId($key + 1);
             $expectedEntity->setNomid(1);
             $expectedEntity->setNom($nom->setId(1));
--           $expectedEntity->setTimetable(json_encode(['300-1','600-2','800-1','1200-3']));
+            $expectedEntity->setTimetable(json_encode(['300-1','600-2','800-1','1200-3']));
         }
 
         return [

@@ -2,20 +2,20 @@
 
 namespace App\Frontend\Modules\ThermostatPlanif;
 
-use OCFram\Block;
-use OCFram\Application;
-use OCFram\HTTPRequest;
-use Materialize\FormView;
-use Materialize\Link\Link;
-use OCFram\BackController;
-use Entity\ThermostatPlanif;
-use Materialize\WidgetFactory;
-use Entity\ThermostatPlanifNom;
-use Materialize\Button\FlatButton;
-use Materialize\FloatingActionButton;
-use FormBuilder\ThermostatPlanifNameFormBuilder;
 use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCardList;
 use App\Frontend\Modules\ThermostatPlanif\Form\ThermostatPlanifFormHandler;
+use Entity\ThermostatPlanif;
+use Entity\ThermostatPlanifNom;
+use FormBuilder\ThermostatPlanifNameFormBuilder;
+use Materialize\Button\FlatButton;
+use Materialize\FloatingActionButton;
+use Materialize\FormView;
+use Materialize\Link\Link;
+use Materialize\WidgetFactory;
+use OCFram\Application;
+use OCFram\BackController;
+use OCFram\Block;
+use OCFram\HTTPRequest;
 
 /**
  * Class ThermostatPlanifController
@@ -143,7 +143,6 @@ class ThermostatPlanifController extends BackController
         /** @var \Model\ThermostatModesManagerPDO $thermostatModesManager */
         $thermostatModesManager = $this->managers->getManagerOf('ThermostatModes');
         $modes = $thermostatModesManager->getList();
-        
         $formBlock = $this->getBlock(__DIR__ . '/Block/thermostatPlanifForm.phtml', $thermostatPlanif, $modes, $submitButton);
         $card->addContent($formBlock);
 
@@ -184,6 +183,7 @@ class ThermostatPlanifController extends BackController
 
     /**
      * @param \OCFram\HTTPRequest $request
+     * @return \OCFram\Page|null|void
      * @throws \Exception
      */
     public function executeDuplicate(HTTPRequest $request)
@@ -191,7 +191,8 @@ class ThermostatPlanifController extends BackController
         if (!$id = $request->getData('id')) {
             $this->app()->user()->setFlash('No id was found in the request for duplication');
             $this->deleteActionCache('index');
-            return $this->redirectBack();
+            $this->redirectBack();
+            return;
         }
 
         if ($request->method() === HTTPRequest::POST) {
@@ -201,9 +202,11 @@ class ThermostatPlanifController extends BackController
                 $this->manager->duplicate($id, $nom);
             } catch (\Exception $exception) {
                 $this->app()->user()->setFlash($exception->getMessage());
-                return $this->app->httpResponse()->redirectReferer();
+                $this->app->httpResponse()->redirectReferer();
+                return;
             }
-            return $this->redirectBack();
+            $this->redirectBack();
+            return;
         }
 
         $nom = $this->manager->getNom($id);
@@ -214,7 +217,7 @@ class ThermostatPlanifController extends BackController
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->duplicateFormView($nom));
 
-        $this->page->addVar('card', $card);
+        return $this->page->addVar('card', $card);
     }
 
     /**
@@ -244,38 +247,5 @@ class ThermostatPlanifController extends BackController
         $anchor = !empty($anchor) ? '#' . $anchor : '';
 
         return $this->baseAddress . 'thermostat-planif' . $anchor;
-    }
-
-    /**
-     * @param \OCFram\HTTPRequest $request
-     * @return \Entity\ThermostatPlanif
-     * @throws \Exception
-     */
-    protected function createThermostatPlanifFromPost(HTTPRequest $request): ThermostatPlanif
-    {
-        $thermostatPlanif = new ThermostatPlanif(
-            [
-                'jour' => $request->postData('jour'),
-                'modeid' => $request->postData('modeid'),
-                'defaultModeid' => $request->postData('defaultModeid'),
-                'heure1Start' => $request->postData('heure1Start') ?? '07:00',
-                'heure1Stop' => $request->postData('heure1Stop') ?? '23:00',
-                'heure2Start' => $request->postData('heure2Start'),
-                'heure2Stop' => $request->postData('heure2Stop'),
-                'nomid' => $request->postData('nomid')
-            ]
-        );
-
-        if ($request->getExists('id')) {
-            $id = $request->getData('id');
-            $thermostatPlanif->setId($id);
-        }
-
-        if ($thermostatPlanif->nomid()) {
-            $thermostatPlanifNom = $this->manager->getNom($thermostatPlanif->nomid());
-            $thermostatPlanif->setNom($thermostatPlanifNom);
-        }
-
-        return $thermostatPlanif;
     }
 }

@@ -88,27 +88,21 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         }
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanif');
-        $listeThermostatPlanif = $q->fetchAll();
+        $thermostatPlanifs = $q->fetchAll();
         $q->closeCursor();
 
-        /** @var \Model\ThermostatModesManagerPDO $manager */
-        $modesManager = $this->managers->getManagerOf('ThermostatModes');
-
-        /**
-         * @var int $key
-         * @var ThermostatPlanif[] $thermostatPlanifs
-         */
-        foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
+        /** @var ThermostatPlanif[] $thermostatPlanifs */
+        foreach ($thermostatPlanifs as $thermostatPlanif) {
             $nom = $this->getNom($thermostatPlanif->getNomId());
             $thermostatPlanif->setNom($nom);
         }
 
-        return $listeThermostatPlanif;
+        return $thermostatPlanifs;
     }
 
     /**
      * @param int $id
-     * @return mixed|null|ThermostatPlanif
+     * @return false|ThermostatPlanif
      * @throws Exception
      */
     public function getUnique($id)
@@ -267,11 +261,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param $id
-     * @param $nom
+     * @param string $id
+     * @param string $nom
      * @throws Exception
      */
-    public function duplicate($id, string $nom)
+    public function duplicate(string $id, string $nom)
     {
         $nomToAdd = new ThermostatPlanifNom(['nom' => $nom]);
         $nomId = $this->addNom($nomToAdd);
@@ -279,6 +273,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         foreach ($planifDays as $planifDay) {
             $planifDayArray = Utils::objToArray($planifDay);
             unset($planifDayArray['id']);
+            unset($planifDayArray['nom']);
             $planifDayArray['nomid'] = $nomId;
             $this->add(new ThermostatPlanif($planifDayArray), $this->getIgnoreProperties());
         }
