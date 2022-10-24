@@ -161,6 +161,7 @@ export class ThermostatPlanif {
                 crudOperation = "deleted";
                 break;
             default:
+                document.getElementById('submit').removeAttribute('disabled');
                 return Materialize.toast(jsonResponse['error'], 2000);
         }
 
