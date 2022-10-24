@@ -288,10 +288,10 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-    * @param int $nomid
-    * @param int $day
-    * @return \Entity\ThermostatPlanif | false
-    */
+     * @param int $nomid
+     * @param int $day
+     * @return \Entity\ThermostatPlanif | false
+     */
     public function getByNomIdAndDay($nomid, $day)
     {
         $sql = 'SELECT * FROM thermostat_planif WHERE nomid = :nomid AND jour = :jour';

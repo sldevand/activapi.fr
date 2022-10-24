@@ -2,13 +2,13 @@
 
 namespace App\Backend\Modules\ThermostatPlanif;
 
+use Entity\ThermostatPlanif;
+use Exception;
+use Model\ThermostatPlanifManagerPDO;
+use OCFram\AbstractRestController;
 use OCFram\Application;
 use OCFram\HTTPRequest;
-use Entity\ThermostatPlanif;
-use Entity\ThermostatPlanifNom;
-use OCFram\AbstractRestController;
-use Model\ThermostatPlanifManagerPDO;
-use Exception;
+use OCFram\Page;
 
 /**
  * Class ThermostatPlanifController
@@ -35,12 +35,12 @@ class ThermostatPlanifController extends AbstractRestController
         $this->entity = ThermostatPlanif::class;
     }
 
-   /**
+    /**
      * @param HTTPRequest $httpRequest
      * @return \OCFram\Page
      * @throws Exception
      */
-    public function executeGet($httpRequest)
+    public function executeGet($httpRequest): Page
     {
         try {
             $this->checkMethod($httpRequest, HTTPRequest::GET);
@@ -60,30 +60,31 @@ class ThermostatPlanifController extends AbstractRestController
 
     /**
      * @param HTTPRequest $request
+     * @throws \Exception
      */
     public function executeName(HTTPRequest $request)
     {
-        $id = $request->getData('id');
         /** @var ThermostatPlanifManagerPDO $manager */
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
-
-        if ($request->getExists('id')) {
-            $id = $request->getData('id');
-        }
-
-        $thermostatPlanifs = $id ?  $manager->getNom($id) : $manager->getNoms();
-
+        $thermostatPlanifs = $request->getExists('id')
+            ? $manager->getNom($request->getData('id'))
+            : $manager->getNoms();
         $this->page->addVar('thermostatPlanifs', $thermostatPlanifs);
     }
 
-    public function executePut($httpRequest)
+    /**
+     * @param HTTPRequest $httpRequest
+     * @return \OCFram\Page
+     * @throws \Exception
+     */
+    public function executePut($httpRequest): Page
     {
         try {
             $this->checkMethod($httpRequest, HTTPRequest::PUT);
             $jsonPost = $httpRequest->getJsonPost();
             $this->checkNotJsonBodyId($jsonPost);
             $entity = new $this->entity($jsonPost);
-            if(!$this->manager->save($entity)) {
+            if (!$this->manager->save($entity)) {
                 throw new Exception("L'entité ThermostatPlanif" . $entity->getId() . " n'a pas pu être sauvegardée");
             }
             $persisted = $this->manager->getByNomIdAndDay($entity->getNomid(), $entity->getJour());

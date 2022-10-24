@@ -77,7 +77,7 @@ export class ThermostatPlanif {
     }
 
     removeRow(event) {
-        event.currentTarget.parentNode.remove();
+        event.currentTarget.parentNode.parentNode.remove();
     }
 
     minuteToHour(minute) {
@@ -144,7 +144,6 @@ export class ThermostatPlanif {
     }
 
     responseManagement(request) {
-        debugger
         let jsonResponse = JSON.parse(request.response);
         this.dispatchResponse(request.status, jsonResponse);
     }
