@@ -66,10 +66,11 @@ class ThermostatPlanifController extends AbstractRestController
     {
         /** @var ThermostatPlanifManagerPDO $manager */
         $manager = $this->managers->getManagerOf('ThermostatPlanif');
-        $thermostatPlanifs = $request->getExists('id')
+        $thermostatPlanifs = $request->getExists('id') && $request->getData('id')
             ? $manager->getNom($request->getData('id'))
             : $manager->getNoms();
-        $this->page->addVar('thermostatPlanifs', $thermostatPlanifs);
+
+        return $this->page->addVar('thermostatPlanifs', $thermostatPlanifs);
     }
 
     /**
