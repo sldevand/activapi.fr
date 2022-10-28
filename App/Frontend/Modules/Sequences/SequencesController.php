@@ -2,21 +2,31 @@
 
 namespace App\Frontend\Modules\Sequences;
 
-use App\Backend\Modules\Sequences\SequencesController as SequencesBackController;
+use Exception;
+use OCFram\Application;
+use OCFram\HTTPRequest;
 use Materialize\FormView;
-use Materialize\Button\FlatButton;
-use Materialize\FloatingActionButton;
 use Materialize\Link\Link;
 use Materialize\WidgetFactory;
-use OCFram\HTTPRequest;
+use Materialize\Button\FlatButton;
+use Materialize\FloatingActionButton;
+use Model\Scenario\SequencesManagerPDO;
+use App\Frontend\Modules\Scenarios\AbstractScenariosController;
 
 /**
  * Class SequencesController
  * @package App\Frontend\Modules\Sequences
  */
-class SequencesController extends SequencesBackController
+class SequencesController extends AbstractScenariosController
 {
     use FormView;
+
+    protected SequencesManagerPDO $sequencesManager;
+
+    public function __construct(Application $app, string $module, string $action) {
+        parent::__construct($app, $module, $action);
+        $this->sequencesManager = $this->scenarioManagerPDOFactory->getSequencesManager();
+    }
 
     /**
      * @param HTTPRequest $request
@@ -24,8 +34,12 @@ class SequencesController extends SequencesBackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $sequences = parent::executeGet($request);
-
+        try {
+            $sequences = $this->sequencesManager->getAll();
+        } catch (Exception $exception) {
+            $sequences = [];
+        }
+       
         $this->page->addVar('title', 'Gestion des sequences');
 
         $cards = [];
@@ -97,13 +111,11 @@ class SequencesController extends SequencesBackController
      */
     public function executeDelete($request)
     {
-        $manager = $this->getSequencesManager();
-
         $domId = 'Suppression';
         if ($request->method() == 'POST') {
             if ($request->getExists('id')) {
                 $id = $request->getData('id');
-                $manager->delete($id);
+                $this->sequencesManager->delete($id);
                 $this->deleteActionCache('index');
                 $this->app->httpResponse()->redirect($this->baseAddress . 'sequences');
             }

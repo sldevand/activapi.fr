@@ -6,29 +6,25 @@ use OCFram\Application;
 use OCFram\HTTPRequest;
 use Materialize\FormView;
 use Materialize\Link\Link;
-use OCFram\BackController;
 use Materialize\WidgetFactory;
 use Materialize\Button\FlatButton;
-use Materialize\FloatingActionButton;
-use Model\Scenario\ScenarioManagerPDOFactory;
-
 use Model\Scenario\ActionManagerPDO;
+use Materialize\FloatingActionButton;
+use App\Frontend\Modules\Scenarios\AbstractScenariosController;
 
 /**
  * Class ActionsController
  * @package App\Frontend\Modules\Actions
  */
-class ActionsController extends BackController
+class ActionsController extends AbstractScenariosController
 {
     use FormView;
 
-    protected ScenarioManagerPDOFactory $scenarioManagerPDOFactory;
-    protected ActionManagerPDO $manager;
+    protected ActionManagerPDO $actionManager;
 
     public function __construct(Application $app, string $module, string $action) {
         parent::__construct($app, $module, $action);
-        $this->scenarioManagerPDOFactory = new ScenarioManagerPDOFactory();
-        $this->manager = $this->scenarioManagerPDOFactory->getActionManager();
+        $this->actionManager = $this->scenarioManagerPDOFactory->getActionManager();
     }
 
     /**
@@ -38,8 +34,7 @@ class ActionsController extends BackController
     public function executeIndex(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Gestion des actions');
-        $this->scenarioManagerPDOFactory->getActionManager();
-        $actions = $this->manager->getAll();
+        $actions = $this->actionManager->getAll();
         $cards = [];
         $cards[] = $this->makeActionsWidget($actions);
         $addActionFab = new FloatingActionButton([
