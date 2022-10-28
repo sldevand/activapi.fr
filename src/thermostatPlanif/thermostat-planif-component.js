@@ -77,7 +77,7 @@ export class ThermostatPlanif {
     }
 
     removeRow(event) {
-        event.currentTarget.parentNode.parentNode.remove();
+        event.currentTarget.parentNode.parentNode.parentNode.remove();
     }
 
     minuteToHour(minute) {
