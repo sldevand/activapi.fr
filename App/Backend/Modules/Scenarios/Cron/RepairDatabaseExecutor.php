@@ -2,19 +2,18 @@
 
 namespace App\Backend\Modules\Scenarios\Cron;
 
-use Entity\Scenario\Action;
-use Entity\Scenario\ScenarioSequence;
-use Entity\Scenario\SequenceAction;
 use Exception;
+use Entity\Scenario\Action;
 use Model\ActionneursManagerPDO;
+use Entity\Scenario\SequenceAction;
 use Model\Scenario\ActionManagerPDO;
-use Model\Scenario\ScenarioSequenceManagerPDO;
-use Model\Scenario\ScenariosManagerPDO;
-use Model\Scenario\SequenceActionManagerPDO;
-use Model\Scenario\SequencesManagerPDO;
-use OCFram\Managers;
-use OCFram\PDOFactory;
 use Sldevand\Cron\ExecutorInterface;
+use Entity\Scenario\ScenarioSequence;
+use Model\Scenario\ScenariosManagerPDO;
+use Model\Scenario\SequencesManagerPDO;
+use Model\Scenario\SequenceActionManagerPDO;
+use Model\Scenario\ScenarioManagerPDOFactory;
+use Model\Scenario\ScenarioSequenceManagerPDO;
 
 /**
  * Class RepairDatabaseExecutor
@@ -22,51 +21,26 @@ use Sldevand\Cron\ExecutorInterface;
  */
 class RepairDatabaseExecutor implements ExecutorInterface
 {
-    /** @var Managers */
-    protected $managers;
-
-    /** @var ActionManagerPDO */
-    protected $actionManager;
-
-    /** @var SequenceActionManagerPDO */
-    protected $sequenceActionManager;
-
-    /** @var SequencesManagerPDO */
-    protected $sequencesManager;
-
-    /** @var ScenarioSequenceManagerPDO */
-    protected $scenarioSequenceManager;
-
-    /** @var ScenariosManagerPDO */
-    protected $scenariosManager;
+    protected ScenarioManagerPDOFactory $scenarioManagerPDOFactory;
+    protected ActionneursManagerPDO $actionneursManager;
+    protected ActionManagerPDO $actionManager;
+    protected SequenceActionManagerPDO $sequenceActionManager;
+    protected SequencesManagerPDO $sequencesManager;
+    protected ScenarioSequenceManagerPDO $scenarioSequenceManager;
+    protected ScenariosManagerPDO $scenariosManager;
 
     /**
      * RepairDatabaseExecutor constructor.
      */
     public function __construct()
     {
-        $this->managers = new Managers('PDO', PDOFactory::getSqliteConnexion());
-        $actionneursManagerPDO = $this->managers->getManagerOf('Actionneurs');
-        $this->actionManager = $this->managers
-            ->getManagerOf('Scenario\Action', ['actionneursManagerPDO' => $actionneursManagerPDO]);
-
-        $this->sequenceActionManager = $this->managers
-            ->getManagerOf('Scenario\SequenceAction');
-
-        $this->sequencesManager = $this->managers
-            ->getManagerOf('Scenario\Sequences', [
-                'sequenceActionManagerPDO' => $this->sequenceActionManager,
-                'actionManagerPDO' => $this->actionManager
-            ]);
-
-        $this->scenarioSequenceManager = $this->managers
-            ->getManagerOf('Scenario\ScenarioSequence');
-
-        $this->scenariosManager = $this->managers
-            ->getManagerOf('Scenario\Scenarios', [
-                'sequencesManagerPDO' => $this->sequencesManager,
-                'scenarioSequenceManagerPDO' => $this->scenarioSequenceManager
-            ]);
+        $this->scenarioManagerPDOFactory = new ScenarioManagerPDOFactory();
+        $this->actionneursManager = $this->scenarioManagerPDOFactory->getActionneursManager();
+        $this->actionManager = $this->scenarioManagerPDOFactory->getActionManager();
+        $this->sequenceActionManager = $this->scenarioManagerPDOFactory->getSequenceActionManager();
+        $this->sequencesManager = $this->scenarioManagerPDOFactory->getSequencesManager();
+        $this->scenarioSequenceManager = $this->scenarioManagerPDOFactory->getScenarioSequenceManager();
+        $this->scenariosManager = $this->scenarioManagerPDOFactory->getScenariosManager();
     }
 
     /**
@@ -86,11 +60,11 @@ class RepairDatabaseExecutor implements ExecutorInterface
      */
     public function cleanActionsWithNoActionneur()
     {
-        $actions = $this->actionManager->getRows();
+        $actions = $this->actionManager->getAll();
         /** @var Action $action */
         foreach ($actions as $action) {
             try {
-                $this->actionManager->getUnique($action->getActionneurId());
+                $this->actionneursManager->getUnique($action->getActionneurId());
             } catch (Exception $exception) {
                 $this->actionManager->delete($action->id());
                 echo 'Deleted sequence_action row : ' . $action->id() . PHP_EOL;
