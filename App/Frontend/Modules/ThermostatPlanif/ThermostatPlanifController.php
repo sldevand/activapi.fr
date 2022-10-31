@@ -24,6 +24,7 @@ use OCFram\HTTPRequest;
 class ThermostatPlanifController extends BackController
 {
     const DUPLICATE_FORM_VIEW_TEMPLATE = __DIR__ . '/Block/duplicateFormView.phtml';
+    const COPY_TIMETABLES_FORM_VIEW_TEMPLATE = __DIR__ . '/Block/copyTimetablesFormView.phtml';
 
     use FormView;
 
@@ -221,6 +222,52 @@ class ThermostatPlanifController extends BackController
     }
 
     /**
+     * @param \OCFram\HTTPRequest $request
+     * @return \OCFram\Page|null|void
+     * @throws \Exception
+     */
+    public function executeCopyTimetables(HTTPRequest $request)
+    {
+        $id = $request->getData('id');
+        $day = $request->getData('day');
+        if ($request->method() === HTTPRequest::POST) {
+            try {
+                if(!$days = $request->postData('days')) {
+                    throw new \Exception('Aucun jour sélectionné!');
+                }
+
+                $daysParam = array_keys($days);
+                $originalThermostatPlanif = $this->manager->getByNomIdAndDay($id, $day);
+                $timetableToCopy = $originalThermostatPlanif->getTimetable();
+                foreach ($daysParam as $dayParam) {
+                    if ($dayParam == $day) {
+                        continue;
+                    }
+                    $updatedthermostatPlanif = $this->manager->getByNomIdAndDay($id, $dayParam);
+                    $updatedthermostatPlanif->setTimetable($timetableToCopy);
+                    $this->manager->save($updatedthermostatPlanif);
+                }
+            } catch (\Exception $exception) {
+                $this->app()->user()->setFlash($exception->getMessage());
+                $this->app->httpResponse()->redirectReferer();
+                return;
+            }
+            $this->redirectBack();
+            return;
+        }
+
+        $thermostatPlanif = $this->manager->getByNomIdAndDay($id, $day);
+        $domId = 'Copy timetable';
+        $backUrl = $this->baseAddress . 'thermostat-planif' . '#' . $thermostatPlanif->getNom()->nom();
+        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl)->getHtml();
+
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->copyTimetablesFormView($thermostatPlanif->getNomid(), $thermostatPlanif->getJour()));
+
+        return $this->page->addVar('card', $card);
+    }
+
+    /**
      * @param string $anchor
      */
     protected function redirectBack(string $anchor = '')
@@ -235,6 +282,15 @@ class ThermostatPlanifController extends BackController
     public function duplicateFormView(...$args)
     {
         return Block::getTemplate(self::DUPLICATE_FORM_VIEW_TEMPLATE, ...$args);
+    }
+
+    /**
+     * @param array $args
+     * @return false|string
+     */
+    public function copyTimetablesFormView(...$args)
+    {
+        return Block::getTemplate(self::COPY_TIMETABLES_FORM_VIEW_TEMPLATE, ...$args);
     }
 
 

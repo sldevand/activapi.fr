@@ -70,7 +70,6 @@ class PlanifCardList
      */
     protected function prepareDataForTable($thermostatPlanning)
     {
-        $thermostatPlanning["jour"] = DateFactory::toStrDay($thermostatPlanning['jour']);
         $linkEdit = new Link(
             '',
             $this->baseAddress . "thermostat-planif-edit-" . $thermostatPlanning["id"],
@@ -78,6 +77,17 @@ class PlanifCardList
             'primaryTextColor'
         );
         $thermostatPlanning["editer"] = $linkEdit->getHtmlForTable();
+
+        $copyTimetableUrl =  $this->baseAddress . "thermostat-planif-copy-timetables-";
+        $copyTimetableUrl .= $thermostatPlanning["nomid"] . '-' . $thermostatPlanning['jour'];
+        $linkCopy = new Link(
+            '',
+            $copyTimetableUrl,
+            'content_copy',
+            'primaryTextColor'
+        );
+        $thermostatPlanning["copyTimetable"] = $linkCopy->getHtmlForTable();
+        $thermostatPlanning["jour"] = DateFactory::toStrDay($thermostatPlanning['jour']);
 
         return $thermostatPlanning;
     }

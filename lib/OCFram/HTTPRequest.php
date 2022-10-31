@@ -35,7 +35,7 @@ class HTTPRequest extends ApplicationComponent
 
     /**
      * @param string $key
-     * @return null
+     * @return mixed
      */
     public function getData($key)
     {

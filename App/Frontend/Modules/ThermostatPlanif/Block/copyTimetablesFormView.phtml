@@ -1,0 +1,30 @@
+<?php
+
+use Materialize\Checkbox\Checkbox;
+use OCFram\DateFactory;
+
+$planifId = $args[0];
+$dayId = $args[1];
+$dayCheckboxes = [];
+foreach (DateFactory::$days as $dayNumber => $day) {
+    $dayCheckboxes[] = new Checkbox(
+            ['id' => "checkbox-day-$dayNumber",
+                'checked' => false,
+                'label' => $day,
+                'name' => "days[$dayNumber]"
+            ]);
+}
+
+?>
+<p class="flow-text">Choisir les jours</p>
+<form action="" method="post">
+    <?php foreach ($dayCheckboxes as $dayCheckbox) : ?>
+        <p>
+            <?= $dayCheckbox->getHtml() ?>
+        </p>
+    <?php endforeach; ?>
+
+    <input hidden="hidden" name="id" value="<?= $planifId ?>"/>
+    <input hidden="hidden" name="day" value="<?= $dayId ?>"/>
+    <input class="btn-flat" type="submit" value="Copier"/>
+</form>
