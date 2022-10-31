@@ -35,7 +35,7 @@ class PurgeOldExecutor implements ExecutorInterface
      */
     public function execute()
     {
-        echo $this->getDescription();
+        echo $this->getDescription() . PHP_EOL;
 
         /** @var LogManagerPDO $logManager */
         $logManager = $this->managers->getManagerOf('Log\Log');
@@ -86,6 +86,6 @@ class PurgeOldExecutor implements ExecutorInterface
 
     public function getDescription()
     {
-        return "Delete the node logs older than three days" . PHP_EOL;
+        return "Delete the node logs older than three days";
     }
 }
