@@ -252,6 +252,7 @@ class ThermostatPlanifController extends BackController
                 $this->app->httpResponse()->redirectReferer();
                 return;
             }
+            $this->deleteActionCache('index');
             $this->redirectBack();
             return;
         }
