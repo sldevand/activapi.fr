@@ -21,6 +21,7 @@
         "babelifyNode": "./node_modules/.bin/watchify  ./src/nodeManage.js -t [babelify] -o ./Web/dist/nodeManage.js",
         "babelifyConsole": "./node_modules/.bin/watchify  ./src/console.js -t [babelify] -o ./Web/dist/console.js",
         "babelifyThermostatPlanif": "./node_modules/.bin/watchify  ./src/thermostatPlanifManage.js -t [babelify] -o ./Web/dist/thermostatPlanifManage.js",
+        "babelifyThermostat": "./node_modules/.bin/watchify  ./src/thermostatManage.js -t [babelify] -o ./Web/dist/thermostatManage.js",
         "babelIndex": "./node_modules/.bin/browserify  ./src/index.js -t [babelify] -o ./Web/dist/index.js",
         "babelGraphs": "./node_modules/.bin/browserify ./src/graphs.js -t [babelify] -o ./Web/dist/graphs.js",
         "babelSocketio": "./node_modules/.bin/browserify ./src/socketio.js -t [babelify] -o ./Web/dist/socketio.js",
@@ -33,7 +34,8 @@
         "babelMaterialize": "./node_modules/.bin/browserify ./src/materializeTricks.js -t [babelify] -o ./Web/dist/materializeTricks.js",
         "babelUser": "./node_modules/.bin/browserify ./src/user.js -t [babelify] -o ./Web/dist/user.js",
         "babelThermostatPlanif": "./node_modules/.bin/browserify ./src/thermostatPlanifManage.js -t [babelify] -o ./Web/dist/thermostatPlanifManage.js",
-        "babelAll": "npm run babelIndex && npm run babelGraphs && npm run babelSocketio && npm run babelModes && npm run babelScenarios && npm run babelSequences && npm run babelActions && npm run babelNode && npm run babelConsole && npm run babelMaterialize && npm run babelUser && npm run babelThermostatPlanif"
+        "babelThermostat": "./node_modules/.bin/browserify ./src/thermostatManage.js -t [babelify] -o ./Web/dist/thermostatManage.js",
+        "babelAll": "npm run babelIndex && npm run babelGraphs && npm run babelSocketio && npm run babelModes && npm run babelScenarios && npm run babelSequences && npm run babelActions && npm run babelNode && npm run babelConsole && npm run babelMaterialize && npm run babelUser && npm run babelThermostatPlanif && npm run babelThermostat"
     },
     "repository": {
         "type": "git",
