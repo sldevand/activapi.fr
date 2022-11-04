@@ -236,7 +236,7 @@ class ScenariosEndpointTest extends AbstractEndpointTest
         $scenarioArray['id'] = $scenarioId;
         $result = $this->getDeleteJsonBody($client, $url, $scenarioArray);
 
-        self::assertEquals(['success' => 'Test2 has been deleted'], $result);
+        self::assertEquals(['success' => "$scenarioId has been deleted"], $result);
     }
 
     /**

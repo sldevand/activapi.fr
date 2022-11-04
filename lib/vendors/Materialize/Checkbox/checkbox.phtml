@@ -1,0 +1,13 @@
+<input type="checkbox"
+    <?php if ($this->id()) : ?>
+        id="<?= $this->id() ?>"
+    <?php endif ?>
+    <?php if ($this->isChecked()) : ?>
+        checked="checked"
+    <?php endif ?>
+    <?php if ($this->getName()) : ?>
+        name="<?= $this->getName() ?>"
+    <?php endif ?>
+
+/>
+<label for="<?= $this->id() ?>"><?= $this->getLabel() ?></label>

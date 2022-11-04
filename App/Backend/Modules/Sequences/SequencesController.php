@@ -2,7 +2,7 @@
 
 namespace App\Backend\Modules\Sequences;
 
-use App\Backend\Modules\AbstractScenarioManagersController;
+use App\Backend\Modules\Scenarios\AbstractScenarioManagersController;
 use Entity\Scenario\Sequence;
 use Entity\Scenario\SequenceAction;
 use Exception;
@@ -27,7 +27,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
     {
         parent::__construct($app, $module, $action);
 
-        $this->manager = $this->getSequencesManager();
+        $this->manager = $this->scenarioManagerPDOFactory->getSequencesManager();
         $this->entity = Sequence::class;
     }
 
@@ -118,7 +118,7 @@ class SequencesController extends AbstractScenarioManagersController implements 
 
         $sequenceActions = [];
         foreach ($jsonPost['deletedSequenceActions'] as $deletedSequenceActions) {
-            $this->getSequenceActionManager()->delete($deletedSequenceActions);
+            $this->scenarioManagerPDOFactory->getSequenceActionManager()->delete($deletedSequenceActions);
         }
 
         return $sequenceActions;

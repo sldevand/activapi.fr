@@ -1,0 +1,21 @@
+<?php
+/** @var \Materialize\Spinner\Spinner $spinner */
+$spinner = $args[0];
+?>
+<div class="row">
+    <div class="flow-text">Real Time Clock</div>
+    <div class="col s12" id="rtc-view">
+        <div class="center-align">
+            <?= $spinner->getHtml(); ?>
+        </div>
+    </div>
+</div>
+
+<template id="rtc-view-layout">
+    <div class="row valign-wrapper">
+        <span id="rtc-time" class="flow-text"></span>
+        <i id="rtc-sync" class="material-icons secondaryTextColor waves-effect right">refresh</i>
+    </div>
+</template>
+
+<script src="<?= DIST . '/thermostatManage.js' ?>" defer></script>

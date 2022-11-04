@@ -2,11 +2,13 @@
 
 namespace App\Backend\Modules\Scenarios\Command;
 
-use App\Backend\Modules\Scenarios\Cron\RepairDatabaseExecutor;
 use SFram\Console\BaseCommand;
 use Sldevand\Cron\ExecutorInterface;
+use \App\Backend\Modules\Cache\Command\FlushCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use App\Backend\Modules\Cache\Command\Executor\Flush;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\Backend\Modules\Scenarios\Cron\RepairDatabaseExecutor;
 
 /**
  * Class RepairDatabaseCommand
@@ -16,8 +18,8 @@ class RepairDatabaseCommand extends BaseCommand
 {
     protected static $defaultName = 'scenario:db:repair';
 
-    /** @var ExecutorInterface */
-    protected $executor;
+    protected ExecutorInterface $executor;
+    protected FlushCommand $flushCommand;
 
     /**
      * RepairDatabaseCommand constructor.
@@ -26,9 +28,9 @@ class RepairDatabaseCommand extends BaseCommand
      */
     public function __construct(?string $name = null)
     {
-
         parent::__construct($name);
         $this->executor = new RepairDatabaseExecutor();
+        $this->flushCommand = new FlushCommand();
     }
 
     protected function configure()
@@ -45,6 +47,7 @@ class RepairDatabaseCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->executor->execute();
+        $this->flushCommand->execute($input, $output);
 
         return 0;
     }

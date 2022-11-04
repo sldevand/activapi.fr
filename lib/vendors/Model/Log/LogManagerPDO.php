@@ -55,6 +55,6 @@ class LogManagerPDO extends ManagerPDO
      */
     public function truncate()
     {
-        return $this->dao->exec("DELETE FROM $this->tableName;");
+        return $this->dao->exec("DELETE FROM $this->tableName; VACUUM;");
     }
 }

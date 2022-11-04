@@ -6,7 +6,6 @@ use Helper\Pagination\Data;
 use Materialize\Table;
 use Materialize\WidgetFactory;
 use Model\ThermostatManagerPDO;
-use OCFram\Application;
 use OCFram\BackController;
 use OCFram\HTTPRequest;
 
@@ -18,21 +17,6 @@ class ThermostatController extends BackController
 {
     const LOGS_COUNT = 100;
 
-    /** @var \Model\MesuresManagerPDO */
-    protected $mesuresManager;
-
-    /**
-     * @param \OCFram\Application $app
-     * @param string $module
-     * @param string $action
-     * @throws \Exception
-     */
-    public function __construct(Application $app, $module, $action)
-    {
-        parent::__construct($app, $module, $action);
-        $this->mesuresManager = $this->managers->getManagerOf('Mesures');
-    }
-
     /**
      * @param HTTPRequest $request
      * @throws \Exception
@@ -42,36 +26,23 @@ class ThermostatController extends BackController
         $this->page->addVar('title', 'Gestion du Thermostat');
 
         $thermostats = $this->getThermostats();
-        $cards = [];
-        $cards[] = $this->makeThermostatWidget($thermostats);
-        $cards[] = $this->makeSensorsWidget(
-            $this->mesuresManager->getSensors(['thermostat']),
-            $this->getSensorTemoin($thermostats)
+        $thermostatTableBlock = $this->getBlock(
+            MODULES . '/Thermostat/Block/thermostatTableView.phtml',
+            $this->makeThermostatTable($thermostats)
         );
-
-        $managerActionneurs = $this->managers->getManagerOf('Actionneurs');
-        if ($actionneurs = $managerActionneurs->getList("thermostat")) {
+        $rtcBlock = $this->getBlock(MODULES . '/Thermostat/Block/rtcView.phtml', WidgetFactory::makeSpinner("spinner"));
+        $thermostatCard = WidgetFactory::makeCard('thermostat-card', 'Thermostat')
+            ->addContent($thermostatTableBlock)
+            ->addContent($rtcBlock);
+        $cards = [];
+        $cards[] = $thermostatCard;
+        $sensors = $this->managers->getManagerOf('Mesures')->getSensors(['thermostat']);
+        $cards[] = $this->makeSensorsWidget($sensors);
+        if ($actionneurs = $this->managers->getManagerOf('Actionneurs')->getList("thermostat")) {
             $cards[] = $this->makeActionneurWidget($actionneurs);
         }
 
         $this->page->addVar('cards', $cards);
-    }
-
-    /**
-     * @param array $thermostats
-     * @return mixed|null
-     * @throws \Exception
-     */
-    protected function getSensorTemoin(array $thermostats)
-    {
-        $sensorsTemoin = $this->mesuresManager->getSensors(['thermo']);
-        foreach ($sensorsTemoin as $sensor) {
-            if ($sensor['id'] == $thermostats[0]['sensorid']) {
-                return $sensor;
-            }
-        }
-
-        return [];
     }
 
     /**
@@ -89,10 +60,8 @@ class ThermostatController extends BackController
         /** @var \Entity\Thermostat[] $thermostats */
         $thermostats = $thermostatManager->getList() ?? [];
         foreach ($thermostats as $thermostat) {
-            $name = $thermostat->planning() > 0
-                ? $thermostatPlanifManager->getNom($thermostat->planning())->nom()
-                : "Aucun";
-
+            $nameObject = $thermostatPlanifManager->getNom($thermostat->planning());
+            $name = $nameObject ? $nameObject->nom() : 'Aucun';
             $thermostat->setPlanningName($name);
             $thermostat->setLastTurnOn($thermostatManager->getLastTurnOnLog());
         }
@@ -103,32 +72,22 @@ class ThermostatController extends BackController
     /**
      * @param $thermostats
      * @param $planifs
-     * @return \Materialize\Card\Card
+     * @return \Materialize\Table
      */
-    public function makeThermostatWidget($thermostats)
+    public function makeThermostatTable($thermostats): Table
     {
         $thermostats = json_decode(json_encode($thermostats), true);
-
-        $domId = 'Thermostat';
         $tableThermostatDatas = [];
-        $hideColumns = ['id', 'nom', 'modeid', 'planning', 'manuel', 'sensor', 'sensorid'];
-
-
         foreach ($thermostats as $thermostat) {
             $thermostat["mode"] = $thermostat["mode"]["nom"];
             $thermostat["etat"] = $this->iconifyPower($thermostat["etat"] ?? 0);
             $thermostat['pwr'] = $this->iconifyPower($thermostat['pwr'] ?? 0);
             $thermostat['lastPwrOff'] = $thermostat['lastPwrOff'] ?? '';
-
             $tableThermostatDatas[] = $thermostat;
         }
+        $hideColumns = ['id', 'nom', 'modeid', 'planning', 'manuel', 'sensor', 'sensorid', 'temperature', 'hygrometrie', 'interne'];
 
-        $tableThermostat = WidgetFactory::makeTable($domId, $tableThermostatDatas, false, $hideColumns);
-        $cardContent = $tableThermostat->getHtml();
-        $card = WidgetFactory::makeCard($domId, 'Thermostat');
-        $card->addContent($cardContent);
-
-        return $card;
+        return WidgetFactory::makeTable('thermostat-table', $tableThermostatDatas, false, $hideColumns);
     }
 
     /**
@@ -142,35 +101,19 @@ class ThermostatController extends BackController
 
     /**
      * @param $sensors
-     * @param $sensorTemoin
      * @return \Materialize\Card\Card
      */
-    public function makeSensorsWidget($sensors, $sensorTemoin)
+    public function makeSensorsWidget($sensors)
     {
         $tableDatas = [];
         $datasSensors = json_decode(json_encode($sensors), true);
-        foreach ($datasSensors as $key => $data) {
+        foreach ($datasSensors as $data) {
             $data["actif"] = $this->iconifyResult($data["actif"]);
             $tableDatas[] = $data;
         }
+        $tableSensor = WidgetFactory::makeTable('capteur-table', $tableDatas, false);
 
-        $domId = 'Capteurs';
-        $tableSensor = WidgetFactory::makeTable($domId, $tableDatas, false);
-        $cardContent = '<div class="flow-text">Capteur Interne</div>';
-        $cardContent .= $tableSensor->getHtml();
-
-        $datasSensorsTemoin = json_decode(json_encode($sensorTemoin), true);
-        $datasSensorsTemoin["actif"] = $this->iconifyResult($datasSensorsTemoin["actif"] ?? 0);
-        $tableDatasSensorTemoin = [];
-        $tableDatasSensorTemoin[] = $datasSensorsTemoin;
-        $tableSensorTemoin = WidgetFactory::makeTable($domId, $tableDatasSensorTemoin, false);
-        $cardContent .= '<div class="flow-text">Capteur Témoin</div>';
-        $cardContent .= $tableSensorTemoin->getHtml();
-
-        $card = WidgetFactory::makeCard($domId, $domId);
-        $card->addContent($cardContent);
-
-        return $card;
+        return WidgetFactory::makeCard('capteur-card', 'Capteur', $tableSensor->getHtml());
     }
 
     /**
@@ -198,12 +141,10 @@ class ThermostatController extends BackController
      */
     public function makeActionneurWidget($actionneur)
     {
-        $domId = 'Actionneur';
-
-        $tableThermostat = WidgetFactory::makeTable($domId, $actionneur);
+        $tableThermostat = WidgetFactory::makeTable('actionneur-table', $actionneur);
         $cardContent = $tableThermostat->getHtml();
 
-        $card = WidgetFactory::makeCard($domId, $domId);
+        $card = WidgetFactory::makeCard('actionneur-card', 'Actionneur');
         $card->addContent($cardContent);
 
         return $card;

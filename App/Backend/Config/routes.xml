@@ -35,8 +35,8 @@
     <route url="\/thermostat\/update" module="Thermostat" action="update"/>
     <route url="\/thermostat\/log\/([0-9]{4}-[0-9]{2}-[0-9]{2})?-?([0-9]{4}-[0-9]{2}-[0-9]{2})?" module="Thermostat" action="log" vars="dateMin,dateMax"/>
     <route url="\/thermostat\/log\/refresh" module="Thermostat" action="refreshLog"/>
-    <route url="\/thermostat\/planif\/([0-9]*)?" module="ThermostatPlanif" action="index" vars="id"/>
-    <route url="\/thermostat\/planif\/update" module="ThermostatPlanif" action="update"/>
+    <route url="\/thermostat\/planif\/([0-9]*)\/?([0-7])?" module="ThermostatPlanif" action="get" vars="nomid,jour"/>
+    <route url="\/thermostat\/planif\/update" module="ThermostatPlanif" action="put"/>
     <route url="\/thermostat\/planifname\/([0-9]*)?" module="ThermostatPlanif" action="name" vars="id"/>
     <route url="\/thermostat\/mode\/([0-9]*)?" module="ThermostatModes" action="index" vars="id"/>
 

@@ -42,6 +42,17 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
+     * @return bool|int
+     */
+    public function deleteAll()
+    {
+        $resCorresp = $this->dao->exec("DELETE FROM thermostat_corresp");
+        $resPlanif = $this->dao->exec("DELETE FROM $this->tableName");
+
+        return $resCorresp && $resPlanif;
+    }
+
+    /**
      * @return array
      * @throws Exception
      */
@@ -77,31 +88,21 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         }
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\ThermostatPlanif');
-        $listeThermostatPlanif = $q->fetchAll();
+        $thermostatPlanifs = $q->fetchAll();
         $q->closeCursor();
 
-        /** @var \Model\ThermostatModesManagerPDO $manager */
-        $modesManager = $this->managers->getManagerOf('ThermostatModes');
-
-        /**
-         * @var int $key
-         * @var ThermostatPlanif[] $thermostatPlanifs
-         */
-        foreach ($listeThermostatPlanif as $key => $thermostatPlanif) {
-            $nom = $this->getNom($thermostatPlanif->nomid());
+        /** @var ThermostatPlanif[] $thermostatPlanifs */
+        foreach ($thermostatPlanifs as $thermostatPlanif) {
+            $nom = $this->getNom($thermostatPlanif->getNomId());
             $thermostatPlanif->setNom($nom);
-            $mode = $modesManager->getUnique($thermostatPlanif->modeid());
-            $thermostatPlanif->setMode($mode);
-            $defaultMode = $modesManager->getUnique($thermostatPlanif->defaultModeid());
-            $thermostatPlanif->setDefaultMode($defaultMode);
         }
 
-        return $listeThermostatPlanif;
+        return $thermostatPlanifs;
     }
 
     /**
      * @param int $id
-     * @return mixed|null|\OCFram\Entity
+     * @return false|ThermostatPlanif
      * @throws Exception
      */
     public function getUnique($id)
@@ -119,18 +120,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
             return false;
         }
 
-        if (empty($thermostatPlanif->modeid())) {
-            throw new \RuntimeException('modeid is null!');
-        }
-
-        if (empty($thermostatPlanif->defaultModeid())) {
-            throw new \RuntimeException('defaultModeid is null!');
-        }
-        /** @var \Model\ThermostatModesManagerPDO $manager */
-        $modesManager = $this->managers->getManagerOf('ThermostatModes');
         $thermostatPlanif->setNom($this->getNom($thermostatPlanif->getNomid()));
-        $thermostatPlanif->setMode($modesManager->getUnique($thermostatPlanif->modeid()));
-        $thermostatPlanif->setDefaultMode($modesManager->getUnique($thermostatPlanif->defaultModeid()));
 
         return $thermostatPlanif;
     }
@@ -161,22 +151,12 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     {
         $sql = 'UPDATE thermostat_planif 
             SET             
-            modeid=:modeid,
-            defaultModeid=:defaultModeid,
-            heure1Start=:heure1Start,
-            heure1Stop=:heure1Stop,
-            heure2Start=:heure2Start,
-            heure2Stop=:heure2Stop           
+            timetable=:timetable
             WHERE id=:id';
 
         $q = $this->prepare($sql);
         $q->bindValue(':id', $thermostatPlanif->id());
-        $q->bindValue(':modeid', $thermostatPlanif->modeid());
-        $q->bindValue(':defaultModeid', $thermostatPlanif->defaultModeid());
-        $q->bindValue(':heure1Start', $thermostatPlanif->heure1Start());
-        $q->bindValue(':heure1Stop', $thermostatPlanif->heure1Stop());
-        $q->bindValue(':heure2Start', $thermostatPlanif->heure2Start());
-        $q->bindValue(':heure2Stop', $thermostatPlanif->heure2Stop());
+        $q->bindValue(':timetable', $thermostatPlanif->getTimetable());
         $result = $q->execute();
         $q->closeCursor();
 
@@ -198,12 +178,7 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         for ($jour = 1; $jour < 8; $jour++) {
             $thermostatPlanif = new ThermostatPlanif([
                 "jour" => $jour,
-                "modeid" => "1",
-                "defaultModeid" => "3",
-                "heure1Start" => "07:00",
-                "heure1Stop" => "23:00",
-                "heure2Start" => "",
-                "heure2Stop" => "",
+                "timetable" => json_encode(['300-1', '600-2', '800-1', '1200-3']),
                 "nomid" => $nomId
             ]);
 
@@ -286,11 +261,11 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
     }
 
     /**
-     * @param $id
-     * @param $nom
+     * @param string $id
+     * @param string $nom
      * @throws Exception
      */
-    public function duplicate($id, string $nom)
+    public function duplicate(string $id, string $nom)
     {
         $nomToAdd = new ThermostatPlanifNom(['nom' => $nom]);
         $nomId = $this->addNom($nomToAdd);
@@ -298,13 +273,43 @@ class ThermostatPlanifManagerPDO extends ManagerPDO
         foreach ($planifDays as $planifDay) {
             $planifDayArray = Utils::objToArray($planifDay);
             unset($planifDayArray['id']);
+            unset($planifDayArray['nom']);
             $planifDayArray['nomid'] = $nomId;
             $this->add(new ThermostatPlanif($planifDayArray), $this->getIgnoreProperties());
         }
     }
 
-    protected function getIgnoreProperties()
+    /**
+     * @return array
+     */
+    protected function getIgnoreProperties(): array
     {
         return ['nom', 'defaultMode', 'mode', 'modes'];
+    }
+
+    /**
+     * @param int $nomid
+     * @param int $day
+     * @return \Entity\ThermostatPlanif | false
+     */
+    public function getByNomIdAndDay($nomid, $day)
+    {
+        $sql = 'SELECT * FROM thermostat_planif WHERE nomid = :nomid AND jour = :jour';
+        $q = $this->prepare($sql);
+        $q->bindValue(':nomid', (int)$nomid, \PDO::PARAM_INT);
+        $q->bindValue(':jour', (int)$day, \PDO::PARAM_INT);
+        $q->execute();
+        $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, \Entity\ThermostatPlanif::class);
+        $thermostatPlanif = $q->fetch();
+        $q->closeCursor();
+
+        /** @var ThermostatPlanif $thermostatPlanif */
+        if (!$thermostatPlanif) {
+            return false;
+        }
+
+        $thermostatPlanif->setNom($this->getNom($nomid));
+
+        return $thermostatPlanif;
     }
 }

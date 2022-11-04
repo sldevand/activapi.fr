@@ -1,0 +1,10 @@
+<?php
+/** @var \Materialize\Table $thermostatTable*/
+$thermostatTable = $args[0];
+?>
+<div class="row">
+<div class="flow-text">Informations</div>
+    <div class="col s12">
+        <?= $thermostatTable->getHtml(); ?>
+    </div>
+</div>

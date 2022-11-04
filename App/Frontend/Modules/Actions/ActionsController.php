@@ -2,21 +2,30 @@
 
 namespace App\Frontend\Modules\Actions;
 
-use App\Backend\Modules\Actions\ActionsController as ActionsBackController;
+use OCFram\Application;
+use OCFram\HTTPRequest;
 use Materialize\FormView;
-use Materialize\Button\FlatButton;
-use Materialize\FloatingActionButton;
 use Materialize\Link\Link;
 use Materialize\WidgetFactory;
-use OCFram\HTTPRequest;
+use Materialize\Button\FlatButton;
+use Model\Scenario\ActionManagerPDO;
+use Materialize\FloatingActionButton;
+use App\Frontend\Modules\Scenarios\AbstractScenariosController;
 
 /**
  * Class ActionsController
  * @package App\Frontend\Modules\Actions
  */
-class ActionsController extends ActionsBackController
+class ActionsController extends AbstractScenariosController
 {
     use FormView;
+
+    protected ActionManagerPDO $actionManager;
+
+    public function __construct(Application $app, string $module, string $action) {
+        parent::__construct($app, $module, $action);
+        $this->actionManager = $this->scenarioManagerPDOFactory->getActionManager();
+    }
 
     /**
      * @param HTTPRequest $request
@@ -24,10 +33,8 @@ class ActionsController extends ActionsBackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $actions = parent::executeGet($request);
-
         $this->page->addVar('title', 'Gestion des actions');
-
+        $actions = $this->actionManager->getAll();
         $cards = [];
         $cards[] = $this->makeActionsWidget($actions);
         $addActionFab = new FloatingActionButton([
@@ -97,7 +104,7 @@ class ActionsController extends ActionsBackController
      */
     public function executeDelete($request)
     {
-        $manager = $this->getActionManager();
+        $manager = $this->scenarioManagerPDOFactory->getActionManager();
 
         $domId = 'Suppression';
         if ($request->method() == 'POST') {

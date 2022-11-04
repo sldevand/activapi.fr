@@ -2,21 +2,30 @@
 
 namespace App\Frontend\Modules\Scenarios;
 
-use App\Backend\Modules\Scenarios\ScenariosController as ScenariosBackController;
+use OCFram\Application;
+use OCFram\HTTPRequest;
 use Materialize\FormView;
-use Materialize\Button\FlatButton;
-use Materialize\FloatingActionButton;
 use Materialize\Link\Link;
 use Materialize\WidgetFactory;
-use OCFram\HTTPRequest;
+use Materialize\Button\FlatButton;
+use Materialize\FloatingActionButton;
+use Model\Scenario\ScenariosManagerPDO;
+use App\Frontend\Modules\Scenarios\AbstractScenariosController;
 
 /**
  * Class ScenariosController
  * @package App\Frontend\Modules\Scenarios
  */
-class ScenariosController extends ScenariosBackController
+class ScenariosController extends AbstractScenariosController
 {
     use FormView;
+
+    protected ScenariosManagerPDO $scenarioManager;
+
+    public function __construct(Application $app, string $module, string $action) {
+        parent::__construct($app, $module, $action);
+        $this->scenarioManager = $this->scenarioManagerPDOFactory->getScenariosManager();
+    }
 
     /**
      * @param HTTPRequest $request
@@ -24,8 +33,11 @@ class ScenariosController extends ScenariosBackController
      */
     public function executeIndex(HTTPRequest $request)
     {
-        $scenarios = parent::executeGetAll($request);
-
+        try {
+            $scenarios = $this->scenarioManager->getAll(null, false);
+        } catch (\Exception $exception) {
+            $scenarios = [];
+        }
         $this->page->addVar('title', 'Gestion des scenarios');
 
         $cards = [];
@@ -97,7 +109,7 @@ class ScenariosController extends ScenariosBackController
      */
     public function executeDelete($request)
     {
-        $manager = $this->getScenariosManager();
+        $manager = $this->scenarioManagerPDOFactory->getScenariosManager();
 
         $domId = 'Suppression';
         if ($request->method() == 'POST') {

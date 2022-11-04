@@ -6,10 +6,11 @@ use App\Frontend\Modules\ThermostatPlanif\Block\PlanifCardList;
 use App\Frontend\Modules\ThermostatPlanif\Form\ThermostatPlanifFormHandler;
 use Entity\ThermostatPlanif;
 use Entity\ThermostatPlanifNom;
-use FormBuilder\ThermostatPlanifFormBuilder;
 use FormBuilder\ThermostatPlanifNameFormBuilder;
+use Materialize\Button\FlatButton;
 use Materialize\FloatingActionButton;
 use Materialize\FormView;
+use Materialize\Link\Link;
 use Materialize\WidgetFactory;
 use OCFram\Application;
 use OCFram\BackController;
@@ -23,6 +24,7 @@ use OCFram\HTTPRequest;
 class ThermostatPlanifController extends BackController
 {
     const DUPLICATE_FORM_VIEW_TEMPLATE = __DIR__ . '/Block/duplicateFormView.phtml';
+    const COPY_TIMETABLES_FORM_VIEW_TEMPLATE = __DIR__ . '/Block/copyTimetablesFormView.phtml';
 
     use FormView;
 
@@ -53,7 +55,7 @@ class ThermostatPlanifController extends BackController
         $thermostat = current($thermostatManager->getList());
 
         $thermostatPlanningsContainer = $this->manager->getListArray();
-        $hideColumns = ['id', 'nomid', 'nom', 'modeid', 'defaultModeid'];
+        $hideColumns = ['id', 'nomid', 'nom'];
 
         $planifCardList = new PlanifCardList($this->baseAddress);
         $cards = $planifCardList->create($thermostatPlanningsContainer, $hideColumns, $thermostat->planning());
@@ -106,42 +108,46 @@ class ThermostatPlanifController extends BackController
 
     /**
      * @param HTTPRequest $request
+     * @return \OCFram\Page
      * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
     {
-        if ($request->method() === HTTPRequest::POST) {
-            $item = $this->createThermostatPlanifFromPost($request);
-        } else {
-            if ($request->getExists('id')) {
-                $id = $request->getData("id");
-                $item = $this->manager->getUnique($id);
-            }
-        }
-
-        /** @var \Model\ThermostatModesManagerPDO $modesManager */
-        $modesManager = $this->managers->getManagerOf('ThermostatModes');
-        $modes = $modesManager->getList();
-
-        $tpfb = new ThermostatPlanifFormBuilder($item);
-        $tpfb->addData('modes', $modes);
-        $form = $tpfb->build();
-
-        $fh = new ThermostatPlanifFormHandler($form, $this->manager, $request);
-        if ($fh->process()) {
-            $this->deleteActionCache('index');
-            $this->redirectBack($item->nom()->nom());
-        }
-
         $domId = 'Edition';
-        $backUrl = $this->baseAddress . 'thermostat-planif';
-        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl . '#' . $item->getNom())->getHtml();
-        $card = WidgetFactory::makeCard($domId, $cardTitle);
-        $card->addContent($this->editFormView($form));
+        if (!$id = $request->getData('id')) {
+            $domId = 'Ajout';
+        }
 
-        $this->page
-            ->addVar('title', 'Edition du Planning')
-            ->addVar('card', $card);
+        $this->page->addVar('title', "$domId du Scénario");
+
+        $link = new Link(
+            $domId,
+            $this->baseAddress . "thermostat-planif",
+            "arrow_back",
+            "white-text",
+            "white-text"
+        );
+        $submitButton = new FlatButton(
+            [
+                'id' => 'submit',
+                'title' => 'Valider',
+                'color' => 'primaryTextColor',
+                'type' => 'submit',
+                'icon' => 'check',
+                'wrapper' => 'col s12'
+            ]
+        );
+
+        $cardTitle = $link->getHtml();
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $thermostatPlanif = $this->manager->getUnique($id);
+        /** @var \Model\ThermostatModesManagerPDO $thermostatModesManager */
+        $thermostatModesManager = $this->managers->getManagerOf('ThermostatModes');
+        $modes = $thermostatModesManager->getList();
+        $formBlock = $this->getBlock(__DIR__ . '/Block/thermostatPlanifForm.phtml', $thermostatPlanif, $modes, $submitButton);
+        $card->addContent($formBlock);
+
+        return $this->page->addVar('card', $card);
     }
 
     /**
@@ -178,6 +184,7 @@ class ThermostatPlanifController extends BackController
 
     /**
      * @param \OCFram\HTTPRequest $request
+     * @return \OCFram\Page|null|void
      * @throws \Exception
      */
     public function executeDuplicate(HTTPRequest $request)
@@ -185,7 +192,8 @@ class ThermostatPlanifController extends BackController
         if (!$id = $request->getData('id')) {
             $this->app()->user()->setFlash('No id was found in the request for duplication');
             $this->deleteActionCache('index');
-            return $this->redirectBack();
+            $this->redirectBack();
+            return;
         }
 
         if ($request->method() === HTTPRequest::POST) {
@@ -195,9 +203,11 @@ class ThermostatPlanifController extends BackController
                 $this->manager->duplicate($id, $nom);
             } catch (\Exception $exception) {
                 $this->app()->user()->setFlash($exception->getMessage());
-                return $this->app->httpResponse()->redirectReferer();
+                $this->app->httpResponse()->redirectReferer();
+                return;
             }
-            return $this->redirectBack();
+            $this->redirectBack();
+            return;
         }
 
         $nom = $this->manager->getNom($id);
@@ -208,7 +218,54 @@ class ThermostatPlanifController extends BackController
         $card = WidgetFactory::makeCard($domId, $cardTitle);
         $card->addContent($this->duplicateFormView($nom));
 
-        $this->page->addVar('card', $card);
+        return $this->page->addVar('card', $card);
+    }
+
+    /**
+     * @param \OCFram\HTTPRequest $request
+     * @return \OCFram\Page|null|void
+     * @throws \Exception
+     */
+    public function executeCopyTimetables(HTTPRequest $request)
+    {
+        $id = $request->getData('id');
+        $day = $request->getData('day');
+        if ($request->method() === HTTPRequest::POST) {
+            try {
+                if(!$days = $request->postData('days')) {
+                    throw new \Exception('Aucun jour sélectionné!');
+                }
+
+                $daysParam = array_keys($days);
+                $originalThermostatPlanif = $this->manager->getByNomIdAndDay($id, $day);
+                $timetableToCopy = $originalThermostatPlanif->getTimetable();
+                foreach ($daysParam as $dayParam) {
+                    if ($dayParam == $day) {
+                        continue;
+                    }
+                    $updatedthermostatPlanif = $this->manager->getByNomIdAndDay($id, $dayParam);
+                    $updatedthermostatPlanif->setTimetable($timetableToCopy);
+                    $this->manager->save($updatedthermostatPlanif);
+                }
+            } catch (\Exception $exception) {
+                $this->app()->user()->setFlash($exception->getMessage());
+                $this->app->httpResponse()->redirectReferer();
+                return;
+            }
+            $this->deleteActionCache('index');
+            $this->redirectBack();
+            return;
+        }
+
+        $thermostatPlanif = $this->manager->getByNomIdAndDay($id, $day);
+        $domId = 'Copy timetable';
+        $backUrl = $this->baseAddress . 'thermostat-planif' . '#' . $thermostatPlanif->getNom()->nom();
+        $cardTitle = WidgetFactory::makeBackArrow($domId, $backUrl)->getHtml();
+
+        $card = WidgetFactory::makeCard($domId, $cardTitle);
+        $card->addContent($this->copyTimetablesFormView($thermostatPlanif->getNomid(), $thermostatPlanif->getJour()));
+
+        return $this->page->addVar('card', $card);
     }
 
     /**
@@ -225,7 +282,16 @@ class ThermostatPlanifController extends BackController
      */
     public function duplicateFormView(...$args)
     {
-        return Block::getTemplate(  self::DUPLICATE_FORM_VIEW_TEMPLATE, ...$args);
+        return Block::getTemplate(self::DUPLICATE_FORM_VIEW_TEMPLATE, ...$args);
+    }
+
+    /**
+     * @param array $args
+     * @return false|string
+     */
+    public function copyTimetablesFormView(...$args)
+    {
+        return Block::getTemplate(self::COPY_TIMETABLES_FORM_VIEW_TEMPLATE, ...$args);
     }
 
 
@@ -238,38 +304,5 @@ class ThermostatPlanifController extends BackController
         $anchor = !empty($anchor) ? '#' . $anchor : '';
 
         return $this->baseAddress . 'thermostat-planif' . $anchor;
-    }
-
-    /**
-     * @param \OCFram\HTTPRequest $request
-     * @return \Entity\ThermostatPlanif
-     * @throws \Exception
-     */
-    protected function createThermostatPlanifFromPost(HTTPRequest $request): ThermostatPlanif
-    {
-        $thermostatPlanif = new ThermostatPlanif(
-            [
-                'jour' => $request->postData('jour'),
-                'modeid' => $request->postData('modeid'),
-                'defaultModeid' => $request->postData('defaultModeid'),
-                'heure1Start' => $request->postData('heure1Start') ?? '07:00',
-                'heure1Stop' => $request->postData('heure1Stop') ?? '23:00',
-                'heure2Start' => $request->postData('heure2Start'),
-                'heure2Stop' => $request->postData('heure2Stop'),
-                'nomid' => $request->postData('nomid')
-            ]
-        );
-
-        if ($request->getExists('id')) {
-            $id = $request->getData('id');
-            $thermostatPlanif->setId($id);
-        }
-
-        if ($thermostatPlanif->nomid()) {
-            $thermostatPlanifNom = $this->manager->getNom($thermostatPlanif->nomid());
-            $thermostatPlanif->setNom($thermostatPlanifNom);
-        }
-
-        return $thermostatPlanif;
     }
 }
