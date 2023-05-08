@@ -73,7 +73,10 @@ class ActionManagerPDO extends ManagerPDO
 
         /** @var Actionneur $actionneur */
         $actionneur = $this->actionneursManagerPDO->getUnique($action->getActionneurId());
-        $action->setActionneur($actionneur);
+        
+        if ($actionneur) {
+            $action->setActionneur($actionneur);
+        }
 
         return $action;
     }
@@ -90,7 +93,9 @@ class ActionManagerPDO extends ManagerPDO
         foreach ($actions as $key => $action) {
             /** @var Actionneur $actionneur */
             $actionneur = $this->actionneursManagerPDO->getUnique($action->getActionneurId());
-            $actions[$key]->setActionneur($actionneur);
+            if ($actionneur) {
+                $actions[$key]->setActionneur($actionneur);
+            }
         }
 
         return $actions;
