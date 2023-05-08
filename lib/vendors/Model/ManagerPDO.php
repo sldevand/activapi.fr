@@ -54,6 +54,7 @@ class ManagerPDO extends Manager
      */
     public function delete($id)
     {
+        $this->dao->exec("PRAGMA foreign_keys=on");
         return $this->dao->exec("DELETE FROM $this->tableName WHERE id = " . (int)$id);
     }
 
