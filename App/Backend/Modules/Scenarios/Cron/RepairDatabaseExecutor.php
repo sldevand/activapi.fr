@@ -63,9 +63,7 @@ class RepairDatabaseExecutor implements ExecutorInterface
         $actions = $this->actionManager->getAll();
         /** @var Action $action */
         foreach ($actions as $action) {
-            try {
-                $this->actionneursManager->getUnique($action->getActionneurId());
-            } catch (Exception $exception) {
+            if (!$this->actionneursManager->getUnique($action->getActionneurId())) {
                 $this->actionManager->delete($action->id());
                 echo 'Deleted sequence_action row : ' . $action->id() . PHP_EOL;
             }
