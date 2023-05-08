@@ -95,6 +95,7 @@ class ActionneursController extends BackController
                 $id = $request->getData('id');
                 $manager->delete($id);
                 $this->deleteActionCache('index');
+                $this->deleteActionCache('index', 'Frontend', 'Actions');
                 $this->app->httpResponse()->redirect($this->baseAddress . 'actionneurs');
             }
         }
