@@ -43,11 +43,12 @@ class Action extends Entity
      */
     public function jsonSerialize()
     {
+        $actionneurId = $this->getActionneur() ?? 0;
         return [
             'id' => $this->id(),
             'nom' => $this->getNom(),
-            'actionneurId' => $this->getActionneur()->id(),
-            'actionneur' => $this->getActionneur(),
+            'actionneurId' => $actionneurId,
+            'actionneur' => $this->getActionneur() ?? [],
             'etat' => $this->getEtat(),
             'timeout' => $this->getTimeout()
         ];

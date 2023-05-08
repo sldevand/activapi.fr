@@ -84,7 +84,7 @@ class ScenariosManagerPDO extends ManagerPDO
     public function getAll($id = null, $visibleOnly = true): array
     {
         /** @var Scenario[] $scenarios */
-        $scenarios = $visibleOnly ? $this->getVisibleScenarios() :parent::getAll($id);
+        $scenarios = $visibleOnly ? $this->getVisibleScenarios() : parent::getAll($id);
         if (empty($scenarios)) {
             throw new \Exception('No scenarios were found!');
         }

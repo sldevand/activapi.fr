@@ -274,8 +274,9 @@ class ActionsEndpointTest extends AbstractEndpointTest
         $action = Utils::deepCopy(ActionsMock::getActions()[0]);
 
         /** @var \Entity\Actionneur $actionneur */
-        $actionneur = self::$actionneursManager->getUnique($action->getActionneurId());
-        $action->setActionneur($actionneur);
+        if ($action->getActionneurId() && $actionneur = self::$actionneursManager->getUnique($action->getActionneurId())) {
+            $action->setActionneur($actionneur);
+        }
 
         $actionArray = Utils::objToArray($action);
         unset($actionArray['actionneur']);
