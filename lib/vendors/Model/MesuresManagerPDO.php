@@ -58,7 +58,7 @@ class MesuresManagerPDO extends ManagerPDO
 
         $mesure = new Mesure(
             [
-                'id_sensor' => $sensor->id(),
+                'id_sensor' => (string)$sensor->id(),
                 'temperature' => $sensor->valeur1(),
                 'hygrometrie' => $sensor->valeur2(),
                 'horodatage' => date("Y-m-d H:i:s")

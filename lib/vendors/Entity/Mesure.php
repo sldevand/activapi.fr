@@ -12,7 +12,7 @@ use OCFram\Entity;
 class Mesure extends Entity
 {
     /**
-     * @var int $id_sensor
+     * @var string $id_sensor
      */
     protected $id_sensor;
 
@@ -38,7 +38,7 @@ class Mesure extends Entity
 
 
     /**
-     * @return int
+     * @return string
      */
     public function id_sensor()
     {
@@ -78,13 +78,13 @@ class Mesure extends Entity
     }
 
     /**
-     * @param int $id_sensor
+     * @param string $id_sensor
      * @return Mesure
      * @throws Exception
      */
-    public function setId_sensor($id_sensor)
+    public function setId_sensor(string $id_sensor)
     {
-        if (empty($id_sensor) || !is_string($id_sensor)) {
+        if (empty($id_sensor)) {
             throw new Exception('idSensor invalide!');
         }
 

@@ -209,7 +209,7 @@ class MesuresController extends BackController
 
         $mesure = new Mesure(
             [
-                'id_sensor' => $sensorEntity->radioid(),
+                'id_sensor' => (string)$sensorEntity->id(),
                 'temperature' => $valeur1,
                 'hygrometrie' => $valeur2
             ]
