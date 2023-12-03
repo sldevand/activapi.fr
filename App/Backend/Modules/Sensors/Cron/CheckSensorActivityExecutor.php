@@ -20,9 +20,9 @@ use Sldevand\Cron\ExecutorInterface;
  */
 class CheckSensorActivityExecutor implements ExecutorInterface
 {
-    const ALERT_INACTIVE = 'inactive';
+    final public const ALERT_INACTIVE = 'inactive';
 
-    const ALERT_UNDERVALUE = 'underValue';
+    final public const ALERT_UNDERVALUE = 'underValue';
 
     /** @var SensorsManagerPDO */
     protected $sensorsManager;
@@ -95,9 +95,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
 
     /**
      * @param Sensor[] $sensors
-     * @param string $subject
-     * @param string $alertType
-     * @param bool $ignoreNotifications
      */
     protected function sendMail(array $sensors, string $subject, string $alertType, bool $ignoreNotifications = false)
     {
@@ -105,9 +102,7 @@ class CheckSensorActivityExecutor implements ExecutorInterface
             if (!$ignoreNotifications) {
                 /** @var Notification[] $notifications */
                 $notifications = $this->notificationManager->getListBy(Sensor::class, $alertType, true);
-                $sensorIds = array_map(function ($sensor) {
-                    return (int)$sensor->id();
-                }, $sensors);
+                $sensorIds = array_map(fn($sensor) => (int)$sensor->id(), $sensors);
                 if (!array_diff($sensorIds, array_keys($notifications))) {
                     return;
                 }
@@ -151,8 +146,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
 
     /**
      * @param Sensor[] $sensors
-     * @param string $alertType
-     * @param bool $sent
      * @throws Exception
      */
     protected function saveNotifications(array $sensors, string $alertType, bool $sent)
@@ -175,9 +168,6 @@ class CheckSensorActivityExecutor implements ExecutorInterface
     }
 
     /**
-     * @param Sensor $sensor
-     * @param array $underValueSensors
-     * @param int $alertValue
      * @throws Exception
      */
     protected function manageUnderValueSensors(Sensor $sensor, array &$underValueSensors, int $alertValue)

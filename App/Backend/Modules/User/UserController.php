@@ -38,7 +38,6 @@ class UserController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */
@@ -53,7 +52,7 @@ class UserController extends BackController
 
             /** @var User $user */
             if (empty($user = $this->manager->getUniqueBy('email', $params['email']))
-                || !password_verify($params['password'], $user->getPassword())
+                || !password_verify((string) $params['password'], (string) $user->getPassword())
             ) {
                 throw new Exception("Invalid user/password");
             }
@@ -67,7 +66,6 @@ class UserController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */
@@ -88,7 +86,7 @@ class UserController extends BackController
                 throw new Exception('There is already one admin user');
             }
 
-            $params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
+            $params['password'] = password_hash((string) $params['password'], PASSWORD_DEFAULT);
             unset($params['password-repeat']);
 
             $user = new User($params);
@@ -107,7 +105,6 @@ class UserController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeLogout(HTTPRequest $request)
@@ -118,8 +115,6 @@ class UserController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
-     * @param array $requiredParamKeys
      * @return array|\OCFram\Page
      * @throws Exception
      */
@@ -132,7 +127,7 @@ class UserController extends BackController
                 throw new Exception("A required parameter is missing");
             }
             $validatedParams[$requiredParamKey] = htmlspecialchars(
-                $post[$requiredParamKey]
+                (string) $post[$requiredParamKey]
             );
         }
 

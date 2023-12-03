@@ -12,9 +12,6 @@ use OCFram\HTTPRequest;
  */
 class ThermostatModesController extends BackController
 {
-    /**
-     * @param HTTPRequest $request
-     */
     public function executeIndex(HTTPRequest $request)
     {
         $manager = $this->managers->getManagerOf('ThermostatModes');
@@ -32,9 +29,6 @@ class ThermostatModesController extends BackController
         $this->page->addVar('modes', $modes);
     }
 
-    /**
-     * @param HTTPRequest $request
-     */
     public function executeDelete(HTTPRequest $request)
     {
         $manager = $this->managers->getManagerOf('ThermostatModes');
@@ -50,9 +44,6 @@ class ThermostatModesController extends BackController
         $this->page->addVar('delete', $delete);
     }
 
-    /**
-     * @param HTTPRequest $request
-     */
     public function executeEdit(HTTPRequest $request)
     {
 

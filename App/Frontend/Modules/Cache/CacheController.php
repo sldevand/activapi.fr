@@ -19,7 +19,6 @@ class CacheController extends BackController
     use FormView;
 
     /**
-     * @param HTTPRequest $request
      * @return int|void
      * @throws \Exception
      */

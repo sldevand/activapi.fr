@@ -21,7 +21,6 @@ class ActionneursController extends BackController
     use FormView;
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -52,7 +51,7 @@ class ActionneursController extends BackController
     {
         $domId = 'Actionneurs';
 
-        $actionneurs = json_decode(json_encode($actionneurs), true);
+        $actionneurs = json_decode(json_encode($actionneurs, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
         $actionneursData = [];
 
         foreach ($actionneurs as $actionneur) {
@@ -82,7 +81,6 @@ class ActionneursController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeDelete(HTTPRequest $request)
@@ -118,7 +116,6 @@ class ActionneursController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)

@@ -14,9 +14,6 @@ use OCFram\HTTPRequest;
  */
 class ConsoleController extends BackController
 {
-    /**
-     * @param HTTPRequest $request
-     */
     public function executeIndex(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Console DomusBox');
@@ -62,8 +59,6 @@ class ConsoleController extends BackController
     }
 
     /**
-     * @param SwitchButton $switchButton
-     * @param FlatButton $serialportResetButton
      * @return false|string
      */
     public function nodeView(SwitchButton $switchButton, FlatButton $serialportResetButton)

@@ -35,7 +35,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */
     public function executeSensor(HTTPRequest $request)
@@ -99,7 +98,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws \Exception
      */
@@ -128,14 +126,14 @@ class MesuresController extends BackController
 
         if ($sensorEntity->categorie() == "teleinfo") {
             $t_min_lim = 0;
-            $t_max_lim = 1000000;
+            $t_max_lim = 1_000_000;
             $h_min_lim = 0;
             $h_max_lim = 10000;
         }
 
         if ($sensorEntity->categorie() == "thermo") {
             $t_min_lim = 0;
-            $t_max_lim = 1000000;
+            $t_max_lim = 1_000_000;
             $h_min_lim = 0;
             $h_max_lim = 10000;
         }
@@ -175,14 +173,13 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws \Exception
      */
     public function executeInsertChacon(HTTPRequest $request)
     {
         $radioaddress = $request->getData("radioaddress") ?? '';
-        $radioaddress = urldecode($radioaddress);
+        $radioaddress = urldecode((string) $radioaddress);
 
         /** @var \Entity\Sensor $sensorEntity */
         $sensorEntity = $this->manager->getSensor($radioaddress, 'radioaddress');
@@ -238,7 +235,6 @@ class MesuresController extends BackController
 
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeSensorStruct(HTTPRequest $request)
@@ -248,7 +244,7 @@ class MesuresController extends BackController
         }
 
         if ($radioaddress = $request->getData('radioaddress')) {
-            $radioaddress = urldecode($radioaddress);
+            $radioaddress = urldecode((string) $radioaddress);
             $sensor = $this->manager->getSensor($radioaddress, 'radioaddress');
         }
 
@@ -256,7 +252,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeSensors(HTTPRequest $request)

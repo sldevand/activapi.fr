@@ -43,7 +43,6 @@ class ConfigurationController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -63,7 +62,6 @@ class ConfigurationController extends BackController
     }
 
     /**
-     * @param string $action
      * @return \App\Frontend\Modules\Configuration\Api\ActionInterface
      */
     protected function createAction(string $action): Api\ActionInterface

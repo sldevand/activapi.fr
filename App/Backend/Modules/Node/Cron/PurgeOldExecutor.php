@@ -14,7 +14,7 @@ use Sldevand\Cron\ExecutorInterface;
  */
 class PurgeOldExecutor implements ExecutorInterface
 {
-    const MAX_NUMBER_OF_ROWS = 30000;
+    final public const MAX_NUMBER_OF_ROWS = 30000;
 
     /** @var Managers */
     protected $managers;

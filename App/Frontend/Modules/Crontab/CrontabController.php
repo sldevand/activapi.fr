@@ -48,7 +48,6 @@ class CrontabController extends BackController
 
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -71,7 +70,6 @@ class CrontabController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeEdit(HTTPRequest $request)
@@ -80,7 +78,7 @@ class CrontabController extends BackController
         $this->page->addVar('title', "Edition de la crontab");
 
         if ($request->method() === 'POST') {
-            $expression = trim($request->postData('expression'));
+            $expression = trim((string) $request->postData('expression'));
             $this->validateCronExpression($expression, $request);
             $item = new Crontab([
                 'name' => $request->postData('name'),
@@ -122,9 +120,6 @@ class CrontabController extends BackController
         $this->page->addVar('cards', $cards);
     }
 
-    /**
-     * @param HTTPRequest $request
-     */
     public function executeDelete(HTTPRequest $request)
     {
         $domId = 'Suppression';
@@ -147,14 +142,13 @@ class CrontabController extends BackController
     }
 
     /**
-     * @param array $crontabList
      * @return \Materialize\Card\Card
      */
     public function makeCrontabWidget(array $crontabList)
     {
         $domId = 'Crontab';
 
-        $crontabList = json_decode(json_encode($crontabList), true);
+        $crontabList = json_decode(json_encode($crontabList, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
         $crontabListData = [];
 
         foreach ($crontabList as $crontab) {
@@ -173,10 +167,6 @@ class CrontabController extends BackController
         return $card;
     }
 
-    /**
-     * @param string $cronExpression
-     * @param HTTPRequest $request
-     */
     public function validateCronExpression(string $cronExpression, HTTPRequest $request)
     {
         try {
@@ -188,7 +178,6 @@ class CrontabController extends BackController
     }
 
     /**
-     * @param Crontab $item
      * @return CrontabFormBuilder
      * @throws \Exception
      */
@@ -205,7 +194,7 @@ class CrontabController extends BackController
         $crontabExecutors = \Crontab\ClassFinder::getClasses();
         $crontabOptions = [];
         foreach ($crontabExecutors as $executor) {
-            $explodedFqn = explode('\\', $executor);
+            $explodedFqn = explode('\\', (string) $executor);
             $crontabOptions[$executor] = $explodedFqn[4] . ':' . $explodedFqn[6];
         }
 

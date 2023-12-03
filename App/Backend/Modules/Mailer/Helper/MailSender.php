@@ -35,9 +35,6 @@ class MailSender extends ApplicationComponent
     }
 
     /**
-     * @param string $subject
-     * @param string $body
-     * @param array $mails
      * @return bool
      * @throws \PHPMailer\PHPMailer\Exception
      */
