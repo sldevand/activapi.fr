@@ -6,8 +6,8 @@ use GuzzleHttp\Client;
 use Model\Scenario\ScenarioManagerPDOFactory;
 use OCFram\PDOFactory;
 use SFram\Utils;
-use Tests\e2e\AbstractEndpointTest;
 use Tests\e2e\Scenarios\mock\SequencesMock;
+use Tests\e2e\AbstractEndpointTest;
 
 /**
  * Class SequencesEndpointTest
@@ -15,13 +15,17 @@ use Tests\e2e\Scenarios\mock\SequencesMock;
  */
 class SequencesEndpointTest extends AbstractEndpointTest
 {
-    /** @var \PDO */
+    /**
+     * @var \PDO
+     */
     protected static $db;
 
-    /** @var \Model\Scenario\SequencesManagerPDO */
+    /**
+     * @var \Model\Scenario\SequencesManagerPDO
+     */
     protected static $sequencesManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);
@@ -232,7 +236,7 @@ class SequencesEndpointTest extends AbstractEndpointTest
     public function testExecuteDeleteSequence()
     {
         $sequenceId = self::$sequencesManager->getLastInserted('sequence');
-        list($client, $url, , $sequenceArray) = $this->prepareSequenceRequest('/sequences/delete');
+        list($client, $url,, $sequenceArray) = $this->prepareSequenceRequest('/sequences/delete');
         $sequenceArray['id'] = $sequenceId;
         $result = $this->getDeleteJsonBody($client, $url, $sequenceArray);
 
@@ -248,7 +252,7 @@ class SequencesEndpointTest extends AbstractEndpointTest
     public function testExecuteDeleteUndefinedSequence()
     {
         $sequenceId = '569997774';
-        list($client, $url, , $sequenceArray) = $this->prepareSequenceRequest("/sequences/delete");
+        list($client, $url,, $sequenceArray) = $this->prepareSequenceRequest('/sequences/delete');
         $sequenceArray['id'] = $sequenceId;
         $result = $this->getDeleteJsonBody($client, $url, $sequenceArray);
 
@@ -285,7 +289,7 @@ class SequencesEndpointTest extends AbstractEndpointTest
     /**
      * @throws \Exception
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::removeLastInsertedSequence();
     }

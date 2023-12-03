@@ -12,7 +12,7 @@ use Tests\Model\AbstractManagerPDOTest;
  */
 class SequenceActionManagerPDOTest extends AbstractManagerPDOTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();

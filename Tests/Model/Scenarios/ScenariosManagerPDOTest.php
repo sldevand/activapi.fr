@@ -11,7 +11,7 @@ use Model\Scenario\ScenariosManagerPDO;
  */
 class ScenariosManagerPDOTest extends AbstractManagerPDOTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();

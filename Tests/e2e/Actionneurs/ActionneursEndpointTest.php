@@ -15,16 +15,22 @@ use Tests\e2e\Actionneurs\mock\ActionneursMock;
  */
 class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
 {
-    /** @var \PDO */
+    /**
+     * @var \PDO
+     */
     protected static $db;
 
-    /** @var \OCFram\Managers */
+    /**
+     * @var \OCFram\Managers
+     */
     protected static $managers;
 
-    /** @var \Model\ActionneursManagerPDO */
+    /**
+     * @var \Model\ActionneursManagerPDO
+     */
     protected static $actionneursManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);
@@ -41,7 +47,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
      */
     public function testExecuteIndex()
     {
-        $url = $this->getFullUrl("/actionneurs");
+        $url = $this->getFullUrl('/actionneurs');
         $client = new Client();
         $body = $this->getJsonBody($client, $url);
 
@@ -49,7 +55,6 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
 
         self::assertEquals($expected, $body);
     }
-
 
     /**
      * Route : /actionneurs/?(inter|dimmer|multiplug|thermostat)?
@@ -59,7 +64,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
      */
     public function testExecuteIndexWithInterFilter()
     {
-        $url = $this->getFullUrl("/actionneurs/inter");
+        $url = $this->getFullUrl('/actionneurs/inter');
         $client = new Client();
         $body = $this->getJsonBody($client, $url);
 
@@ -76,11 +81,11 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
      */
     public function testExecuteInsertWithoutPostData()
     {
-        $url = $this->getFullUrl("/actionneurs/add");
+        $url = $this->getFullUrl('/actionneurs/add');
         $client = new Client();
         $body = $this->getJsonBody($client, $url);
 
-        $expected = ['error' => "in object " . Actionneur::class . " , nom is not set"];
+        $expected = ['error' => 'in object ' . Actionneur::class . ' , nom is not set'];
 
         self::assertEquals($expected, $body);
     }
@@ -93,7 +98,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
      */
     public function testExecuteInsertWithPostData()
     {
-        $url = $this->getFullUrl("/actionneurs/add");
+        $url = $this->getFullUrl('/actionneurs/add');
         $client = new Client();
 
         $body = ActionneursMock::getActionneurs('create');
@@ -120,7 +125,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
      */
     public function testExecuteUpdateWithoutPostData()
     {
-        $url = $this->getFullUrl("/actionneurs/update");
+        $url = $this->getFullUrl('/actionneurs/update');
         $client = new Client();
         $body = $this->getJsonBody($client, $url);
 
@@ -140,7 +145,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
         $client = new Client();
 
         $body = ActionneursMock::getActionneurs('create');
-        $url = $this->getFullUrl("/actionneurs/add");
+        $url = $this->getFullUrl('/actionneurs/add');
         $responseBody = $this->getPostJsonBody($client, $url, $body);
 
         $expected = ['message' => 'Ok'];
@@ -157,7 +162,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
         $body = ActionneursMock::getActionneurs('update');
         $body['id'] = $saved['id'];
 
-        $url = $this->getFullUrl("/actionneurs/update");
+        $url = $this->getFullUrl('/actionneurs/update');
         $responseBody = $this->getPostJsonBody($client, $url, $body);
 
         $expected = ['message' => 'Ok'];
@@ -192,7 +197,7 @@ class ActionneursEndpointTest extends \Tests\e2e\AbstractEndpointTest
         self::$actionneursManager->delete($id);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::removeLastInsertedActionneur();
     }

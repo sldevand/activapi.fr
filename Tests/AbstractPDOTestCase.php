@@ -18,7 +18,7 @@ class AbstractPDOTestCase extends TestCase
      */
     public static $managers;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

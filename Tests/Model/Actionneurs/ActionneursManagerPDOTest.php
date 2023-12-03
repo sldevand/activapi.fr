@@ -13,7 +13,7 @@ use Tests\Model\Actionneurs\mock\ActionneursMock;
  */
 class ActionneursManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInterfaceTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();

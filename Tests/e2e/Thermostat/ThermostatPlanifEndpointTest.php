@@ -24,7 +24,7 @@ class ThermostatPlanifEndpointTest extends AbstractEndpointTest
     /** @var \Model\ThermostatPlanifManagerPDO */
     protected static $thermostatPlanifManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);

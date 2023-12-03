@@ -23,7 +23,7 @@ class ThermostatEndpointTest extends AbstractEndpointTest
     /** @var \Model\ThermostatManagerPDO */
     protected static $thermostatManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);

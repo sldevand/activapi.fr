@@ -17,7 +17,7 @@ use Tests\Model\Sensor\mock\SensorsMock;
  */
 class SensorsManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInterfaceTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();

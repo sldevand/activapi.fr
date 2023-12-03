@@ -6,8 +6,8 @@ use GuzzleHttp\Client;
 use Model\Scenario\ScenarioManagerPDOFactory;
 use OCFram\PDOFactory;
 use SFram\Utils;
-use Tests\e2e\AbstractEndpointTest;
 use Tests\e2e\Scenarios\mock\ActionsMock;
+use Tests\e2e\AbstractEndpointTest;
 
 /**
  * Class ActionsEndpointTest
@@ -15,16 +15,22 @@ use Tests\e2e\Scenarios\mock\ActionsMock;
  */
 class ActionsEndpointTest extends AbstractEndpointTest
 {
-    /** @var \PDO */
+    /**
+     * @var \PDO
+     */
     protected static $db;
 
-    /** @var \Model\Scenario\ActionManagerPDO */
+    /**
+     * @var \Model\Scenario\ActionManagerPDO
+     */
     protected static $actionManager;
 
-    /** @var \Model\ActionneursManagerPDO */
+    /**
+     * @var \Model\ActionneursManagerPDO
+     */
     protected static $actionneursManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);
@@ -252,7 +258,7 @@ class ActionsEndpointTest extends AbstractEndpointTest
     public function testExecuteDeleteUndefinedAction()
     {
         $actionId = '569997774';
-        list($client, $url, , $actionArray) = $this->prepareActionRequest("/actions/delete");
+        list($client, $url,, $actionArray) = $this->prepareActionRequest('/actions/delete');
         $actionArray['id'] = $actionId;
         $result = $this->getDeleteJsonBody($client, $url, $actionArray);
 
@@ -296,7 +302,7 @@ class ActionsEndpointTest extends AbstractEndpointTest
     /**
      * @throws \Exception
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::removeLastInsertedAction();
     }

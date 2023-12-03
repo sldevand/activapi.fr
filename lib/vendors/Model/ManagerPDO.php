@@ -2,9 +2,9 @@
 
 namespace Model;
 
-use Exception;
 use OCFram\Entity;
 use OCFram\Manager;
+use Exception;
 
 /**
  * Class ManagerPDO
@@ -54,8 +54,8 @@ class ManagerPDO extends Manager
      */
     public function delete($id)
     {
-        $this->dao->exec("PRAGMA foreign_keys=on");
-        return $this->dao->exec("DELETE FROM $this->tableName WHERE id = " . (int)$id);
+        $this->dao->exec('PRAGMA foreign_keys=on');
+        return $this->dao->exec("DELETE FROM $this->tableName WHERE id = " . (int) $id);
     }
 
     /**
@@ -67,13 +67,13 @@ class ManagerPDO extends Manager
     public function update($entity, $ignoreProperties = null)
     {
         if (!$entity->isValid($ignoreProperties)) {
-            throw new \RuntimeException($entity->erreurs()["notValid"]);
+            throw new \RuntimeException($entity->erreurs()['notValid']);
         }
 
         $sql = "UPDATE $this->tableName SET ";
         $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = $this->addProperties($sql, $properties);
-        $sql .= "WHERE id = :id";
+        $sql .= 'WHERE id = :id';
         $q = $this->prepare($sql);
         $this->bindProperties($q, $properties);
         $success = $q->execute();
@@ -91,18 +91,18 @@ class ManagerPDO extends Manager
     public function add($entity, $ignoreProperties = [])
     {
         if (!$entity->isValid($ignoreProperties)) {
-            throw new \RuntimeException($entity->erreurs()["notValid"]);
+            throw new \RuntimeException($entity->erreurs()['notValid']);
         }
 
         $properties = $this->ignoreProperties($entity, $ignoreProperties);
         $sql = "INSERT INTO $this->tableName (";
         $sql .= $this->addInsertProperties($properties);
-        $sql .= ") VALUES (";
+        $sql .= ') VALUES (';
         $sql .= $this->addInsertProperties($properties, true);
-        $sql .= ");";
+        $sql .= ');';
         $q = $this->prepare($sql);
         foreach ($properties as $key => $property) {
-            if ($key !== "erreurs" && $key !== 'id') {
+            if ($key !== 'erreurs' && $key !== 'id') {
                 $q->bindValue(":$key", $property);
             }
         }
@@ -122,7 +122,7 @@ class ManagerPDO extends Manager
     {
         $sql = "SELECT * FROM $this->tableName WHERE id = :id";
         $q = $this->prepare($sql);
-        $q->bindValue(':id', (int)$id, \PDO::PARAM_INT);
+        $q->bindValue(':id', (int) $id, \PDO::PARAM_INT);
         $q->execute();
         $q->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $this->getEntityName());
         $entity = $q->fetch();
@@ -221,7 +221,6 @@ class ManagerPDO extends Manager
         return $properties;
     }
 
-
     /**
      * @return null|string
      */
@@ -262,7 +261,7 @@ class ManagerPDO extends Manager
     {
         $query = $this->dao->prepare($sql);
         if (!$query) {
-            throw new Exception(implode(" ", $this->dao->errorInfo()));
+            throw new Exception(implode(' ', $this->dao->errorInfo()));
         }
 
         return $query;
@@ -277,7 +276,7 @@ class ManagerPDO extends Manager
     {
         $query = $this->dao->query($sql);
         if (!$query) {
-            throw new Exception(implode(" ", $this->dao->errorInfo()));
+            throw new Exception(implode(' ', $this->dao->errorInfo()));
         }
 
         return $query;
@@ -293,13 +292,14 @@ class ManagerPDO extends Manager
         $count = count($properties) - 2;
         $i = 1;
         foreach ($properties as $key => $property) {
-            if ($key !== "id" && $key !== "erreurs") {
-                $sql .= $key . " = :" . $key;
-                if ($i < $count) {
-                    $sql .= ",";
-                }
-                $sql .= " ";
+            if (in_array($key, ['id', 'erreurs'])) {
+                continue;
             }
+            $sql .= $key . ' = :' . $key;
+            if ($i < $count) {
+                $sql .= ',';
+            }
+            $sql .= ' ';
             $i++;
         }
 
@@ -324,14 +324,13 @@ class ManagerPDO extends Manager
             }
             $sql .= $key;
             if ($i < $count) {
-                $sql .= ",";
+                $sql .= ',';
             }
             $i++;
         }
 
         return $sql;
     }
-
 
     /**
      * @param \PDOStatement $query
@@ -342,12 +341,12 @@ class ManagerPDO extends Manager
     public function bindProperties($query, $properties)
     {
         if (!$query) {
-            $errorInfo = implode(' | ' , $this->dao->errorInfo());
+            $errorInfo = implode(' | ', $this->dao->errorInfo());
             throw new Exception($errorInfo);
         }
 
         foreach ($properties as $key => $value) {
-            if ($key !== "erreurs" && $value !== null) {
+            if ($key !== 'erreurs' && $value !== null) {
                 $query->bindValue(':' . $key, $value);
             }
         }
@@ -379,14 +378,14 @@ class ManagerPDO extends Manager
         }
 
         return <<<SQL
-$sql
-$where $field $operator :$bind
-SQL;
+            $sql
+            $where $field $operator :$bind
+            SQL;
     }
 
     /**
      * @param string $field
-     * @param string $sql
+     * @param string $addPropertiessql
      * @param bool $desc
      * @return string
      */
@@ -395,8 +394,8 @@ SQL;
         $order = ($desc) ? 'DESC' : '';
 
         return <<<SQL
-$sql
-ORDER BY $field $order
-SQL;
+            $sql
+            ORDER BY $field $order
+            SQL;
     }
 }

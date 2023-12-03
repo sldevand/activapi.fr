@@ -27,7 +27,7 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
     /** @var \Model\MesuresManagerPDO */
     private static $mesuresManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);

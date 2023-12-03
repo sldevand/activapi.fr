@@ -16,7 +16,7 @@ class SchemaUpdaterTest extends AbstractPDOTestCase
     /**
      * @throws \Exception
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();

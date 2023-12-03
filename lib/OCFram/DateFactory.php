@@ -78,7 +78,7 @@ class DateFactory
      */
     public static function todayFullString()
     {
-        return self::now()->format('20y-m-d H:i:s');
+        return self::now()->format('Y-m-d H:i:s');
     }
 
     /**
