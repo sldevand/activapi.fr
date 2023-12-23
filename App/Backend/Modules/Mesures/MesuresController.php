@@ -2,15 +2,15 @@
 
 namespace App\Backend\Modules\Mesures;
 
-use DateTime;
-use DateTimeZone;
 use Entity\Mesure;
 use Entity\Sensor;
-use Sensors\Helper\Data;
 use Model\SensorsManagerPDO;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
+use Sensors\Helper\Data;
+use DateTime;
+use DateTimeZone;
 
 /**
  * Class MesuresController
@@ -18,7 +18,9 @@ use OCFram\HTTPRequest;
  */
 class MesuresController extends BackController
 {
-    /** @var \Model\MesuresManagerPDO */
+    /**
+     * @var \Model\MesuresManagerPDO
+     */
     protected $manager;
 
     /**
@@ -42,13 +44,13 @@ class MesuresController extends BackController
     {
         $this->page->addVar('title', 'Gestion de sensor');
 
-        $sensorID = $request->getData("id_sensor");
+        $sensorID = $request->getData('id_sensor');
 
-        if ($request->getExists("dateMin") && $request->getExists("dateMax")) {
-            $dateMin = $request->getData("dateMin");
-            $dateMax = $request->getData("dateMax");
+        if ($request->getExists('dateMin') && $request->getExists('dateMax')) {
+            $dateMin = $request->getData('dateMin');
+            $dateMax = $request->getData('dateMax');
         } else {
-            $day = $request->getData("day");
+            $day = $request->getData('day');
             $dateLimits = DateFactory::getDateLimits($day);
 
             $dateMin = $dateLimits['dateMin'];
@@ -64,13 +66,13 @@ class MesuresController extends BackController
             $dateMin = $dateTemp;
         }
 
-        $dateMinFull = $dateMin->format("Y-m-d 00:00:00");
-        $dateMaxFull = $dateMax->format("Y-m-d 23:59:59");
-        $dateMinOnly = $dateMin->format("Y-m-d");
-        $dateMaxOnly = $dateMax->format("Y-m-d");
+        $dateMinFull = $dateMin->format('Y-m-d 00:00:00');
+        $dateMaxFull = $dateMax->format('Y-m-d 23:59:59');
+        $dateMinOnly = $dateMin->format('Y-m-d');
+        $dateMaxOnly = $dateMax->format('Y-m-d');
 
-        $now = DateFactory::createDateFromStr("now");
-        $nowDateOnly = $now->format("Y-m-d");
+        $now = DateFactory::createDateFromStr('now');
+        $nowDateOnly = $now->format('Y-m-d');
         $today = false;
         if ($dateMinOnly == $dateMaxOnly && $nowDateOnly == $dateMinOnly) {
             $today = true;
@@ -105,7 +107,7 @@ class MesuresController extends BackController
      */
     public function executeInsert(HTTPRequest $request)
     {
-        $sensorId = $request->getData("id_sensor");
+        $sensorId = $request->getData('id_sensor');
 
         /** @var \Entity\Sensor $sensorEntity */
         $sensorEntity = $this->manager->getSensor($sensorId);
@@ -118,31 +120,24 @@ class MesuresController extends BackController
             return $this->page->addVar('measure', 'No entity found with id ' . $sensorId);
         }
 
-        $valeur1 = $request->getData("valeur1");
-        $valeur2 = $request->getData("valeur2");
+        $valeur1 = (float)$request->getData('valeur1');
+        $valeur2 = (float)$request->getData('valeur2');
 
         $t_min_lim = -20;
         $t_max_lim = 50;
         $h_min_lim = 0;
         $h_max_lim = 100;
 
-        if ($sensorEntity->categorie() == "teleinfo") {
+        if ($sensorEntity->categorie() == 'teleinfo') {
             $t_min_lim = 0;
             $t_max_lim = 1000000;
             $h_min_lim = 0;
             $h_max_lim = 10000;
         }
 
-        if ($sensorEntity->categorie() == "thermo") {
-            $t_min_lim = 0;
-            $t_max_lim = 1000000;
-            $h_min_lim = 0;
-            $h_max_lim = 10000;
-        }
-
-        if (($valeur1 < $t_min_lim || $valeur1 > $t_max_lim)
-            || ($valeur2 < $h_min_lim || $valeur2 > $h_max_lim)) {
-            return $this->page->addVar('measure', ["error" => "limites de mesure dépassées!"]);
+        if ((isset($valeur1) && ($valeur1 < $t_min_lim || $valeur1 > $t_max_lim)) ||
+                (isset($valeur2) && ($valeur2 < $h_min_lim || $valeur2 > $h_max_lim))) {
+            return $this->page->addVar('measure', ['error' => "limites de mesure dépassées! $valeur1 $valeur2 $t_min_lim $t_max_lim $h_min_lim $h_max_lim)"]);
         }
 
         $derniereValeur1 = $sensorEntity->valeur1();
@@ -161,8 +156,8 @@ class MesuresController extends BackController
         $sensorManager = $this->managers->getManagerOf('Sensors');
         $sensorManager->sensorActivityUpdate($sensorEntity, 1);
 
-        $dateMinFull = DateFactory::createDateFromStr("now");
-        $dateMaxFull = DateFactory::createDateFromStr("now");
+        $dateMinFull = DateFactory::createDateFromStr('now');
+        $dateMaxFull = DateFactory::createDateFromStr('now');
 
         $dateMin = $dateMinFull->format('Y-m-d');
         $dateMax = $dateMaxFull->format('Y-m-d');
@@ -181,7 +176,7 @@ class MesuresController extends BackController
      */
     public function executeInsertChacon(HTTPRequest $request)
     {
-        $radioaddress = $request->getData("radioaddress") ?? '';
+        $radioaddress = $request->getData('radioaddress') ?? '';
         $radioaddress = urldecode($radioaddress);
 
         /** @var \Entity\Sensor $sensorEntity */
@@ -195,13 +190,12 @@ class MesuresController extends BackController
             return $this->page->addVar('measure', 'No entity found with radioaddress ' . $radioaddress);
         }
 
-        $valeur1 = $request->getData("valeur1");
-        $valeur2 = $request->getData("valeur2");
+        $valeur1 = $request->getData('valeur1');
+        $valeur2 = $request->getData('valeur2');
 
-
-        if (($valeur1 < 0 || $valeur1 > 1)
-            || ($valeur2 < 0 || $valeur2 > 1)) {
-            return $this->page->addVar('measure', ["error" => "limites de mesure dépassées!"]);
+        if (($valeur1 < 0 || $valeur1 > 1) ||
+                ($valeur2 < 0 || $valeur2 > 1)) {
+            return $this->page->addVar('measure', ['error' => 'limites de mesure dépassées!']);
         }
 
         $sensorEntity->setValeur1($valeur1);
@@ -225,8 +219,8 @@ class MesuresController extends BackController
         $sensorManager = $this->managers->getManagerOf('Sensors');
         $sensorManager->sensorActivityUpdate($sensorEntity, 1);
 
-        $dateMinFull = DateFactory::createDateFromStr("now");
-        $dateMaxFull = DateFactory::createDateFromStr("now");
+        $dateMinFull = DateFactory::createDateFromStr('now');
+        $dateMaxFull = DateFactory::createDateFromStr('now');
 
         $dateMin = $dateMinFull->format('Y-m-d');
         $dateMax = $dateMaxFull->format('Y-m-d');
@@ -235,7 +229,6 @@ class MesuresController extends BackController
         $this->cache()->setDataPath($file);
         $this->cache()->deleteFile();
     }
-
 
     /**
      * @param HTTPRequest $request
@@ -261,9 +254,9 @@ class MesuresController extends BackController
      */
     public function executeSensors(HTTPRequest $request)
     {
-        $categorie = $request->getData("categorie");
+        $categorie = $request->getData('categorie');
         if ($categorie === null) {
-            $categorie = "";
+            $categorie = '';
         }
         /** @var \Model\SensorsManagerPDO $sensorsManager */
         $sensorsManager = $this->managers->getManagerOf('Sensors');

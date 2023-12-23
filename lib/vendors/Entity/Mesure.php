@@ -84,8 +84,8 @@ class Mesure extends Entity
      */
     public function setId_sensor($id_sensor)
     {
-        if (empty($id_sensor) || !is_string($id_sensor)) {
-            throw new Exception('idSensor invalide!');
+        if (empty($id_sensor) || (!is_int($id_sensor) && !is_string($id_sensor) )) {
+            throw new Exception('idSensor invalide! ' .$id_sensor);
         }
 
         $this->id_sensor = $id_sensor;
