@@ -289,7 +289,7 @@ class ManagerPDO extends Manager
      */
     public function buildUpdateProperties($sql, $properties)
     {
-        $count = count($properties);
+        $count = count($properties) - 2;
         $i = 1;
         foreach ($properties as $key => $property) {
             if ($key !== "id" && $key !== "erreurs") {
