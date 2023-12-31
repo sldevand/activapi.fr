@@ -2,9 +2,9 @@
 
 namespace Model;
 
+use Exception;
 use OCFram\Entity;
 use OCFram\Manager;
-use Exception;
 
 /**
  * Class ManagerPDO
@@ -12,15 +12,8 @@ use Exception;
  */
 class ManagerPDO extends Manager
 {
-    /**
-     * @var string $tableName
-     */
-    protected $tableName;
-
-    /**
-     * @var Entity $entity
-     */
-    protected $entity;
+    protected string $tableName = '';
+    protected Entity $entity;
 
     /**
      * @param Entity $entity
@@ -289,12 +282,11 @@ class ManagerPDO extends Manager
      */
     public function addProperties($sql, $properties)
     {
-        $count = count($properties) - 2;
+        unset($properties['id']);
+        unset($properties['erreurs']);
+        $count = count($properties);
         $i = 1;
         foreach ($properties as $key => $property) {
-            if (in_array($key, ['id', 'erreurs'])) {
-                continue;
-            }
             $sql .= $key . ' = :' . $key;
             if ($i < $count) {
                 $sql .= ',';

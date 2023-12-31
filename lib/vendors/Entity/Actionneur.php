@@ -208,12 +208,12 @@ class Actionneur extends Entity
         foreach ($properties as $key => $property) {
             if ($key !== "erreurs"
                 && $key !== "id"
+                && $property != 0
                 && empty($property)
                 && !in_array($key, $ignoreProperties)
-                && $property !== '0'
             ) {
                 $objClass = new \ReflectionObject($this);
-                $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is empty";
+                $this->erreurs["notValid"] = "in object POUET " . $objClass->name . " , " . $key . " is empty";
                 throw new \Exception($this->erreurs['notValid']);
             }
         }
