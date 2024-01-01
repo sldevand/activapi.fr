@@ -145,7 +145,7 @@ class Actionneur extends Entity
      */
     public function getRadioid()
     {
-        return $this->radioid;
+        return (string)$this->radioid;
     }
 
     /**
@@ -213,7 +213,7 @@ class Actionneur extends Entity
                 && !in_array($key, $ignoreProperties)
             ) {
                 $objClass = new \ReflectionObject($this);
-                $this->erreurs["notValid"] = "in object POUET " . $objClass->name . " , " . $key . " is empty";
+                $this->erreurs["notValid"] = "in object " . $objClass->name . " , " . $key . " is empty";
                 throw new \Exception($this->erreurs['notValid']);
             }
         }

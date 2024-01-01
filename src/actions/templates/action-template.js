@@ -1,6 +1,5 @@
 export class ActionTemplate {
     static render(action) {
-        console.log(action);
         if (!action || action.error) {
             action.id = 0;
             action.nom = '';

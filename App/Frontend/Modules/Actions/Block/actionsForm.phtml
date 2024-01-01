@@ -2,13 +2,7 @@
 $actId = $args[0];
 /** @var \Materialize\Button\FlatButton $submit */
 $submit = $args[1];
-$addButton = new \Materialize\FloatingActionButton([
-    'id' => 'action-add',
-    'icon' => 'add',
-    'wrapper' => 'col s6',
-    'href' => '#',
-    'fixed' => true
-]);
+
 $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
 
 $method = ($actId) ? 'put' : 'post';
@@ -23,5 +17,4 @@ $action = ($actId) ? 'api/actions/update' : 'api/actions/add';
     </div>
     <input type="text" name="id" id="id" value="<?= $actId ?>" hidden readonly required/>
     <?= $submit->getHtml(); ?>
-    <?= $addButton->getHtml() ?>
 </form>

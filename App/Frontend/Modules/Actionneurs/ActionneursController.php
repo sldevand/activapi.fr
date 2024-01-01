@@ -120,8 +120,8 @@ class ActionneursController extends BackController
      */
     public function executeEdit(HTTPRequest $request)
     {
+        /** @var \Model\ActionneursManagerPDO $manager  */
         $manager = $this->managers->getManagerOf('Actionneurs');
-        $actionneurs = $manager->getList();
         $domId = 'Edition';
 
         if ($request->method() === 'POST') {
