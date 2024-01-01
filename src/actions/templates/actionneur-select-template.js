@@ -1,6 +1,6 @@
 export class ActionneurRowTemplate {
-    static render(action, actionneurs, idSelected = null) {
-        if (!action || !actionneurs) {
+    static render(actionneurs, idSelected = 0) {
+        if (!actionneurs) {
             return;
         }
         let template = `

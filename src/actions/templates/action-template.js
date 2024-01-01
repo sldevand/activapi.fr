@@ -1,11 +1,11 @@
 export class ActionTemplate {
-    static render(action) {
-        if (!action || action.error) {
-            action.id = 0;
-            action.nom = '';
+    static render(action = null) {
+        if (!action || (action && action.error)) {
+            action = {
+                id: 0,
+                nom: ''
+            };
         }
-        action.id = action.id || 0;
-        action.nom = action.nom || '';
 
         return `
     <div class="row">

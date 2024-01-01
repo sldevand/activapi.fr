@@ -2,9 +2,9 @@
 
 namespace Model;
 
-use Exception;
 use OCFram\Entity;
 use OCFram\Manager;
+use Exception;
 
 /**
  * Class ManagerPDO
@@ -65,7 +65,7 @@ class ManagerPDO extends Manager
 
         $sql = "UPDATE $this->tableName SET ";
         $properties = $this->ignoreProperties($entity, $ignoreProperties);
-        $sql = $this->addProperties($sql, $properties);
+        $sql = $this->buildUpdateProperties($sql, $properties);
         $sql .= 'WHERE id = :id';
         $q = $this->prepare($sql);
         $this->bindProperties($q, $properties);
@@ -280,7 +280,7 @@ class ManagerPDO extends Manager
      * @param array $properties
      * @return string
      */
-    public function addProperties($sql, $properties)
+    public function buildUpdateProperties($sql, $properties)
     {
         unset($properties['id']);
         unset($properties['erreurs']);

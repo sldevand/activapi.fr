@@ -1,10 +1,27 @@
-import {ActionTemplate} from "./templates/action-template";
-import {ActionneurRowTemplate} from "./templates/actionneur-select-template";
-import {ApiManage} from "../utils/apiManage";
+import { ActionTemplate } from "./templates/action-template";
+import { ActionneurRowTemplate } from "./templates/actionneur-select-template";
+import { ApiManage } from "../utils/apiManage";
 
 export class Actions {
     init() {
         const actionId = document.querySelector('#id').getAttribute('value');
+        if (!actionId) {
+            document.querySelector('#action-content').innerHTML = this.createActionTemplate();
+            fetch('api/actionneurs/')
+            .then((data) => {
+                return data.json();
+            }).then((actionneurs) => {
+                if (actionneurs.error) {
+                    Materialize.toast(actionneurs.error, 2000);
+                    return;
+                }
+                this.actionneurs = actionneurs;
+                this.addRow();
+                this.initForm();
+            }).catch(err => console.log(err))
+            return;
+        }
+
         fetch("api/actions/" + actionId)
             .then((data) => {
                 return data.json();
@@ -29,12 +46,12 @@ export class Actions {
             .catch(err => console.log(err))
     }
 
-    addRow(actionneurId = null) {
+    addRow(actionneurId = 0) {
         const actionneurs = document.querySelector('#action-content #actionneur');
         const elt = document.createElement('div');
         elt.classList.add('row');
         elt.id = 'actionneur-row-' + actionneurId;
-        let row = ActionneurRowTemplate.render(this.action, this.actionneurs, actionneurId);
+        let row = ActionneurRowTemplate.render(this.actionneurs, actionneurId);
         if (!row) {
             return;
         }
@@ -82,7 +99,7 @@ export class Actions {
             case 204:
                 crudOperation = "deleted";
                 break;
-            default :
+            default:
                 return Materialize.toast(jsonResponse['error'], 2000);
         }
 
