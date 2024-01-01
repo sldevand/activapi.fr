@@ -11,7 +11,6 @@ use OCFram\HTTPRequest;
 interface ActionInterface
 {
     /**
-     * @param \OCFram\HTTPRequest $request
      * @return mixed
      */
     public function execute(HTTPRequest $request);

@@ -28,7 +28,6 @@ class ActionsController extends AbstractScenariosController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -55,7 +54,7 @@ class ActionsController extends AbstractScenariosController
     public function makeActionsWidget($actions)
     {
         $domId = 'Actions';
-        $actions = json_decode(json_encode($actions), true);
+        $actions = json_decode(json_encode($actions, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
         $card = WidgetFactory::makeCard($domId, $domId);
         if (!$actions) {
             $card->addContent("Pas d'actions");
@@ -134,7 +133,6 @@ class ActionsController extends AbstractScenariosController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws \Exception
      */

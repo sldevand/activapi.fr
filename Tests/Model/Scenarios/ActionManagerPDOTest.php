@@ -11,7 +11,7 @@ use Model\Scenario\ActionManagerPDO;
  */
 class ActionManagerPDOTest extends AbstractManagerPDOTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();

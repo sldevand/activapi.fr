@@ -13,8 +13,6 @@ use OCFram\DateFactory;
 class Power
 {
     /**
-     * @param Thermostat $thermostat
-     * @param int $delay
      * @return bool
      * @throws Exception
      */

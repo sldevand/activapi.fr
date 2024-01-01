@@ -27,7 +27,7 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
     /** @var \Model\MesuresManagerPDO */
     private static $mesuresManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);
@@ -93,51 +93,6 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
 
         self::expectException(\GuzzleHttp\Exception\ClientException::class);
         $this->getRequest($client, $url);
-    }
-
-    /**
-     * Route : /mesures/addchacondio-([0-9]{8}(?:%20[0-9])?)-([-+]?[0-9]*\.?[0-9]*)-?([-+]?[0-9]*\.?[0-9]*)?
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Exception
-     */
-    public function testExecuteInsertChacon()
-    {
-        $radioid = 'sensor43cdoorid1';
-        $sensorBefore = $this->setSensorForTest($radioid);
-        $radioaddess = $sensorBefore->radioaddress();
-
-        $client = new Client();
-
-        // first time insert is successful
-        $expected = Utils::objToArray(new Mesure(
-            [
-                'id_sensor' => $radioid,
-                'temperature' => '0',
-                'hygrometrie' => '0'
-            ]
-        ));
-
-        $url = $this->getFullUrl("/mesures/addchacondio-$radioaddess-0-0");
-        $body = $this->getJsonBody($client, $url);
-        self::assertEquals($expected, $body);
-        $this->removeLastInsertedMeasure();
-
-        // we change values, the measure can be inserted
-        $expected = Utils::objToArray(new Mesure(
-            [
-                'id_sensor' => $radioid,
-                'temperature' => '1',
-                'hygrometrie' => '0'
-            ]
-        ));
-
-        $url = $this->getFullUrl("/mesures/addchacondio-$radioaddess-1-0");
-        $body = $this->getJsonBody($client, $url);
-        self::assertEquals($expected, $body);
-        $this->removeLastInsertedMeasure();
-
-        self::$sensorsManager->save($sensorBefore);
     }
 
     /**
@@ -242,6 +197,7 @@ class MesuresEndpointTest extends \Tests\e2e\AbstractEndpointTest
     {
         /** @var \Entity\Sensor $sensorBefore */
         $sensorBefore = self::$sensorsManager->getUniqueBy('radioid', $radioId);
+
 
         // we change values to 1 so the new measure can be inserted
         /** @var \Entity\Sensor $sensor */

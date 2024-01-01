@@ -35,7 +35,6 @@ class MailerController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws \Exception
      */

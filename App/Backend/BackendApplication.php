@@ -42,7 +42,7 @@ class BackendApplication extends Application
     {
         try {
             return $this->router->getRoute($this->httpRequest->requestURI());
-        } catch (\RuntimeException $e) {
+        } catch (\RuntimeException) {
             $this->httpResponse->redirectJson404();
             return null;
         }

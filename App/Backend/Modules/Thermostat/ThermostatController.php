@@ -16,7 +16,6 @@ use SFram\Helpers\DateHelper;
 class ThermostatController extends BackController
 {
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -42,7 +41,6 @@ class ThermostatController extends BackController
     }
 
     /**
-     * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */
     public function executeUpdate(HTTPRequest $request)
@@ -108,8 +106,6 @@ class ThermostatController extends BackController
     }
 
     /**
-     * @param \Entity\Thermostat $newThermostat
-     * @param \Entity\Thermostat $thermostat
      * @return \Entity\Thermostat
      * @throws \Exception
      */
@@ -148,7 +144,6 @@ class ThermostatController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeLog(HTTPRequest $request)

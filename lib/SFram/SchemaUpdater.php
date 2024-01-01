@@ -125,7 +125,7 @@ class SchemaUpdater
     public function executeSqlScript($script)
     {
         if (empty($script)) {
-            throw new SchemaUpdaterException("No SQL Script to execute !");
+            throw new SchemaUpdaterException('No SQL Script to execute !');
         }
 
         return $this->moduleVersionManagerDao->getDao()->exec($script);
@@ -159,8 +159,8 @@ class SchemaUpdater
         $comparableModuleVersion = $this->getComparableVersionNumber($moduleVersion->getVersionNumber());
         $comparableConfigVersion = $this->getComparableVersionNumber($configVersion);
 
-        return $moduleVersion->getModuleName() === $configName
-            && $comparableModuleVersion < $comparableConfigVersion;
+        return $moduleVersion->getModuleName() === $configName &&
+            $comparableModuleVersion < $comparableConfigVersion;
     }
 
     /**

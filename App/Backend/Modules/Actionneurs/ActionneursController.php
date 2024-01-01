@@ -33,7 +33,6 @@ class ActionneursController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -43,7 +42,6 @@ class ActionneursController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */
@@ -71,7 +69,6 @@ class ActionneursController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */
@@ -124,7 +121,6 @@ class ActionneursController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */
@@ -148,7 +144,7 @@ class ActionneursController extends BackController
         if ($actionneur->getCategorie() == "dimmer") {
             $action .= "Persist";
         }
-        $dataJSON = json_encode($actionneur);
+        $dataJSON = json_encode($actionneur, JSON_THROW_ON_ERROR);
 
         $ip = $this->app()->config()->getEnv('NODE_IP');
         $port = $this->app()->config()->getEnv('NODE_PORT');

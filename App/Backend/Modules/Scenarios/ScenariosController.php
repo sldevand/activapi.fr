@@ -165,7 +165,6 @@ class ScenariosController extends AbstractScenarioManagersController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */

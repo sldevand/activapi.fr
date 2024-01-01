@@ -20,7 +20,7 @@ use OCFram\Managers;
 abstract class AbstractAction  extends ApplicationComponent implements ActionInterface
 {
     /** @var string */
-    public const HELPER_CLASS = '\\Helper\\Configuration\\Config';
+    final public const HELPER_CLASS = '\\Helper\\Configuration\\Config';
 
     /** @var \Model\Configuration\ConfigurationManagerPDO */
     protected $manager;
@@ -64,9 +64,6 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
     }
 
     /**
-     * @param array $configurations
-     * @param Form $form
-     * @param HTTPRequest $request
      * @return $this
      */
     protected function beforeDoPost(array &$configurations, Form &$form, HTTPRequest &$request) {
@@ -75,8 +72,6 @@ abstract class AbstractAction  extends ApplicationComponent implements ActionInt
 
     /**
      * @param \Entity\Configuration\Configuration[] $configurations
-     * @param \OCFram\Form $form
-     * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */
     protected function doPost(array $configurations, Form $form, HTTPRequest $request)

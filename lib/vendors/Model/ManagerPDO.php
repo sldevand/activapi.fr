@@ -12,15 +12,8 @@ use Exception;
  */
 class ManagerPDO extends Manager
 {
-    /**
-     * @var string $tableName
-     */
-    protected $tableName;
-
-    /**
-     * @var Entity $entity
-     */
-    protected $entity;
+    protected string $tableName = '';
+    protected Entity $entity;
 
     /**
      * @param Entity $entity
@@ -289,16 +282,16 @@ class ManagerPDO extends Manager
      */
     public function buildUpdateProperties($sql, $properties)
     {
-        $count = count($properties) - 2;
+        unset($properties['id']);
+        unset($properties['erreurs']);
+        $count = count($properties);
         $i = 1;
         foreach ($properties as $key => $property) {
-            if ($key !== "id" && $key !== "erreurs") {
-                $sql .= $key . " = :" . $key;
-                if ($i < $count) {
-                    $sql .= ",";
-                }
-                $sql .= " ";
+            $sql .= $key . ' = :' . $key;
+            if ($i < $count) {
+                $sql .= ',';
             }
+            $sql .= ' ';
             $i++;
         }
 
@@ -384,7 +377,7 @@ class ManagerPDO extends Manager
 
     /**
      * @param string $field
-     * @param string $sql
+     * @param string $addPropertiessql
      * @param bool $desc
      * @return string
      */

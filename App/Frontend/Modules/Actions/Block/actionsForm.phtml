@@ -2,6 +2,7 @@
 $actId = $args[0];
 /** @var \Materialize\Button\FlatButton $submit */
 $submit = $args[1];
+
 $spinner = \Materialize\WidgetFactory::makeSpinner("spinner");
 
 $method = ($actId) ? 'put' : 'post';

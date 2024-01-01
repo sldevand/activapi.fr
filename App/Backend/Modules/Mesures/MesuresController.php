@@ -5,10 +5,10 @@ namespace App\Backend\Modules\Mesures;
 use Entity\Mesure;
 use Entity\Sensor;
 use Model\SensorsManagerPDO;
+use Model\MesuresManagerPDO;
 use OCFram\BackController;
 use OCFram\DateFactory;
 use OCFram\HTTPRequest;
-use Sensors\Helper\Data;
 use DateTime;
 use DateTimeZone;
 
@@ -18,10 +18,7 @@ use DateTimeZone;
  */
 class MesuresController extends BackController
 {
-    /**
-     * @var \Model\MesuresManagerPDO
-     */
-    protected $manager;
+    protected MesuresManagerPDO $manager;
 
     /**
      * MesuresController constructor.
@@ -37,7 +34,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param \OCFram\HTTPRequest $request
      * @throws \Exception
      */
     public function executeSensor(HTTPRequest $request)
@@ -101,7 +97,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws \Exception
      */
@@ -120,8 +115,8 @@ class MesuresController extends BackController
             return $this->page->addVar('measure', 'No entity found with id ' . $sensorId);
         }
 
-        $valeur1 = (float)$request->getData('valeur1');
-        $valeur2 = (float)$request->getData('valeur2');
+        $valeur1 = $request->getData('valeur1');
+        $valeur2 = $request->getData('valeur2');
 
         $t_min_lim = -20;
         $t_max_lim = 50;
@@ -130,14 +125,14 @@ class MesuresController extends BackController
 
         if ($sensorEntity->categorie() == 'teleinfo') {
             $t_min_lim = 0;
-            $t_max_lim = 1000000;
+            $t_max_lim = 1_000_000;
             $h_min_lim = 0;
-            $h_max_lim = 10000;
+            $h_max_lim = 10_000;
         }
 
-        if ((isset($valeur1) && ($valeur1 < $t_min_lim || $valeur1 > $t_max_lim)) ||
-                (isset($valeur2) && ($valeur2 < $h_min_lim || $valeur2 > $h_max_lim))) {
-            return $this->page->addVar('measure', ['error' => "limites de mesure dépassées! $valeur1 $valeur2 $t_min_lim $t_max_lim $h_min_lim $h_max_lim)"]);
+        if (($valeur1 !== '' && ($valeur1 < $t_min_lim || $valeur1 > $t_max_lim)) ||
+                ($valeur2 !== '' && ($valeur2 < $h_min_lim || $valeur2 > $h_max_lim))) {
+            return $this->page->addVar('measure', ['error' => "limites de mesure dépassées! -> valeur1=$valeur1 , valeur2=$valeur2"]);
         }
 
         $derniereValeur1 = $sensorEntity->valeur1();
@@ -170,14 +165,13 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws \Exception
      */
     public function executeInsertChacon(HTTPRequest $request)
     {
         $radioaddress = $request->getData('radioaddress') ?? '';
-        $radioaddress = urldecode($radioaddress);
+        $radioaddress = urldecode((string) $radioaddress);
 
         /** @var \Entity\Sensor $sensorEntity */
         $sensorEntity = $this->manager->getSensor($radioaddress, 'radioaddress');
@@ -193,9 +187,9 @@ class MesuresController extends BackController
         $valeur1 = $request->getData('valeur1');
         $valeur2 = $request->getData('valeur2');
 
-        if (($valeur1 < 0 || $valeur1 > 1) ||
-                ($valeur2 < 0 || $valeur2 > 1)) {
-            return $this->page->addVar('measure', ['error' => 'limites de mesure dépassées!']);
+        if ($valeur1 !== '' && ($valeur1 < 0 || $valeur1 > 1) ||
+                $valeur2 !== '' && ($valeur2 < 0 || $valeur2 > 1)) {
+            return $this->page->addVar('measure', ['error' => "limites de mesure dépassées! -> valeur1=$valeur1 , valeur2=$valeur2"]);
         }
 
         $sensorEntity->setValeur1($valeur1);
@@ -203,7 +197,7 @@ class MesuresController extends BackController
 
         $mesure = new Mesure(
             [
-                'id_sensor' => $sensorEntity->radioid(),
+                'id_sensor' => (string) $sensorEntity->id(),
                 'temperature' => $valeur1,
                 'hygrometrie' => $valeur2
             ]
@@ -231,7 +225,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeSensorStruct(HTTPRequest $request)
@@ -241,7 +234,7 @@ class MesuresController extends BackController
         }
 
         if ($radioaddress = $request->getData('radioaddress')) {
-            $radioaddress = urldecode($radioaddress);
+            $radioaddress = urldecode((string) $radioaddress);
             $sensor = $this->manager->getSensor($radioaddress, 'radioaddress');
         }
 
@@ -249,7 +242,6 @@ class MesuresController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeSensors(HTTPRequest $request)

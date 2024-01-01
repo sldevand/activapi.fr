@@ -42,7 +42,6 @@ class NodeController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */
@@ -58,7 +57,6 @@ class NodeController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @throws Exception
      */
     public function executeGetStatus(HTTPRequest $request)
@@ -68,7 +66,6 @@ class NodeController extends BackController
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      * @throws Exception
      */
@@ -96,18 +93,14 @@ class NodeController extends BackController
         $beginOfyesterday = strtotime('-1 day', $beginOfDay);
         $endOfYesterday   = $beginOfDay - 1;
 
-        switch ($period) {
-            case 'yesterday':
-                return [$beginOfyesterday, $endOfYesterday];
-            case 'week':
-                return [$beginOfyesterday, $now];
-            default:
-                return [$beginOfDay, $endOfDay];
-        }
+        return match ($period) {
+            'yesterday' => [$beginOfyesterday, $endOfYesterday],
+            'week' => [$beginOfyesterday, $now],
+            default => [$beginOfDay, $endOfDay],
+        };
     }
 
     /**
-     * @param HTTPRequest $request
      * @return \OCFram\Page
      */
     public function executePostLog(HTTPRequest $request)

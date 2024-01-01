@@ -81,7 +81,7 @@ class RepairDatabaseExecutor implements ExecutorInterface
             try {
                 $this->sequencesManager->getUnique($sequenceAction->getSequenceId());
                 $this->actionManager->getUnique($sequenceAction->getActionId());
-            } catch (Exception $exception) {
+            } catch (Exception) {
                 $this->sequenceActionManager->delete($sequenceAction->id());
                 echo 'Deleted sequence_action row : ' . $sequenceAction->id() . PHP_EOL;
             }
@@ -99,7 +99,7 @@ class RepairDatabaseExecutor implements ExecutorInterface
             try {
                 $this->sequencesManager->getUnique($scenarioSequence->getSequenceId());
                 $this->scenariosManager->getUnique($scenarioSequence->getScenarioId());
-            } catch (Exception $exception) {
+            } catch (Exception) {
                 $this->scenarioSequenceManager->delete($scenarioSequence->id());
                 echo 'Deleted scenario_sequence row : ' . $scenarioSequence->id() . PHP_EOL;
             }

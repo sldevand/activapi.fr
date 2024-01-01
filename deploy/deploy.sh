@@ -24,9 +24,6 @@ LOCAL_BUILD_PATH=$LOCAL_APP_PATH/build
 LOCAL_REPO_PATH=$LOCAL_APP_PATH/build/$LOCAL_APP_NAME
 REMOTE_SCRIPT_PATH=$LOCAL_APP_PATH/deploy/remote/commands.sh
 
-eval "$(ssh-agent -s)" &&
-ssh-add $SSH_PRIVATE_KEY &&
-
 myEcho "START $LOCAL_APP_NAME deployer script START"
 
 myEcho "Local : Launch tests"
@@ -67,6 +64,8 @@ rm -rfv $LOCAL_REPO_PATH/Web/get_oauth_token.php &&
 rm -rfv $LOCAL_REPO_PATH/.env.sample &&
 rm -rfv $LOCAL_REPO_PATH/.env &&
 
+eval "$(ssh-agent -s)" &&
+ssh-add $SSH_PRIVATE_KEY &&
 
 myEcho "Remote : copy from local $LOCAL_REPO_PATH to remote $REMOTE_HOST:$REMOTE_TMP_PATH" &&
 scp -r $LOCAL_REPO_PATH $REMOTE_HOST:$REMOTE_TMP_PATH &&

@@ -14,7 +14,7 @@ use Tests\Model\Thermostat\mock\ThermostatModesMock;
  */
 class ThermostatModesManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInterfaceTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();

@@ -11,7 +11,6 @@ use OCFram\Application;
 class Flush
 {
     /**
-     * @param Application $app
      * @return array|false
      * @throws \Exception
      */

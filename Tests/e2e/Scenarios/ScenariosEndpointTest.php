@@ -6,8 +6,8 @@ use GuzzleHttp\Client;
 use Model\Scenario\ScenarioManagerPDOFactory;
 use OCFram\PDOFactory;
 use SFram\Utils;
-use Tests\e2e\AbstractEndpointTest;
 use Tests\e2e\Scenarios\mock\ScenariosMock;
+use Tests\e2e\AbstractEndpointTest;
 
 /**
  * Class ScenariosEndpointTest
@@ -15,13 +15,17 @@ use Tests\e2e\Scenarios\mock\ScenariosMock;
  */
 class ScenariosEndpointTest extends AbstractEndpointTest
 {
-    /** @var \PDO */
+    /**
+     * @var \PDO
+     */
     protected static $db;
 
-    /** @var \Model\Scenario\ScenariosManagerPDO */
+    /**
+     * @var \Model\Scenario\ScenariosManagerPDO
+     */
     protected static $scenariosManager;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $path = $_ENV['DB_PATH_TEST'] ?? $_ENV['DB_PATH'];
         PDOFactory::setPdoAddress($path);
@@ -232,7 +236,7 @@ class ScenariosEndpointTest extends AbstractEndpointTest
     public function testExecuteDeleteScenario()
     {
         $scenarioId = self::$scenariosManager->getLastInserted('scenario');
-        list($client, $url, , $scenarioArray) = $this->prepareScenarioRequest('/scenarios/delete');
+        list($client, $url,, $scenarioArray) = $this->prepareScenarioRequest('/scenarios/delete');
         $scenarioArray['id'] = $scenarioId;
         $result = $this->getDeleteJsonBody($client, $url, $scenarioArray);
 
@@ -248,7 +252,7 @@ class ScenariosEndpointTest extends AbstractEndpointTest
     public function testExecuteDeleteUndefinedScenario()
     {
         $scenarioId = '569997774';
-        list($client, $url, , $scenarioArray) = $this->prepareScenarioRequest("/scenarios/delete");
+        list($client, $url,, $scenarioArray) = $this->prepareScenarioRequest('/scenarios/delete');
         $scenarioArray['id'] = $scenarioId;
         $result = $this->getDeleteJsonBody($client, $url, $scenarioArray);
 
@@ -261,7 +265,7 @@ class ScenariosEndpointTest extends AbstractEndpointTest
      */
     public function testExecuteReset()
     {
-        list($client, $url) = $this->prepareScenarioRequest("/scenarios/reset");
+        list($client, $url) = $this->prepareScenarioRequest('/scenarios/reset');
         $result = $this->getJsonBody($client, $url);
 
         self::assertEquals(['success' => 'Scenarios have been reset to stop value'], $result);
@@ -297,7 +301,7 @@ class ScenariosEndpointTest extends AbstractEndpointTest
     /**
      * @throws \Exception
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         self::removeLastInsertedScenario();
     }

@@ -54,8 +54,8 @@ class InitCrontab implements DataSetupInterface
         foreach ($crontab as $name => $taskData) {
             $taskData['name'] = $name;
             $taskData['active'] = 1;
-            $taskData['args'] = $taskData['args'] ?? [];
-            $taskData['args'] = json_encode($taskData['args']);
+            $taskData['args'] ??= [];
+            $taskData['args'] = json_encode($taskData['args'], JSON_THROW_ON_ERROR);
             $task = new Crontab($taskData);
             $crontabManager->save($task);
         }

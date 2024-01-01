@@ -21,7 +21,7 @@ class CrontabController extends BackController implements RestInterface
     protected $manager;
 
     /** @var string $entity */
-    protected $entity;
+    protected $entity = Crontab::class;
 
     /**
      * CrontabController constructor.
@@ -37,7 +37,6 @@ class CrontabController extends BackController implements RestInterface
     ) {
         parent::__construct($app, $module, $action);
         $this->manager = $this->managers->getManagerOf('Crontab\Crontab');
-        $this->entity = Crontab::class;
     }
 
     /**
@@ -125,7 +124,7 @@ class CrontabController extends BackController implements RestInterface
         }
 
         if (!$deleted) {
-            return $this->page->addVar('data', ['error' => 'No ' . get_class($entity) . ' was deleted']);
+            return $this->page->addVar('data', ['error' => 'No ' . ($entity !== null ? $entity::class : self::class) . ' was deleted']);
         }
 
         return $this->page->addVar('data', ['success' => $entity->getName() . ' has been deleted']);

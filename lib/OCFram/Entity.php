@@ -93,24 +93,22 @@ abstract class Entity extends MagicObject implements \ArrayAccess, \JsonSerializ
     /**
      * @param mixed $var
      * @param mixed $value
-     * @return Entity
+     * @return void
      */
-    public function offsetSet($var, $value)
+    public function offsetSet($var, $value): void
     {
         $method = 'set' . ucfirst($var);
 
         if (isset($this->$var) && is_callable([$this, $method])) {
             $this->$method($value);
         }
-
-        return $this;
     }
 
     /**
      * @param mixed $var
      * @return bool
      */
-    public function offsetExists($var)
+    public function offsetExists($var): bool
     {
         return isset($this->$var) && is_callable([$this, $var]);
     }
@@ -119,7 +117,7 @@ abstract class Entity extends MagicObject implements \ArrayAccess, \JsonSerializ
      * @param mixed $var
      * @throws \Exception
      */
-    public function offsetUnset($var)
+    public function offsetUnset($var): void 
     {
         throw new \Exception('Impossible to delete a value');
     }

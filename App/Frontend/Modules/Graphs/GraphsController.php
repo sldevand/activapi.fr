@@ -16,11 +16,10 @@ use SFram\JSTranslator;
  */
 class GraphsController extends BackController
 {
-    const TEMP_MIN = 10;
-    const TEMP_MAX = 25;
+    final public const TEMP_MIN = 10;
+    final public const TEMP_MAX = 25;
 
     /**
-     * @param HTTPRequest $request
      * @throws \Exception
      */
     public function executeIndex(HTTPRequest $request)
@@ -164,8 +163,6 @@ class GraphsController extends BackController
     }
 
     /**
-     * @param string $dateMin
-     * @param string $dateMax
      * @return string
      */
     public function createUrl(string $dateMin, string $dateMax)

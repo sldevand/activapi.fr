@@ -16,7 +16,7 @@ use Tests\Model\Thermostat\mock\ThermostatPlanifMock;
  */
 class ThermostatPlanifManagerPDOTest extends AbstractPDOTestCase implements ManagerPDOInterfaceTest
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         self::dropAndCreateTables();
