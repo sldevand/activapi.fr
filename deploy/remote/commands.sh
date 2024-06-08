@@ -18,7 +18,7 @@ REMOTE_APP_NAME=activapi.fr
 REMOTE_APP_LINK=activapi
 REMOTE_APP_PATH=$REMOTE_WWW_PATH/$REMOTE_APP_NAME
 REMOTE_APP_LINK_PATH=$REMOTE_WWW_PATH/$REMOTE_APP_LINK
-REMOTE_COMPOSER=/usr/bin/composer
+REMOTE_COMPOSER=/usr/sbin/composer
 REMOTE_ENV_FILE=/home/pi/deployFiles/activapi/.env
 
 myEcho "***Remote : stop activServer service***"
