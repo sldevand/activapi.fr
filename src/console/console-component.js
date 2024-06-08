@@ -1,4 +1,4 @@
-import {ConsoleTemplate} from "./templates/console-template";
+import { ConsoleRow } from "./templates/console-row";
 
 export class Console {
 
@@ -10,20 +10,17 @@ export class Console {
         const display = document.querySelector('#console-display');
         const period = document.querySelector('#period').value;
 
-        fetch( this.nodeAddress+"/log/" + period)
+        fetch(this.nodeAddress + "/log/" + period)
             .then((data) => {
                 return data.json();
             })
             .then((logs) => {
-
                 this.logs = logs.messages;
-
-                display.innerHTML = this.createDisplayTemplate();
+                for (let log of this.logs) {
+                    let row = new ConsoleRow(log);
+                    display.appendChild(row.render());
+                }
             })
             .catch(err => console.log(err))
-    }
-
-    createDisplayTemplate() {
-        return ConsoleTemplate.render(this.logs);
     }
 }
