@@ -60,7 +60,7 @@
         "@babel/core": "^7.12.10",
         "@babel/preset-env": "^7.12.11",
         "babelify": "latest",
-        "browser-sync": "^2.27.8",
+        "browser-sync": "^3.0.2",
         "node-sass": "latest",
         "watchify": "latest"
     }
