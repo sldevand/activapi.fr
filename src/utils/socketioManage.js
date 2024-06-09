@@ -1,8 +1,7 @@
 export class SocketIOManage {
-
     constructor(io, address, port) {
         this.io = io;
-        this.fullAddress = 'http://' + address + ':' + port;
+        this.fullAddress = `http://${address}:${port}`;
         this.socket = null;
     }
 
@@ -13,9 +12,7 @@ export class SocketIOManage {
     }
 
     run() {
-
         if (!this.socket) {
-
             return false;
         }
         this.initReceive();
@@ -23,34 +20,32 @@ export class SocketIOManage {
     }
 
     initReceive() {
-        const ioconnectionId = $('#ioconnection');
+        this.socket.on('connect', () => {
+            window.dispatchEvent(new Event("io-connect"));
+        });
+
+        this.socket.on('disconnect', () => {
+            window.dispatchEvent(new Event("io-disconnect"));
+        });
+
         this.socket.on('messageConsole', message => {
-            $('#console-display').prepend(message + "<br>");
-        });
-
-        this.socket.on('connect', message => {
-            ioconnectionId.removeClass("red").removeClass("red-text");
-            ioconnectionId.addClass("teal").addClass("teal-text");
-        });
-
-        this.socket.on('disconnect', message => {
-            ioconnectionId.removeClass("teal").removeClass("teal-text");
-            ioconnectionId.addClass("red").addClass("red-text");
+            const event = new CustomEvent("io-messageConsole", {
+                bubbles: true,
+                detail: message
+            });
+            window.dispatchEvent(event);
         });
 
         return this;
     }
 
     initSend() {
-        $("#send-command").click((e) => {
-            e.preventDefault();
-            const command = $("#console-edit-text").val();
+        window.addEventListener('io-sendCommand', (e) => {
+            this.socket.emit('command', e.detail);
+        });
 
-            if ("" === command || null === command) {
-                return false;
-            }
-
-            this.socket.emit("command", command);
+        window.addEventListener('io-serialportReset', () => {
+            this.socket.emit('serialportReset', '');
         });
 
         return this;
