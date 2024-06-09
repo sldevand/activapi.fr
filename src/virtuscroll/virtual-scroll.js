@@ -25,6 +25,11 @@ class VirtualScroll extends HTMLElement {
         this.render();
     }
 
+    prependRow(row) {
+        this.data.unshift(row);
+        this.render();
+    }
+
     clear() {
         Array.from(this.wrapper.children).forEach(c => c.remove())
     }
